@@ -1,0 +1,46 @@
+.container {
+  margin: 0 10px 0 40px;
+  max-width: 50vw;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.title {
+  margin: 50px 0 0 50px;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.mainSection {
+  display: flex;
+  flex-direction: row;
+}
+
+.leftSection {
+  background-color: #dce8f5;
+}
+
+.authSection {
+  display: flex;
+  flex-direction: column;
+  width: 50vw;
+}
+
+@media (max-width: 375px) {
+  .mainSection {
+    flex-direction: column-reverse;
+  }
+
+  .authSection {
+    display: flex;
+    flex-direction: column-reverse;
+    width: 100vw;
+  }
+
+  .leftSection {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+}
