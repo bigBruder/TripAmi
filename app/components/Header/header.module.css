@@ -30,6 +30,7 @@
   background-color: transparent;
   vertical-align: auto;
   border: none;
+  width: 100%;
 }
 
 .input:focus {
@@ -60,12 +61,16 @@
   height: 11px;
 }
 
+.avatar {
+  margin-right: 5px;
+}
+
 .arrow {
   display: none;
   margin: auto 7px 7px;
 }
 
-@media (max-width: 375px) {
+@media (max-width: 500px) {
   .button {
     margin: 0 0 0 10px;
     width: 60px;

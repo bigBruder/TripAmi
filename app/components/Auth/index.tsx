@@ -1,6 +1,7 @@
 import facebookIcon from "@assets/icons/uil_facebook.svg";
 import appleIcon from "@assets/icons/ic_apple.svg";
 import globeImg from "@assets/icons/globe.svg";
+import globearoud from "@assets/icons/globearound.svg";
 import styles from "./auth.module.css";
 
 const AuthModal = () => {
@@ -34,6 +35,7 @@ const AuthModal = () => {
         </div>
       </div>
       <img className={styles.globe} src={globeImg} alt="globe" />
+      <img className={styles.globearound} src={globearoud} alt="aroundglobe" />
     </div>
   );
 };

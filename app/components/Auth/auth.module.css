@@ -112,19 +112,25 @@
 }
 
 .globe {
-  /* position: absolute;
-  top: 0;
-  left: 0; */
   margin: -30px auto 25px;
   display: flex;
   justify-content: center;
   z-index: 0;
 }
 
+.globearound {
+  display: none;
+}
+
 @media (max-width: 500px) {
   .globe {
     display: none;
     background-color: #dce8f5;
+  }
+
+  .globearound {
+    display: flex;
+    margin: auto;
   }
 
   .container {
