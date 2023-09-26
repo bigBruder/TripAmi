@@ -74,7 +74,8 @@
 }
 
 .email {
-  width: 100%;
+  margin: 0 auto;
+  width: 60%;
   height: 51px;
   border-radius: 10px;
   background: linear-gradient(180deg, #1400ff -70.01%, #38acff 100%);

@@ -1,0 +1,98 @@
+.header {
+  padding: 15px 0;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #dfdfdf;
+}
+
+.title {
+  margin: auto;
+  margin-left: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+}
+
+.inputWrapper {
+  margin: auto;
+  display: flex;
+  width: 45vw;
+  padding: 0 10px;
+  height: 27px;
+  border-radius: 45px;
+  background-color: #ededed;
+  border: none;
+}
+
+.input {
+  background-color: transparent;
+  vertical-align: auto;
+  border: none;
+  width: 100%;
+}
+
+.input:focus {
+  outline: none;
+}
+
+/* .button {
+  margin-right: 66px;
+  width: 120px;
+  height: 35px;
+  font-weight: 400;
+  font-size: 13px;
+  background-color: #55bef5;
+  border-radius: 45px;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+} */
+
+.search {
+  margin: auto 5px auto 0;
+  width: 11px;
+  height: 11px;
+}
+
+.icons {
+  width: 20vw;
+  display: flex;
+  justify-content: space-between;
+  margin: auto 100px auto;
+}
+
+.icon {
+  margin: auto 10px;
+  cursor: pointer;
+}
+
+.name {
+  margin: auto 0;
+  font-size: 15px;
+}
+
+.avatar {
+  margin: auto 5px auto 45px;
+  cursor: pointer;
+}
+
+.arrow {
+  margin: auto 7px auto 7px;
+  cursor: pointer;
+}
+
+@media (max-width: 500px) {
+  .button {
+    margin: 0 0 0 10px;
+    width: 60px;
+  }
+
+  .avatar {
+    display: none;
+  }
+
+  .title {
+    margin-right: 10px;
+  }
+}

@@ -6,7 +6,6 @@
 
 .cardContainer {
   display: flex;
-  flex-grow: 1;
   padding: 7px;
   margin: 25px 0 20px 10px;
   flex-direction: column;
@@ -125,7 +124,7 @@ img {
 
 @media (max-width: 500px) {
   .cardContainer {
-    width: 300px;
+    width: 270px;
     justify-content: center;
   }
 }

@@ -17,17 +17,17 @@ export type Post = {
 };
 
 export const posts: Post[] = [
-  // {
-  //   id: 1,
-  //   userName: "Anna Maria",
-  //   timeAgo: 20,
-  //   userIcon: ava1,
-  //   rating: 5,
-  //   caption:
-  //     "First day in Albania! Beautiful sea, hot weather and of course a lot of tourists❤️️ ",
-  //   img: post1,
-  //   commentsNumber: 2,
-  // },
+  {
+    id: 1,
+    userName: "Anna Maria",
+    timeAgo: 20,
+    userIcon: ava1,
+    rating: 5,
+    caption:
+      "First day in Albania! Beautiful sea, hot weather and of course a lot of tourists❤️️ ",
+    img: post1,
+    commentsNumber: 2,
+  },
   {
     id: 1,
     userName: "Ostin",
