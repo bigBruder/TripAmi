@@ -1,0 +1,185 @@
+.myAccount {
+  display: flex;
+  flex-direction: row;
+}
+
+.genaralInfo {
+  width: 50vw;
+}
+
+.userInfo {
+  padding: 60px;
+  display: flex;
+  flex-direction: row;
+}
+
+.defaultUserIcon {
+}
+
+.description {
+  margin: 10px 0 0 25px;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.text {
+  margin: 0;
+  margin-top: 20px;
+}
+
+.edit {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 48px;
+}
+
+.editText {
+  font-size: 1.3vw;
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input {
+  width: 100%;
+  border: 1px solid #ccc;
+
+  outline: none;
+  border: none;
+  background-color: transparent;
+  border-bottom: 1px solid #acacac;
+}
+
+.icon {
+  position: absolute;
+  right: 10px;
+  color: #aaa;
+  pointer-events: none;
+}
+
+.divider {
+  margin: 0 0 10px 50px;
+  height: 1px;
+  width: 100%;
+  background: rgba(183, 183, 183, 0.31);
+}
+
+.features {
+  padding: 10px 0 40px 65px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+}
+
+.mapContainer {
+  margin: 100px 20px 0 0;
+  pointer-events: none;
+}
+
+.editMapBox {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: flex-end;
+  cursor: pointer;
+}
+
+.editIcon {
+  margin-left: 15px;
+}
+
+span {
+  font-size: 1.5vw;
+}
+
+.map {
+}
+
+.fileInputWrapper {
+  margin: 0 0 20px 60px;
+  padding: 0 20px 0 20px;
+  width: 85%;
+  height: 54px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  flex-grow: 1;
+  background-color: #fff;
+  border-radius: 8px;
+}
+
+.addImg {
+  /* display: flex; */
+  margin: auto 15px 5px 0;
+}
+
+.customFileInputLabel {
+  display: flex;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.fileInput {
+  display: none;
+}
+
+.customFileInputLabel i {
+  margin-right: 5px;
+}
+
+.travelContainer {
+  padding: 0 0 70px 60px;
+}
+
+.title {
+  font-size: 1.5vw;
+  font-weight: 600;
+}
+
+.paragraph {
+  margin: 30px 0;
+  font-size: 1.5vw;
+  font-weight: 500;
+}
+
+.button {
+  width: 27%;
+  border-radius: 25px;
+  background: #ff4d00;
+  color: #fff;
+  border: none;
+  font-size: 1.5vw;
+  font-weight: 500;
+  height: 49px;
+  cursor: pointer;
+}
+
+.trip-button {
+  border-radius: 25px;
+  background: #ff4d00;
+  color: #fff;
+  border: none;
+  font-size: 12px;
+  font-weight: 500;
+  height: 31px;
+  cursor: pointer;
+}
+
+.postsTitle {
+  margin-left: 60px;
+  font-size: 2vw;
+  font-weight: 700;
+}
+
+@media (max-width: 500px) {
+  .myAccount {
+    display: flex;
+    flex-direction: column;
+  }
+}

@@ -1,33 +1,41 @@
 {
-  "name": "my-remix-app",
+  "name": "TripAmi",
   "private": true,
-  "sideEffects": false,
+  "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "build": "remix build",
-    "dev": "remix dev --manual",
-    "start": "remix-serve ./build/index.js",
-    "typecheck": "tsc"
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
   },
   "dependencies": {
-    "@remix-run/css-bundle": "^2.0.0",
-    "@remix-run/node": "^2.0.0",
-    "@remix-run/react": "^2.0.0",
-    "@remix-run/serve": "^2.0.0",
-    "isbot": "^3.6.8",
+    "@mdbootstrap/react-dropdown-button": "^1.0.0",
+    "@radix-ui/colors": "^3.0.0",
+    "@radix-ui/react-dropdown-menu": "^2.0.6",
+    "localforage": "^1.10.0",
+    "match-sorter": "^6.3.1",
+    "path": "^0.12.7",
     "react": "^18.2.0",
+    "react-custom-checkbox": "^3.1.5",
     "react-dom": "^18.2.0",
-    "sass": "^1.68.0"
+    "react-drag-drop-files": "^2.3.10",
+    "react-modal": "^3.16.1",
+    "react-router-dom": "^6.17.0",
+    "react-transition-group": "^4.4.5",
+    "sort-by": "^1.2.0"
   },
   "devDependencies": {
-    "@remix-run/dev": "^2.0.0",
-    "@remix-run/eslint-config": "^2.0.0",
-    "@types/react": "^18.2.20",
+    "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
-    "eslint": "^8.38.0",
-    "typescript": "^5.1.6"
-  },
-  "engines": {
-    "node": ">=18.0.0"
+    "@types/react-modal": "^3.16.2",
+    "@types/react-transition-group": "^4.4.8",
+    "@vitejs/plugin-react": "^4.0.3",
+    "eslint": "^8.45.0",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.3",
+    "prettier": "^2.4.1",
+    "vite": "^4.4.5"
   }
 }
