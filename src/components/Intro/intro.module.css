@@ -1,102 +1,50 @@
 .container {
-  width: 40vw;
-  background-color: #dce8f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
   padding: 30px 50px;
+  background-image: url("../../assets/images/LoginBackground.png");
+  height: 50vh;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
-.wrapper {
-  display: flex;
-  flex-direction: row;
-}
-
-.header {
-  font-size: 20px;
-  font-weight: 700;
-}
-
-.text {
-  margin: 23px 0;
-  font-size: 13px;
-  font-weight: 500;
-}
-
-.button {
-  width: 120px;
-  height: 35px;
-  font-weight: 400;
-  font-size: 13px;
-  background-color: #55bef5;
-  border-radius: 45px;
-  border: none;
+.email {
+  margin: 0 auto;
+  width: 40%;
+  height: 51px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #1400ff -70.01%, #38acff 100%);
   color: #fff;
+  border: none;
   cursor: pointer;
+
+  margin-top: 5%;
 }
 
-.icon {
-  margin-right: auto;
-  scale: 1.7;
+.first {
+  font-family: Acme, sans-serif;
+  font-size: 23px;
+  font-weight: 400;
+  line-height: 39px;
+  letter-spacing: 0em;
+  text-align: center;
+
+  margin-bottom: 20px;
+
+  color: #fff;
 }
 
-.title {
-  position: relative;
-  margin: 40px 0;
-  font-size: 18px;
-  font-weight: 700;
-  z-index: 10;
-}
+.second {
+  font-family: Gilroy, sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 22px;
+  letter-spacing: 0em;
+  text-align: center;
 
-.relativeBlock {
-  position: relative;
-}
-
-.inputWrapper {
-  position: relative;
-  display: flex;
-  width: 35vw;
-  /* flex: 3; */
-  padding: 0 10px;
-  height: 50px;
-  border-radius: 45px;
-  background-color: #ededed;
-  border: none;
-  box-shadow: 1px 2px 24px 0px rgba(85, 190, 245, 0.28);
-  z-index: 10;
-}
-
-.input {
-  padding-left: 5px;
-  width: 100%;
-  background-color: transparent;
-  vertical-align: auto;
-  border: none;
-}
-
-.input:focus {
-  outline: none;
-}
-
-.searchIcon {
-  margin: auto 5px auto 5px;
-  scale: 1.5;
-}
-
-.search {
-  color: #55bef5;
-}
-
-.bookIcon {
-  position: absolute;
-  top: -191px;
-  left: -48px;
-  pointer-events: none;
-}
-
-@media (max-width: 500px) {
-  .container {
-    width: 80vw;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-content: flex-end;
-  }
+  color: #fff;
 }

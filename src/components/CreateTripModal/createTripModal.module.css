@@ -13,15 +13,19 @@
 }
 
 .button {
-    width: 20%;
+    width: 40%;
     border-radius: 25px;
     background: #ff4d00;
     color: #fff;
     border: none;
-    font-size: 1.5vw;
+    font-size: 15px;
     font-weight: 500;
     height: 49px;
     cursor: pointer;
+}
+
+@media (min-width: 768px) {
+    font-size: 17px;
 }
 
 .button-gray {
@@ -47,8 +51,16 @@ img {
     margin: 0;
 }
 
+.inputContainer {
+    position: relative;
+    width: 100%;
+    box-sizing: border-box;
+
+    background: #F6F6F6;
+}
+
 .input {
-    width: 319px;
+    width: 100%;
     height: 36px;
     flex-shrink: 0;
     border-radius: 8px;
@@ -59,6 +71,16 @@ img {
     outline: none;
     border: none;
     padding: 0 20px;
+
+    resize: none;
+
+    font-family: Gilroy, sans-serif;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+
+    box-sizing: border-box;
 }
 
 .input::-webkit-calendar-picker-indicator {
@@ -68,7 +90,14 @@ img {
 .uploadContainer {
     display: flex;
     align-items: center;
+    flex-direction: column;
     gap: 11px;
+}
+
+@media (min-width: 768px) {
+    .uploadContainer {
+        flex-direction: row;
+    }
 }
 
 .dragText {
@@ -100,4 +129,30 @@ img {
     display: flex;
     flex-direction: column;
     gap: 12px;
+}
+
+.textArea {
+    margin-top: 20px;
+    padding-top: 20px;
+    width: 100%;
+
+    height: 150px;
+
+    box-sizing: border-box;
+}
+
+.dropdown {
+    display: flex;
+    flex-direction: column;
+
+    position: absolute;
+    height: 200px;
+    width: 100%;
+    z-index: 0;
+
+    overflow: scroll;
+}
+
+.dropdownItem {
+    background: #F6F6F6;
 }

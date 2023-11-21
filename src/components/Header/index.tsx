@@ -1,21 +1,24 @@
-import icon from "@assets/icons/ph_user-light.svg";
 import search from "@assets/icons/iconamoon_search-thin.svg";
-import arrow from "@assets/icons/arrowDown.svg";
 import styles from "./header.module.css";
+import {SignUpModal} from "~/components/SignUpModal/SignUpModal";
+import React, {useState} from "react";
+import Logo from '@assets/icons/headerLogo.svg';
 
 const Header = () => {
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+
   return (
     <div className={styles.header}>
-      <div className={styles.title}>TripAmi</div>
+      <img src={Logo} />
       <div className={styles.inputWrapper}>
         <img className={styles.search} src={search} alt="search" />
         <input className={styles.input} placeholder="Search"></input>
       </div>
       <div className={styles.icon}>
-        <button className={styles.button}>Log in</button>
-        <img className={styles.avatar} src={icon} alt="icon" />
-        <img className={styles.arrow} src={arrow} alt="arrow"></img>
+        <button className={styles.button} onClick={() => setModalIsOpen(true)}>Log in</button>
       </div>
+
+      <SignUpModal isOpen={modalIsOpen} onClose={() => setModalIsOpen(false)} isLogin />
     </div>
   );
 };

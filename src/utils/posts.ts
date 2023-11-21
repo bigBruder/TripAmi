@@ -29,7 +29,7 @@ export const posts: Post[] = [
     commentsNumber: 2,
   },
   {
-    id: 1,
+    id: 2,
     userName: "Ostin",
     timeAgo: 10,
     userIcon: ava2,
@@ -40,7 +40,7 @@ export const posts: Post[] = [
     commentsNumber: 4,
   },
   {
-    id: 2,
+    id: 3,
     userName: "Adam",
     timeAgo: 5,
     userIcon: ava3,

@@ -1,8 +1,10 @@
 .header {
   display: flex;
+  width: 100vw;
   justify-content: space-between;
   border-bottom: 1px solid #dfdfdf;
   background-color: #F8F7F1;
+  height: 64px;
 }
 
 .title {
@@ -10,6 +12,16 @@
   font-weight: 700;
   line-height: 18px;
   text-align: center;
+  height: auto;
+  width: 120px;
+
+  cursor: pointer;
+}
+
+@media (min-width: 768px) {
+  .title {
+    width: max-content;
+  }
 }
 
 .inputWrapper {
@@ -55,6 +67,7 @@
 
 .leftContainer {
   display: flex;
+  align-items: center;
   gap: 12px;
 
   margin: 0 16px;
@@ -69,16 +82,20 @@
 .rightContainer {
   display: flex;
   gap: 8px;
+  align-items: center;
 }
 
 .icons {
   display: flex;
+
   justify-content: space-between;
 }
 
 .icon {
   cursor: pointer;
   display: none;
+  height: 20px;
+  width: 20px;
 }
 
 @media (min-width: 768px) {
@@ -94,6 +111,9 @@
 
 .avatar {
   cursor: pointer;
+  height: 19px;
+  width: 19px;
+  border-radius: 50%;
 }
 
 .arrow {
@@ -106,15 +126,6 @@
     margin: 0 0 0 10px;
     width: 60px;
   }
-}
-
-@import '@radix-ui/colors/black-alpha.css';
-@import '@radix-ui/colors/mauve.css';
-@import '@radix-ui/colors/violet.css';
-
-/* reset */
-button {
-  all: unset;
 }
 
 .DropdownMenuContent,
@@ -159,6 +170,8 @@ button {
   position: relative;
   user-select: none;
   outline: none;
+
+  cursor: pointer;
 }
 
 
@@ -175,6 +188,7 @@ button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  padding: 0;
 
   cursor: pointer;
 }

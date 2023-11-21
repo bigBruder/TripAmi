@@ -24,8 +24,6 @@ const CustomModal: React.FC<Props> = ({ children, isOpen, onCloseModal }) => {
             padding: 0,
           },
         }}
-        // onAfterOpen={afterOpenModal}
-        // onRequestClose={closeModal}
         contentLabel="Example Modal"
         onRequestClose={onCloseModal}
         shouldCloseOnOverlayClick

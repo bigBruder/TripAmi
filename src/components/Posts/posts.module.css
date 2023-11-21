@@ -6,10 +6,8 @@
 
 .cardContainer {
   display: flex;
-  padding: 7px;
-  margin: 25px 0 20px 10px;
+  padding: 33px 38px 0 38px;
   flex-direction: column;
-  width: 43%;
   border-radius: 10px;
   background: #fff;
 }
@@ -18,68 +16,37 @@
   margin-right: 0;
 }
 
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+
+  margin-bottom: 11px;
+}
+
 .caption {
-  margin: 14px 0;
-  font-size: 14px;
-  font-weight: 400;
-  height: 40px;
-  line-height: 20px;
   overflow: hidden;
-  /* text-overflow: ellipsis; */
-  /* white-space:nowrap; */
-}
 
-.headerContainer {
-  display: flex;
-  justify-content: space-around;
-  height: 40px;
-}
-
-.description {
-  margin: auto 20px auto 3px;
-  display: flex;
-  flex-direction: column;
-  font-size: 10px;
+  color: #000;
+  font-family: Gilroy, sans-serif;
+  font-size: 15px;
   font-style: normal;
-  font-weight: 400;
-}
+  font-weight: 500;
+  line-height: normal;
 
-.userName {
-  font-size: 10px;
-  font-weight: 400;
-}
-
-.timeAgo {
-  color: #aeaeae;
-  font-size: 7px;
-  font-weight: 400;
-}
-
-.stars {
-  margin: auto 0;
-}
-
-.joinBtn {
-  margin: auto 0;
-  width: 41px;
-  height: 17px;
-  border-radius: 48px;
-  background: #dce8f5;
-  border: none;
-  font-size: 10px;
-  font-weight: 100;
-}
-
-img {
-  margin-bottom: 5px;
+  text-overflow: ellipsis;
+  white-space:nowrap;
 }
 
 .footer {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  align-self: center;
   height: 35px;
   color: #aeaeae;
+  gap: 14px;
+  padding: 12.5px 0;
 }
 
 .commentsContainer {
@@ -91,35 +58,33 @@ img {
 .shareContainer {
   display: flex;
   justify-content: space-between;
-  margin: auto 0px auto 5px;
+  align-items: center;
+  gap: 6px;
+
+  cursor: pointer;
+}
+
+.img {
+  cursor: pointer;
 }
 
 .commentsIcon {
-  margin-right: 4px;
 }
 
 .comments {
   display: flex;
-  margin: auto 0;
   font-weight: 400;
   line-height: 15px;
   font-size: 10px;
 }
 
 .shareIcon {
-  margin: auto 5px auto 0;
 }
 
 .share {
-  margin: auto 2px;
   font-size: 10px;
   font-style: normal;
   font-weight: 400;
-}
-
-.dotsIcon {
-  margin: auto 8px auto 0;
-  /* margin-left: 10px; */
 }
 
 @media (max-width: 500px) {
@@ -127,4 +92,71 @@ img {
     width: 270px;
     justify-content: center;
   }
+}
+
+.userSection {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  align-items: center;
+}
+
+.wrapper {
+  display: flex;
+  gap: 4px;
+}
+
+.topContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.userName {
+  color: #000;
+  font-family: Gilroy, sans-serif;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 400;
+}
+
+.postedAgo {
+  color: #AEAEAE;
+  font-family: Gilroy, sans-serif;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 144.9%;
+  width: max-content;
+}
+
+.button {
+  padding: 0;
+  height: 16.481px;
+
+  width: 45px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: #DCE8F5;
+}
+
+.buttonText {
+  color: #5F5F5F;
+  font-family: Gilroy, sans-serif;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: normal;
+}
+
+.loader {
+  width: unset !important;
+  height: unset;
+  flex-grow: 1;
+
+
+  position: absolute !important;
+  top: 33px;
+  left: 38px;
+  right: 38px;
+  bottom: 60px;
 }

@@ -1,5 +1,4 @@
 .box {
-  position: relative;
 }
 
 .container {
@@ -14,6 +13,9 @@
   border-radius: 10px;
   background: #fff;
   box-shadow: 2px 2px 31px 0px rgba(85, 190, 245, 0.31);
+
+  align-items: center;
+  justify-content: center;
 }
 
 .title {
