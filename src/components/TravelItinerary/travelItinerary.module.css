@@ -1,0 +1,28 @@
+.container {
+    padding: 0 62px;
+
+}
+
+.title {
+    color: #262626;
+    font-family: Gilroy, sans-serif;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+
+    margin-bottom: 35px;
+}
+
+.travelsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 60px;
+
+    margin-bottom: 70px;
+}
+
+.bottomSliderContainer {
+    width: 100%;
+    margin-left: -60px;
+}

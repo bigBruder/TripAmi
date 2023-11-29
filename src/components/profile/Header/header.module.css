@@ -1,0 +1,246 @@
+.header {
+  display: flex;
+  width: 100vw;
+  justify-content: space-between;
+  border-bottom: 1px solid #dfdfdf;
+  background-color: #F8F7F1;
+  height: 64px;
+}
+
+.title {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+  height: auto;
+  width: 120px;
+
+  cursor: pointer;
+}
+
+@media (min-width: 768px) {
+  .title {
+    width: max-content;
+  }
+}
+
+.inputWrapper {
+  margin: auto;
+  display: flex;
+  width: 45vw;
+  padding: 0 10px;
+  height: 27px;
+  border-radius: 45px;
+  background-color: #ededed;
+  border: none;
+}
+
+.input {
+  background-color: transparent;
+  vertical-align: auto;
+  border: none;
+  width: 100%;
+}
+
+.input:focus {
+  outline: none;
+}
+
+/* .button {
+  margin-right: 66px;
+  width: 120px;
+  height: 35px;
+  font-weight: 400;
+  font-size: 13px;
+  background-color: #55bef5;
+  border-radius: 45px;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+} */
+
+.search {
+  margin: auto 5px auto 0;
+  width: 11px;
+  height: 11px;
+}
+
+.leftContainer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  margin: 0 16px;
+}
+
+@media (min-width: 768px) {
+  .leftContainer {
+    margin: 0 31px;
+  }
+}
+
+.rightContainer {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.icons {
+  display: flex;
+
+  justify-content: space-between;
+}
+
+.icon {
+  cursor: pointer;
+  display: none;
+  height: 20px;
+  width: 20px;
+}
+
+@media (min-width: 768px) {
+  .icon {
+    display: block;
+  }
+}
+
+.name {
+  margin: auto 0;
+  font-size: 15px;
+}
+
+.avatar {
+  cursor: pointer;
+  height: 19px;
+  width: 19px;
+  border-radius: 50%;
+}
+
+.arrow {
+  margin: auto 7px auto 7px;
+  cursor: pointer;
+}
+
+@media (max-width: 500px) {
+  .button {
+    margin: 0 0 0 10px;
+    width: 60px;
+  }
+}
+
+.DropdownMenuContent,
+.DropdownMenuSubContent {
+  display: flex;
+  gap: 14px;
+  flex-direction: column;
+  background-color: white;
+  border-radius: 5px;
+  padding: 14px 5px 12px 10px;
+  box-shadow: 0 10px 38px -10px rgba(22, 23, 24, 0.35), 0 10px 20px -15px rgba(22, 23, 24, 0.2);
+  animation-duration: 400ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
+
+  margin-right: 10px;
+}
+.DropdownMenuContent[data-side='top'],
+.DropdownMenuSubContent[data-side='top'] {
+  animation-name: slideDownAndFade;
+}
+.DropdownMenuContent[data-side='right'],
+.DropdownMenuSubContent[data-side='right'] {
+  animation-name: slideLeftAndFade;
+}
+.DropdownMenuContent[data-side='bottom'],
+.DropdownMenuSubContent[data-side='bottom'] {
+  animation-name: slideUpAndFade;
+}
+.DropdownMenuContent[data-side='left'],
+.DropdownMenuSubContent[data-side='left'] {
+  animation-name: slideRightAndFade;
+}
+
+.DropdownMenuItem {
+  font-size: 13px;
+  line-height: 1;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  height: 25px;
+  position: relative;
+  user-select: none;
+  outline: none;
+
+  cursor: pointer;
+}
+
+
+.DropdownMenuSeparator {
+  height: 1px;
+  background-color: #E8E8E8;
+  margin-left: -10px;
+  margin-right: -5px;
+}
+
+.IconButton {
+  border: none;
+  font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+
+  cursor: pointer;
+}
+
+.RightSlot {
+  margin-left: auto;
+  padding-left: 26px;
+}
+[data-highlighted] > .RightSlot {
+  color: white;
+}
+
+@keyframes slideUpAndFade {
+  from {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideRightAndFade {
+  from {
+    opacity: 0;
+    transform: translateX(-2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideDownAndFade {
+  from {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideLeftAndFade {
+  from {
+    opacity: 0;
+    transform: translateX(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

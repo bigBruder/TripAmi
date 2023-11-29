@@ -1,0 +1,133 @@
+.container {
+
+}
+
+.topContainer {
+    display: flex;
+    justify-content: space-between;
+
+    width: 100%;
+
+    margin-bottom: 14px;
+}
+
+@media (min-width: 768px) {
+    .topContainer {
+        width: 50%;
+    }
+}
+
+.list {
+    padding-left: 17px;
+    margin: 0;
+}
+
+.location {
+    color: #262626;
+    font-family: Gilroy, sans-serif;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}
+
+.dateContainer {
+    display: flex;
+    align-items: center;
+    gap: 27px;
+}
+
+.date {
+    color: #545454;
+    font-family: Gilroy, sans-serif;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+
+    border-bottom: 1px solid #ACACAC;
+}
+
+.mainContainer {
+    display: flex;
+    gap: 20px;
+
+    width: 100%;
+    margin-top: 19px;
+}
+
+.image {
+    height: auto;
+    width: 30%;
+}
+
+.text {
+    color: #262626;
+    font-family: Gilroy, sans-serif;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+
+    margin-top: 25px;
+}
+
+.textContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+
+
+.footer {
+    display: flex;
+    align-items: center;
+    align-self: center;
+    height: 35px;
+    color: #aeaeae;
+    gap: 14px;
+    padding: 12.5px 0;
+}
+
+.commentsContainer {
+    display: flex;
+    justify-content: space-between;
+    margin: auto 0px auto 5px;
+}
+
+.shareContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 6px;
+
+    cursor: pointer;
+}
+
+.img {
+    cursor: pointer;
+}
+
+.commentsIcon {
+}
+
+.comments {
+    display: flex;
+    font-weight: 400;
+    line-height: 15px;
+    font-size: 10px;
+}
+
+.shareIcon {
+}
+
+.share {
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 400;
+}
+
+.liked {
+    color: #55BEF5;
+}
