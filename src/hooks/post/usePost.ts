@@ -10,28 +10,34 @@ export const usePost = (postId: string) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleDeletePost = useCallback(async (imageUrls: string[]) => {
-    if (imageUrls?.[0]?.length) {
-      try {
-        setIsLoading(true);
+    try {
+      setIsLoading(true);
 
-        const q = query(commentsCollection, where('postId', '==', postId));
-        const querySnapshot = await getDocs(q);
-        querySnapshot.docs.map(item => {
-          const docRef = doc(db, 'comments', item.id);
-          deleteDoc(docRef);
-        });
+      const q = query(commentsCollection, where('postId', '==', postId));
+      const querySnapshot = await getDocs(q);
+      querySnapshot.docs.map(item => {
+        const docRef = doc(db, 'comments', item.id);
+        deleteDoc(docRef);
+      });
 
-        const imageRef = ref(storage, imageUrls[0]);
-        await deleteObject(imageRef);
-        await deleteDoc(doc(db, "posts", postId));
-        updateFirestoreUser({
-          postsCount: firestoreUser?.postsCount ? firestoreUser?.postsCount - 1 : 0,
-        })
-      } catch (err) {
-        console.error('[ERROR deleting image from storage] => ', err);
-      } finally {
-        setIsLoading(false);
+      if (imageUrls?.[0]?.length) {
+        try {
+          const imageRef = ref(storage, imageUrls[0]);
+
+          await deleteObject(imageRef);
+        } catch (e) {
+          console.log('[ERROR deleting image from storage] => ', e)
+        }
       }
+
+      await deleteDoc(doc(db, "posts", postId));
+      updateFirestoreUser({
+        postsCount: firestoreUser?.postsCount ? firestoreUser?.postsCount - 1 : 0,
+      })
+    } catch (err) {
+      console.error('[ERROR deleting document from firestore] => ', err);
+    } finally {
+      setIsLoading(false);
     }
   }, [postId, firestoreUser]);
 
@@ -67,7 +73,7 @@ export const usePost = (postId: string) => {
         setIsLoading(false);
       }
     }
-  }, [firestoreUser]);
+  }, [firestoreUser?.id, postId]);
 
   return {
     isLoading,

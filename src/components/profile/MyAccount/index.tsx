@@ -1,8 +1,7 @@
 import defaultUserIcon from "@assets/icons/defaultUserIcon.svg";
-import editText from "@assets/icons/editText.svg";
 import styles from "./myaccount.module.css";
 import CustomModal from "~/components/CustomModal";
-import React, {useCallback, useContext, useEffect, useMemo, useState} from "react";
+import {useCallback, useContext, useEffect, useMemo, useState} from "react";
 import CreatePostModal from "~/components/CreatePostModal";
 import CreateTripModal from "~/components/CreateTripModal";
 import {AuthContext} from "~/providers/authContext";
@@ -32,7 +31,7 @@ const TABS = [
   'Home',
   'My friends',
   'Google Maps',
-  'My travel itinerary',
+  'My trips',
 ]
 
 const MyAccount = () => {
@@ -68,7 +67,7 @@ const MyAccount = () => {
         unsubscribe();
       }
     }
-  }, [firestoreUser]);
+  }, [firestoreUser, setTips]);
 
   const closeModal = useCallback(() => {
     setModalIsOpen(false);
@@ -145,8 +144,6 @@ const MyAccount = () => {
         orderBy('createAt', 'desc'),
       );
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
-        console.log('ON SNAPSHOT');
-
         const fetchedPosts = querySnapshot.docs.map(doc => ({
           ...doc.data(),
           id: doc.id,
@@ -173,6 +170,7 @@ const MyAccount = () => {
         orderBy('createAt', 'desc'),
         limit(10),
       );
+
       const unsubscribeFromSuggestedPosts = onSnapshot(qu, (querySnapshot) => {
         const fetchedPosts = querySnapshot.docs.map(doc => ({
           ...doc.data(),
@@ -185,12 +183,12 @@ const MyAccount = () => {
         unsubscribeFromSuggestedPosts();
       };
     }
-  }, [firestoreUser]);
+  }, [firestoreUser, suggestedPosts?.length]);
 
   const getSlidesPerPage = useMemo(() => {
     if (width < 768) {
       return 1;
-    } else if (width < 960) {
+    } else if (width < 1142) {
       return 2;
     } else {
       return 3;
@@ -198,109 +196,112 @@ const MyAccount = () => {
   }, [width]);
 
   return (
-    <div className={styles.profile}>
-      <div className={styles.myAccount}>
-        <div className={styles.genaralInfo}>
-          <div className={styles.userInfo}>
-            <div className={styles.imageContainer}>
-              <img
-                className={styles.defaultUserIcon}
-                src={avatar}
-                alt="default user icon"
-              />
-              {avatarIsLoading && <Skeleton className={styles.loader} />}
-            </div>
-            <div className={styles.description}>
-
-              <p>{firestoreUser?.username}</p>
-              {!firestoreUser?.username && <Skeleton style={{width: 100, height: 20}} />}
-              <p className={styles.text}>{firestoreUser?.postsCount ? `Posts: ${firestoreUser?.postsCount}` : ''}</p>
-              {!firestoreUser?.postsCount && <Skeleton style={{width: 100, height: 20}} />}
-              {!firestoreUser?.postsCount ? <Skeleton style={{width: 150, height: 31}} /> : (
-                <>
+    <>
+      <div>
+        <div className={styles.myAccount}>
+          <div className={styles.genaralInfo}>
+            <div className={styles.userInfo}>
+              <div className={styles.imageContainer}>
+                <img
+                  className={styles.defaultUserIcon}
+                  src={avatar}
+                  alt="default user icon"
+                />
+                {avatarIsLoading && <Skeleton className={styles.loader} />}
+              </div>
+              <div className={styles.description}>
+                {firestoreUser?.username ? (
                   <div className={styles.edit}>
-                    <span className={styles.editText}>Where to text?</span>
+                    <p className={styles.text}
+                       style={{margin: 0}}>{firestoreUser?.username}</p>
                     <div className={styles.inputWrapper}>
-                      <button className={styles['trip-button']} onClick={() => setTripModalIsOpen(true)}>Post a trip</button>
+                      <button className={styles['trip-button']} onClick={() => setTripModalIsOpen(true)}>
+                        Post a trip
+                      </button>
                     </div>
                   </div>
-                </>
-              )}
+                ) : null}
+                {!firestoreUser?.username && <Skeleton style={{width: 100, height: 20}}/>}
+                <p className={styles.text}>
+                  {firestoreUser?.tripCount !== undefined ? `My trips: ${firestoreUser?.tripCount || 0}` : ''}
+                </p>
+                {firestoreUser?.tripCount === undefined && <Skeleton style={{width: 100, height: 20}}/>}
+                <p className={styles.text}>
+                  {firestoreUser?.tripCount !== undefined ? 'Where to next?:' : ''}
+                </p>
+                {firestoreUser?.tripCount === undefined && <Skeleton style={{width: 100, height: 20}}/>}
+              </div>
             </div>
-          </div>
-          <div className={styles.divider}></div>
-          <div className={styles.features}>
-            {TABS.map((tab, index) => (
-              <span className={`${styles.feature} ${index === activeTab && styles.activeFeature}`} onClick={() => setActiveTab(index)} key={tab}>
+            <div className={styles.divider}></div>
+            <div className={styles.features}>
+              {TABS.map((tab, index) => (
+                <span className={`${styles.feature} ${index === activeTab && styles.activeFeature}`} onClick={() => setActiveTab(index)} key={tab}>
                 {tab} {index === 1 && <div className={styles.friendsCount}>{firestoreUser?.friends_count || 0}</div>}
               </span>
-            ))}
-          </div>
-        </div>
-        {activeTab !== 4 && (
-          <div className={styles.mapContainer}>
-            <div className={styles.editMapBox} onClick={() => setActiveTab(4)}>
-              <span className={styles.editMap}>Edit map</span>
-              <img className={styles.editIcon} src={editText} alt="edit icon" />
+              ))}
             </div>
+          </div>
+          {activeTab !== 4 && (
             <div className={styles.mapContainer}>
-              <Map />
+              <div className={styles.mapContainer}>
+                <Map />
+              </div>
             </div>
-          </div>
+          )}
+        </div>
+        {activeTab === 0 ? (
+          <>
+            <div className={styles.travelContainer}>
+              <span className={styles.title}>My posts</span>
+              {(!posts?.length && !isPostsLoading) ? (
+                <>
+                  <p className={styles.paragraph}>
+                    Hmm... {firestoreUser?.username} hasn't posted anything yet. Start sharing your
+                    experience with other participants!
+                  </p>
+                  <button className={styles.button} onClick={() => setModalIsOpen(true)}>NEW POST</button>
+                </>
+              ) : (
+                <div className={styles.sliderContainer}>
+                  <Swiper
+                    spaceBetween={30}
+                    slidesPerView={getSlidesPerPage}
+                  >
+                    {posts?.map(post => (
+                      <SwiperSlide key={post.id}>
+                        <PostItem postData={post}/>
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
+                </div>
+              )}
+            </div>
+            {suggestedPosts?.length ? <span className={styles.postsTitle}>You may also like</span> : null}
+            <div className={styles.bottomSliderContainer}>
+              <Swiper
+                spaceBetween={30}
+                slidesPerView={getSlidesPerPage}
+              >
+                {suggestedPosts?.map(post => (
+                  <SwiperSlide key={post.id}>
+                    <PostItem postData={post}/>
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+            </div>
+          </>
+        ) : activeTab === 1 ? (
+          <MyFriends />
+        ) : activeTab === 2 ? (
+          <GoogleMaps />
+        ) : activeTab === 3 ? (
+          <TravelItinerary />
+        ) : activeTab === 4 ? (
+          <EditMap />
+        ) : (
+          <MyFriends />
         )}
       </div>
-      {activeTab === 0 ? (
-        <>
-          <div className={styles.travelContainer}>
-            <span className={styles.title}>My posts</span>
-            {(!posts?.length && !isPostsLoading) ? (
-              <>
-                <p className={styles.paragraph}>
-                  Hmm... {firestoreUser?.username} hasn't posted anything yet. Start sharing your
-                  experience with other participants!
-                </p>
-                <button className={styles.button} onClick={() => setModalIsOpen(true)}>NEW POST</button>
-              </>
-            ) : (
-              <div className={styles.sliderContainer}>
-                <Swiper
-                  spaceBetween={30}
-                  slidesPerView={getSlidesPerPage}
-                >
-                  {posts?.map(post => (
-                    <SwiperSlide key={post.id}>
-                      <PostItem postData={post}/>
-                    </SwiperSlide>
-                  ))}
-                </Swiper>
-              </div>
-            )}
-          </div>
-          {suggestedPosts?.length ? <span className={styles.postsTitle}>You may also like</span> : null}
-          <div className={styles.bottomSliderContainer}>
-            <Swiper
-              spaceBetween={30}
-              slidesPerView={getSlidesPerPage}
-            >
-              {suggestedPosts?.map(post => (
-                <SwiperSlide key={post.id}>
-                  <PostItem postData={post}/>
-                </SwiperSlide>
-              ))}
-            </Swiper>
-          </div>
-        </>
-      ) : activeTab === 1 ? (
-        <MyFriends />
-      ) : activeTab === 2 ? (
-        <GoogleMaps />
-      ) : activeTab === 3 ? (
-        <TravelItinerary />
-      ) : activeTab === 4 ? (
-        <EditMap />
-      ) : (
-        <MyFriends />
-      )}
 
       <Footer />
 
@@ -310,7 +311,7 @@ const MyAccount = () => {
       <CustomModal isOpen={tripModalIsOpen} onCloseModal={closeTripModal}>
         <CreateTripModal closeModal={closeTripModal} />
       </CustomModal>
-    </div>
+    </>
   );
 };
 

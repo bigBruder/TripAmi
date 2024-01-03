@@ -1,14 +1,12 @@
 import styles from './travelItinerary.module.css';
-import React, {useContext, useEffect, useMemo, useState} from "react";
+import {useContext, useEffect, useMemo, useState} from "react";
 import {AuthContext} from "~/providers/authContext";
 import {getDocs, onSnapshot, orderBy, query, where} from "@firebase/firestore";
 import {postsCollection, tripsCollection} from "~/types/firestoreCollections";
 import {ITravel} from "~/types/travel";
 import TravelCard from "~/components/TravelCard/TravelCard";
 import useTravelsContext from "~/components/TravelItinerary/store";
-import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
-import PostItem from "~/components/Posts";
 import {IPost} from "~/types/post";
 import {firebaseErrors} from "~/constants/firebaseErrors";
 import {useWindowDimensions} from "~/hooks/useWindowDimensions";
@@ -62,22 +60,11 @@ export const TravelItinerary = () => {
     }
   }, [firestoreUser?.id]);
 
-  const getSlidesPerPage = useMemo(() => {
-    if (width < 768) {
-      return 1;
-    } else if (width < 960) {
-      return 2;
-    } else {
-      return 3;
-    }
-  }, [width]);
-
-
   return (
     <div className={styles.container}>
       <p className={styles.title}>{firestoreUser?.username}`s travels</p>
       <div className={styles.travelsContainer}>
-        {travels.map(travel => <TravelCard travel={travel} />)}
+        {travels.map(travel => <TravelCard key={travel.id} travel={travel} />)}
       </div>
       {/*<p className={styles.title}>You may also like</p>*/}
       {/*<div className={styles.bottomSliderContainer}>*/}

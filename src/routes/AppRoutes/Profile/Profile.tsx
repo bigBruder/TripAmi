@@ -6,13 +6,8 @@ const ProfilePage = () => {
   return (
     <>
       <Header />
-      <div style={{ backgroundColor: "#DAE0E1" }}>
+      <div style={{ backgroundColor: "#DAE0E1" }} className={styles.main}>
         <MyAccount />
-        <div className={styles.container}>
-          {/*{posts.map((post) => (*/}
-          {/*  <PostItem {...post} key={post.id} />*/}
-          {/*))}*/}
-        </div>
       </div>
     </>
   );

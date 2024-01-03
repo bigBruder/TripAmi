@@ -14,6 +14,7 @@ export interface IUser {
   avatarUrl?: string | null;
   firebaseUid?: string;
   postsCount?: number;
+  tripCount?: number;
   friends_request_limit?: number;
   markers?: ICustomMarker[];
 }

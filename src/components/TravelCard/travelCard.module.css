@@ -1,5 +1,4 @@
 .container {
-
 }
 
 .topContainer {
@@ -9,12 +8,6 @@
     width: 100%;
 
     margin-bottom: 14px;
-}
-
-@media (min-width: 768px) {
-    .topContainer {
-        width: 50%;
-    }
 }
 
 .list {
@@ -35,6 +28,7 @@
     display: flex;
     align-items: center;
     gap: 27px;
+    min-width: max-content;
 }
 
 .date {
@@ -50,15 +44,27 @@
 
 .mainContainer {
     display: flex;
+    flex-direction: column;
     gap: 20px;
 
+    height: 232px;
     width: 100%;
     margin-top: 19px;
 }
 
+@media (min-width: 768px) {
+    .topContainer {
+        width: 50%;
+    }
+    .mainContainer {
+        flex-direction: row;
+    }
+}
+
 .image {
     height: auto;
-    width: 30%;
+    max-width: 100%;
+    object-fit: contain;
 }
 
 .text {
@@ -76,14 +82,14 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    align-items: flex-start;
 }
-
 
 
 .footer {
     display: flex;
     align-items: center;
-    align-self: center;
+    align-self: flex-start;
     height: 35px;
     color: #aeaeae;
     gap: 14px;
@@ -130,4 +136,9 @@
 
 .liked {
     color: #55BEF5;
+}
+
+.tag {
+    font-size: 12px;
+    cursor: pointer;
 }

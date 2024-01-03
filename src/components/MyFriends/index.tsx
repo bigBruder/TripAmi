@@ -43,7 +43,7 @@ export const MyFriends = () => {
                 </>
               )}
           </div>
-          <p className={styles.emptyState}>Also, you can<p className={styles.onlyText}>only add {firestoreUser?.friends_request_limit} new friends !</p></p>
+          <p className={styles.emptyState}>Also, you can<p className={styles.onlyText}>add only {firestoreUser?.friends_request_limit} new friends !</p></p>
           <button className={styles.button} onClick={() => navigate('/invite-people')}>Invite Your Friends</button>
       </div>
     );

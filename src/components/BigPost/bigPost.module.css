@@ -16,6 +16,10 @@
     gap: 25px;
 }
 
+.swiperContainer {
+    width: 100%;
+}
+
 .postIMage {
     width: 100%;
     height: auto;
@@ -48,7 +52,7 @@
         flex-direction: row;
     }
 
-    .postIMage {
+    .swiperContainer {
         width: 40%;
     }
 }

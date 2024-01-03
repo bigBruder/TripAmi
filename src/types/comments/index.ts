@@ -9,3 +9,16 @@ export interface IComment {
   createdAt: string,
   text: string,
 }
+
+export interface IPlaceComment {
+  id: string,
+  likes: string[],
+  dislikes: string[],
+  placeId: string,
+  userName: string,
+  userImage: string,
+  userId: string,
+  createdAt: string,
+  text: string,
+}
+

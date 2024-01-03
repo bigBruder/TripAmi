@@ -3,56 +3,78 @@ import {IPost} from "~/types/post";
 import {ref, getDownloadURL} from "firebase/storage";
 import {FC, useContext, useEffect, useMemo, useState} from "react";
 import {storage} from "~/firebase";
-import Rating from "~/components/Rating";
 import './styles.css';
 import {usePost} from "~/hooks/post/usePost";
 import {AuthContext} from "~/providers/authContext";
-import Avatar from '@assets/icons/ava1.svg';
 import {getDocs, query, where} from "@firebase/firestore";
 import {usersCollection} from "~/types/firestoreCollections";
 import {IUser} from "~/types/user";
-import {timeAgo} from "@utils/daysAgo";
 import {useNavigate} from "react-router-dom";
 import {PostActions} from "~/components/PostActions";
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import { Pagination } from 'swiper/modules';
+import {UserPostInfo} from "~/components/BigPost/UserPostInfo";
 
 interface Props {
   postData: IPost;
 }
 
 const PostItem: FC<Props> = ({postData}) => {
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [imageUrl, setImageUrl] = useState<string[] | null>(null);
   const [userData, setUserData] = useState<IUser | null>(null);
   const {
     imageUrls,
     createAt,
-    rate,
     userId,
-    comments_count,
-    likes,
     text,
     id,
   } = postData;
   const {firestoreUser} = useContext(AuthContext);
   const {handleDeletePost, isLoading, setIsLoading, handleLikePost} = usePost(id);
   const navigate = useNavigate();
+  const [userPhotoUrl, setUserPhotoUrl] = useState<string>();
+
+  useEffect(() => {
+    (async () => {
+      try {
+        if (userData?.avatarUrl) {
+          const url = await getDownloadURL(ref(storage, userData?.avatarUrl));
+
+          setUserPhotoUrl(url);
+        }
+      } catch (e) {
+        console.log('[ERROR getting user image] => ', e);
+      }
+    })();
+  }, [userData?.avatarUrl]);
 
   useEffect(() => {
     if (imageUrls[0]?.length) {
       (async () => {
         try {
           setIsLoading(true);
-          const url = await getDownloadURL(ref(storage, imageUrls[0]));
-          setImageUrl(url);
+          const imagesUrls = [];
+
+          for (let i = 0; i < imageUrls.length; i++) {
+            const url = await getDownloadURL(ref(storage, imageUrls[i]));
+            imagesUrls.push(url)
+          }
+
+          setImageUrl(imagesUrls);
         } catch (error) {
           console.log('[ERROR downloading image] => ', error);
         } finally {
           setIsLoading(false);
         }
       })();
+    } else {
+      setIsLoading(false);
     }
-  }, []);
+  }, [imageUrls, setIsLoading]);
 
   useEffect(() => {
     (async () => {
@@ -61,7 +83,7 @@ const PostItem: FC<Props> = ({postData}) => {
           setIsLoading(true);
           const q = query(
             usersCollection,
-            where('firebaseUid', '!=', firestoreUser?.firebaseUid),
+            where('id', '==', userId),
           );
           const querySnapshot = await getDocs(q);
           const fetchedUser = querySnapshot.docs[0].data();
@@ -69,55 +91,68 @@ const PostItem: FC<Props> = ({postData}) => {
           setUserData(fetchedUser as IUser);
         } catch (error) {
           console.log('[ERROR getting user from firestore] => ', error);
+        } finally {
+          setIsLoading(false);
         }
       }
     })();
-  }, [firestoreUser?.id, userId]);
+  }, [firestoreUser?.firebaseUid, firestoreUser?.id, setIsLoading, userId]);
 
   const isPostMy = useMemo(() => firestoreUser?.id === userId, [firestoreUser?.id, userId]);
 
   return (
     <div className={styles.cardContainer}>
       {!isPostMy ? (
-        <div className={styles.userSection}>
-          <div className={styles.wrapper}>
-            <img src={Avatar}/>
-            <div className={styles.topContainer}>
-              <p className={styles.userName}>{userData?.username}</p>
-              <p className={styles.postedAgo}>{timeAgo(createAt)}</p>
-            </div>
-          </div>
-          <Rating disabled selectedStars={rate - 1} />
-          <button className={styles.button}>
-            <p className={styles.buttonText}>
-              join
-            </p>
-          </button>
-        </div>
+        <UserPostInfo
+          userData={{
+            username: userData?.username,
+            id: userData?.id,
+            firebaseUid: userData?.firebaseUid,
+          }}
+          userPhotoUrl={userPhotoUrl}
+          createdAt={createAt}
+        />
       ) : null}
       <div className={styles.header}>
-        <span className={styles.caption}>{text}</span>
-
-        {isPostMy ? <Rating disabled selectedStars={rate - 1} /> : null}
+        {!imageUrls?.[0]?.length || !imageUrls?.length ? (
+          <span className={styles.captionWithoutImage}>{text}</span>
+        ) : <span className={styles.caption}>{text}</span>}
       </div>
 
-      <img
-        className={styles.img}
-        src={imageUrl || ''}
-        alt="img"
-        onClick={() =>
-          navigate(
-            '/posts',
-            {state: {
-                ...postData,
-                imageUrls: [imageUrl],
-              }})
-        }
-        onLoadedData={() => setIsLoading(false)}
-      />
+      <Swiper
+        spaceBetween={0}
+        slidesPerView={1}
+        style={{width: '100%'}}
+        wrapperClass={styles.swiperWrapper}
+        pagination={true}
+        modules={[Pagination]}
+      >
+        {imageUrl?.map(link => (
+          <SwiperSlide key={link} style={{display: 'flex', justifyContent: 'center'}}>
+            <img
+              className={styles.img}
+              src={link || ''}
+              alt="img"
+              onClick={() =>
+                navigate(
+                  '/posts',
+                  {state: {
+                      ...postData,
+                      imageUrls: [...imageUrl],
+                    }})
+              }
+              onLoadedData={() => setIsLoading(false)}
+            />
+          </SwiperSlide>
+        ))}
+      </Swiper>
+
       {isLoading && <Skeleton className={styles.loader}/>}
 
-      <PostActions postData={postData} />
+      <PostActions postData={{
+        ...postData,
+        imageUrls: [...imageUrl || ''],
+      }} />
     </div>
   );
 };

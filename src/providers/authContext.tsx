@@ -3,12 +3,9 @@ import {auth, db, facebookProvider, googleProvider} from "~/firebase";
 import {signInWithPopup, signInWithRedirect, User} from "@firebase/auth";
 import {createUserWithEmailAndPassword, GoogleAuthProvider, signInWithEmailAndPassword, signOut} from "firebase/auth";
 import {firebaseErrors} from "~/constants/firebaseErrors";
-import {addDoc, getDoc, doc, where, query, getDocs, updateDoc, orderBy, onSnapshot} from "@firebase/firestore";
+import {addDoc, doc, where, query, getDocs, updateDoc, onSnapshot} from "@firebase/firestore";
 import {IUser} from "~/types/user";
-import {postsCollection, usersCollection} from "~/types/firestoreCollections";
-import {getDocument} from "@floating-ui/utils/react";
-import {IPost} from "~/types/post";
-import {set} from "@firebase/database";
+import {usersCollection} from "~/types/firestoreCollections";
 
 interface AuthContext {
   currentUser: null | User,
@@ -48,8 +45,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const querySnapshot = await getDocs(q);
 
         setFirestoreUser({
-          ...querySnapshot.docs[0].data(),
-          id: querySnapshot.docs[0].id,
+          ...querySnapshot.docs[0]?.data(),
+          id: querySnapshot.docs[0]?.id,
         } as IUser);
       } else {
         setFirestoreUser(null);
@@ -128,6 +125,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           createdAt: new Date().toISOString(),
           firebaseUid: result.user.uid,
           postsCount: 0,
+          tripCount: 0,
           friends_request_limit: 10,
           avatarUrl: null,
         });
@@ -161,6 +159,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         createdAt: new Date().toISOString(),
         firebaseUid: user.user.uid,
         postsCount: 0,
+        tripCount: 0,
         friends_request_limit: 10,
       });
 

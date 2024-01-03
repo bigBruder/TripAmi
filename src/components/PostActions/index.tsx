@@ -7,6 +7,7 @@ import {FC, useContext, useMemo} from "react";
 import {AuthContext} from "~/providers/authContext";
 import {usePost} from "~/hooks/post/usePost";
 import {IPost} from "~/types/post";
+import {useNavigate} from "react-router-dom";
 
 interface Props {
   postData: IPost;
@@ -17,7 +18,6 @@ export const PostActions: FC<Props> = ({postData}) => {
   const {
     imageUrls,
     createAt,
-    rate,
     userId,
     comments_count,
     likes,
@@ -25,32 +25,42 @@ export const PostActions: FC<Props> = ({postData}) => {
     id,
   } = postData;
   const {handleDeletePost, isLoading, setIsLoading, handleLikePost} = usePost(id);
+  const navigate = useNavigate();
 
   const likedByUser = useMemo(() => firestoreUser?.id && likes.includes(firestoreUser.id),[likes, firestoreUser?.id]);
 
   return (
     <div className={styles.footer}>
       <div className={styles.shareContainer} onClick={() => handleLikePost(likes)}>
-        <div>
+        <div className={styles.icon}>
           <LikeIcon color={likedByUser ? '#55BEF5' : undefined} />
         </div>
         <span className={`${styles.share} ${likedByUser && styles.liked}`}>{likes.length} Likes</span>
       </div>
-      <div className={styles.shareContainer}>
+      <div
+        className={styles.shareContainer}
+        onClick={() =>
+          navigate(
+            '/posts',
+            {state: {
+                ...postData,
+              }})
+        }
+      >
         <img
-          className={styles.commentsIcon}
+          className={styles.icon}
           src={commentsIcon}
           alt="comments"
         />
-        <span className={styles.comments}>{comments_count} Comments</span>
+        <span className={`${styles.share} ${styles.comments}`}>{comments_count} Comments</span>
       </div>
       <div className={styles.shareContainer}>
-        <img className={styles.shareIcon} src={shareIcon} alt="share" />
+        <img className={styles.icon} src={shareIcon} alt="share" />
         <span className={styles.share}>Share</span>
       </div>
       {firestoreUser?.id === userId ? (
         <div className={styles.shareContainer} onClick={() => handleDeletePost(imageUrls)}>
-          <img className={styles.dotsIcon} src={BinIcon} alt="dots" />
+          <img className={styles.icon} src={BinIcon} alt="dots" />
           <span className={styles.share}>Delete</span>
         </div>
       ) : null}

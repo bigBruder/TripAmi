@@ -1,4 +1,4 @@
-import React, {useCallback, useContext, useState} from 'react';
+import React, {useCallback, useContext, useEffect, useMemo, useState} from 'react';
 import styles from './createTripModal.module.css';
 // @ts-ignore
 import Checkbox from 'react-custom-checkbox';
@@ -15,27 +15,62 @@ import {LoadingScreen} from "~/components/LoadingScreen";
 import moment from "moment";
 import PlacesAutocomplete, {geocodeByPlaceId} from 'react-places-autocomplete';
 import randomColor from "randomcolor";
+import {toast, ToastContainer} from "react-toastify";
+import Plus from '~/assets/icons/plus.svg';
+import ReactPlayer from "react-player";
 
-const fileTypes = ["JPEG", "PNG", "GIF", "JPG"];
+const fileTypes = ["JPEG", "PNG", "JPG", "MP4"];
 
 interface Props {
   closeModal: () => void;
+  isEdit?: boolean;
+  data?: {
+    isPublic: boolean;
+    rating: number;
+    locationName: string;
+    description: string;
+    geoTags: {address: string, placeID: string}[];
+    when: string;
+    imageUrls: {url: string, type: string}[];
+  };
 }
 
-const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
-  const {firestoreUser} = useContext(AuthContext);
-  const [tickIsChecked, setTickIsChecked] = useState(false);
-  const [file, setFile] = useState<File | null>(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [rating, setRating] = useState(0);
-  const [location, setLocation] = useState('');
-  const [selectedDate, setSelectedDate] = useState<string>(moment().format('yyyy-MM-D'));
+const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
+  const {firestoreUser, updateFirestoreUser} = useContext(AuthContext);
+  const [tickIsChecked, setTickIsChecked] = useState(data?.isPublic || false);
+  const [file, setFile] = useState<File[]>([]);
+  const [rating, setRating] = useState(data?.rating || 0);
+  const [location, setLocation] = useState(data?.locationName || null);
+  const [selectedDate, setSelectedDate] = useState<string>(data?.when || moment().format('yyyy-MM-D'));
   const [isLoading, setIsLoading] = useState(false);
-  const [text, setText] = useState('');
-  const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
+  const [text, setText] = useState(data?.description || '');
+  const [selectedLocation, setSelectedLocation] = useState<string | null>(data?.locationName || null);
+  const [isMaxError, setIsMaxError] = useState(false);
+  const [geoTags, setGeoTags] = useState('');
+  const [selectedGeoTags, setSelectedGeoTags] = useState<{address: string, placeID: string}[]>(data?.geoTags || []);
 
-  const handleChange = (file: File) => {
-    setFile(file);
+  useEffect(() => {
+    if (isMaxError) {
+      notify('The maximum number of media is 5');
+
+      setIsMaxError(false);
+    }
+  }, [isMaxError]);
+
+  const notify = (textValue: string) => toast.error(textValue);
+
+  const handleChange = (fileList: FileList) => {
+    setFile(prevState => {
+      if (prevState && Object.values(fileList).length + prevState?.length > 5 || Object.values(fileList).length > 5) {
+        setIsMaxError(true);
+        return prevState;
+      }
+      if (prevState) {
+        return [...prevState, ...Object.values(fileList)];
+      } else {
+        return Object.values(fileList);
+      }
+    });
   };
 
   const handleOnSave = useCallback(async () => {
@@ -44,15 +79,22 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
         const geocode = await geocodeByPlaceId(selectedLocation);
 
         setIsLoading(true);
-        const storageRef = ref(storage, `trips/${firestoreUser?.id}/${location + uuidv4()}`);
-        const uploadResult = await uploadBytes(storageRef, file);
+
+        const uploadedImages: {url: string, type: string}[] = [];
+
+        for (let i = 0; i < file.length; i++) {
+          const storageRef = ref(storage, `trips/${firestoreUser?.id}/${location + uuidv4()}`);
+          const uploadResult = await uploadBytes(storageRef, file[i]);
+          uploadedImages.push({url: uploadResult.ref.fullPath, type: file[i].type});
+        }
 
         await addDoc(tripsCollection, {
           userId: firestoreUser?.id,
-          imageUrl: uploadResult.ref.fullPath,
+          imageUrl: uploadedImages,
           rate: rating,
           when: selectedDate,
           public: tickIsChecked,
+          geoTags: selectedGeoTags,
           location: {
             name: location,
             longitude: geocode[0].geometry.location.lng(),
@@ -61,18 +103,89 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
           },
           text,
         });
+
+        updateFirestoreUser({
+          tripCount: firestoreUser?.tripCount ? firestoreUser?.tripCount + 1 : 1,
+        });
+
+        closeModal();
+      } else {
+        notify('Upload at least one media and insert a location');
       }
     } catch (err) {
       console.log('[ERROR saving the trip] => ', err);
     } finally {
       setIsLoading(false);
     }
-  }, [firestoreUser, rating, file, selectedDate, tickIsChecked, selectedLocation]);
+  }, [selectedLocation, file, firestoreUser?.id, firestoreUser?.tripCount, rating, selectedDate, tickIsChecked, selectedGeoTags, location, text, updateFirestoreUser]);
 
   const onSelectPlace = useCallback((address: string, placeID: string) => {
     setLocation(address);
     setSelectedLocation(placeID);
   }, []);
+
+  const onSelectGeoTag = useCallback((address: string, placeID: string) => {
+    setSelectedGeoTags(prevState => [...prevState, {address, placeID}]);
+    setGeoTags('');
+  }, []);
+
+  const handleRemoveGeoTag = useCallback((placeId: string) => {
+    setSelectedGeoTags(prevState => prevState.filter(item => item.placeID !== placeId));
+  }, []);
+
+  const Slider = useMemo(() => {
+    return (
+      <>
+      {data?.imageUrls?.length ? (
+        <>
+          {data?.imageUrls?.map((item) => {
+            return (
+              <React.Fragment key={item.url}>
+                {item.type.includes('image') ? (
+                  <img src={item.url} alt={'trip image'} className={styles.image} />
+                ) : (
+                  <div>
+                    <ReactPlayer
+                      playing
+                      stopOnUnmount={false}
+                      loop
+                      url={item.url}
+                      width='100%'
+                      height='100%'
+                    />
+                  </div>
+                )}
+              </React.Fragment>
+            )
+          })}
+        </>
+      ) : (
+        <>
+          {file?.map((item) => {
+            return (
+              <React.Fragment key={URL.createObjectURL(item)}>
+                {item.type.includes('image') ? (
+                  <img src={URL.createObjectURL(item)} alt={'trip image'} className={styles.image} />
+                ) : (
+                  <div>
+                    <ReactPlayer
+                      playing
+                      stopOnUnmount={false}
+                      loop
+                      url={URL.createObjectURL(item)}
+                      width='100%'
+                      height='100%'
+                    />
+                  </div>
+                )}
+              </React.Fragment>
+            )
+          })}
+        </>
+      )}
+    </>
+    );
+  }, [file])
 
   return (
     <div className={styles.outer_container}>
@@ -84,7 +197,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
             onChange={(value) => setLocation(value)}
             onSelect={onSelectPlace}
           >
-            {({ getInputProps, suggestions, getSuggestionItemProps, loading }) =>  {
+            {({getInputProps, suggestions, getSuggestionItemProps, loading}) => {
               return (
                 <div className={suggestions.length ? styles.inputContainer : undefined}>
                   <input
@@ -97,8 +210,8 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
                     {loading && <div>Loading...</div>}
                     {suggestions.map(suggestion => {
                       const style = suggestion.active
-                        ? { backgroundColor: '#fafafa', cursor: 'pointer' }
-                        : { backgroundColor: '#ffffff', cursor: 'pointer' };
+                        ? {backgroundColor: '#fafafa', cursor: 'pointer'}
+                        : {backgroundColor: '#ffffff', cursor: 'pointer'};
                       return (
                         <div
                           {...getSuggestionItemProps(suggestion, {
@@ -115,15 +228,66 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
               );
             }}
           </PlacesAutocomplete>
-          {/*{autocomplete?.map(item => <p>{item.description}</p>)}*/}
+
+          <p>Tag Your Favorite Places on this Trip: </p>
+          <PlacesAutocomplete
+            value={geoTags}
+            onChange={(value) => setGeoTags(value)}
+            onSelect={onSelectGeoTag}
+          >
+            {({getInputProps, suggestions, getSuggestionItemProps, loading}) => {
+              return (
+                <div className={suggestions.length ? styles.inputContainer : undefined}>
+                  <input
+                    id={'213'}
+                    {...getInputProps({
+                      placeholder: 'Museum of Dreamers, Viale Angelico, Rome, Metropolitan City of Rome Capital, Italy',
+                      className: styles.input,
+                    })}
+                  />
+                  <div className={suggestions.length ? styles.dropdown : undefined}>
+                    {loading && <div>Loading...</div>}
+                    {suggestions.map(suggestion => {
+                      const style = suggestion.active
+                        ? {backgroundColor: '#fafafa', cursor: 'pointer'}
+                        : {backgroundColor: '#ffffff', cursor: 'pointer'};
+                      return (
+                        <div
+                          {...getSuggestionItemProps(suggestion, {
+                            className: styles.dropdownItem,
+                            style,
+                          })}
+                        >
+                          <p>{suggestion.description}</p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            }}
+          </PlacesAutocomplete>
+
+          {selectedGeoTags.length ? (
+            <>
+              {selectedGeoTags.map(geoTag => (
+                <div className={styles.geoTagContainer} key={geoTag.placeID}>
+                  <p>{geoTag.address}</p>
+                  <img src={Plus} className={styles.crossIcon} onClick={() => handleRemoveGeoTag(geoTag.placeID)} />
+                </div>
+              ))}
+            </>
+          ) : null}
+
           <p>When?</p>
-          <input value={selectedDate} onChange={e => setSelectedDate(e.target.value)} type="date" className={styles.input} />
+          <input value={selectedDate} onChange={e => setSelectedDate(e.target.value)} type="date"
+                 className={styles.input}/>
         </div>
         <div className={styles.startContainer}>
           <p>Public</p>
           <Checkbox
             checked={tickIsChecked}
-            icon={<img src={Tick} style={{ width: 24 }} alt="" />}
+            icon={<img src={Tick} style={{width: 24}} alt=""/>}
             onChange={(value: boolean) => {
               setTickIsChecked(value);
             }}
@@ -134,7 +298,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
         </div>
         <div className={styles.startContainer}>
           <p>Rating</p>
-          <Rating setSelectedStars={setRating} selectedStars={rating} />
+          <Rating setSelectedStars={setRating} selectedStars={rating}/>
         </div>
         <div>
           <textarea
@@ -147,30 +311,27 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
         <div className={styles.startContainer}>
           <p>Image and Video </p>
           <FileUploader
-            multiple={false}
+            multiple={true}
             handleChange={handleChange}
             name="file"
             types={fileTypes}
-            classes={`${styles.uploadOuterContainer}`}
             hoverTitle={' '}
-            onDraggingStateChange={(state: boolean) => setIsDragging(state)}
           >
             <div className={styles.uploadContainer}>
-              <p className={styles.dragText}>Drag and drop image or</p>
+              <p className={styles.dragText}>Drag and drop image/video or</p>
               <button className={styles.buttonUpload}>Upload</button>
             </div>
           </FileUploader>
         </div>
-        {file && <p>{file.name}</p>}
+
+        {Slider}
       </form>
-      <p></p>
       <div className={styles.container}>
         <div className={styles.bottomRow}>
           <button className={styles.button} onClick={async () => {
             await handleOnSave();
-            closeModal();
           }}>
-            Post
+            {isEdit ? 'Save' : 'Post'}
           </button>
           <button className={`${styles.button} ${styles['button-gray']}`} onClick={closeModal}>
             Cancel
@@ -178,6 +339,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
         </div>
       </div>
 
+      <ToastContainer closeOnClick autoClose={3000} limit={1} pauseOnHover={false} />
       {isLoading && <LoadingScreen />}
     </div>
   );

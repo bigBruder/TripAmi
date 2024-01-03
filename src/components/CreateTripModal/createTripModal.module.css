@@ -44,6 +44,7 @@
     align-items: center;
     margin-top: 22px;
     margin-right: 20px;
+    margin-bottom: 20px;
     gap: 48px;
 }
 
@@ -92,6 +93,7 @@ img {
     align-items: center;
     flex-direction: column;
     gap: 11px;
+    outline: none;
 }
 
 @media (min-width: 768px) {
@@ -155,4 +157,22 @@ img {
 
 .dropdownItem {
     background: #F6F6F6;
+}
+
+.image {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+.geoTagContainer {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.crossIcon {
+    rotate: 45deg;
+
+    cursor: pointer;
 }

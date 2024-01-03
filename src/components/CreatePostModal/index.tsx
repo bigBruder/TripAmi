@@ -13,9 +13,9 @@ import {ref, uploadBytes} from "@firebase/storage";
 import {firebaseErrors} from "~/constants/firebaseErrors";
 import {LoadingScreen} from "~/components/LoadingScreen";
 import { v4 as uuidv4 } from 'uuid';
-import {getDownloadURL} from "firebase/storage";
+import {toast, ToastContainer} from "react-toastify";
 
-const fileTypes = ["JPEG", "PNG", "GIF", "JPG"];
+const fileTypes = ["JPEG", "PNG", "JPG"];
 
 interface Props {
   closeModal: () => void;
@@ -23,17 +23,46 @@ interface Props {
 
 const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
   const [activeTab, setActiveTab] = useState(0);
-  const [file, setFile] = useState<null | File>(null);
+  const [filesList, setFilesList] = useState<null | File[]>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [postText, setPostText] = useState('');
   const [selectedStars, setSelectedStars] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [isMaxError, setIsMaxError] = useState(false);
+
+  useEffect(() => {
+    if (isMaxError) {
+      notify('The maximum number of photos is 3');
+
+      setIsMaxError(false);
+    }
+  }, [isMaxError]);
 
   const {firestoreUser, updateFirestoreUser} = useContext(AuthContext);
 
-  const handleChange = (file: File) => {
-    setFile(file);
-  };
+  const notify = (text: string) => toast.error(text);
+
+  const handleChange = useCallback((file: FileList) => {
+    if (!filesList || (filesList && filesList?.length < 3)) {
+      setFilesList(prevState => {
+        if (prevState && Object.values(file).length + prevState?.length > 3 || Object.values(file).length > 3) {
+          setIsMaxError(true);
+          return prevState;
+        }
+        if (prevState) {
+          return [...prevState, ...Object.values(file)];
+        } else {
+          return Object.values(file);
+        }
+      });
+    }
+
+
+    if (filesList && filesList?.length === 3) {
+      console.log('here');
+      notify('The maximum number of photos is 3');
+    }
+  }, [filesList]);
 
   const handleChangeTab = useCallback((activeTabIndex: number) => {
     setActiveTab(activeTabIndex);
@@ -42,12 +71,18 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
   const handleSavePost = useCallback(async () => {
     try {
       setIsLoading(true);
-      const storageRef = ref(storage, `postsImages/${file?.name + uuidv4()}`);
-      let imagePath = '';
 
-      if (file) {
-        const uploadResult = await uploadBytes(storageRef, file);
-        imagePath = uploadResult.ref.fullPath;
+      const imageUrls: string[] = [];
+
+      if (filesList) {
+        for (let i = 0; i < filesList?.length; i++) {
+          const storageRef = ref(storage, `postsImages/${filesList[i]?.name + uuidv4()}`);
+
+          if (filesList[i]) {
+            const uploadResult = await uploadBytes(storageRef, filesList[i]);
+            imageUrls.push(uploadResult.ref.fullPath);
+          }
+        }
       }
 
       await addDoc(postsCollection, {
@@ -56,14 +91,13 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
         comments: [],
         comments_count: 0,
         likes: [],
-        rate: selectedStars + 1,
-        imageUrls: [imagePath],
+        imageUrls: imageUrls,
         text: postText,
       });
 
       updateFirestoreUser({
         postsCount: firestoreUser?.postsCount ? firestoreUser?.postsCount + 1 : 1,
-      })
+      });
 
       closeModal();
     } catch (err) {
@@ -72,7 +106,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
     } finally {
       setIsLoading(false);
     }
-  }, [file, postText, firestoreUser, selectedStars]);
+  }, [filesList, postText, firestoreUser, selectedStars]);
 
   const content = useMemo(() => {
     switch (activeTab) {
@@ -89,34 +123,38 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
         );
       case 1:
         return (
-          <>
-            {file ? (
+          <div className={styles.imageContainer}>
+            {filesList ? (
               <div className={styles.uploadOuterContainer}>
-                <img src={URL.createObjectURL(file)} className={styles.image} />
-                <p className={styles.delete} onClick={() => setFile(null)}>Delete</p>
+                {filesList.map(item => (
+                  <div className={styles.imagesContainer}>
+                    <img src={URL.createObjectURL(item)} alt={'User image'} className={styles.image} />
+                  </div>
+                ))}
+                <p className={styles.delete} onClick={() => setFilesList(null)}>Delete</p>
               </div>
-            ) : (
-              <FileUploader
-                multiple={false}
-                handleChange={handleChange}
-                name="file"
-                types={fileTypes}
-                classes={`${styles.uploadOuterContainer}`}
-                hoverTitle={' '}
-                onDraggingStateChange={(state: boolean) => setIsDragging(state)}
-              >
-                <div className={styles.uploadContainer}>
-                  <p>Drag and drop image or</p>
-                  <button className={styles.buttonUpload}>Upload</button>
-                </div>
-              </FileUploader>
-            )}
-          </>
+            ) : null}
+            <FileUploader
+              multiple={true}
+              handleChange={handleChange}
+              name="file"
+              types={fileTypes}
+              onTypeError={() => notify('Unsupported file type')}
+              classes={`${styles.uploadMainContainer}`}
+              hoverTitle={' '}
+              onDraggingStateChange={(state: boolean) => setIsDragging(state)}
+            >
+              <div className={styles.uploadContainer} style={filesList ? {zIndex: -9} : undefined}>
+                <p>Drag and drop image or</p>
+                <button className={styles.buttonUpload}>Upload</button>
+              </div>
+            </FileUploader>
+          </div>
         );
       default:
         return null;
     }
-  }, [isDragging, activeTab, file, postText]);
+  }, [isDragging, activeTab, filesList, postText]);
 
   return (
     <div className={styles.outer_container}>
@@ -138,9 +176,6 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
       />
       <div className={styles.container}>
         {content}
-        <div className={styles.startContainer}>
-          <Rating setSelectedStars={setSelectedStars} selectedStars={selectedStars} />
-        </div>
         <div className={styles.bottomRow}>
           <button className={styles.button} onClick={handleSavePost}>
             Post
@@ -152,6 +187,8 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
       </div>
 
       {isLoading && <LoadingScreen />}
+
+      <ToastContainer closeOnClick autoClose={2000} limit={1} pauseOnHover={false} />
     </div>
   );
 };

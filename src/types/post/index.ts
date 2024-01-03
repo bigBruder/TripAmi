@@ -2,7 +2,6 @@ export interface IPost {
   id: string;
   imageUrls: string[]
   text: string
-  rate: number
   comments_count: number
   userId: string
   likes: string[]

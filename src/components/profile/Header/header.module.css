@@ -25,6 +25,8 @@
 }
 
 .inputWrapper {
+  position: relative;
+
   margin: auto;
   display: flex;
   width: 45vw;
@@ -243,4 +245,21 @@
     opacity: 1;
     transform: translateX(0);
   }
+}
+
+
+.searchResultsContainer {
+  position: relative;
+  z-index: 9999;
+  width: calc(100% + 10px);
+
+  padding: 10px;
+
+  background-color: #FFF;
+
+  border-radius: 20px;
+}
+
+em {
+  font-weight: 800;
 }

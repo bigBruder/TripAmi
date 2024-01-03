@@ -54,7 +54,7 @@
 .usersContainer {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 0 40px;
+    gap: 42px;
 }
 
 @media (min-width: 768px) {

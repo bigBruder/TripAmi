@@ -1,36 +1,33 @@
 import {FC, useCallback, useContext, useState} from "react";
-import styles from './commentField.module.css';
-import {addDoc, doc, updateDoc} from "@firebase/firestore";
-import {commentsCollection} from "~/types/firestoreCollections";
+import styles from './placeCommentField.module.css';
+import {addDoc} from "@firebase/firestore";
+import {placesCommentsCollection} from "~/types/firestoreCollections";
 import {AuthContext} from "~/providers/authContext";
 import {firebaseErrors} from "~/constants/firebaseErrors";
-import {db} from "~/firebase";
-import {IPost} from "~/types/post";
 
 interface Props {
-  postId: string;
-  commentsCount: number;
+  placeId: string;
 }
 
-export const CommentField: FC<Props> = ({postId, commentsCount}) => {
+export const PlaceCommentField: FC<Props> = ({placeId}) => {
   const {firestoreUser} = useContext(AuthContext);
   const [enteredText, setEnteredText] = useState('');
 
   const handleComment = useCallback(async () => {
     try {
-      const docRef = doc(db, "posts", postId);
+      // const docRef = doc(db, "posts", postId);
 
-      await updateDoc<IPost>(docRef, {
-        comments_count: commentsCount + 1,
-      });
+      // await updateDoc(docRef, {
+      //
+      // });
 
-      await addDoc(commentsCollection, {
+      await addDoc(placesCommentsCollection, {
         likes: [],
         dislikes: [],
-        postId,
+        placeId,
         userId: firestoreUser?.id,
         userName: firestoreUser?.username,
-        // userImage: firestoreUser?.userImage,
+        userImage: firestoreUser?.avatarUrl,
         createdAt: new Date().toISOString(),
         text: enteredText,
       });
@@ -40,7 +37,7 @@ export const CommentField: FC<Props> = ({postId, commentsCount}) => {
       // @ts-ignore
       alert(firebaseErrors[e.code]);
     }
-  }, [postId, commentsCount, firestoreUser?.id, firestoreUser?.username, enteredText]);
+  }, [enteredText, firestoreUser?.avatarUrl, firestoreUser?.id, firestoreUser?.username, placeId]);
 
   return (
     <div className={styles.container}>
