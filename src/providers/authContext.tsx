@@ -10,6 +10,8 @@ import {getDocument} from "@floating-ui/utils/react";
 import {IPost} from "~/types/post";
 import {set} from "@firebase/database";
 
+
+
 interface AuthContext {
   currentUser: null | User,
   signUp: (() => void) | ((email: string, password: string, userName: string) => Promise<boolean>),

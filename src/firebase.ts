@@ -6,13 +6,13 @@ import {getStorage} from "@firebase/storage";
 import { FacebookAuthProvider } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCEmdg4K4yEvVnFZv2guQCIZKqRJuZvssk",
-  authDomain: "tripami-b644a.firebaseapp.com",
-  projectId: "tripami-b644a",
-  storageBucket: "tripami-b644a.appspot.com",
-  messagingSenderId: "912684164438",
-  appId: "1:912684164438:web:c0bc649c0d98d4f9b762f7",
-  measurementId: "G-29NCDGSMVT"
+  apiKey: "AIzaSyCwDkMaHWXRpO7hY6z62_Gu8eLxMMItjT8",
+  authDomain: "tripami-3e954.firebaseapp.com",
+  projectId: "tripami-3e954",
+  storageBucket: "tripami-3e954.appspot.com",
+  messagingSenderId: "28031075047",
+  appId: "1:28031075047:web:10f8bdcfc7135945eb1842",
+  measurementId: "G-FLKNXLKRP7"
 };
 
 export const app = initializeApp(firebaseConfig);

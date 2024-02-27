@@ -11,7 +11,6 @@ interface Props {
   isLogin?: boolean;
 }
 
-const inputStyles = {backgroundColor: '#F6F6F6', padding: '0 10px', color: '#000000', border: 'none'};
 
 export const SignUpModal: FC<Props> = ({onClose, isOpen, isLogin = false}) => {
   const [isRegisterForm, setIsRegisterForm] = useState(false);
@@ -61,13 +60,13 @@ export const SignUpModal: FC<Props> = ({onClose, isOpen, isLogin = false}) => {
   const registerFormOrOAuth = useMemo(() => {
     if (isRegisterForm) {
       return (
-        <>
-          <div className={styles.facebook} style={{border: 'none'}}>
+        <div>
+          <div className={styles.apple} style={{border: 'none'}}>
             <p className={styles.label}>Email</p>
             <input
               type="email"
-              className={styles.facebook}
-              style={inputStyles}
+              className={styles.facebookInput}
+
               autoFocus
               onChange={e => setEmail(e.target.value)}
               value={email}
@@ -77,8 +76,7 @@ export const SignUpModal: FC<Props> = ({onClose, isOpen, isLogin = false}) => {
             <p className={styles.label}>Password</p>
             <input
               type="password"
-              className={styles.facebook}
-              style={inputStyles}
+              className={styles.facebookInput}
               onChange={e => setPassword(e.target.value)}
               value={password}
             />
@@ -87,23 +85,22 @@ export const SignUpModal: FC<Props> = ({onClose, isOpen, isLogin = false}) => {
             <p className={styles.label}>Username</p>
             <input
               type="text"
-              className={styles.facebook}
-              style={inputStyles}
+              className={styles.facebookInput}
+
               onChange={e => setUserName(e.target.value)}
               value={userName}
             />
           </div>
-        </>
+        </div>
       );
     } else if (isLoginForm) {
       return (
         <>
-          <div className={styles.facebook} style={{border: 'none'}}>
+          <div className={styles.apple} style={{border: 'none'}}>
             <p className={styles.label}>Email</p>
             <input
               type="email"
-              className={styles.facebook}
-              style={inputStyles}
+              className={styles.facebookInput}
               autoFocus
               onChange={e => setEmail(e.target.value)}
               value={email}
@@ -113,8 +110,7 @@ export const SignUpModal: FC<Props> = ({onClose, isOpen, isLogin = false}) => {
             <p className={styles.label}>Password</p>
             <input
               type="password"
-              className={styles.facebook}
-              style={inputStyles}
+              className={styles.facebookInput}
               onChange={e => setPassword(e.target.value)}
               value={password}
             />
@@ -172,6 +168,7 @@ export const SignUpModal: FC<Props> = ({onClose, isOpen, isLogin = false}) => {
                 : null
             }
             {isLoginForm && (
+              <div className={styles.loginForm}>
               <button
                 className={styles.email}
                 style={{ marginTop: 24 }}
@@ -179,6 +176,13 @@ export const SignUpModal: FC<Props> = ({onClose, isOpen, isLogin = false}) => {
               >
                 {'Login'}
               </button>
+              
+              <div className={styles.facebook} onClick={handleLoginWithGoogle}>
+                <img className={styles.icon} src={GoogleIcon} alt="google icon" />
+                
+                <span className={styles.name}>Login with Google</span>
+              </div>
+              </div>
             )}
           </div>
           {!isLoginForm && (
@@ -188,7 +192,7 @@ export const SignUpModal: FC<Props> = ({onClose, isOpen, isLogin = false}) => {
               <a href="#privacy">Privacy Policy</a>.
             </span>
           )}
-          <div className={styles.divider}></div>
+          <div className={styles.dividerLogin}></div>
           <div className={styles.footer}>
             <span className={styles.accquestion}>{isLoginForm ? 'Have not an account?' : 'Have an account?'}</span>
             <span className={styles.loginBtn} onClick={handleOpenSignInForm}>
