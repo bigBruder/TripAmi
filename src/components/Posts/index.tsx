@@ -86,8 +86,9 @@ const PostItem: FC<Props> = ({postData}) => {
               <p className={styles.userName}>{userData?.username}</p>
               <p className={styles.postedAgo}>{timeAgo(createAt)}</p>
             </div>
+
+            <Rating disabled selectedStars={rate - 1} />
           </div>
-          <Rating disabled selectedStars={rate - 1} />
           <button className={styles.button}>
             <p className={styles.buttonText}>
               join

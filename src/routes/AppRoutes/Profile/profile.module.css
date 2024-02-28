@@ -1,3 +1,9 @@
+.profileContainer {
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+}
+
 .container {
   margin: 0 10px 0 40px;
   display: flex;

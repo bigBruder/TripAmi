@@ -4,7 +4,7 @@ import styles from "./profile.module.css";
 
 const ProfilePage = () => {
   return (
-    <>
+    <div className={styles.profileContainer}>
       <Header />
       <div style={{ backgroundColor: "#DAE0E1" }}>
         <MyAccount />
@@ -14,7 +14,7 @@ const ProfilePage = () => {
           {/*))}*/}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

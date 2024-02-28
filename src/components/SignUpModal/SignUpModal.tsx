@@ -23,13 +23,13 @@ export const SignUpModal: FC<Props> = ({onClose, isOpen, isLogin = false}) => {
 
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = "hidden"
+      document.body.style.overflowX = "hidden"
     } else {
-      document.body.style.overflow = "scroll"
+      document.body.style.overflowX = "hidden"
     }
 
     return () => {
-      document.body.style.overflow = "scroll"
+      document.body.style.overflowX = "hidden"
     }
   }, [isOpen]);
 

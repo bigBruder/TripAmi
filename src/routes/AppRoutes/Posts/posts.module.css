@@ -1,6 +1,6 @@
 .mainContainer {
+    max-width: 100%;
     height: 100vh;
-    width: 100vw;
     display: flex;
     flex-direction: column;
 }
@@ -14,8 +14,6 @@
     background-image: url('../../../assets/images/LoginBackground.png');
     background-repeat: no-repeat;
     background-size: cover;
-
-    overflow: scroll;
 }
 
 .post {

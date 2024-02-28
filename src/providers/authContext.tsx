@@ -9,6 +9,7 @@ import {postsCollection, usersCollection} from "~/types/firestoreCollections";
 import {getDocument} from "@floating-ui/utils/react";
 import {IPost} from "~/types/post";
 import {set} from "@firebase/database";
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -42,6 +43,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [firestoreUser, setFirestoreUser] = useState<null | IUser>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async user => {
@@ -53,10 +55,12 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           ...querySnapshot.docs[0].data(),
           id: querySnapshot.docs[0].id,
         } as IUser);
+        setCurrentUser(user);
+        navigate('/profile')
       } else {
         setFirestoreUser(null);
+        setCurrentUser(null)
       }
-      setCurrentUser(user);
       setLoading(false);
     });
 
@@ -198,10 +202,16 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const signOutUser = async () => {
+    setLoading(true);
     try {
       await signOut(auth);
+      setCurrentUser(null);
+      setFirestoreUser(null);
+      navigate('/');
     } catch (error) {
       console.error('Sign Out Error:', error);
+    } finally {
+      setLoading(false); 
     }
   };
 
