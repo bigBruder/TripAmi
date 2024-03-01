@@ -37,9 +37,8 @@ import {getDocs, query, where} from "@firebase/firestore";
 import {ITravel} from "~/types/travel";
 
 const Header = () => {
-  const {signOutUser, firestoreUser} = useContext(AuthContext);
+  const {signOutUser, firestoreUser, modalOpen, setModalOpen} = useContext(AuthContext);
   const navigate = useNavigate();
-  const [modalIsOpen, setModalIsOpen] = useState(false);
   const [avatar, setAvatar] = useState<string>(icon);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchIsLoading, setSearchIsLoading] = useState(false);
@@ -87,7 +86,7 @@ const Header = () => {
   });
 
   const closeModal = useCallback(() => {
-    setModalIsOpen(false);
+    setModalOpen(false);
   }, []);
 
   useEffect(() => {
@@ -109,7 +108,7 @@ const Header = () => {
         </div>
         <div className={styles.icons}>
           <div className={styles.leftContainer}>
-            <img className={styles.icon} src={addFile} alt="addFile" onClick={() => setModalIsOpen(true)}/>
+            <img className={styles.icon} src={addFile} alt="addFile" onClick={() => setModalOpen(true)}/>
             <img className={styles.icon} src={addUser} alt="addUser" onClick={() => navigate('/add-friends')} />
             <img className={styles.icon} src={notifications} alt="notifications" />
             <img className={styles.icon} src={plus} alt="plus" />
@@ -172,7 +171,7 @@ const Header = () => {
         </div>
       </div>
 
-      <CustomModal isOpen={modalIsOpen} onCloseModal={closeModal}>
+      <CustomModal isOpen={modalOpen} onCloseModal={closeModal}>
         <CreatePostModal closeModal={closeModal}/>
       </CustomModal>
     </>

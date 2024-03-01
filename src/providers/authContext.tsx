@@ -23,6 +23,8 @@ interface AuthContext {
   updateFirestoreUser: (() => void) | ((data: IUser) => void),
   signInViaFacebook: () => void,
   signInViaGoogle: () => Promise<unknown>,
+  setModalOpen: (value: boolean) => void
+  modalOpen: boolean;
 }
 
 const defaultValue = {
@@ -35,6 +37,8 @@ const defaultValue = {
   updateFirestoreUser: () => {},
   signInViaFacebook: () => {},
   signInViaGoogle: () => new Promise(resolve => {}),
+  setModalOpen: () => {},
+  modalOpen: false,
 }
 
 const AuthContext = createContext<AuthContext>(defaultValue);
@@ -43,6 +47,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [firestoreUser, setFirestoreUser] = useState<null | IUser>(null);
+
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -225,6 +231,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     updateFirestoreUser,
     signInViaFacebook,
     signInViaGoogle,
+    setModalOpen,
+    modalOpen,
   };
 
   return (
