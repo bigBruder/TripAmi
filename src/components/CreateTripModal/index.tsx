@@ -1,4 +1,4 @@
-import React, {useCallback, useContext, useState} from 'react';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 import styles from './createTripModal.module.css';
 // @ts-ignore
 import Checkbox from 'react-custom-checkbox';
@@ -15,6 +15,7 @@ import {LoadingScreen} from "~/components/LoadingScreen";
 import moment from "moment";
 import PlacesAutocomplete, {geocodeByPlaceId} from 'react-places-autocomplete';
 import randomColor from "randomcolor";
+import classNames from 'classnames';
 
 const fileTypes = ["JPEG", "PNG", "GIF", "JPG"];
 
@@ -33,13 +34,26 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [text, setText] = useState('');
   const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
+  const [isPlaceEmpty, setIsPlaceEmpty] = useState(true);
 
   const handleChange = (file: File) => {
     setFile(file);
   };
 
+  useEffect(() => {
+    if (location.length === 0) {
+      setIsPlaceEmpty(true);
+    } else {
+      setIsPlaceEmpty(false);
+    }
+  }, [location]);
+
   const handleOnSave = useCallback(async () => {
-    try {
+    console.log(location);
+    if (location.length === 0) {
+      setIsPlaceEmpty(true);
+    } else {
+      try {
       if (selectedLocation && file) {
         const geocode = await   (selectedLocation);
 
@@ -66,12 +80,15 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
       console.log('[ERROR saving the trip] => ', err);
     } finally {
       setIsLoading(false);
+      closeModal();
     }
+  }
   }, [firestoreUser, rating, file, selectedDate, tickIsChecked, selectedLocation]);
 
   const onSelectPlace = useCallback((address: string, placeID: string) => {
     setLocation(address);
     setSelectedLocation(placeID);
+    console.log('address: ', address, 'placeId: ', placeID);
   }, []);
 
   return (
@@ -79,6 +96,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
       <form>
         <div className={styles.topContainer}>
           <p>Where’d you go?</p>
+
           <PlacesAutocomplete
             value={location}
             onChange={(value) => setLocation(value)}
@@ -115,9 +133,19 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
               );
             }}
           </PlacesAutocomplete>
-          {/*{autocomplete?.map(item => <p>{item.description}</p>)}*/}
+          {/* {isPlaceEmpty && <p className={styles.empty}>The input has not to be empty</p>} */}
+          {/* {autocomplete?.map(item => <p>{item.description}</p>)} */}
           <p>When?</p>
-          <input value={selectedDate} onChange={e => setSelectedDate(e.target.value)} type="date" className={styles.input} />
+            <input value={selectedDate} onChange={e => setSelectedDate(e.target.value)} type="date" className={styles.input} />
+        </div>
+        
+        <div>
+          <textarea
+            className={`${styles.input} ${styles.textArea}`}
+            placeholder={'Description'}
+            value={text}
+            onChange={e => setText(e.target.value)}
+          />
         </div>
         <div className={styles.startContainer}>
           <p>Public</p>
@@ -135,14 +163,6 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
         <div className={styles.startContainer}>
           <p>Rating</p>
           <Rating setSelectedStars={setRating} selectedStars={rating} />
-        </div>
-        <div>
-          <textarea
-            className={`${styles.input} ${styles.textArea}`}
-            placeholder={'Description'}
-            value={text}
-            onChange={e => setText(e.target.value)}
-          />
         </div>
         <div className={styles.startContainer}>
           <p>Image and Video </p>
@@ -166,10 +186,14 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
       <p></p>
       <div className={styles.container}>
         <div className={styles.bottomRow}>
-          <button className={styles.button} onClick={async () => {
-            await handleOnSave();
-            closeModal();
-          }}>
+          <button 
+            className={classNames(styles.button, {
+              [styles.button_unActive]: isPlaceEmpty
+            })}
+            onClick={async () => {
+              await handleOnSave();
+            }}
+          >
             Post
           </button>
           <button className={`${styles.button} ${styles['button-gray']}`} onClick={closeModal}>
