@@ -29,7 +29,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [rating, setRating] = useState(0);
   const [location, setLocation] = useState('');
-  const [selectedDate, setSelectedDate] = useState<string>(moment().format('yyyy-MM-D'));
+  const [selectedDate, setSelectedDate] = useState<string>(moment().format('yyyy-MM-DD'));
   const [isLoading, setIsLoading] = useState(false);
   const [text, setText] = useState('');
   const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
@@ -41,7 +41,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
   const handleOnSave = useCallback(async () => {
     try {
       if (selectedLocation && file) {
-        const geocode = await geocodeByPlaceId(selectedLocation);
+        const geocode = await   (selectedLocation);
 
         setIsLoading(true);
         const storageRef = ref(storage, `trips/${firestoreUser?.id}/${location + uuidv4()}`);
@@ -127,7 +127,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
             onChange={(value: boolean) => {
               setTickIsChecked(value);
             }}
-            borderColor="#55BEF5"
+            borderColor={tickIsChecked ? "#55BEF5" : "#F6F6F6"}
             borderRadius={0}
             size={24}
           />
