@@ -55,7 +55,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
     } else {
       try {
       if (selectedLocation && file) {
-        const geocode = await   (selectedLocation);
+        const geocode = await geocodeByPlaceId(selectedLocation);
 
         setIsLoading(true);
         const storageRef = ref(storage, `trips/${firestoreUser?.id}/${location + uuidv4()}`);
@@ -98,6 +98,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
           <p>Where’d you go?</p>
 
           <PlacesAutocomplete
+            
             value={location}
             onChange={(value) => setLocation(value)}
             onSelect={onSelectPlace}
