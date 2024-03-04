@@ -17,6 +17,7 @@
     "@react-google-maps/api": "^2.19.2",
     "axios": "^1.6.1",
     "classnames": "^2.5.1",
+    "dotenv": "^16.4.5",
     "firebase": "^10.5.2",
     "localforage": "^1.10.0",
     "lodash.debounce": "^4.0.8",
