@@ -18,10 +18,11 @@
     margin-top: 56px;
     margin-bottom: 130px;
 }
-
+/* 
 .mapContainer {
-    width: 100%;
-}
+    width: 472px;
+    height: 354px;
+} */
 
 .buttonsWrapper {
     display: flex;

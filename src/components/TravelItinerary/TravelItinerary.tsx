@@ -89,33 +89,27 @@ export const TravelItinerary = () => {
       {/* <div className={styles.travelsContainer}></div> */}
       <div className={styles.travelsContainer}>
         <Swiper 
-          spaceBetween={15} 
           slidesPerView={3}
           loop
           modules={[Autoplay]}
           watchOverflow
-          autoplay={{
-            delay: 2500
-          }}
+
           breakpoints={{
-            320: {
+            768: {
               slidesPerView: 1,
               spaceBetween: 5
             },
-            640: {
-              slidesPerView: 1,
+            960: {
+              slidesPerView: 2,
               spaceBetween: 10
-            },
-            768: {
-              slidesPerView: 2
             },
             1200: {
               slidesPerView: 3
-            },
+            }
           }}
         >
           {travels.map(travel => (
-          <SwiperSlide key={travel.id}>
+          <SwiperSlide key={travel.id} >
             <TravelCard travel={travel}/>
           </SwiperSlide> 
         ))}

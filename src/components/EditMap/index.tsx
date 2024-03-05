@@ -1,7 +1,7 @@
 import styles from './EditMap.module.css';
 import map from "@assets/icons/map.svg";
 import ImageMarker from "react-image-marker";
-import {useCallback, useContext, useEffect, useState} from "react";
+import {FC, useCallback, useContext, useEffect, useState} from "react";
 import randomColor from "randomcolor";
 import {ICustomMarker} from "~/components/EditMap/types";
 import CustomMarker from "~/components/EditMap/CustomMarker";
@@ -13,7 +13,11 @@ import {AuthContext} from "~/providers/authContext";
 import {LoadingScreen} from "~/components/LoadingScreen";
 import Map from "~/components/Map/Map";
 
-const EditMap = () => {
+interface Props {
+  handleClose: React.Dispatch<React.SetStateAction<number>>;
+}
+
+const EditMap: FC<Props> = ({ handleClose }) => {
   const [selectedMarker, setSelectedMarker] = useState<null | string>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -69,6 +73,12 @@ const EditMap = () => {
               className={`${styles.deleteButton} ${!selectedMarker && styles.disabled}`}
             >
               Delete the pin <img src={Bin} alt="Bin icon" />
+            </button>
+            <button
+              onClick={() => handleClose(0)}
+              className={`${styles.deleteButton} ${!selectedMarker && styles.disabled}`}
+            >
+              Close editing
             </button>
             {/*<div className={styles.smallButtonsContainer}>*/}
             {/*  <button className={`${styles.button}`}>Save</button>*/}

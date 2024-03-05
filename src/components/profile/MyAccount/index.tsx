@@ -85,6 +85,7 @@ const MyAccount = () => {
       if (firestoreUser?.id) {
         try {
           setIsPostsLoading(true);
+          console.log('posts: ', posts);
           const q = query(
             postsCollection, where('userId', '==', firestoreUser?.id),
             orderBy('createAt', 'desc'),
@@ -216,7 +217,8 @@ const MyAccount = () => {
 
               <p>{firestoreUser?.username}</p>
               {!firestoreUser?.username && <Skeleton style={{width: 100, height: 20}} />}
-              <p className={styles.text}>{firestoreUser?.postsCount ? `Posts: ${firestoreUser?.postsCount}` : ''}</p>
+              {/* <p className={styles.text}>{firestoreUser?.postsCount ? `Posts: ${firestoreUser?.postsCount}` : ''}</p> */}
+              <p className={styles.text}>{firestoreUser?.postsCount ? `Posts: ${posts.length}` : ''}</p>
               {!firestoreUser?.postsCount && <Skeleton style={{width: 100, height: 20}} />}
               {!firestoreUser?.postsCount ? <Skeleton style={{width: 150, height: 31}} /> : (
                 <>
@@ -340,7 +342,7 @@ const MyAccount = () => {
       ) : activeTab === 3 ? (
         <TravelItinerary />
       ) : activeTab === 4 ? (
-        <EditMap />
+        <EditMap handleClose={setActiveTab}/>
       ) : (
         <MyFriends />
       )}

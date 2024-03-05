@@ -21,7 +21,7 @@ const GoogleMaps = () => {
         <GoogleMap
           mapContainerClassName={styles.mapContainer}
           center={center}
-          zoom={2}
+          zoom={3}
         />
       </div>
     </div>
