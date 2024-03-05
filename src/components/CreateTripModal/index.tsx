@@ -16,8 +16,9 @@ import moment from "moment";
 import PlacesAutocomplete, {geocodeByPlaceId} from 'react-places-autocomplete';
 import randomColor from "randomcolor";
 import classNames from 'classnames';
+import { ErrorMessage } from '../ErrorMessage/ErrorMessage';
 
-const fileTypes = ["JPEG", "PNG", "GIF", "JPG"];
+const fileTypes = ["JPEG", "PNG", "GIF", "JPG", "MP4"];
 
 interface Props {
   closeModal: () => void;
@@ -35,10 +36,15 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
   const [text, setText] = useState('');
   const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
   const [isPlaceEmpty, setIsPlaceEmpty] = useState(true);
+  const [{isErrorMessageLocation, isErrorMessageFile}, setIsErrorMessage] 
+    = useState({isErrorMessageLocation: false, isErrorMessageFile: false});
 
   const handleChange = (file: File) => {
+    console.log(file.type);
+
     setFile(file);
   };
+
 
   useEffect(() => {
     if (location.length === 0) {
@@ -48,17 +54,30 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
     }
   }, [location]);
 
+  useEffect(() => {
+    if (isErrorMessageLocation) {
+      const timeoutId = setTimeout(() => {
+        setIsErrorMessage(false);
+      }, 3000);
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [isErrorMessageLocation]);
+
   const handleOnSave = useCallback(async () => {
     console.log(location);
     if (location.length === 0) {
       setIsPlaceEmpty(true);
+      // setIsErrorMessage(prevState => {...prevState, isErrorMessageLocation: true});
     } else {
+      setIsErrorMessage(false);
+
       try {
       if (selectedLocation && file) {
         const geocode = await geocodeByPlaceId(selectedLocation);
 
         setIsLoading(true);
-        const storageRef = ref(storage, `trips/${firestoreUser?.id}/${location + uuidv4()}`);
+        const storageRef = ref(storage, `trips/${firestoreUser?.id}/${location + uuidv4() + file.type}`);
         const uploadResult = await uploadBytes(storageRef, file);
 
         console.log("save is working");
@@ -136,7 +155,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
               );
             }}
           </PlacesAutocomplete>
-          {/* {isPlaceEmpty && <p className={styles.empty}>The input has not to be empty</p>} */}
+          {isErrorMessageLocation && <ErrorMessage message='The input has not to be empty'/>}
           {/* {autocomplete?.map(item => <p>{item.description}</p>)} */}
           <p>When?</p>
             <input value={selectedDate} onChange={e => setSelectedDate(e.target.value)} type="date" className={styles.input} />

@@ -1,0 +1,12 @@
+.mediaContainer {
+    min-height: 260px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.image {
+    height: auto;
+    width: 100%;
+    overflow: hidden;
+}

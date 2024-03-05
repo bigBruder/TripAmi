@@ -1,5 +1,5 @@
 import styles from './travelItinerary.module.css';
-import React, {useContext, useEffect, useMemo, useState} from "react";
+import {useContext, useEffect, useMemo, useState} from "react";
 import {AuthContext} from "~/providers/authContext";
 import {getDocs, onSnapshot, orderBy, query, where} from "@firebase/firestore";
 import {postsCollection, tripsCollection} from "~/types/firestoreCollections";
@@ -12,6 +12,13 @@ import PostItem from "~/components/Posts";
 import {IPost} from "~/types/post";
 import {firebaseErrors} from "~/constants/firebaseErrors";
 import {useWindowDimensions} from "~/hooks/useWindowDimensions";
+
+import { Navigation, Pagination, Autoplay } from 'swiper/modules';
+
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/scrollbar';
 
 export const TravelItinerary = () => {
   const {firestoreUser} = useContext(AuthContext);
@@ -81,7 +88,32 @@ export const TravelItinerary = () => {
       </div> */}
       {/* <div className={styles.travelsContainer}></div> */}
       <div className={styles.travelsContainer}>
-        <Swiper spaceBetween={15} slidesPerView={3}>
+        <Swiper 
+          spaceBetween={15} 
+          slidesPerView={3}
+          loop
+          modules={[Autoplay]}
+          watchOverflow
+          autoplay={{
+            delay: 2500
+          }}
+          breakpoints={{
+            320: {
+              slidesPerView: 1,
+              spaceBetween: 5
+            },
+            640: {
+              slidesPerView: 1,
+              spaceBetween: 10
+            },
+            768: {
+              slidesPerView: 2
+            },
+            1200: {
+              slidesPerView: 3
+            },
+          }}
+        >
           {travels.map(travel => (
           <SwiperSlide key={travel.id}>
             <TravelCard travel={travel}/>

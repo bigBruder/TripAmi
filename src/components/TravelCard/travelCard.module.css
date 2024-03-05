@@ -11,11 +11,14 @@
     margin-bottom: 14px;
 }
 
-/* @media (min-width: 768px) {
-    .topContainer {
+@media (max-width: 768px) {
+    /* .topContainer {
         width: 50%;
-    }
-} */
+    } */
+    /* .container {
+        max-width: 50%;
+    } */
+}
 
 .list {
     margin: 0;
@@ -57,23 +60,18 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
+    min-height: 260px;
 
     width: 100%;
     margin-top: 19px;
 }
 
-.image {
-    height: auto;
-    width: 100%;
-    overflow: hidden;
-}
-
 .text {
     color: #262626;
     font-family: Gilroy, sans-serif;
-    font-size: 14px;
+    font-size: 16px;
     font-style: normal;
-    font-weight: 500;
+    font-weight: 400;
     line-height: normal;
 }
 

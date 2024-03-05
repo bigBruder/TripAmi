@@ -11,6 +11,7 @@ import BinIcon from "@assets/icons/BinIcon.svg";
 import {AuthContext} from "~/providers/authContext";
 import {deleteDoc, doc} from "@firebase/firestore";
 import Pin from '@assets/icons/map-pin.svg';
+import MediaContainer from "../MediaContainer/MediaContainer";
 
 interface Props {
   travel: ITravel;
@@ -44,12 +45,12 @@ const TravelCard: FC<Props> = ({travel}) => {
         const url = await getDownloadURL(ref(storage, imageUrl));
         // console.log('url:', url);
         setImageDownloadUrl(url);
-        console.log(url);
       } catch (err) {
         console.log('[ERROR getting download url for the image] => ', err)
       }
     })();
   }, []);
+
 
   return (
     <div className={styles.container}>
@@ -67,7 +68,15 @@ const TravelCard: FC<Props> = ({travel}) => {
 
       <div className={styles.mainContainer}>
         <div className={styles.imageContainer}>
-          <img src={imageDownloadUrl} alt="Travel photo" className={styles.image} />
+          <MediaContainer mediaUrl={imageDownloadUrl}/>
+          {/* {
+            imageDownloadUrl.toLowerCase().includes('mp4') ? (
+              <video src={imageDownloadUrl} controls></video>
+            ) : (
+              <img src={imageDownloadUrl} alt="Travel photo" className={styles.image} />
+            )
+          } */}
+
         </div>
         <div className={styles.textContainer}>
           <p className={styles.text}>{text}</p>
