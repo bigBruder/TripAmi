@@ -18,7 +18,7 @@ import randomColor from "randomcolor";
 import classNames from 'classnames';
 import { ErrorMessage } from '../ErrorMessage/ErrorMessage';
 
-const fileTypes = ["JPEG", "PNG", "GIF", "JPG", "MP4"];
+const fileTypes = ["JPEG", "PNG", "GIF", "JPG", "MP4", 'WEBM', 'WMV', 'OGG', 'MOV', 'AVI'];
 
 interface Props {
   closeModal: () => void;
@@ -47,32 +47,43 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
 
 
   useEffect(() => {
-    if (location.length === 0) {
-      setIsPlaceEmpty(true);
-    } else {
-      setIsPlaceEmpty(false);
-    }
+    setIsPlaceEmpty(location.length === 0);
   }, [location]);
 
   useEffect(() => {
     if (isErrorMessageLocation) {
       const timeoutId = setTimeout(() => {
-        setIsErrorMessage(false);
+        setIsErrorMessage(prevErrors => ({...prevErrors, isErrorMessageLocation: false}));
       }, 3000);
 
       return () => clearTimeout(timeoutId);
     }
-  }, [isErrorMessageLocation]);
+
+    if (isErrorMessageFile) {
+      const timeoutId = setTimeout(() => {
+        setIsErrorMessage(prevErrors => ({...prevErrors, isErrorMessageFile: false}));
+      }, 3000);
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [isErrorMessageFile, isErrorMessageLocation]);
 
   const handleOnSave = useCallback(async () => {
-    console.log(location);
-    if (location.length === 0) {
-      setIsPlaceEmpty(true);
-      // setIsErrorMessage(prevState => {...prevState, isErrorMessageLocation: true});
-    } else {
-      setIsErrorMessage(false);
-
-      try {
+    setIsErrorMessage(prevErrors => ({
+      ...prevErrors,
+      isErrorMessageLocation: location.length === 0 ? true : false,
+    }));
+    
+    setIsErrorMessage(prevErrors => ({
+      ...prevErrors,
+      isErrorMessageFile: !file ? true : false,
+    }));
+    
+    if (location.length === 0 || !file) {
+      return;
+    }
+    
+    try {
       if (selectedLocation && file) {
         const geocode = await geocodeByPlaceId(selectedLocation);
 
@@ -103,7 +114,6 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
       setIsLoading(false);
       closeModal();
     }
-  }
   }, [firestoreUser, rating, file, selectedDate, tickIsChecked, selectedLocation]);
 
   const onSelectPlace = useCallback((address: string, placeID: string) => {
@@ -155,6 +165,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
               );
             }}
           </PlacesAutocomplete>
+
           {isErrorMessageLocation && <ErrorMessage message='The input has not to be empty'/>}
           {/* {autocomplete?.map(item => <p>{item.description}</p>)} */}
           <p>When?</p>
@@ -187,7 +198,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
           <Rating setSelectedStars={setRating} selectedStars={rating} />
         </div>
         <div className={styles.startContainer}>
-          <p>Image and Video </p>
+          {/* <p>Image and Video </p> */}
           <FileUploader
             multiple={false}
             handleChange={handleChange}
@@ -196,6 +207,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
             classes={`${styles.uploadOuterContainer}`}
             hoverTitle={' '}
             onDraggingStateChange={(state: boolean) => setIsDragging(state)}
+            className={styles.uploader}
           >
             <div className={styles.uploadContainer}>
               <p className={styles.dragText}>Drag and drop image or</p>
@@ -203,6 +215,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
             </div>
           </FileUploader>
         </div>
+        {isErrorMessageFile && <ErrorMessage message='There is has to be file'/>}
         {file && <p>{file.name}</p>}
       </form>
       <p></p>

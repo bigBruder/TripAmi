@@ -7,7 +7,7 @@
 .container {
     display: flex;
     flex-direction: column;
-    padding: 33px 8px 21px 8px;
+    padding: 0px 8px 21px 8px;
 }
 
 .button {
@@ -26,9 +26,9 @@
     background-color: #717171;
 }
 
-@media (min-width: 768px) {
+/* @media (min-width: 768px) {
     font-size: 17px;
-}
+} */
 
 .button-gray {
     background-color: #717171;
@@ -95,7 +95,9 @@ img {
     align-items: center;
     flex-direction: column;
     gap: 11px;
+    width: 100%;
 }
+
 
 @media (min-width: 768px) {
     .uploadContainer {
