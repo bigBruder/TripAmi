@@ -100,7 +100,7 @@ export const TravelItinerary = () => {
               spaceBetween: 5
             },
             960: {
-              slidesPerView: 2,
+              slidesPerView: 3,
               spaceBetween: 10
             },
             1200: {
