@@ -7,7 +7,7 @@
 .topContainer {
     display: flex;
     justify-content: space-between;
-
+    padding: 0 17px;
     margin-bottom: 14px;
 }
 
@@ -18,8 +18,13 @@
 } */
 
 .list {
-    padding-left: 17px;
     margin: 0;
+    display: flex;
+    gap: 5px;
+}
+
+.pinIcon {
+    height: 23px;
 }
 
 .location {
@@ -50,6 +55,7 @@
 
 .mainContainer {
     display: flex;
+    flex-direction: column;
     gap: 20px;
 
     width: 100%;
@@ -58,7 +64,7 @@
 
 .image {
     height: auto;
-    width: 60%;
+    width: 100%;
     overflow: hidden;
 }
 
@@ -69,12 +75,9 @@
     font-style: normal;
     font-weight: 500;
     line-height: normal;
-
-    margin-top: 25px;
 }
 
 .textContainer {
-    max-width: 30%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -117,6 +120,11 @@
 
 .img {
     cursor: pointer;
+}
+
+.imageContainer {
+    max-height: 260px;
+    overflow: hidden;
 }
 
 .commentsIcon {

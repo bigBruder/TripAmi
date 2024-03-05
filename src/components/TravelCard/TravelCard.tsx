@@ -10,6 +10,7 @@ import shareIcon from "@assets/icons/share.svg";
 import BinIcon from "@assets/icons/BinIcon.svg";
 import {AuthContext} from "~/providers/authContext";
 import {deleteDoc, doc} from "@firebase/firestore";
+import Pin from '@assets/icons/map-pin.svg';
 
 interface Props {
   travel: ITravel;
@@ -54,6 +55,7 @@ const TravelCard: FC<Props> = ({travel}) => {
     <div className={styles.container}>
       <div className={styles.topContainer}>
         <div className={styles.list}>
+          <img src={Pin} alt="pin icon" className={styles.pinIcon}/>
           <p className={styles.location}>{location?.name}</p>
         </div>
         <div className={styles.dateContainer}>
@@ -64,7 +66,9 @@ const TravelCard: FC<Props> = ({travel}) => {
 
 
       <div className={styles.mainContainer}>
-        <img src={imageDownloadUrl} alt="Travel photo" className={styles.image} />
+        <div className={styles.imageContainer}>
+          <img src={imageDownloadUrl} alt="Travel photo" className={styles.image} />
+        </div>
         <div className={styles.textContainer}>
           <p className={styles.text}>{text}</p>
         </div>
