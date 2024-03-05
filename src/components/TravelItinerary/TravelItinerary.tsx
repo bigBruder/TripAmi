@@ -60,7 +60,7 @@ export const TravelItinerary = () => {
         unsub();
       }
     }
-  }, [firestoreUser?.id]);
+  }, [firestoreUser?.id, ]);
 
   const getSlidesPerPage = useMemo(() => {
     if (width < 768) {
@@ -76,9 +76,20 @@ export const TravelItinerary = () => {
   return (
     <div className={styles.container}>
       <p className={styles.title}>{firestoreUser?.username}`s travels</p>
+      {/* <div className={styles.travelsContainer}>
+        {travels.map(travel => <TravelCard travel={travel} key={travel.id}/>)}
+      </div> */}
+      {/* <div className={styles.travelsContainer}></div> */}
       <div className={styles.travelsContainer}>
-        {travels.map(travel => <TravelCard travel={travel} />)}
+        <Swiper spaceBetween={15} slidesPerView={3}>
+          {travels.map(travel => (
+          <SwiperSlide key={travel.id}>
+            <TravelCard travel={travel}/>
+          </SwiperSlide> 
+        ))}
+        </Swiper>
       </div>
+      
       {/*<p className={styles.title}>You may also like</p>*/}
       {/*<div className={styles.bottomSliderContainer}>*/}
       {/*  <Swiper*/}

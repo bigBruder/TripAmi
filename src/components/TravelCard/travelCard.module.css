@@ -1,21 +1,21 @@
 .container {
-
+    display: flex;
+    flex-direction: column;
+    width: 400px;
 }
 
 .topContainer {
     display: flex;
     justify-content: space-between;
 
-    width: 100%;
-
     margin-bottom: 14px;
 }
 
-@media (min-width: 768px) {
+/* @media (min-width: 768px) {
     .topContainer {
         width: 50%;
     }
-}
+} */
 
 .list {
     padding-left: 17px;
@@ -58,13 +58,14 @@
 
 .image {
     height: auto;
-    width: 30%;
+    width: 60%;
+    overflow: hidden;
 }
 
 .text {
     color: #262626;
     font-family: Gilroy, sans-serif;
-    font-size: 20px;
+    font-size: 14px;
     font-style: normal;
     font-weight: 500;
     line-height: normal;
@@ -73,6 +74,7 @@
 }
 
 .textContainer {
+    max-width: 30%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -82,6 +84,7 @@
 
 .footer {
     display: flex;
+    justify-content: space-between;
     align-items: center;
     align-self: center;
     height: 35px;
@@ -103,6 +106,13 @@
     gap: 6px;
 
     cursor: pointer;
+}
+
+.sharing {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 5px;
 }
 
 .img {

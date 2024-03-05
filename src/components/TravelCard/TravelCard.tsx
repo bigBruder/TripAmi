@@ -41,7 +41,9 @@ const TravelCard: FC<Props> = ({travel}) => {
     (async () => {
       try {
         const url = await getDownloadURL(ref(storage, imageUrl));
+        // console.log('url:', url);
         setImageDownloadUrl(url);
+        console.log(url);
       } catch (err) {
         console.log('[ERROR getting download url for the image] => ', err)
       }
@@ -51,44 +53,46 @@ const TravelCard: FC<Props> = ({travel}) => {
   return (
     <div className={styles.container}>
       <div className={styles.topContainer}>
-        <ul className={styles.list}>
-          <li className={styles.location}>{location?.name}</li>
-        </ul>
+        <div className={styles.list}>
+          <p className={styles.location}>{location?.name}</p>
+        </div>
         <div className={styles.dateContainer}>
-          <p className={styles.location}>Date</p>
+          {/* <p className={styles.location}>Date</p> */}
           <p className={styles.date}>{when}</p>
         </div>
       </div>
 
-      <Rating disabled selectedStars={rate} />
 
       <div className={styles.mainContainer}>
         <img src={imageDownloadUrl} alt="Travel photo" className={styles.image} />
         <div className={styles.textContainer}>
           <p className={styles.text}>{text}</p>
-
-          <div className={styles.footer}>
-            <div className={styles.shareContainer}>
-              <img
-                className={styles.commentsIcon}
-                src={commentsIcon}
-                alt="comments"
-              />
-              <span className={styles.comments}>{comments_count} Comments</span>
-            </div>
-            <div className={styles.shareContainer}>
-              <img className={styles.shareIcon} src={shareIcon} alt="share" />
-              <span className={styles.share}>Share</span>
-            </div>
-            {firestoreUser?.id === userId ? (
-              <div className={styles.shareContainer} onClick={handleDeleteTrip}>
-                <img className={styles.dotsIcon} src={BinIcon} alt="dots" />
-                <span className={styles.share}>Delete</span>
-              </div>
-            ) : null}
-          </div>
         </div>
       </div>
+      <div className={styles.footer}>
+        <Rating disabled selectedStars={rate} />
+
+            <div className={styles.sharing}>
+              <div className={styles.shareContainer}>
+                <img
+                  className={styles.commentsIcon}
+                  src={commentsIcon}
+                  alt="comments"
+                />
+                <span className={styles.comments}>{comments_count} Comments</span>
+              </div>
+              <div className={styles.shareContainer}>
+                <img className={styles.shareIcon} src={shareIcon} alt="share" />
+                <span className={styles.share}>Share</span>
+              </div>
+              {firestoreUser?.id === userId ? (
+                <div className={styles.shareContainer} onClick={handleDeleteTrip}>
+                  <img className={styles.dotsIcon} src={BinIcon} alt="dots" />
+                  <span className={styles.share}>Delete</span>
+                </div>
+              ) : null}
+              </div>
+          </div>
     </div>
   );
 };

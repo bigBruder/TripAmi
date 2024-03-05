@@ -61,6 +61,8 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
         const storageRef = ref(storage, `trips/${firestoreUser?.id}/${location + uuidv4()}`);
         const uploadResult = await uploadBytes(storageRef, file);
 
+        console.log("save is working");
+
         await addDoc(tripsCollection, {
           userId: firestoreUser?.id,
           imageUrl: uploadResult.ref.fullPath,
