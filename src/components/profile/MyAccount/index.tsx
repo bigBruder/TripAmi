@@ -218,7 +218,11 @@ const MyAccount = () => {
               <p>{firestoreUser?.username}</p>
               {!firestoreUser?.username && <Skeleton style={{width: 100, height: 20}} />}
               {/* <p className={styles.text}>{firestoreUser?.postsCount ? `Posts: ${firestoreUser?.postsCount}` : ''}</p> */}
-              <p className={styles.text}>{firestoreUser?.postsCount ? `Posts: ${posts.length}` : ''}</p>
+              {
+                firestoreUser?.postsCount && (
+                  <p className={styles.text}>{firestoreUser?.postsCount >= 0 ? `Posts: ${posts.length}` : ''}</p>
+                )
+              }
               {!firestoreUser?.postsCount && <Skeleton style={{width: 100, height: 20}} />}
               {!firestoreUser?.postsCount ? <Skeleton style={{width: 150, height: 31}} /> : (
                 <>

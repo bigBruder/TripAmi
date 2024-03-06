@@ -61,24 +61,29 @@ const EditMap: FC<Props> = ({ handleClose }) => {
 
   return (
     <div className={styles.container}>
-      <p className={styles.title}>Edit Map</p>
       <div className={styles.centerContainer}>
+        
         <div className={styles.mapContainer}>
-          <Map onClick={setSelectedMarker} selectedTripId={selectedMarker} />
-        </div>
         <div className={styles.buttonsWrapper}>
+          <p className={styles.title}>Edit Map</p>
+
           <div className={styles.buttonsContainer}>
-            <button
-              onClick={handleDeleteMarker}
-              className={`${styles.deleteButton} ${!selectedMarker && styles.disabled}`}
-            >
-              Delete the pin <img src={Bin} alt="Bin icon" />
-            </button>
+            {
+              selectedMarker && (
+                <button
+                  onClick={handleDeleteMarker}
+                  className={`${styles.button} ${!selectedMarker && styles.disabled}`}
+                >
+                  Delete
+                </button>
+              )
+            }
+            
             <button
               onClick={() => handleClose(0)}
-              className={`${styles.deleteButton} ${!selectedMarker && styles.disabled}`}
+              className={`${styles.button} ${!selectedMarker && styles.disabled}`}
             >
-              Close editing
+              X
             </button>
             {/*<div className={styles.smallButtonsContainer}>*/}
             {/*  <button className={`${styles.button}`}>Save</button>*/}
@@ -93,6 +98,8 @@ const EditMap: FC<Props> = ({ handleClose }) => {
             {/*  </button>*/}
             {/*</div>*/}
           </div>
+        </div>
+          <Map onClick={setSelectedMarker} selectedTripId={selectedMarker} />
         </div>
       </div>
 

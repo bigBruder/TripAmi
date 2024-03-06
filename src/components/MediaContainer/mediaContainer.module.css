@@ -1,5 +1,6 @@
 .mediaContainer {
-    min-height: 260px;
+    min-height: 250px;
+    max-height: 250px;
     display: flex;
     align-items: center;
     justify-content: center;

@@ -1,7 +1,7 @@
 .container {
     display: flex;
     flex-direction: column;
-    width: 400px;
+    width: 340px;
 }
 
 .topContainer {
@@ -123,6 +123,7 @@
 
 .imageContainer {
     max-height: 260px;
+    /* max-width: 340px; */
     overflow: hidden;
 }
 

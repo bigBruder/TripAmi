@@ -1,6 +1,6 @@
 .container {
-    padding: 0 62px;
-    width: 360px;
+    padding: 0 38px;
+    width: 340px;
 }
 
 .title {
@@ -17,7 +17,7 @@
 .travelsContainer {
     display: flex;
     flex-direction: column;
-    gap: 60px;
+    /* gap: 60px; */
 
     margin-bottom: 70px;
 }
@@ -26,11 +26,11 @@
     width: 100%;
     margin-left: -60px;
 }
-
+/* 
 .swiper-container {
     width: 100%;
     max-width: 100%;
     max-height: 100vh;
     min-height: 0;
     min-width: 0;
-}
+} */
