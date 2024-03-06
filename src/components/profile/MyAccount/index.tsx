@@ -247,11 +247,12 @@ const MyAccount = () => {
         </div>
         {activeTab !== 4 && (
           <div className={styles.mapContainer}>
-            <div className={styles.editMapBox} onClick={() => setActiveTab(4)}>
-              <span className={styles.editMap}>Edit map</span>
-              <img className={styles.editIcon} src={editText} alt="edit icon" />
-            </div>
+            
             <div className={styles.mapContainer}>
+              <div className={styles.editMapBox} onClick={() => setActiveTab(4)}>
+                {/* <span className={styles.editMap}>Edit map</span> */}
+                  <img className={styles.editIcon} src={editText} alt="edit icon" />
+              </div>
               <Map />
             </div>
           </div>

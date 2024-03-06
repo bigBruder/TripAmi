@@ -206,9 +206,11 @@
   margin: 20px;
   justify-content: center;
   align-items: center;
+  flex-grow: 1;
+  position: relative;
   /* flex-grow: 1; */
-  height: 400px;
-  width: 400px;
+  /* height: 400px;
+  width: 400px; */
 }
 
 @media (min-width: 768px) {
@@ -224,6 +226,9 @@
 }
 
 .editMapBox {
+  position: absolute;
+  bottom: 20px;
+  right: 10px;
   margin-bottom: 20px;
   display: flex;
   justify-content: flex-end;
@@ -232,7 +237,7 @@
 }
 
 .editIcon {
-  margin-left: 15px;
+  /* margin-left: 15px; */
 }
 
 span {
