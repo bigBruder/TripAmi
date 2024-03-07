@@ -52,7 +52,7 @@ export const ImageUploaderModal: FC<Props> = ({closeModal}) => {
         }
       } catch (e) {
         // @ts-ignore
-        console.log(firestoreUser[e.code]);
+        console.error(firestoreUser[e.code]);
       } finally {
         setIsLoading(false);
       }

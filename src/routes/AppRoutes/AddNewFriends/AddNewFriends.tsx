@@ -217,7 +217,7 @@ export const UserCard: FC<Props> = ({
     getUserImage();
   }, [firestoreUser?.avatarUrl]);
 
-  console.log(user, invited, gotInvite, invitation, isFriend);
+  // console.log(user, invited, gotInvite, invitation, isFriend);
 
   return (
     <div className={styles.cardMain}>

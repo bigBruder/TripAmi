@@ -55,7 +55,7 @@ export const TravelItinerary = () => {
 
           setSuggestedPosts(fetchedPosts as IPost[]);
         } catch (err) {
-          console.log(err);
+          console.error(err);
           // @ts-ignore
           alert(firebaseErrors[err.code]);
         } finally {

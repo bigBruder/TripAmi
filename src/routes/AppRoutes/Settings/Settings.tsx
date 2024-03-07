@@ -88,7 +88,7 @@ const Settings = () => {
         } catch (err) {
           // @ts-ignore
           // alert(firebaseErrors[err.code]);
-          console.log(err);
+          console.error(err);
         }
       } else {
         setPasswordError(true);
@@ -152,7 +152,7 @@ const Settings = () => {
 
         setCities(data.data);
       } catch (err) {
-        console.log('[ERROR getting city] => ', err);
+        console.error('[ERROR getting city] => ', err);
       } finally {
         setCityIsLoading(false);
       }
@@ -186,7 +186,7 @@ const Settings = () => {
       );
       return pushSubscription;
     } catch (err) {
-      console.log('[ERROR subscribe on push] => ', err);
+      console.error('[ERROR subscribe on push] => ', err);
     }
   }
 

@@ -57,7 +57,6 @@ const MyAccount = () => {
         tripsCollection,
         where("userId", "==", firestoreUser?.id),
       );
-      console.log("userId", firestoreUser?.id);
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
         const fetchedPosts = querySnapshot.docs.map(doc => ({
           ...doc.data(),
@@ -85,7 +84,6 @@ const MyAccount = () => {
       if (firestoreUser?.id) {
         try {
           setIsPostsLoading(true);
-          console.log('posts: ', posts);
           const q = query(
             postsCollection, where('userId', '==', firestoreUser?.id),
             orderBy('createAt', 'desc'),
@@ -131,7 +129,7 @@ const MyAccount = () => {
           }
 
         } catch (err) {
-          console.log(err);
+          console.error(err);
           // @ts-ignore
           alert(firebaseErrors[err.code]);
         } finally {

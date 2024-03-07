@@ -6,6 +6,6 @@ export const getAutocomplete = async (input: string) => {
 
     return data;
   } catch (err) {
-    console.log('[ERROR getting autocomplete] => ', err);
+    console.error('[ERROR getting autocomplete] => ', err);
   }
 };

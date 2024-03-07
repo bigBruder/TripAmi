@@ -17,6 +17,8 @@ import TravelCard from "../TravelCard/TravelCard";
 import { MapInfoWindow } from "../MapInfoWindow/MapInfoWindow";
 import { User } from "@firebase/auth";
 import { IUser } from "~/types/user";
+import MapOrange from '@assets/icons/MapOrange.svg';
+import Build from '@assets/icons/build.svg';
 
 import styles from './googleMaps.module.css';
 
@@ -30,6 +32,11 @@ export default function Intro() {
   const [selectedTravel, setSelectedTravel] = useState<ITravel | null>(null);
   const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
   const [friends, setFriends] = useState<IUser[]>([]);
+  const [{isMapOpen, isGeneralMapOpen, isFriendsMapOpen}, setIsOpen] = useState({
+    isMapOpen: false,
+    isGeneralMapOpen: false,
+    isFriendsMapOpen: false
+  })
 
   
   useEffect(() => {
@@ -60,9 +67,8 @@ export default function Intro() {
       }));
 
       setFriends(fetchedFriends as IUser[]);
-      console.log( friends);
     } catch (err) {
-      console.log(err);
+      console.error(err);
       // @ts-ignore
       alert(firebaseErrors[err.code]);
     } finally {
@@ -77,14 +83,12 @@ export default function Intro() {
     }
   }, [friends, selectedTravel]);
 
-  console.log("render a map");
-
   return (
   <div className={styles.container}>
     <div className={styles.titleContainer}>
     <p className={styles.title}>
       Build a travel itinerary 
-      {/* <img src={MapOrange} /> */}
+      <img src={MapOrange} />
     </p>
     <p className={styles.title}>
       Build a travel itinerary based on other people's reviews
@@ -92,50 +96,59 @@ export default function Intro() {
   </div>
   <div className={styles.subtitle}>
     <p className={styles.title}>
-      Build a route based on user reviews 
-      {/* <img src={Build} /> */}
+      Build a route based on friend`s reviews
+      <button onClick={() => setIsOpen(prevState => ({...prevState, isFriendsMapOpen: !isFriendsMapOpen}))}>
+        <img 
+          src={Build} 
+          className={styles.button}
+        />
+      </button>
     </p>
   </div>
-    <APIProvider apiKey="AIzaSyCwDkMaHWXRpO7hY6z62_Gu8eLxMMItjT8">
-      <div style={{ height: "75vh", width: "75%" }}>
 
-        <Map 
-          defaultZoom={5} 
-          defaultCenter={position} 
-          mapId="9bc3b1605395203e"
-        >
-          {travels.length > 0 && (
-            travels?.map(travel => {
-              
-              return (
-                <AdvancedMarker 
-                  position={{lat: travel.location.latitude, lng:travel.location.longitude}}
-                  onClick={() => {
-                    setSelectedTravel(travel);
-                    setOpen(true);
-                  }}
-                  key={travel.id}
-                >
-                  <Pin
-                    background={travel.location.color}
-                    borderColor={"white"}
-                    glyphColor={"white"}
-                  />
-                </AdvancedMarker>
-          )}))}
+    {isFriendsMapOpen && (
+      <APIProvider apiKey="AIzaSyCwDkMaHWXRpO7hY6z62_Gu8eLxMMItjT8">
+        <div style={{ height: "450px", width: "100%" }}>
 
-          {selectedTravel && open && selectedUser &&  (
-            <MapInfoWindow 
-              selectedTravel={selectedTravel} 
-              selectedUser={selectedUser} 
-              handleClose={setOpen}
-              travels={travels}
-              friends={friends}
-            />
-          )}
-        </Map>
-      </div>
+          <Map 
+            defaultZoom={5} 
+            defaultCenter={position} 
+            mapId="9bc3b1605395203e"
+          >
+            {travels.length > 0 && (
+              travels?.map(travel => {
+
+                return (
+                  <AdvancedMarker 
+                    position={{lat: travel.location.latitude, lng:travel.location.longitude}}
+                    onClick={() => {
+                      setSelectedTravel(travel);
+                      setOpen(true);
+                    }}
+                    key={travel.id}
+                  >
+                    <Pin
+                      background={travel.location.color}
+                      borderColor={"white"}
+                      glyphColor={"white"}
+                    />
+                  </AdvancedMarker>
+            )}))}
+
+            {selectedTravel && open && selectedUser &&  (
+              <MapInfoWindow 
+                selectedTravel={selectedTravel} 
+                selectedUser={selectedUser} 
+                handleClose={setOpen}
+                travels={travels}
+                friends={friends}
+              />
+            )}
+          </Map>
+        </div>
     </APIProvider>
+    )}
+    
     </div>
   );
 }

@@ -40,8 +40,6 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
     = useState({isErrorMessageLocation: false, isErrorMessageFile: false});
 
   const handleChange = (file: File) => {
-    console.log(file.type);
-
     setFile(file);
   };
 
@@ -91,8 +89,6 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
         const storageRef = ref(storage, `trips/${firestoreUser?.id}/${location + uuidv4() + file.type}`);
         const uploadResult = await uploadBytes(storageRef, file);
 
-        console.log("save is working");
-
         await addDoc(tripsCollection, {
           userId: firestoreUser?.id,
           imageUrl: uploadResult.ref.fullPath,
@@ -109,7 +105,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
         });
       }
     } catch (err) {
-      console.log('[ERROR saving the trip] => ', err);
+      console.error('[ERROR saving the trip] => ', err);
     } finally {
       setIsLoading(false);
       closeModal();
@@ -119,7 +115,6 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
   const onSelectPlace = useCallback((address: string, placeID: string) => {
     setLocation(address);
     setSelectedLocation(placeID);
-    console.log('address: ', address, 'placeId: ', placeID);
   }, []);
 
   return (

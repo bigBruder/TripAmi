@@ -44,7 +44,7 @@ const EditMap: FC<Props> = ({ handleClose }) => {
           },
         });
       } catch (e) {
-        console.log('[ERROR deleting marker] => ', e);
+        console.error('[ERROR deleting marker] => ', e);
       } finally {
         setIsLoading(false);
       }

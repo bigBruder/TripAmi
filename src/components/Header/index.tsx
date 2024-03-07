@@ -9,8 +9,6 @@ const Header = () => {
   const { firestoreUser } = useContext(AuthContext);
   const [modalIsOpen, setModalIsOpen] = useState(false);
  
-  console.log(firestoreUser)
-
   return (
     <div className={styles.header}>
       <img src={Logo} />

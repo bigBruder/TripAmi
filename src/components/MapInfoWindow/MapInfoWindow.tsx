@@ -82,11 +82,7 @@ export const MapInfoWindow: FC<Props> = ({ selectedTravel, selectedUser, handleC
           setUserAvatars(urls);
       });
 
-      console.log('use effect');
 }, [reviews]);
-  
-  console.log("render a windows");
-
   
   
     return (

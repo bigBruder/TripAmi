@@ -52,3 +52,7 @@
     height: 80%;
     width: 80%;
 }
+
+.button {
+    cursor: pointer;
+}
