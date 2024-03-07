@@ -1,4 +1,4 @@
-import React, {useCallback, useContext, useState} from 'react';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 import styles from './createTripModal.module.css';
 // @ts-ignore
 import Checkbox from 'react-custom-checkbox';
@@ -15,8 +15,10 @@ import {LoadingScreen} from "~/components/LoadingScreen";
 import moment from "moment";
 import PlacesAutocomplete, {geocodeByPlaceId} from 'react-places-autocomplete';
 import randomColor from "randomcolor";
+import classNames from 'classnames';
+import { ErrorMessage } from '../ErrorMessage/ErrorMessage';
 
-const fileTypes = ["JPEG", "PNG", "GIF", "JPG"];
+const fileTypes = ["JPEG", "PNG", "GIF", "JPG", "MP4", 'WEBM', 'WMV', 'OGG', 'MOV', 'AVI'];
 
 interface Props {
   closeModal: () => void;
@@ -29,22 +31,62 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [rating, setRating] = useState(0);
   const [location, setLocation] = useState('');
-  const [selectedDate, setSelectedDate] = useState<string>(moment().format('yyyy-MM-D'));
+  const [selectedDate, setSelectedDate] = useState<string>(moment().format('yyyy-MM-DD'));
   const [isLoading, setIsLoading] = useState(false);
   const [text, setText] = useState('');
   const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
+  const [isPlaceEmpty, setIsPlaceEmpty] = useState(true);
+  const [{isErrorMessageLocation, isErrorMessageFile}, setIsErrorMessage] 
+    = useState({isErrorMessageLocation: false, isErrorMessageFile: false});
 
   const handleChange = (file: File) => {
     setFile(file);
   };
 
+
+  useEffect(() => {
+    setIsPlaceEmpty(location.length === 0);
+  }, [location]);
+
+  useEffect(() => {
+    if (isErrorMessageLocation) {
+      const timeoutId = setTimeout(() => {
+        setIsErrorMessage(prevErrors => ({...prevErrors, isErrorMessageLocation: false}));
+      }, 3000);
+
+      return () => clearTimeout(timeoutId);
+    }
+
+    if (isErrorMessageFile) {
+      const timeoutId = setTimeout(() => {
+        setIsErrorMessage(prevErrors => ({...prevErrors, isErrorMessageFile: false}));
+      }, 3000);
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [isErrorMessageFile, isErrorMessageLocation]);
+
   const handleOnSave = useCallback(async () => {
+    setIsErrorMessage(prevErrors => ({
+      ...prevErrors,
+      isErrorMessageLocation: location.length === 0 ? true : false,
+    }));
+    
+    setIsErrorMessage(prevErrors => ({
+      ...prevErrors,
+      isErrorMessageFile: !file ? true : false,
+    }));
+    
+    if (location.length === 0 || !file) {
+      return;
+    }
+    
     try {
       if (selectedLocation && file) {
         const geocode = await geocodeByPlaceId(selectedLocation);
 
         setIsLoading(true);
-        const storageRef = ref(storage, `trips/${firestoreUser?.id}/${location + uuidv4()}`);
+        const storageRef = ref(storage, `trips/${firestoreUser?.id}/${location + uuidv4() + file.type}`);
         const uploadResult = await uploadBytes(storageRef, file);
 
         await addDoc(tripsCollection, {
@@ -63,9 +105,10 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
         });
       }
     } catch (err) {
-      console.log('[ERROR saving the trip] => ', err);
+      console.error('[ERROR saving the trip] => ', err);
     } finally {
       setIsLoading(false);
+      closeModal();
     }
   }, [firestoreUser, rating, file, selectedDate, tickIsChecked, selectedLocation]);
 
@@ -79,7 +122,9 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
       <form>
         <div className={styles.topContainer}>
           <p>Where’d you go?</p>
+
           <PlacesAutocomplete
+            
             value={location}
             onChange={(value) => setLocation(value)}
             onSelect={onSelectPlace}
@@ -115,27 +160,13 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
               );
             }}
           </PlacesAutocomplete>
-          {/*{autocomplete?.map(item => <p>{item.description}</p>)}*/}
+
+          {isErrorMessageLocation && <ErrorMessage message='The input has not to be empty'/>}
+          {/* {autocomplete?.map(item => <p>{item.description}</p>)} */}
           <p>When?</p>
-          <input value={selectedDate} onChange={e => setSelectedDate(e.target.value)} type="date" className={styles.input} />
+            <input value={selectedDate} onChange={e => setSelectedDate(e.target.value)} type="date" className={styles.input} />
         </div>
-        <div className={styles.startContainer}>
-          <p>Public</p>
-          <Checkbox
-            checked={tickIsChecked}
-            icon={<img src={Tick} style={{ width: 24 }} alt="" />}
-            onChange={(value: boolean) => {
-              setTickIsChecked(value);
-            }}
-            borderColor="#55BEF5"
-            borderRadius={0}
-            size={24}
-          />
-        </div>
-        <div className={styles.startContainer}>
-          <p>Rating</p>
-          <Rating setSelectedStars={setRating} selectedStars={rating} />
-        </div>
+        
         <div>
           <textarea
             className={`${styles.input} ${styles.textArea}`}
@@ -145,7 +176,24 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
           />
         </div>
         <div className={styles.startContainer}>
-          <p>Image and Video </p>
+          <p>Public</p>
+          <Checkbox
+            checked={tickIsChecked}
+            icon={<img src={Tick} style={{ width: 24 }} alt="" />}
+            onChange={(value: boolean) => {
+              setTickIsChecked(value);
+            }}
+            borderColor={tickIsChecked ? "#55BEF5" : "#F6F6F6"}
+            borderRadius={0}
+            size={24}
+          />
+        </div>
+        <div className={styles.startContainer}>
+          <p>Rating</p>
+          <Rating setSelectedStars={setRating} selectedStars={rating} />
+        </div>
+        <div className={styles.startContainer}>
+          {/* <p>Image and Video </p> */}
           <FileUploader
             multiple={false}
             handleChange={handleChange}
@@ -154,6 +202,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
             classes={`${styles.uploadOuterContainer}`}
             hoverTitle={' '}
             onDraggingStateChange={(state: boolean) => setIsDragging(state)}
+            className={styles.uploader}
           >
             <div className={styles.uploadContainer}>
               <p className={styles.dragText}>Drag and drop image or</p>
@@ -161,15 +210,20 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
             </div>
           </FileUploader>
         </div>
+        {isErrorMessageFile && <ErrorMessage message='There is has to be file'/>}
         {file && <p>{file.name}</p>}
       </form>
       <p></p>
       <div className={styles.container}>
         <div className={styles.bottomRow}>
-          <button className={styles.button} onClick={async () => {
-            await handleOnSave();
-            closeModal();
-          }}>
+          <button 
+            className={classNames(styles.button, {
+              [styles.button_unActive]: isPlaceEmpty
+            })}
+            onClick={async () => {
+              await handleOnSave();
+            }}
+          >
             Post
           </button>
           <button className={`${styles.button} ${styles['button-gray']}`} onClick={closeModal}>

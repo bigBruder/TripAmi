@@ -18,7 +18,7 @@ const LoginPage = () => {
   const [isPostsLoading, setIsPostsLoading] = useState(false);
   const [posts, setPosts] = useState<IPost[]>([]);
 
-  console.log(posts);
+  // console.log(posts);
 
   useEffect(() => {
     (async () => {
@@ -35,7 +35,7 @@ const LoginPage = () => {
           id: doc.id,
         }));
 
-        console.log(fetchedPosts);
+        // console.log(fetchedPosts);
 
         setPosts(fetchedPosts as IPost[]);
       } catch (err) {

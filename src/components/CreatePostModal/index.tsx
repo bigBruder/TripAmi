@@ -68,7 +68,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
       closeModal();
     } catch (err) {
       // @ts-ignore
-      console.log(firebaseErrors[err.code]);
+      console.error(firebaseErrors[err.code]);
     } finally {
       setIsLoading(false);
     }
@@ -81,7 +81,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
           <>
             <textarea
               className={styles.textArea}
-              placeholder={'Text'}
+              placeholder={'Leave your feedback'}
               onChange={(e) => setPostText(e.target.value)}
               value={postText}
             />

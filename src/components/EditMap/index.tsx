@@ -1,7 +1,7 @@
 import styles from './EditMap.module.css';
 import map from "@assets/icons/map.svg";
 import ImageMarker from "react-image-marker";
-import {useCallback, useContext, useEffect, useState} from "react";
+import {FC, useCallback, useContext, useEffect, useState} from "react";
 import randomColor from "randomcolor";
 import {ICustomMarker} from "~/components/EditMap/types";
 import CustomMarker from "~/components/EditMap/CustomMarker";
@@ -13,7 +13,11 @@ import {AuthContext} from "~/providers/authContext";
 import {LoadingScreen} from "~/components/LoadingScreen";
 import Map from "~/components/Map/Map";
 
-const EditMap = () => {
+interface Props {
+  handleClose: React.Dispatch<React.SetStateAction<number>>;
+}
+
+const EditMap: FC<Props> = ({ handleClose }) => {
   const [selectedMarker, setSelectedMarker] = useState<null | string>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -40,7 +44,7 @@ const EditMap = () => {
           },
         });
       } catch (e) {
-        console.log('[ERROR deleting marker] => ', e);
+        console.error('[ERROR deleting marker] => ', e);
       } finally {
         setIsLoading(false);
       }
@@ -57,18 +61,29 @@ const EditMap = () => {
 
   return (
     <div className={styles.container}>
-      <p className={styles.title}>Edit Map</p>
       <div className={styles.centerContainer}>
+        
         <div className={styles.mapContainer}>
-          <Map onClick={setSelectedMarker} selectedTripId={selectedMarker} />
-        </div>
         <div className={styles.buttonsWrapper}>
+          <p className={styles.title}>Edit Map</p>
+
           <div className={styles.buttonsContainer}>
+            {
+              selectedMarker && (
+                <button
+                  onClick={handleDeleteMarker}
+                  className={`${styles.button} ${!selectedMarker && styles.disabled}`}
+                >
+                  Delete
+                </button>
+              )
+            }
+            
             <button
-              onClick={handleDeleteMarker}
-              className={`${styles.deleteButton} ${!selectedMarker && styles.disabled}`}
+              onClick={() => handleClose(0)}
+              className={`${styles.button} ${!selectedMarker && styles.disabled}`}
             >
-              Delete the pin <img src={Bin} alt="Bin icon" />
+              X
             </button>
             {/*<div className={styles.smallButtonsContainer}>*/}
             {/*  <button className={`${styles.button}`}>Save</button>*/}
@@ -83,6 +98,8 @@ const EditMap = () => {
             {/*  </button>*/}
             {/*</div>*/}
           </div>
+        </div>
+          <Map onClick={setSelectedMarker} selectedTripId={selectedMarker} />
         </div>
       </div>
 

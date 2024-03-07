@@ -47,6 +47,7 @@ const Navigator = () => {
         <Route path="/add-friends" element={<AddNewFriends />} />
         <Route path="/invite-people" element={<InvitePeople />} />
         <Route path="/settings" element={<Settings />} />
+        <Route path="*" element={<Navigate to={'/'} />} />
         {/* 
       <Route path="*" element={<PageNotFound />} /> 
     */}

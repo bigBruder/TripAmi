@@ -1,5 +1,5 @@
 import styles from './travelItinerary.module.css';
-import React, {useContext, useEffect, useMemo, useState} from "react";
+import {useContext, useEffect, useMemo, useState} from "react";
 import {AuthContext} from "~/providers/authContext";
 import {getDocs, onSnapshot, orderBy, query, where} from "@firebase/firestore";
 import {postsCollection, tripsCollection} from "~/types/firestoreCollections";
@@ -12,6 +12,13 @@ import PostItem from "~/components/Posts";
 import {IPost} from "~/types/post";
 import {firebaseErrors} from "~/constants/firebaseErrors";
 import {useWindowDimensions} from "~/hooks/useWindowDimensions";
+
+import { Navigation, Pagination, Autoplay } from 'swiper/modules';
+
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/scrollbar';
 
 export const TravelItinerary = () => {
   const {firestoreUser} = useContext(AuthContext);
@@ -48,7 +55,7 @@ export const TravelItinerary = () => {
 
           setSuggestedPosts(fetchedPosts as IPost[]);
         } catch (err) {
-          console.log(err);
+          console.error(err);
           // @ts-ignore
           alert(firebaseErrors[err.code]);
         } finally {
@@ -60,7 +67,7 @@ export const TravelItinerary = () => {
         unsub();
       }
     }
-  }, [firestoreUser?.id]);
+  }, [firestoreUser?.id, ]);
 
   const getSlidesPerPage = useMemo(() => {
     if (width < 768) {
@@ -76,9 +83,39 @@ export const TravelItinerary = () => {
   return (
     <div className={styles.container}>
       <p className={styles.title}>{firestoreUser?.username}`s travels</p>
+      {/* <div className={styles.travelsContainer}>
+        {travels.map(travel => <TravelCard travel={travel} key={travel.id}/>)}
+      </div> */}
+      {/* <div className={styles.travelsContainer}></div> */}
       <div className={styles.travelsContainer}>
-        {travels.map(travel => <TravelCard travel={travel} />)}
+        <Swiper 
+          slidesPerView={3}
+          loop
+          modules={[Autoplay]}
+          watchOverflow
+
+          breakpoints={{
+            768: {
+              slidesPerView: 1,
+              spaceBetween: 5
+            },
+            960: {
+              slidesPerView: 3,
+              spaceBetween: 10
+            },
+            1200: {
+              slidesPerView: 3
+            }
+          }}
+        >
+          {travels.map(travel => (
+          <SwiperSlide key={travel.id} >
+            <TravelCard travel={travel}/>
+          </SwiperSlide> 
+        ))}
+        </Swiper>
       </div>
+      
       {/*<p className={styles.title}>You may also like</p>*/}
       {/*<div className={styles.bottomSliderContainer}>*/}
       {/*  <Swiper*/}

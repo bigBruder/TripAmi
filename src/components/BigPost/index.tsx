@@ -37,7 +37,7 @@ export const BigPost: FC<Props> = ({
 
         setUserData(fetchedUser as IUser);
       } catch (error) {
-        console.log('[ERROR getting user from firestore] => ', error);
+        console.error('[ERROR getting user from firestore] => ', error);
       } finally {
         setIsLoading(false);
       }
@@ -52,7 +52,7 @@ export const BigPost: FC<Props> = ({
           const url = await getDownloadURL(ref(storage, post.imageUrls[0]));
           setImageUrl(url);
         } catch (error) {
-          console.log('[ERROR downloading image] => ', error);
+          console.error('[ERROR downloading image] => ', error);
         } finally {
           setIsLoading(false);
         }
@@ -74,7 +74,7 @@ export const BigPost: FC<Props> = ({
 
           setUserData(fetchedUser as IUser);
         } catch (error) {
-          console.log('[ERROR getting user from firestore] => ', error);
+          console.error('[ERROR getting user from firestore] => ', error);
         } finally {
           setIsLoading(false);
         }
