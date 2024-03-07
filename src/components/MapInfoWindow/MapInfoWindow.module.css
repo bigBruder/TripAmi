@@ -1,11 +1,22 @@
+.reviews {
+    max-height: 150px;
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
 .info {
     width: 368px;
+    padding: 5px;
     /* padding: 13px; */
     display: flex;
     gap: 17px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    background-color: #dce8f5;
+    border-radius: 5px;
 }
 
 .top_container {

@@ -18,6 +18,8 @@ import { MapInfoWindow } from "../MapInfoWindow/MapInfoWindow";
 import { User } from "@firebase/auth";
 import { IUser } from "~/types/user";
 
+import styles from './googleMaps.module.css';
+
 
 export default function Intro() {
   const position = { lat: 53.54, lng: 10 };
@@ -27,7 +29,8 @@ export default function Intro() {
   const {firestoreUser} = useContext(AuthContext);
   const [selectedTravel, setSelectedTravel] = useState<ITravel | null>(null);
   const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
-  const [friends, setFriends] = useState<IUser[]>([])
+  const [friends, setFriends] = useState<IUser[]>([]);
+
   
   useEffect(() => {
       const q = query(tripsCollection, where('userId', 'in', firestoreUser?.friends));
@@ -74,11 +77,27 @@ export default function Intro() {
     }
   }, [friends, selectedTravel]);
 
-  console.log(friends.map(friend => friend.username));
+  console.log("render a map");
 
   return (
+  <div className={styles.container}>
+    <div className={styles.titleContainer}>
+    <p className={styles.title}>
+      Build a travel itinerary 
+      {/* <img src={MapOrange} /> */}
+    </p>
+    <p className={styles.title}>
+      Build a travel itinerary based on other people's reviews
+    </p>
+  </div>
+  <div className={styles.subtitle}>
+    <p className={styles.title}>
+      Build a route based on user reviews 
+      {/* <img src={Build} /> */}
+    </p>
+  </div>
     <APIProvider apiKey="AIzaSyCwDkMaHWXRpO7hY6z62_Gu8eLxMMItjT8">
-      <div style={{ height: "100vh", width: "100%" }}>
+      <div style={{ height: "75vh", width: "75%" }}>
 
         <Map 
           defaultZoom={5} 
@@ -108,13 +127,15 @@ export default function Intro() {
           {selectedTravel && open && selectedUser &&  (
             <MapInfoWindow 
               selectedTravel={selectedTravel} 
-              travels={travels}
               selectedUser={selectedUser} 
-              handleClose={setOpen} 
+              handleClose={setOpen}
+              travels={travels}
+              friends={friends}
             />
           )}
         </Map>
       </div>
     </APIProvider>
+    </div>
   );
 }
