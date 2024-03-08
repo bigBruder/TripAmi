@@ -27,6 +27,7 @@ import Skeleton from "react-loading-skeleton";
 import Map from "~/components/Map/Map";
 import {ITravel} from "~/types/travel";
 import GoogleMaps from "~/components/GoogleMaps/GoogleMaps";
+import { Autoplay } from "swiper/modules";
 
 const TABS = [
   'Home',
@@ -56,6 +57,7 @@ const MyAccount = () => {
         tripsCollection,
         where("userId", "==", firestoreUser?.id),
       );
+      console.log("userId", firestoreUser?.id);
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
         const fetchedPosts = querySnapshot.docs.map(doc => ({
           ...doc.data(),
@@ -68,7 +70,7 @@ const MyAccount = () => {
         unsubscribe();
       }
     }
-  }, [firestoreUser]);
+  }, [firestoreUser, setTips]);
 
   const closeModal = useCallback(() => {
     setModalIsOpen(false);
@@ -83,6 +85,7 @@ const MyAccount = () => {
       if (firestoreUser?.id) {
         try {
           setIsPostsLoading(true);
+          console.log('posts: ', posts);
           const q = query(
             postsCollection, where('userId', '==', firestoreUser?.id),
             orderBy('createAt', 'desc'),
@@ -145,7 +148,7 @@ const MyAccount = () => {
         orderBy('createAt', 'desc'),
       );
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
-        console.log('ON SNAPSHOT');
+        // console.log('ON SNAPSHOT');
 
         const fetchedPosts = querySnapshot.docs.map(doc => ({
           ...doc.data(),
@@ -214,7 +217,12 @@ const MyAccount = () => {
 
               <p>{firestoreUser?.username}</p>
               {!firestoreUser?.username && <Skeleton style={{width: 100, height: 20}} />}
-              <p className={styles.text}>{firestoreUser?.postsCount ? `Posts: ${firestoreUser?.postsCount}` : ''}</p>
+              {/* <p className={styles.text}>{firestoreUser?.postsCount ? `Posts: ${firestoreUser?.postsCount}` : ''}</p> */}
+              {
+                firestoreUser?.postsCount && (
+                  <p className={styles.text}>{firestoreUser?.postsCount >= 0 ? `Posts: ${posts.length}` : ''}</p>
+                )
+              }
               {!firestoreUser?.postsCount && <Skeleton style={{width: 100, height: 20}} />}
               {!firestoreUser?.postsCount ? <Skeleton style={{width: 150, height: 31}} /> : (
                 <>
@@ -239,11 +247,12 @@ const MyAccount = () => {
         </div>
         {activeTab !== 4 && (
           <div className={styles.mapContainer}>
-            <div className={styles.editMapBox} onClick={() => setActiveTab(4)}>
-              <span className={styles.editMap}>Edit map</span>
-              <img className={styles.editIcon} src={editText} alt="edit icon" />
-            </div>
+            
             <div className={styles.mapContainer}>
+              <div className={styles.editMapBox} onClick={() => setActiveTab(4)}>
+                {/* <span className={styles.editMap}>Edit map</span> */}
+                  <img className={styles.editIcon} src={editText} alt="edit icon" />
+              </div>
               <Map />
             </div>
           </div>
@@ -252,7 +261,10 @@ const MyAccount = () => {
       {activeTab === 0 ? (
         <>
           <div className={styles.travelContainer}>
-            <span className={styles.title}>My posts</span>
+            <div className={styles.travelContainer_nav}>
+              <span className={styles.title}>My posts</span>
+              <button className={styles.button} onClick={() => setModalIsOpen(true)}>NEW POST</button>
+            </div>
             {(!posts?.length && !isPostsLoading) ? (
               <>
                 <p className={styles.paragraph}>
@@ -264,8 +276,27 @@ const MyAccount = () => {
             ) : (
               <div className={styles.sliderContainer}>
                 <Swiper
-                  spaceBetween={30}
-                  slidesPerView={getSlidesPerPage}
+                  spaceBetween={15} 
+                  slidesPerView={3}
+                  loop
+                  modules={[Autoplay]}
+                  watchOverflow
+                  autoplay={{
+                    delay: 10000
+                  }}
+                  breakpoints={{
+                    768: {
+                      slidesPerView: 1,
+                      spaceBetween: 5
+                    },
+                    960: {
+                      slidesPerView: 3,
+                      spaceBetween: 10
+                    },
+                    1200: {
+                      slidesPerView: 3
+                    }
+                  }}
                 >
                   {posts?.map(post => (
                     <SwiperSlide key={post.id}>
@@ -279,8 +310,27 @@ const MyAccount = () => {
           {suggestedPosts?.length ? <span className={styles.postsTitle}>You may also like</span> : null}
           <div className={styles.bottomSliderContainer}>
             <Swiper
-              spaceBetween={30}
-              slidesPerView={getSlidesPerPage}
+              spaceBetween={15} 
+              slidesPerView={3}
+              loop
+              modules={[Autoplay]}
+              watchOverflow
+              autoplay={{
+                delay: 10000
+              }}
+              breakpoints={{
+                768: {
+                  slidesPerView: 1,
+                  spaceBetween: 5
+                },
+                960: {
+                  slidesPerView: 3,
+                  spaceBetween: 10
+                },
+                1200: {
+                  slidesPerView: 3
+                }
+              }}
             >
               {suggestedPosts?.map(post => (
                 <SwiperSlide key={post.id}>
@@ -297,7 +347,7 @@ const MyAccount = () => {
       ) : activeTab === 3 ? (
         <TravelItinerary />
       ) : activeTab === 4 ? (
-        <EditMap />
+        <EditMap handleClose={setActiveTab}/>
       ) : (
         <MyFriends />
       )}

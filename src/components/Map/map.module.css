@@ -8,11 +8,11 @@
     0% {
     }
     50% {
-        scale: 1.2;
+        scale: 1.1;
         /*transform: translateY(-10%);*/
     }
     100% {
-        scale: 1.2;
+        scale: 1.1;
         /*transform: translateY(0);*/
     }
 }

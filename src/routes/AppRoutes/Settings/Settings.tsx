@@ -19,8 +19,6 @@ import {firebaseErrors} from "~/constants/firebaseErrors";
 import {doc, updateDoc} from "@firebase/firestore";
 import {db, storage} from "~/firebase";
 import {LoadingScreen} from "~/components/LoadingScreen";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import {urlBase64ToUint8Array} from "@utils/urlBase64ToUint8Array";
 import CustomModal from "~/components/CustomModal";
 import {ImageUploaderModal} from "~/components/ImageUploaderModal";
