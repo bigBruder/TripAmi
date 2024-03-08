@@ -30,12 +30,14 @@ import CreatePostModal from "~/components/CreatePostModal";
 import CustomModal from "~/components/CustomModal";
 import {getDownloadURL} from "firebase/storage";
 import {ref} from "@firebase/storage";
-import {storage} from "~/firebase";
+import {db, storage} from "~/firebase";
 import debouce from "lodash.debounce";
 import CreateTripModal from "~/components/CreateTripModal";
 
 import algoliasearch from "algoliasearch";
-import { limit } from "firebase/firestore";
+import { doc, documentId, getDoc, getDocs, limit, query, where } from "firebase/firestore";
+import { postsCollection } from "~/types/firestoreCollections";
+import { IPost } from "~/types/post";
 const client = algoliasearch("W8J2M4GNE3", "18fbb3c4cc4108ead5479d90911f3507");
 const index = client.initIndex("prod_users");
 
@@ -62,6 +64,9 @@ const Header = () => {
   const [searchIsLoading, setSearchIsLoading] = useState(false);
   const [searchResult, setSearchResult] = useState<SearchResult[]>([]);
   const [tripModalIsOpen, setTripModalIsOpen] = useState(false);
+
+
+  const [selectedPost, setSelectedPost] = useState<IPost | null>();
 
   const handleChange = useCallback((e) => {
     setSearchTerm(e.target.value);
@@ -95,6 +100,8 @@ const Header = () => {
           );
   
           console.log(imageUrls);
+
+          console.log(result.hits[0]);
   
   
           setSearchResult(result.hits.map((hit, idx) => {
@@ -147,6 +154,48 @@ const Header = () => {
     setTripModalIsOpen(false);
   }, []);
 
+  const handleSelectAutocomplete = (searchResult: SearchResult) => {
+    (async () => {
+      if (firestoreUser?.id) {
+        try {
+          const q = query(
+            postsCollection,
+            where(documentId(), '==', searchResult.id),
+          );
+
+          const querySnapshot = await getDocs(q);
+          const fetchedPost = querySnapshot.docs[0].data() as IPost;
+          const imageUrl = await getDownloadURL(ref(storage, fetchedPost.imageUrls[0]));
+
+          console.log("imageURL: ", imageUrl);
+
+          if (fetchedPost && imageUrl) {
+            navigate(
+              '/posts',
+                {state: {
+                  ...fetchedPost,
+                  imageUrls:[imageUrl],
+                  id:searchResult.id
+                }})
+          }
+
+          // return navigate(
+          //   '/posts',
+          //     {state: {
+          //       ...fetchedPost,
+          //     }});
+         
+        } catch (err) {
+          // @ts-ignore
+          alert(firebaseErrors[err.code]);
+        } finally {
+          // setIsPostsLoading(false);
+
+        }
+      }
+    })();
+  }
+
   return (
     <>
       <div className={styles.header}>
@@ -159,7 +208,7 @@ const Header = () => {
               <div className={styles.searchResultsContainer}>
                 {searchResult?.map(searchResult => {
                   return (
-                    <div className={styles.searchResult} key={searchResult.id}>
+                    <div className={styles.searchResult} key={searchResult.id} onClick={() => handleSelectAutocomplete(searchResult)}>
                       <img src={searchResult.imageUrl} alt={'search result image'} className={styles.autocomplete_photo}/>
                       <div dangerouslySetInnerHTML={{__html: `${searchResult.text}`}} />
                     </div>
