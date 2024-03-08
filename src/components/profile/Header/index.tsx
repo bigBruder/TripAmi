@@ -35,6 +35,7 @@ import debouce from "lodash.debounce";
 import CreateTripModal from "~/components/CreateTripModal";
 
 import algoliasearch from "algoliasearch";
+import { limit } from "firebase/firestore";
 const client = algoliasearch("W8J2M4GNE3", "18fbb3c4cc4108ead5479d90911f3507");
 const index = client.initIndex("prod_users");
 
@@ -77,21 +78,41 @@ const Header = () => {
       if (searchTerm.length) {
         const result = await index.search(searchTerm);
 
-        console.log(result)
+        if (result.hits.length > 0) {
+          const url = await getDownloadURL(ref(storage, result.hits[0].imageUrls[0]));        
+          console.log("url: ", url)
+  
+          const imageUrls = await Promise.all(
+            result.hits.map(async hit => {
+              if (hit.imageUrls[0]) {
+                const url = await getDownloadURL(ref(storage, hit.imageUrls[0]));
+              } else {
+                // remove the block statement later when photos in new posts will become must have
+                const url = "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png"
+              }
+              return url;
+            })
+          );
+  
+          console.log(imageUrls);
+  
+  
+          setSearchResult(result.hits.map((hit, idx) => {
+            return ({
+              type: CONTENT_TYPE.POST,
+              text: hit?._highlightResult?.text.value || hit.text || '',
+              id: hit.objectID,
+              imageUrl: imageUrls[idx],
+              createdAt: hit.createdAt,
+            });
+          }));
+        }
 
-
-        setSearchResult(result.hits.map(hit => {
-          return ({
-            type: CONTENT_TYPE.POST,
-            text: hit?._highlightResult?.text.value || hit.text || '',
-            id: hit.objectID,
-            imageUrl: hit.imageUrls?.[0],
-            createdAt: hit.createdAt,
-          });
-        }));
-      } else {
-        setSearchResult([]);
-      }
+       
+      } 
+      // else {
+      //   setSearchResult([]);
+      // }
     } catch (e) {
       console.log('[ERROR searching] => ', e);
     } finally {
@@ -138,8 +159,8 @@ const Header = () => {
               <div className={styles.searchResultsContainer}>
                 {searchResult?.map(searchResult => {
                   return (
-                    <div className={styles.searchResults}>
-                      <img src={searchResult.imageUrl} alt={'search result image'} />
+                    <div className={styles.searchResult} key={searchResult.id}>
+                      <img src={searchResult.imageUrl} alt={'search result image'} className={styles.autocomplete_photo}/>
                       <div dangerouslySetInnerHTML={{__html: `${searchResult.text}`}} />
                     </div>
                   );

@@ -184,6 +184,12 @@
   margin-right: -5px;
 }
 
+.autocomplete_photo {
+  width: 80px;
+  height: 80px;
+  border-radius: 20px;
+}
+
 .IconButton {
   border: none;
   font-family: inherit;
@@ -247,17 +253,31 @@
   }
 }
 
+.searchResult {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 20px;
+  background-color: rgb(218, 224, 225);
+  border-radius: 20px;
+}
+
 
 .searchResultsContainer {
+  left: -20px;
+  top: 10px;
   position: relative;
   z-index: 9999;
   width: calc(100% + 10px);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 
   padding: 10px;
 
   background-color: #FFF;
 
-  border-radius: 20px;
+  border-bottom: 20px;
 }
 
 em {
