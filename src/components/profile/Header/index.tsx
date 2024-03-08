@@ -38,6 +38,7 @@ import algoliasearch from "algoliasearch";
 import { doc, documentId, getDoc, getDocs, limit, query, where } from "firebase/firestore";
 import { postsCollection } from "~/types/firestoreCollections";
 import { IPost } from "~/types/post";
+import { useInputFocus } from "~/hooks/useInputRef";
 const client = algoliasearch("W8J2M4GNE3", "18fbb3c4cc4108ead5479d90911f3507");
 const index = client.initIndex("prod_users");
 
@@ -64,6 +65,7 @@ const Header = () => {
   const [searchIsLoading, setSearchIsLoading] = useState(false);
   const [searchResult, setSearchResult] = useState<SearchResult[]>([]);
   const [tripModalIsOpen, setTripModalIsOpen] = useState(false);
+  const { inputProps: searchProps, isFocused: isSearchFocused } = useInputFocus();
 
 
   const [selectedPost, setSelectedPost] = useState<IPost | null>();
@@ -202,10 +204,16 @@ const Header = () => {
         <img className={styles.title} src={Logo} onClick={() => navigate('/profile')} />
         <div className={styles.inputWrapper}>
           <img className={styles.search} src={search} alt="search" />
-          <div style={{width: '100%'}}>
+          <div 
+              style={{width: '100%'}}                 
+              onFocus={searchProps.onFocus} 
+              onBlur={searchProps.onBlur}
+          >
             <input className={styles.input} placeholder="Search" onChange={debouncedResults} />
-            {searchResult.length ? (
-              <div className={styles.searchResultsContainer}>
+            {searchResult.length && isSearchFocused ? (
+              <div 
+                className={styles.searchResultsContainer} 
+              >
                 {searchResult?.map(searchResult => {
                   return (
                     <div className={styles.searchResult} key={searchResult.id} onClick={() => handleSelectAutocomplete(searchResult)}>
