@@ -50,6 +50,7 @@
 
 .mainContainer {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: 20px;
 
@@ -63,6 +64,8 @@
     } */
     .mainContainer {
         flex-direction: row;
+        align-items: center;
+        justify-content: center;
     }
 }
 
@@ -172,10 +175,14 @@
 
 .daysDescriptionContainer {
     overflow-y: hidden;
-    padding-left: 20px;
 }
 
 .dayDescription {
     font-size: 10px;
     overflow-y: hidden;
+}
+
+.date {
+    color: grey;
+    font-size: 8px;
 }

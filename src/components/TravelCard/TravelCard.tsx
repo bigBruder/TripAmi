@@ -146,7 +146,7 @@ const TravelCard: FC<Props> = ({travel}) => {
           {
             dayDescription && dayDescription.map((day, index) => (
               <div key={`day_${index}`} className={styles.dayDescription}>
-                <p>{day.date}</p>
+                <p className={styles.date}>{day.date}</p>
                 <p>{day.description}</p>
               </div>
             ))
