@@ -31,6 +31,7 @@ const TravelCard: FC<Props> = ({travel}) => {
     text,
     userId,
     comments_count,
+    tripName,
     id,
   } = travel;
   const navigate = useNavigate();
@@ -135,6 +136,7 @@ const TravelCard: FC<Props> = ({travel}) => {
         </div>
 
         <div className={styles.textContainer}>
+          <p className={styles.text}>{tripName}</p>
           <p className={styles.text}>{text}</p>
 
           <div>

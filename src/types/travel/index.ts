@@ -16,5 +16,6 @@ export interface ITravel {
     color: string;
   };
   text: string;
+  tripName: string;
   comments_count: number;
 }

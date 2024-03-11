@@ -48,7 +48,8 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
   const [isMaxError, setIsMaxError] = useState(false);
   const [geoTags, setGeoTags] = useState('');
   const [selectedGeoTags, setSelectedGeoTags] = useState<{address: string, placeID: string}[]>(data?.geoTags || []);
-  const [isAddingPlace, setIsAddingPlace] = useState(false); 
+  const [isAddingPlace, setIsAddingPlace] = useState(false);
+  const [tripName, setTripName] = useState('');
 
   useEffect(() => {
     if (isMaxError) {
@@ -96,6 +97,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
           when: selectedDate,
           public: tickIsChecked,
           geoTags: selectedGeoTags,
+          tripName: tripName,
           location: {
             name: location,
             longitude: geocode[0].geometry.location.lng(),
@@ -201,6 +203,13 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
       <form>
         <div className={styles.topContainer}>
           {/* <p>Where’d you go?</p> */}
+          <p>Trip name:</p>
+          <input 
+            placeholder='Amazing trip' 
+            className={styles.input} 
+            onChange={e => setTripName(e.target.value)}
+          />
+
           <p>Country:</p>
           <PlacesAutocomplete
             value={location}
