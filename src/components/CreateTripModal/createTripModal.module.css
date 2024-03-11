@@ -211,3 +211,34 @@ img {
 
     cursor: pointer;
 }
+
+.dayDescriptionContainer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 20px;
+}
+
+.dayDescriptionContainer input{
+    max-width: max-content;
+}
+
+.dayDescriptionContainer {
+    width: 100%;
+}
+
+.dayDescriptionNav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dayDescriptionNav button{
+    height: 20px;
+    width: max-content;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    font-size: 14px;
+}

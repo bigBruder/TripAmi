@@ -50,6 +50,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
   const [selectedGeoTags, setSelectedGeoTags] = useState<{address: string, placeID: string}[]>(data?.geoTags || []);
   const [isAddingPlace, setIsAddingPlace] = useState(false);
   const [tripName, setTripName] = useState('');
+  const [daysDescription, setDaysDescription] = useState<{date: string, description:string}[]>([]);
 
   useEffect(() => {
     if (isMaxError) {
@@ -104,6 +105,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
             latitude: geocode[0].geometry.location.lat(),
             color: randomColor(),
           },
+          dayDescription: daysDescription,
           text,
         });
 
@@ -196,6 +198,26 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
       e.preventDefault();
       setIsAddingPlace(prevState => !prevState);
     }
+  }
+
+  const handleAddDayDescription = (event:  React.MouseEventHandler<HTMLButtonElement>) => {
+    event.preventDefault();
+
+    setDaysDescription(prevState => [...prevState, {date: '', description: ''}]);
+  }
+
+  const handleRemoveDayDescription = (indexToRemove: number) => {
+    setDaysDescription(prevDescriptions => prevDescriptions.filter((day, idx) => idx !== indexToRemove))
+  }
+
+  const handleDayDateDescriptionChange = (event: React.ChangeEvent<HTMLInputElement>, indexToChange: number, type: string) => {
+   setDaysDescription(prevState => prevState.map((prevDay, index) => {
+    if (index === indexToChange) {
+      return {...prevDay, [type]: event.target.value}
+    } else {
+      return prevDay;
+    }
+   }))
   }
 
   return (
@@ -313,18 +335,58 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
          
 
           <p>When?</p>
-          <input value={selectedDate} onChange={e => setSelectedDate(e.target.value)} type="date"
-                 className={styles.input}/>
+          <input 
+            value={selectedDate} 
+            onChange={e => setSelectedDate(e.target.value)} 
+            type="date"
+            className={styles.input}
+          />
         </div>
 
-        <div>
-            <textarea
-              className={`${styles.input} ${styles.textArea}`}
-              placeholder={'Description'}
-              value={text}
-              onChange={e => setText(e.target.value)}
-            />
+          <div>
+              <textarea
+                className={`${styles.input} ${styles.textArea}`}
+                placeholder={'Description'}
+                value={text}
+                onChange={e => setText(e.target.value)}
+              />
+          </div>
+
+        <div className={styles.dayDescriptionNav}>
+          <p>Do you wanna description some day?</p>
+          <button 
+                className={styles.button}
+                onClick={handleAddDayDescription}
+          >
+            Add day description
+          </button>
         </div>
+
+        {
+          daysDescription && Array.from(Array(daysDescription.length).keys()).map((day, idx) => (
+            <div className={styles.dayDescriptionContainer} key={day}>
+            <input 
+              value={daysDescription[idx].date} 
+              onChange={e => handleDayDateDescriptionChange(e, idx, 'date')}
+              type="date"
+              className={styles.input}
+            />
+            <div className={styles.dayDescriptionContainer}>
+                <textarea
+                  className={`${styles.input} ${styles.textArea}`}
+                  placeholder={'Description'}
+                  value={daysDescription[idx].description} 
+                  onChange={e => handleDayDateDescriptionChange(e, idx, 'description')}
+                />
+            </div>
+            <img src={Plus} className={styles.crossIcon} onClick={() => {handleRemoveDayDescription(idx)}} />
+          </div>
+          ))
+        }
+       
+        
+
+        
                 
         <div className={styles.startContainer}>
           

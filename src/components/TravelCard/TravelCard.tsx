@@ -33,6 +33,7 @@ const TravelCard: FC<Props> = ({travel}) => {
     userId,
     comments_count,
     tripName,
+    dayDescription,
     id,
   } = travel;
   const navigate = useNavigate();
@@ -121,7 +122,7 @@ const TravelCard: FC<Props> = ({travel}) => {
           <p className={styles.location}>{location?.name.slice(0, 50)}{location.name.length > 50 && '...'}</p>
         <Rating disabled selectedStars={rate} />
         <div className={styles.dateContainer}>
-          <p className={styles.location}>Date</p>
+          {/* <p className={styles.location}>Date</p> */}
           <p className={styles.date}>{when}</p>
         </div>
       </div>
@@ -138,6 +139,19 @@ const TravelCard: FC<Props> = ({travel}) => {
         <div className={styles.textContainer}>
           <h3>{tripName}</h3>
           <p className={styles.text}>{text}</p>
+
+
+          <div className={styles.daysDescriptionContainer}>
+          {
+            dayDescription && dayDescription.map((day, index) => (
+              <div key={`day_${index}`} className={styles.dayDescription}>
+                <p>{day.date}</p>
+                <p>{day.description}</p>
+              </div>
+            ))
+          }
+          </div>
+
 
           <div>
             <p className={styles.text}>Places visited: </p>

@@ -168,3 +168,13 @@
     border-radius: 10px;
     color: grey;
 }
+
+.daysDescriptionContainer {
+    overflow-y: hidden;
+    padding-left: 20px;
+}
+
+.dayDescription {
+    font-size: 10px;
+    overflow-y: hidden;
+}

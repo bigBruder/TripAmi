@@ -303,7 +303,7 @@ const MyAccount = () => {
         )}
       </div>
 
-      {/* <Footer /> */}
+      <Footer />
 
       <CustomModal isOpen={modalIsOpen} onCloseModal={closeModal}>
         <CreatePostModal closeModal={closeModal}/>

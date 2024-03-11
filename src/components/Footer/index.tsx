@@ -9,10 +9,10 @@ export const Footer = () => {
       {/*  <p>TripAmi</p>*/}
       {/*  <p>the country of your dreams</p>*/}
       {/*</div>*/}
-      <div className={styles.rightContainer}>
+      {/* <div className={styles.rightContainer}>
         <p>Contacts</p>
         <p>Our social networks</p>
-      </div>
+      </div> */}
     </div>
   );
 };

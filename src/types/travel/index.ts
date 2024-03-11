@@ -17,5 +17,6 @@ export interface ITravel {
   };
   text: string;
   tripName: string;
+  dayDescription?: {date: string, description: string}[]
   comments_count: number;
 }
