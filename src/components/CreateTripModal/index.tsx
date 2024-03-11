@@ -48,6 +48,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
   const [isMaxError, setIsMaxError] = useState(false);
   const [geoTags, setGeoTags] = useState('');
   const [selectedGeoTags, setSelectedGeoTags] = useState<{address: string, placeID: string}[]>(data?.geoTags || []);
+  const [isAddingPlace, setIsAddingPlace] = useState(false); 
 
   useEffect(() => {
     if (isMaxError) {
@@ -127,6 +128,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
   const onSelectGeoTag = useCallback((address: string, placeID: string) => {
     setSelectedGeoTags(prevState => [...prevState, {address, placeID}]);
     setGeoTags('');
+    setIsAddingPlace(false);
   }, []);
 
   const handleRemoveGeoTag = useCallback((placeId: string) => {
@@ -187,11 +189,19 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
     );
   }, [file])
 
+  const handleOpenAddGeocode = (e: React.MouseEventHandler<HTMLButtonElement>) => {
+    if (e) {
+      e.preventDefault();
+      setIsAddingPlace(prevState => !prevState);
+    }
+  }
+
   return (
     <div className={styles.outer_container}>
       <form>
         <div className={styles.topContainer}>
-          <p>Where’d you go?</p>
+          {/* <p>Where’d you go?</p> */}
+          <p>Country:  (we will fix autocomplete for only countries soon)</p>
           <PlacesAutocomplete
             value={location}
             onChange={(value) => setLocation(value)}
@@ -229,7 +239,16 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
             }}
           </PlacesAutocomplete>
 
-          <p>Tag Your Favorite Places on this Trip: </p>
+            <div className={styles.geocodes_top}>
+              {/* <p>Tag Your Favorite Places on this Trip: </p> */}
+              <p>Tag Your Places: </p>
+              <button 
+                className={styles.button}
+                onClick={handleOpenAddGeocode}
+              >Add Place</button>
+            </div>
+          {
+            isAddingPlace && (
           <PlacesAutocomplete
             value={geoTags}
             onChange={(value) => setGeoTags(value)}
@@ -267,17 +286,22 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
               );
             }}
           </PlacesAutocomplete>
-
-          {selectedGeoTags.length ? (
-            <>
-              {selectedGeoTags.map(geoTag => (
-                <div className={styles.geoTagContainer} key={geoTag.placeID}>
-                  <p>{geoTag.address}</p>
-                  <img src={Plus} className={styles.crossIcon} onClick={() => handleRemoveGeoTag(geoTag.placeID)} />
-                </div>
-              ))}
-            </>
-          ) : null}
+            )
+          }
+          
+          <div className={styles.selectedTagsContainer}>
+            {selectedGeoTags.length ? (
+              <>
+                {selectedGeoTags.map(geoTag => (
+                  <div className={styles.geoTagContainer} key={geoTag.placeID}>
+                    <p>{geoTag.address}</p>
+                    <img src={Plus} className={styles.crossIcon} onClick={() => handleRemoveGeoTag(geoTag.placeID)} />
+                  </div>
+                ))}
+              </>
+            ) : null}
+          </div>
+         
 
           <p>When?</p>
           <input value={selectedDate} onChange={e => setSelectedDate(e.target.value)} type="date"

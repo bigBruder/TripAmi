@@ -95,6 +95,23 @@ img {
     gap: 11px;
     outline: none;
 }
+.geocodes_top {
+    display: flex;
+    height: 20px;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.geocodes_top button {
+    height: 20px;
+    width: max-content;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    font-size: 14px;
+}
 
 @media (min-width: 768px) {
     .uploadContainer {
@@ -168,7 +185,13 @@ img {
 .geoTagContainer {
     display: flex;
     justify-content: space-between;
-    width: 100%;
+    width: 80%;
+}
+
+.selectedTagsContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .crossIcon {
