@@ -78,7 +78,12 @@ const Map: FC<Props> = ({onClick, selectedTripId, userId}) => {
           <Geographies geography={GeoJson}>
             {({geographies}) =>
               geographies.map((geo) => (
-                <Geography key={geo.rsmKey} geography={geo} fill={'rgb(178, 178, 178)'}/>
+                <Geography key={geo.rsmKey} geography={geo} fill={'rgb(178, 178, 178)'}   
+                  style={{
+                    default: { outline: "none" },
+                    hover: { outline: "none" },
+                    pressed: { outline: "none" },
+                }}/>
               ))
             }
           </Geographies>
