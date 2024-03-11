@@ -118,9 +118,7 @@ const TravelCard: FC<Props> = ({travel}) => {
   return (
     <div className={styles.container}>
       <div className={styles.topContainer}>
-        <ul className={styles.list}>
-          <p className={styles.location}>{location?.name}</p>
-        </ul>
+          <p className={styles.location}>{location?.name.slice(0, 50)}{location.name.length > 50 && '...'}</p>
         <Rating disabled selectedStars={rate} />
         <div className={styles.dateContainer}>
           <p className={styles.location}>Date</p>
