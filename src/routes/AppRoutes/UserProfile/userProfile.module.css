@@ -5,6 +5,11 @@
     min-height: calc(100vh - 65px);
 }
 
+.container {
+    padding: 62px;
+}
+
+
 .myAccount {
     display: flex;
     flex-direction: row;

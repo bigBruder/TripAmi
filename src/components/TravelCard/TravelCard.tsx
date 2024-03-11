@@ -15,6 +15,7 @@ import {ReactPhotoCollage} from "react-photo-collage";
 import Dots from '@assets/icons/dots.svg';
 import CreateTripModal from "~/components/CreateTripModal";
 import CustomModal from "~/components/CustomModal";
+import { Marker } from "~/assets/icons/map/Marker";
 
 interface Props {
   travel: ITravel;
@@ -118,41 +119,50 @@ const TravelCard: FC<Props> = ({travel}) => {
     <div className={styles.container}>
       <div className={styles.topContainer}>
         <ul className={styles.list}>
-          <li className={styles.location}>{location?.name}</li>
+          <p className={styles.location}>{location?.name}</p>
         </ul>
+        <Rating disabled selectedStars={rate} />
         <div className={styles.dateContainer}>
           <p className={styles.location}>Date</p>
           <p className={styles.date}>{when}</p>
         </div>
       </div>
 
-      <Rating disabled selectedStars={rate} />
+
 
       <div className={styles.mainContainer}>
-        <div>
+        <div className={styles.gallery}>
           {setting.photos.length > 0 && getLayout.length && getHeight.length ? (
-            <ReactPhotoCollage {...setting} />
+            <ReactPhotoCollage {...setting}/>
           ) : null}
         </div>
 
         <div className={styles.textContainer}>
-          <p className={styles.text}>{tripName}</p>
+          <h3>{tripName}</h3>
           <p className={styles.text}>{text}</p>
 
           <div>
-            <p>Places visited: </p>
-            {travel?.geoTags?.map(tag => (
-              <p
-                onClick={() => navigate('/place/' + tag.placeID)}
-                key={tag.placeID}
-                className={styles.tag}
-              >
-                {tag.address}
-              </p>
-            ))}
+            <p className={styles.text}>Places visited: </p>
+            <div className={styles.tagsContainer}>
+              {travel?.geoTags?.map(tag => (
+                <p
+                  onClick={() => navigate('/place/' + tag.placeID)}
+                  key={tag.placeID}
+                  className={styles.tag}
+                >
+                  {tag.address}
+                </p>
+              ))}
+            </div>
+            
           </div>
 
-          <div className={styles.footer}>
+          
+        </div>
+      </div>
+
+
+      <div className={styles.footer}>
             <div className={styles.shareContainer}>
               <img
                 className={styles.commentsIcon}
@@ -178,8 +188,6 @@ const TravelCard: FC<Props> = ({travel}) => {
               </>
             ) : null}
           </div>
-        </div>
-      </div>
 
       <CustomModal isOpen={editModalIsOpen} onCloseModal={handleCloseEditModal}>
         <CreateTripModal

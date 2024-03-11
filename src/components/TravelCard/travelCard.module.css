@@ -1,4 +1,7 @@
 .container {
+    background-color: white;
+    border-radius: 20px;
+    padding: 20px;
 }
 
 .topContainer {
@@ -11,7 +14,10 @@
 }
 
 .list {
-    padding-left: 17px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
     margin: 0;
 }
 
@@ -44,18 +50,17 @@
 
 .mainContainer {
     display: flex;
-    flex-direction: column;
+    align-items: center;
     gap: 20px;
 
-    height: 232px;
     width: 100%;
     margin-top: 19px;
 }
 
 @media (min-width: 768px) {
-    .topContainer {
+    /* .topContainer {
         width: 50%;
-    }
+    } */
     .mainContainer {
         flex-direction: row;
     }
@@ -67,34 +72,43 @@
     object-fit: contain;
 }
 
+.gallery {
+    display: block;
+    max-height: max-content;
+}
+
 .text {
     color: #262626;
     font-family: Gilroy, sans-serif;
-    font-size: 20px;
+    font-size: 14px;
     font-style: normal;
     font-weight: 500;
     line-height: normal;
-
-    margin-top: 25px;
 }
 
 .textContainer {
+    gap: 20px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: flex-start;
+    flex-grow: 1;
+    max-width: 70%;
+
 }
 
 
 .footer {
     display: flex;
     align-items: center;
+    justify-content: center;
     align-self: flex-start;
     flex-wrap: wrap;
     height: 35px;
     color: #aeaeae;
     gap: 14px;
     padding: 12.5px 0;
+    align-self: stretch;
 }
 
 .commentsContainer {
@@ -139,7 +153,18 @@
     color: #55BEF5;
 }
 
+.tagsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    overflow-y: hidden;
+}
+
 .tag {
     font-size: 12px;
     cursor: pointer;
+    background-color:  rgb(218, 224, 225);
+    padding: 2px;
+    border-radius: 10px;
+    color: grey;
 }
