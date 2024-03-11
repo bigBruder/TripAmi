@@ -63,7 +63,6 @@ const Map: FC<Props> = ({onClick, selectedTripId, userId}) => {
     }
   }, [trips, userId, usersTrips]);
 
-  console.log(selectedTripsList);
 
   return (
     <div style={{position: 'relative'}}>

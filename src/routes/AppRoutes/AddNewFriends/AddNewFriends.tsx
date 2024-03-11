@@ -15,6 +15,7 @@ import {IInvitation} from "~/types/invitations";
 import defaultUserIcon from "@assets/icons/defaultUserIcon.svg";
 import {getDownloadURL} from "firebase/storage";
 import {ref} from "@firebase/storage";
+import { useNavigate } from 'react-router-dom';
 
 const AddNewFriends = () => {
   const [users, setUsers] = useState<IUser[]>([]);
@@ -217,11 +218,20 @@ export const UserCard: FC<Props> = ({
     getUserImage();
   }, [firestoreUser?.avatarUrl]);
 
-  console.log(user, invited, gotInvite, invitation, isFriend);
+
+  const navigate = useNavigate();
+
+  const handleOpenUserProfile = useCallback(() => {
+    if (user.id !== firestoreUser?.firebaseUid) {
+      navigate('/user/' + user.id);
+    } else {
+      navigate('/profile');
+    }
+  }, [firestoreUser?.firebaseUid, navigate, user.id]);
 
   return (
     <div className={styles.cardMain}>
-      <div className={styles.userCard}>
+      <div className={styles.userCard} onClick={handleOpenUserProfile}>
         <img src={userAvatar} className={styles.avatar} />
         <div className={styles.userInfo}>
           <p className={styles.userName}>{user.username}</p>
