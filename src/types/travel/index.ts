@@ -8,6 +8,10 @@ export interface ITravel {
     placeID: string;
     address: string;
   }[];
+  cities?: {
+    placeID: string;
+    address: string;
+  }[];
   public: boolean;
   location: {
     name: string;

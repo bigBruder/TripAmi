@@ -18,6 +18,7 @@ import randomColor from "randomcolor";
 import {toast, ToastContainer} from "react-toastify";
 import Plus from '~/assets/icons/plus.svg';
 import ReactPlayer from "react-player";
+import PlaceAutocomplete from '../PlaceAutocomplete/PlaceAutocomplete';
 
 const fileTypes = ["JPEG", "PNG", "JPG", "MP4"];
 
@@ -41,6 +42,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
   const [file, setFile] = useState<File[]>([]);
   const [rating, setRating] = useState(data?.rating || 0);
   const [location, setLocation] = useState(data?.locationName || null);
+  const [city, setCity] = useState('');
   const [selectedDate, setSelectedDate] = useState<string>(data?.when || moment().format('yyyy-MM-D'));
   const [isLoading, setIsLoading] = useState(false);
   const [text, setText] = useState(data?.description || '');
@@ -48,9 +50,11 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
   const [isMaxError, setIsMaxError] = useState(false);
   const [geoTags, setGeoTags] = useState('');
   const [selectedGeoTags, setSelectedGeoTags] = useState<{address: string, placeID: string}[]>(data?.geoTags || []);
+  const [selectedCities, setSelectedCities] = useState<{address: string, placeID: string}[]>(data?.geoTags || []);
   const [isAddingPlace, setIsAddingPlace] = useState(false);
   const [tripName, setTripName] = useState('');
   const [daysDescription, setDaysDescription] = useState<{date: string, description:string}[]>([]);
+  const [isAddCityOpen, setIsAddCityOpen] = useState(false);
 
   useEffect(() => {
     if (isMaxError) {
@@ -98,6 +102,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
           when: selectedDate,
           public: tickIsChecked,
           geoTags: selectedGeoTags,
+          cities: selectedCities,
           tripName: tripName,
           location: {
             name: location,
@@ -220,6 +225,17 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
    }))
   }
 
+  const handleOpenAddCity = (event: React.MouseEventHandler<HTMLButtonElement>) => {
+    event.preventDefault();
+    setIsAddCityOpen(prevState => !prevState);
+  }
+
+  const onSelectCity = useCallback((address: string, placeID: string) => {
+    setSelectedCities(prevState => [...prevState, {address, placeID}]);
+    setCity('');
+    // setIsAddingPlace(false);
+  }, []);
+
   return (
     <div className={styles.outer_container}>
       <form>
@@ -233,7 +249,51 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
           />
 
           <p>Country:</p>
+          <PlaceAutocomplete 
+            searchOptions={{ types: ['country'] }}
+            location={location}
+            setLocation={setLocation}
+            onSelectPlace={onSelectPlace}
+          />
+
+          <div className={styles.geocodes_top}>
+              {/* <p>Tag Your Favorite Places on this Trip: </p> */}
+              <p>Do you wanna add city? </p>
+              <button 
+                className={styles.button}
+                onClick={handleOpenAddCity}
+              >Add city</button>
+            </div>
+
+            {
+              isAddCityOpen && (
+                <PlaceAutocomplete 
+                  searchOptions={{ types: ['locality'] }}
+                  location={city}
+                  setLocation={setCity}
+                  onSelectPlace={onSelectCity}
+                />
+              )
+            }
+          
+
+          <div className={styles.selectedTagsContainer}>
+            {selectedCities.length ? (
+              <>
+                {selectedCities.map(selectedCity => (
+                  <div className={styles.geoTagContainer} key={selectedCity.placeID}>
+                    <p>{selectedCity.address}</p>
+                    <img src={Plus} className={styles.crossIcon} onClick={() => handleRemoveGeoTag(selectedCity.placeID)} />
+                  </div>
+                ))}
+              </>
+            ) : null}
+          </div>
+
+          {/* <p>City:</p>
           <PlacesAutocomplete
+            searchOptions={{ types: ['country'] }}
+            // searchOptions={{ types: ['establishment'] }}
             value={location}
             onChange={(value) => setLocation(value)}
             onSelect={onSelectPlace}
@@ -268,7 +328,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
                 </div>
               );
             }}
-          </PlacesAutocomplete>
+          </PlacesAutocomplete> */}
 
             <div className={styles.geocodes_top}>
               {/* <p>Tag Your Favorite Places on this Trip: </p> */}
@@ -281,6 +341,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
           {
             isAddingPlace && (
           <PlacesAutocomplete
+            searchOptions={{ types: ['establishment'] }}
             value={geoTags}
             onChange={(value) => setGeoTags(value)}
             onSelect={onSelectGeoTag}
@@ -307,6 +368,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
                             className: styles.dropdownItem,
                             style,
                           })}
+                          key={suggestion.id}
                         >
                           <p>{suggestion.description}</p>
                         </div>

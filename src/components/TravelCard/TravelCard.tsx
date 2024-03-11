@@ -34,6 +34,7 @@ const TravelCard: FC<Props> = ({travel}) => {
     comments_count,
     tripName,
     dayDescription,
+    cities,
     id,
   } = travel;
   const navigate = useNavigate();
@@ -152,7 +153,24 @@ const TravelCard: FC<Props> = ({travel}) => {
           }
           </div>
 
-
+          {
+            cities && (
+              <div>
+                <p className={styles.text}>Cities visited: </p>
+                <div className={styles.tagsContainer}>
+                {travel?.cities?.map(tag => (
+                  <p
+                    onClick={() => navigate('/place/' + tag.placeID)}
+                    key={tag.placeID}
+                    className={styles.tag}
+                  >
+                    {tag.address}
+                  </p>
+                ))}
+              </div>
+            </div>
+            )
+          }
           <div>
             <p className={styles.text}>Places visited: </p>
             <div className={styles.tagsContainer}>
