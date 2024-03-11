@@ -138,7 +138,7 @@ const TravelCard: FC<Props> = ({travel}) => {
           <p className={styles.text}>{text}</p>
 
           <div>
-            <p>Geo tags: </p>
+            <p>Places visited: </p>
             {travel?.geoTags?.map(tag => (
               <p
                 onClick={() => navigate('/place/' + tag.placeID)}

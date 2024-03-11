@@ -201,7 +201,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
       <form>
         <div className={styles.topContainer}>
           {/* <p>Where’d you go?</p> */}
-          <p>Country:  (we will fix autocomplete for only countries soon)</p>
+          <p>Country:</p>
           <PlacesAutocomplete
             value={location}
             onChange={(value) => setLocation(value)}
@@ -307,33 +307,18 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
           <input value={selectedDate} onChange={e => setSelectedDate(e.target.value)} type="date"
                  className={styles.input}/>
         </div>
-        <div className={styles.startContainer}>
-          <p>Public</p>
-          <Checkbox
-            checked={tickIsChecked}
-            icon={<img src={Tick} style={{width: 24}} alt=""/>}
-            onChange={(value: boolean) => {
-              setTickIsChecked(value);
-            }}
-            borderColor="#55BEF5"
-            borderRadius={0}
-            size={24}
-          />
-        </div>
-        <div className={styles.startContainer}>
-          <p>Rating</p>
-          <Rating setSelectedStars={setRating} selectedStars={rating}/>
-        </div>
+
         <div>
-          <textarea
-            className={`${styles.input} ${styles.textArea}`}
-            placeholder={'Description'}
-            value={text}
-            onChange={e => setText(e.target.value)}
-          />
+            <textarea
+              className={`${styles.input} ${styles.textArea}`}
+              placeholder={'Description'}
+              value={text}
+              onChange={e => setText(e.target.value)}
+            />
         </div>
+                
         <div className={styles.startContainer}>
-          <p>Image and Video </p>
+          
           <FileUploader
             multiple={true}
             handleChange={handleChange}
@@ -342,10 +327,32 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
             hoverTitle={' '}
           >
             <div className={styles.uploadContainer}>
-              <p className={styles.dragText}>Drag and drop image/video or</p>
+              {/* <p>Image and Video </p> */}
+              <p className={styles.dragText}>Drag and drop image/video or click on </p>
               <button className={styles.buttonUpload}>Upload</button>
             </div>
           </FileUploader>
+        </div>
+
+        <div className={styles.startWrapper}>
+          <div className={styles.startContainer}>
+            <p>Public:</p>
+            <Checkbox
+              checked={tickIsChecked}
+              icon={<img src={Tick} style={{width: 24}} alt=""/>}
+              onChange={(value: boolean) => {
+                setTickIsChecked(value);
+              }}
+              borderColor="#55BEF5"
+              borderRadius={0}
+              size={24}
+            />
+          </div>
+          <div className={styles.startContainer}>
+            <p>Rating:</p>
+            <Rating setSelectedStars={setRating} selectedStars={rating}/>
+          </div>
+          
         </div>
 
         {Slider}
