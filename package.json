@@ -40,6 +40,7 @@
     "react-image-marker": "^1.2.0",
     "react-loading-skeleton": "^3.3.1",
     "react-modal": "^3.16.1",
+    "react-photo-album": "^2.3.1",
     "react-photo-collage": "^1.0.9",
     "react-places-autocomplete": "^7.3.0",
     "react-player": "^2.13.0",

@@ -11,11 +11,11 @@ import BinIcon from "@assets/icons/BinIcon.svg";
 import {AuthContext} from "~/providers/authContext";
 import {deleteDoc, doc} from "@firebase/firestore";
 import {useNavigate} from "react-router-dom";
-import {ReactPhotoCollage} from "react-photo-collage";
 import Dots from '@assets/icons/dots.svg';
 import CreateTripModal from "~/components/CreateTripModal";
 import CustomModal from "~/components/CustomModal";
 import { Marker } from "~/assets/icons/map/Marker";
+import PhotoAlbum from "react-photo-album";
 
 interface Props {
   travel: ITravel;
@@ -117,6 +117,11 @@ const TravelCard: FC<Props> = ({travel}) => {
   const handleCloseEditModal = useCallback(() => {
     setEditModalIsOpen(false);
   }, []);
+  
+  const photos = [
+    { src: "https://img.freepik.com/free-photo/abstract-glowing-flame-drops-electric-illumination-generative-ai_188544-8092.jpg?size=626&ext=jpg&ga=GA1.1.1395991368.1710201600&semt=sph", width: 800, height: 600 },
+    { src: "https://img.freepik.com/free-photo/abstract-glowing-flame-drops-electric-illumination-generative-ai_188544-8092.jpg?size=626&ext=jpg&ga=GA1.1.1395991368.1710201600&semt=sph", width: 1600, height: 900 },
+  ];
 
   return (
     <div className={styles.container}>
@@ -132,10 +137,16 @@ const TravelCard: FC<Props> = ({travel}) => {
 
 
       <div className={styles.mainContainer}>
-        <div className={styles.gallery}>
+        {/* <div className={styles.gallery}>
           {setting.photos.length > 0 && getLayout.length && getHeight.length ? (
             <ReactPhotoCollage {...setting}/>
           ) : null}
+        </div> */}
+
+
+        <div className={styles.album}>
+          <PhotoAlbum targetRowHeight={150} layout="rows" photos={imageDownloadUrls.map(image => ({src: image.url,width: 400}))}/>
+
         </div>
 
         <div className={styles.textContainer}>
