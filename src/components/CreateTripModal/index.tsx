@@ -31,7 +31,7 @@ interface Props {
     locationName: string;
     description: string;
     geoTags: {address: string, placeID: string}[];
-    when: string;
+    when?: string;
     imageUrls: {url: string, type: string}[];
   };
 }
@@ -43,7 +43,8 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
   const [rating, setRating] = useState(data?.rating || 0);
   const [location, setLocation] = useState(data?.locationName || null);
   const [city, setCity] = useState('');
-  const [selectedDate, setSelectedDate] = useState<string>(data?.when || moment().format('yyyy-MM-D'));
+  const [startDate, setStartDate] = useState<string>(data?.when || moment().format('yyyy-MM-D'));
+  const [endDate, setEndDate] = useState<string>(data?.when || moment().format('yyyy-MM-D'));
   const [isLoading, setIsLoading] = useState(false);
   const [text, setText] = useState(data?.description || '');
   const [selectedLocation, setSelectedLocation] = useState<string | null>(data?.locationName || null);
@@ -99,7 +100,8 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
           userId: firestoreUser?.id,
           imageUrl: uploadedImages,
           rate: rating,
-          when: selectedDate,
+          startDate: startDate,
+          endDate: endDate,
           public: tickIsChecked,
           geoTags: selectedGeoTags,
           cities: selectedCities,
@@ -127,7 +129,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
     } finally {
       setIsLoading(false);
     }
-  }, [selectedLocation, file, firestoreUser?.id, firestoreUser?.tripCount, rating, selectedDate, tickIsChecked, selectedGeoTags, location, text, updateFirestoreUser]);
+  }, [selectedLocation, file, firestoreUser?.id, firestoreUser?.tripCount, rating, startDate, tickIsChecked, selectedGeoTags, location, text, updateFirestoreUser]);
 
   const onSelectPlace = useCallback((address: string, placeID: string) => {
     setLocation(address);
@@ -408,13 +410,32 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
           </div>
          
 
-          <p>When?</p>
-          <input 
-            value={selectedDate} 
-            onChange={e => setSelectedDate(e.target.value)} 
-            type="date"
-            className={styles.input}
-          />
+        <div className={styles.datesContainer}>
+          <div className={styles.dateContainer}>
+            <p>Start Date:</p>
+            <input 
+              value={startDate} 
+              onChange={e => setStartDate(e.target.value)} 
+              type="date"
+              className={styles.dateInput}
+            />
+          </div>
+         
+          <div className={styles.dateContainer}>
+            <p>End Date:</p>
+            <label htmlFor="end_date">End Date:</label>
+            <input 
+              id="end_date"
+              value={endDate} 
+              onChange={e => setEndDate(e.target.value)} 
+              type="date"
+              className={styles.dateInput}
+              min={startDate}
+              lang="fr-CA"
+            />
+          </div>
+        </div>
+          
 
         </div>
 

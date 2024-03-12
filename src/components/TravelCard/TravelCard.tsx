@@ -26,7 +26,8 @@ const TravelCard: FC<Props> = ({travel}) => {
   const [imageDownloadUrls, setImageDownloadUrls] = useState<{url: string; type: string}[]>([]);
   const {
     location,
-    when,
+    startDate,
+    endDate,
     rate,
     imageUrl,
     text,
@@ -124,7 +125,7 @@ const TravelCard: FC<Props> = ({travel}) => {
         <Rating disabled selectedStars={rate} />
         <div className={styles.dateContainer}>
           {/* <p className={styles.location}>Date</p> */}
-          <p className={styles.date}>{when}</p>
+          <p className={styles.date}>{startDate} - {endDate}</p>
         </div>
       </div>
 
@@ -229,7 +230,7 @@ const TravelCard: FC<Props> = ({travel}) => {
             locationName: location.name,
             isPublic: true,
             geoTags: travel.geoTags,
-            when: when,
+            // when: when,
             imageUrls: imageDownloadUrls,
           }}
         />

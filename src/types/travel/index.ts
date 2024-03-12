@@ -3,7 +3,9 @@ export interface ITravel {
   userId: string;
   imageUrl: {url: string; type: string}[];
   rate: number;
-  when: string;
+  // when: string;
+  startDate: string;
+  endDate: string;
   geoTags: {
     placeID: string;
     address: string;
