@@ -225,6 +225,10 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
    }))
   }
 
+  const handleRemoveCity = useCallback((placeId: string) => {
+    setSelectedCities(prevState => prevState.filter(item => item.placeID !== placeId));
+  }, []);
+
   const handleOpenAddCity = (event: React.MouseEventHandler<HTMLButtonElement>) => {
     event.preventDefault();
     setIsAddCityOpen(prevState => !prevState);
@@ -248,17 +252,20 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
             onChange={e => setTripName(e.target.value)}
           />
 
-          <p>Country:</p>
-          <PlaceAutocomplete 
+          <p>Where’d you go?</p>
+          <div  className={styles.autocomplete}>
+            <PlaceAutocomplete 
             searchOptions={{ types: ['country'] }}
             location={location}
             setLocation={setLocation}
             onSelectPlace={onSelectPlace}
-          />
+            />
+          </div>
+          
 
           <div className={styles.geocodes_top}>
               {/* <p>Tag Your Favorite Places on this Trip: </p> */}
-              <p>Do you wanna add city? </p>
+              <p>Do you wanna add city? (You can add multiply cities)</p>
               <button 
                 className={styles.button}
                 onClick={handleOpenAddCity}
@@ -267,12 +274,15 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
 
             {
               isAddCityOpen && (
-                <PlaceAutocomplete 
-                  searchOptions={{ types: ['locality'] }}
-                  location={city}
-                  setLocation={setCity}
-                  onSelectPlace={onSelectCity}
-                />
+                <div  className={styles.autocomplete}>
+                  <PlaceAutocomplete 
+                    searchOptions={{ types: ['locality'] }}
+                    location={city}
+                    setLocation={setCity}
+                    onSelectPlace={onSelectCity}
+                  />
+                </div>
+                
               )
             }
           
@@ -282,8 +292,8 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
               <>
                 {selectedCities.map(selectedCity => (
                   <div className={styles.geoTagContainer} key={selectedCity.placeID}>
-                    <p>{selectedCity.address}</p>
-                    <img src={Plus} className={styles.crossIcon} onClick={() => handleRemoveGeoTag(selectedCity.placeID)} />
+                    <p>{selectedCity.address.split(",")[0]}</p>
+                    <img src={Plus} className={styles.crossIcon} onClick={() => handleRemoveCity(selectedCity.placeID)} />
                   </div>
                 ))}
               </>
@@ -339,46 +349,48 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
               >Add Place</button>
             </div>
           {
-            isAddingPlace && (
-          <PlacesAutocomplete
-            searchOptions={{ types: ['establishment'] }}
-            value={geoTags}
-            onChange={(value) => setGeoTags(value)}
-            onSelect={onSelectGeoTag}
-          >
-            {({getInputProps, suggestions, getSuggestionItemProps, loading}) => {
-              return (
-                <div className={suggestions.length ? styles.inputContainer : undefined}>
-                  <input
-                    id={'213'}
-                    {...getInputProps({
-                      placeholder: 'Museum of Dreamers, Viale Angelico, Rome, Metropolitan City of Rome Capital, Italy',
-                      className: styles.input,
-                    })}
-                  />
-                  <div className={suggestions.length ? styles.dropdown : undefined}>
-                    {loading && <div>Loading...</div>}
-                    {suggestions.map(suggestion => {
-                      const style = suggestion.active
-                        ? {backgroundColor: '#fafafa', cursor: 'pointer'}
-                        : {backgroundColor: '#ffffff', cursor: 'pointer'};
-                      return (
-                        <div
-                          {...getSuggestionItemProps(suggestion, {
-                            className: styles.dropdownItem,
-                            style,
-                          })}
-                          key={suggestion.id}
-                        >
-                          <p>{suggestion.description}</p>
-                        </div>
-                      );
-                    })}
+          isAddingPlace && (
+          <div className={styles.autocomplete}>
+            <PlacesAutocomplete
+              searchOptions={{ types: ["establishment"] }}
+              value={geoTags}
+              onChange={(value) => setGeoTags(value)}
+              onSelect={onSelectGeoTag}
+            >
+              {({getInputProps, suggestions, getSuggestionItemProps, loading}) => {
+                return (
+                  <div className={suggestions.length ? styles.inputContainer : undefined}>
+                    <input
+                      id={'213'}
+                      {...getInputProps({
+                        placeholder: 'Museum of Dreamers, Viale Angelico, Rome, Metropolitan City of Rome Capital, Italy',
+                        className: styles.input,
+                      })}
+                    />
+                    <div className={suggestions.length ? styles.dropdown : undefined}>
+                      {loading && <div>Loading...</div>}
+                      {suggestions.map(suggestion => {
+                        const style = suggestion.active
+                          ? {backgroundColor: '#fafafa', cursor: 'pointer'}
+                          : {backgroundColor: '#ffffff', cursor: 'pointer'};
+                        return (
+                          <div
+                            {...getSuggestionItemProps(suggestion, {
+                              className: styles.dropdownItem,
+                              style,
+                            })}
+                            key={suggestion.id}
+                          >
+                            <p>{suggestion.description}</p>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
-              );
-            }}
-          </PlacesAutocomplete>
+                );
+              }}
+            </PlacesAutocomplete>
+          </div>
             )
           }
           
@@ -387,7 +399,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
               <>
                 {selectedGeoTags.map(geoTag => (
                   <div className={styles.geoTagContainer} key={geoTag.placeID}>
-                    <p>{geoTag.address}</p>
+                    <p>{geoTag.address.split(',')[0]}</p>
                     <img src={Plus} className={styles.crossIcon} onClick={() => handleRemoveGeoTag(geoTag.placeID)} />
                   </div>
                 ))}
@@ -403,6 +415,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
             type="date"
             className={styles.input}
           />
+
         </div>
 
           <div>
