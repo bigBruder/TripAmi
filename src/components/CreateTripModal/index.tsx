@@ -1,4 +1,4 @@
-import React, {useCallback, useContext, useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 import styles from './createTripModal.module.css';
 // @ts-ignore
 import Checkbox from 'react-custom-checkbox';
@@ -39,7 +39,7 @@ interface Props {
 const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
   const {firestoreUser, updateFirestoreUser} = useContext(AuthContext);
   const [tickIsChecked, setTickIsChecked] = useState(data?.isPublic || false);
-  const [file, setFile] = useState<File[]>([]);
+  const [file, setFile] = useState<File[] >([]);
   const [rating, setRating] = useState(data?.rating || 0);
   const [location, setLocation] = useState(data?.locationName || null);
   const [city, setCity] = useState('');
@@ -56,6 +56,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
   const [tripName, setTripName] = useState('');
   const [daysDescription, setDaysDescription] = useState<{date: string, description:string}[]>([]);
   const [isAddCityOpen, setIsAddCityOpen] = useState(false);
+  const [imagesDescription, setImagesDescription] = useState<{name: string, value:string}[]>([]);
 
   useEffect(() => {
     if (isMaxError) {
@@ -88,12 +89,19 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
 
         setIsLoading(true);
 
-        const uploadedImages: {url: string, type: string}[] = [];
+        const uploadedImages: {url: string, type: string, description: string}[] = [];
 
         for (let i = 0; i < file.length; i++) {
           const storageRef = ref(storage, `trips/${firestoreUser?.id}/${location + uuidv4()}`);
           const uploadResult = await uploadBytes(storageRef, file[i]);
-          uploadedImages.push({url: uploadResult.ref.fullPath, type: file[i].type});
+          console.log(file[i].name);
+          console.log(imagesDescription.map(image => image.name));
+          
+          uploadedImages.push({
+            url: uploadResult.ref.fullPath, 
+            type: file[i].type, 
+            description: imagesDescription.find(image => image.name === file[i].name)?.value || ''
+          });
         }
 
         await addDoc(tripsCollection, {
@@ -137,68 +145,41 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
   }, []);
 
   const onSelectGeoTag = useCallback((address: string, placeID: string) => {
-    setSelectedGeoTags(prevState => [...prevState, {address, placeID}]);
-    setGeoTags('');
+    if(!selectedGeoTags.map(tag => tag.address).includes(address)) {
+      setSelectedGeoTags(prevState => [...prevState, {address, placeID}]);
+      setGeoTags('');
+      setIsAddingPlace(false);
+    } else {
+      notify('You have already added this tag');
+    }
+
     setIsAddingPlace(false);
-  }, []);
+  }, [selectedGeoTags]);
 
   const handleRemoveGeoTag = useCallback((placeId: string) => {
     setSelectedGeoTags(prevState => prevState.filter(item => item.placeID !== placeId));
   }, []);
 
-  const Slider = useMemo(() => {
-    return (
-      <>
-      {data?.imageUrls?.length ? (
-        <>
-          {data?.imageUrls?.map((item) => {
-            return (
-              <React.Fragment key={item.url}>
-                {item.type.includes('image') ? (
-                  <img src={item.url} alt={'trip image'} className={styles.image} />
-                ) : (
-                  <div>
-                    <ReactPlayer
-                      playing
-                      stopOnUnmount={false}
-                      loop
-                      url={item.url}
-                      width='100%'
-                      height='100%'
-                    />
-                  </div>
-                )}
-              </React.Fragment>
-            )
-          })}
-        </>
-      ) : (
-        <>
-          {file?.map((item) => {
-            return (
-              <React.Fragment key={URL.createObjectURL(item)}>
-                {item.type.includes('image') ? (
-                  <img src={URL.createObjectURL(item)} alt={'trip image'} className={styles.image} />
-                ) : (
-                  <div>
-                    <ReactPlayer
-                      playing
-                      stopOnUnmount={false}
-                      loop
-                      url={URL.createObjectURL(item)}
-                      width='100%'
-                      height='100%'
-                    />
-                  </div>
-                )}
-              </React.Fragment>
-            )
-          })}
-        </>
-      )}
-    </>
-    );
-  }, [file])
+  const handleRemovePhoto = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, photoName: string) => {
+    event.preventDefault();
+
+    setFile(prevState => prevState.filter(media => media.name !== photoName));
+    setImagesDescription(prevState => prevState.filter(image => image.name !== photoName))
+  }
+
+  const handleChangeImageDescription = (event) => {
+    event.preventDefault();
+
+    const {name, value} = event.target;
+
+    if(imagesDescription.find(image => image.name === name)) {
+      setImagesDescription(prevState => prevState.map(obj => obj.name === name ? {...obj, value: value} : obj))
+    } else {
+      setImagesDescription(prevState => [...prevState, {name: name, value: value}])
+    }
+  }
+
+
 
   const handleOpenAddGeocode = (e: React.MouseEventHandler<HTMLButtonElement>) => {
     if (e) {
@@ -237,10 +218,17 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
   }
 
   const onSelectCity = useCallback((address: string, placeID: string) => {
-    setSelectedCities(prevState => [...prevState, {address, placeID}]);
-    setCity('');
+    console.log(selectedCities);
+    if(!selectedCities.map(city => city.address.toString()).includes(address)) {
+      setSelectedCities(prevState => [...prevState, {address, placeID}]);
+      setCity('');
+    } else {
+      notify('You have already added this city')
+    }
+    
+    setIsAddCityOpen(false);
     // setIsAddingPlace(false);
-  }, []);
+  }, [selectedCities]);
 
   return (
     <div className={styles.outer_container}>
@@ -271,7 +259,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
               <button 
                 className={styles.button}
                 onClick={handleOpenAddCity}
-              >Add city</button>
+              >+</button>
             </div>
 
             {
@@ -302,53 +290,12 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
             ) : null}
           </div>
 
-          {/* <p>City:</p>
-          <PlacesAutocomplete
-            searchOptions={{ types: ['country'] }}
-            // searchOptions={{ types: ['establishment'] }}
-            value={location}
-            onChange={(value) => setLocation(value)}
-            onSelect={onSelectPlace}
-          >
-            {({getInputProps, suggestions, getSuggestionItemProps, loading}) => {
-              return (
-                <div className={suggestions.length ? styles.inputContainer : undefined}>
-                  <input
-                    {...getInputProps({
-                      placeholder: 'Venice, Italy.',
-                      className: styles.input,
-                    })}
-                  />
-                  <div className={suggestions.length ? styles.dropdown : undefined}>
-                    {loading && <div>Loading...</div>}
-                    {suggestions.map(suggestion => {
-                      const style = suggestion.active
-                        ? {backgroundColor: '#fafafa', cursor: 'pointer'}
-                        : {backgroundColor: '#ffffff', cursor: 'pointer'};
-                      return (
-                        <div
-                          {...getSuggestionItemProps(suggestion, {
-                            className: styles.dropdownItem,
-                            style,
-                          })}
-                        >
-                          <p>{suggestion.description}</p>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              );
-            }}
-          </PlacesAutocomplete> */}
-
             <div className={styles.geocodes_top}>
-              {/* <p>Tag Your Favorite Places on this Trip: </p> */}
               <p>Tag Your Places: </p>
               <button 
                 className={styles.button}
                 onClick={handleOpenAddGeocode}
-              >Add Place</button>
+              >+</button>
             </div>
           {
           isAddingPlace && (
@@ -423,7 +370,6 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
          
           <div className={styles.dateContainer}>
             <p>End Date:</p>
-            <label htmlFor="end_date">End Date:</label>
             <input 
               id="end_date"
               value={endDate} 
@@ -479,13 +425,8 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
           </div>
           ))
         }
-       
-        
-
-        
                 
         <div className={styles.startContainer}>
-          
           <FileUploader
             multiple={true}
             handleChange={handleChange}
@@ -522,7 +463,48 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
           
         </div>
 
-        {Slider}
+        <div className={styles.imagesDescriptions}>
+          {/* {Slider} */}
+
+          {file?.map(item => {
+              return (
+                <div key={item.name} className={styles.uploadedImagesContainer}>
+                  {item.type.includes('image') ? (
+                      <div className={styles.imageContainer}>
+                        <img src={URL.createObjectURL(item)} alt={'trip image'} className={styles.image} />
+                        <input 
+                          placeholder='Describe the photo'
+                          value={imagesDescription.find(image => image.name === item.name)?.value || ''}
+                          className={styles.input} 
+                          onChange={handleChangeImageDescription}
+                          name={item.name}
+                        />
+                        <button onClick={(e) => handleRemovePhoto(e, item.name)} className={styles.removePhotoButton}>X</button>
+                      </div>
+                  ) : (
+                    <div className={styles.imageContainer}>
+                      <ReactPlayer
+                        playing
+                        stopOnUnmount={false}
+                        loop
+                        url={URL.createObjectURL(item)}
+                        width='100%'
+                        height='100%'
+                      />
+                        <input 
+                          placeholder='Describe the photo'
+                          value={imagesDescription.find(image => image.name === item.name)?.value || ''}
+                          className={styles.input} 
+                          onChange={handleChangeImageDescription}
+                          name={item.name}
+                        />
+                      <button onClick={(e) => handleRemovePhoto(e, item.name)} className={styles.removePhotoButton}>X</button>
+                    </div>
+                  )}
+                </div>
+              )
+            })}
+        </div>
       </form>
       <div className={styles.container}>
         <div className={styles.bottomRow}>
