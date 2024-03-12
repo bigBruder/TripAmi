@@ -70,6 +70,10 @@
     font-size: 21px;
 }
 
+.google {
+    margin-top: 20px;
+}
+
 .apple {
     display: flex;
     margin-top: 20px;
