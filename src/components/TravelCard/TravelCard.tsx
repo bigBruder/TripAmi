@@ -140,7 +140,12 @@ const TravelCard: FC<Props> = ({travel}) => {
 
         <div className={styles.textContainer}>
           <h3>{tripName}</h3>
+
+         
           <p className={styles.text}>{text}</p>
+          {
+            imageUrl.map(image => <p key={image.url}>{image.description}</p>)
+          }
 
 
           <div className={styles.daysDescriptionContainer}>

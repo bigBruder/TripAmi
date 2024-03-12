@@ -100,7 +100,8 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
           uploadedImages.push({
             url: uploadResult.ref.fullPath, 
             type: file[i].type, 
-            description: imagesDescription.find(image => image.name === file[i].name)?.value || ''
+            description: imagesDescription.find(image => image.name === file[i].name)?.value || '',
+            // description: imagesDescription.find(image => image.name === file[i].name)?.value;
           });
         }
 

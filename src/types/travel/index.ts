@@ -1,7 +1,7 @@
 export interface ITravel {
   id: string;
   userId: string;
-  imageUrl: {url: string; type: string}[];
+  imageUrl: {url: string; type: string, description?: string}[];
   rate: number;
   // when: string;
   startDate: string;
