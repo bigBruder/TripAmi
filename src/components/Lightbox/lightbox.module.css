@@ -48,7 +48,7 @@
     overflow: hidden;
     object-fit: contain;
     border-radius: 10px;
-    opacity: 0;
+    opacity: .3;
     transition: scale 500ms ease-in-out, opacity 500ms ease-in-out;
 }
 

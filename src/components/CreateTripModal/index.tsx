@@ -27,34 +27,40 @@ interface Props {
   isEdit?: boolean;
   data?: {
     isPublic: boolean;
-    rating: number;
+    rate: number;
+    startDate: string;
+    endDate: string;
+    public: boolean;
+    cities: {placeID: string, address: string}[];
+    tripName: string;
     locationName: string;
-    description: string;
+    text: string;
+    dayDescription: {date: string, description: string}[];
+    location: {name: string, longitude: number, latitude: number, color: string};
     geoTags: {address: string, placeID: string}[];
-    when?: string;
-    imageUrls: {url: string, type: string}[];
+    imageUrl: {url: string, type: string, description: string}[];
   };
 }
 
 const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
   const {firestoreUser, updateFirestoreUser} = useContext(AuthContext);
-  const [tickIsChecked, setTickIsChecked] = useState(data?.isPublic || false);
+  const [tickIsChecked, setTickIsChecked] = useState(data?.isPublic);
   const [file, setFile] = useState<File[] >([]);
-  const [rating, setRating] = useState(data?.rating || 0);
-  const [location, setLocation] = useState(data?.locationName || null);
+  const [rating, setRating] = useState(data?.rate || 0);
+  const [location, setLocation] = useState(data?.location || null);
   const [city, setCity] = useState('');
-  const [startDate, setStartDate] = useState<string>(data?.when || moment().format('yyyy-MM-D'));
-  const [endDate, setEndDate] = useState<string>(data?.when || moment().format('yyyy-MM-D'));
+  const [startDate, setStartDate] = useState<string>(data?.startDate || moment().format('yyyy-MM-D'));
+  const [endDate, setEndDate] = useState<string>(data?.endDate || moment().format('yyyy-MM-D'));
   const [isLoading, setIsLoading] = useState(false);
-  const [text, setText] = useState(data?.description || '');
+  const [text, setText] = useState(data?.text || '');
   const [selectedLocation, setSelectedLocation] = useState<string | null>(data?.locationName || null);
   const [isMaxError, setIsMaxError] = useState(false);
-  const [geoTags, setGeoTags] = useState('');
+  const [geoTags, setGeoTags] = useState(data?.geoTags || '');
   const [selectedGeoTags, setSelectedGeoTags] = useState<{address: string, placeID: string}[]>(data?.geoTags || []);
-  const [selectedCities, setSelectedCities] = useState<{address: string, placeID: string}[]>(data?.geoTags || []);
+  const [selectedCities, setSelectedCities] = useState<{address: string, placeID: string}[]>(data?.cities || []);
   const [isAddingPlace, setIsAddingPlace] = useState(false);
-  const [tripName, setTripName] = useState('');
-  const [daysDescription, setDaysDescription] = useState<{date: string, description:string}[]>([]);
+  const [tripName, setTripName] = useState(data?.tripName || '');
+  const [daysDescription, setDaysDescription] = useState(data?.dayDescription || []);
   const [isAddCityOpen, setIsAddCityOpen] = useState(false);
   const [imagesDescription, setImagesDescription] = useState<{name: string, value:string}[]>([]);
 
@@ -94,8 +100,6 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
         for (let i = 0; i < file.length; i++) {
           const storageRef = ref(storage, `trips/${firestoreUser?.id}/${location + uuidv4()}`);
           const uploadResult = await uploadBytes(storageRef, file[i]);
-          // console.log(file[i].name);
-          console.log(imagesDescription,"---", file[i].name);
           
           uploadedImages.push({
             url: uploadResult.ref.fullPath, 
@@ -236,8 +240,9 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
         <div className={styles.topContainer}>
           {/* <p>Where’d you go?</p> */}
           <p>Trip name:</p>
-          <input 
-            placeholder='Amazing trip' 
+          <input
+            value={tripName}
+            placeholder={'Trip name'} 
             className={styles.input} 
             onChange={e => setTripName(e.target.value)}
           />
@@ -245,10 +250,10 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
           <p>Where’d you go?</p>
           <div  className={styles.autocomplete}>
             <PlaceAutocomplete 
-            searchOptions={{ types: ['country'] }}
-            location={location}
-            setLocation={setLocation}
-            onSelectPlace={onSelectPlace}
+              searchOptions={{ types: ['country'] }}
+              location={location}
+              setLocation={setLocation}
+              onSelectPlace={onSelectPlace}
             />
           </div>
           

@@ -269,13 +269,17 @@ const TravelCard: FC<Props> = ({travel}) => {
           closeModal={handleCloseEditModal}
           isEdit
           data={{
-            description: text,
-            rating: rate,
-            locationName: location.name,
-            isPublic: true,
+            imageUrl: travel.imageUrl,
+            rate: travel.rate,
+            startDate: startDate,
+            endDate: endDate,
+            public: travel.public,
             geoTags: travel.geoTags,
-            // when: when,
-            imageUrls: imageDownloadUrls,
+            cities: travel.cities,
+            tripName: tripName,
+            location: travel.location,
+            dayDescription: travel.dayDescription,
+            text: travel.text,
           }}
         />
       </CustomModal>
