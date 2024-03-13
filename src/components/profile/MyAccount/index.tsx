@@ -16,7 +16,7 @@ import {Footer} from "~/components/Footer";
 import {useWindowDimensions} from "~/hooks/useWindowDimensions";
 import {MyFriends} from "~/components/MyFriends";
 import {getDownloadURL} from "firebase/storage";
-import {storage} from "~/firebase";
+import {db, storage} from "~/firebase";
 import {ref} from "@firebase/storage";
 import EditMap from "~/components/EditMap";
 import useMapContext from "~/components/EditMap/store";
@@ -26,6 +26,9 @@ import Skeleton from "react-loading-skeleton";
 import Map from "~/components/Map/Map";
 import {ITravel} from "~/types/travel";
 import GoogleMaps from "~/components/GoogleMaps/GoogleMaps";
+import PlaceAutocomplete from "~/components/PlaceAutocomplete/PlaceAutocomplete";
+import { doc, updateDoc } from "firebase/firestore";
+import editText from '@assets/icons/editText.svg';
 
 const TABS = [
   'Home',
@@ -45,6 +48,8 @@ const MyAccount = () => {
   const [avatar, setAvatar] = useState<string>(defaultUserIcon);
   const [avatarIsLoading, setAvatarIsLoading] = useState(true);
   const {setTips} = useMapContext();
+  const [whereToNext, setWhereToNext] = useState<string>('');
+  const [isEditWhereToNext, setIsEditWhereToNext] = useState(false);
 
   const {firestoreUser, loading} = useContext(AuthContext);
   const {width} = useWindowDimensions();
@@ -195,6 +200,22 @@ const MyAccount = () => {
     }
   }, [width]);
 
+  const onSelectWhereToNext = async (place: string) => {
+    if (firestoreUser?.id) {
+      try {
+        await updateDoc(doc(db, "users", firestoreUser?.id), {
+          whereToNext: place.split(',')[0],
+        });
+      } catch (err) {
+        // @ts-ignore
+        alert(firebaseErrors[err.code]);
+      } finally {
+        setIsEditWhereToNext(false);
+        setWhereToNext('');
+      }
+    }
+  }
+
   return (
     <>
       <div>
@@ -227,7 +248,31 @@ const MyAccount = () => {
                 </p>
                 {firestoreUser?.tripCount === undefined && <Skeleton style={{width: 100, height: 20}}/>}
                 <p className={styles.text}>
-                  {firestoreUser?.tripCount !== undefined ? 'Where to next?:' : ''}
+                  <div className={styles.whereToNextContainer}>
+                    {firestoreUser?.tripCount !== undefined ? 'Where to next?:' : ''}
+
+                    {
+                      isEditWhereToNext ? (
+                        <div  className={styles.autocomplete}>
+                          <PlaceAutocomplete 
+                            searchOptions={{ types: ['locality'] }}
+                            location={whereToNext || ''}
+                            setLocation={setWhereToNext}
+                            onSelectPlace={(e) => onSelectWhereToNext(e)}
+                          />
+                        </div>
+                      ) : (
+                        <p className={styles.value}>{firestoreUser?.whereToNext}</p>
+                      )
+                    }
+                    
+                    <img 
+                      className={`${styles.editButton}`} 
+                      src={editText} 
+                      alt="edit icon" 
+                      onClick={() => setIsEditWhereToNext(!isEditWhereToNext)}
+                    />
+                  </div>
                 </p>
                 {firestoreUser?.tripCount === undefined && <Skeleton style={{width: 100, height: 20}}/>}
               </div>
@@ -236,8 +281,9 @@ const MyAccount = () => {
             <div className={styles.features}>
               {TABS.map((tab, index) => (
                 <span className={`${styles.feature} ${index === activeTab && styles.activeFeature}`} onClick={() => setActiveTab(index)} key={tab}>
-                {tab} {index === 1 && <div className={styles.friendsCount}>{firestoreUser?.friends_count || 0}</div>}
-              </span>
+                  {tab} {index === 1 && <div className={styles.friendsCount}>{firestoreUser?.friends_count || 0}</div>}
+                        {index ==3 && <div className={styles.friendsCount}>{firestoreUser?.tripCount || 0}</div>}
+                </span>
               ))}
             </div>
           </div>

@@ -167,6 +167,29 @@
   }
 }
 
+.whereToNextContainer {
+  display: flex;
+  justify-content: flex-start;
+  gap: 5px;
+  align-items: center;
+}
+
+.autocomplete {
+  font-size: 12px;
+  font-weight: 500;
+  color: #262626;
+}
+
+.value {
+  color: #717171;
+}
+
+.editButton {
+ height: 15px;
+ width: max-content;
+ cursor: pointer;
+}
+
 .activeFeature {
   color: #FF4D00;
 }

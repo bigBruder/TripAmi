@@ -5,11 +5,19 @@
     padding: 21px 12px 40px 12px;
 }
 
+.dropdown {
+    scrollbar-width: none;
+    font-size: 15px;
+    font-weight: 500;
+    border-end-end-radius: 10px;
+}
+
 .container {
     display: flex;
     flex-direction: column;
     padding: 33px 8px 21px 8px;
     height: 100%;
+    overflow: hidden;
 }
 
 .button {
