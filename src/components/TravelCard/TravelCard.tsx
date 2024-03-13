@@ -16,6 +16,7 @@ import CreateTripModal from "~/components/CreateTripModal";
 import CustomModal from "~/components/CustomModal";
 import { Marker } from "~/assets/icons/map/Marker";
 import { ReactPhotoCollage } from "react-photo-collage";
+import { LightBox } from "../Lightbox/LightBox";
 
 interface Props {
   travel: ITravel;
@@ -23,7 +24,7 @@ interface Props {
 
 const TravelCard: FC<Props> = ({travel}) => {
   const {firestoreUser, updateFirestoreUser} = useContext(AuthContext);
-  const [imageDownloadUrls, setImageDownloadUrls] = useState<{url: string; type: string}[]>([]);
+  const [imageDownloadUrls, setImageDownloadUrls] = useState<{url: string; type: string, description: string}[]>([]);
   const {
     location,
     startDate,
@@ -40,6 +41,14 @@ const TravelCard: FC<Props> = ({travel}) => {
   } = travel;
   const navigate = useNavigate();
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
+  const [isPhotosModalOpen, setIsPhotosModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  // const handleOpenImage = useCallback((URL: string) => {
+  //   // window.open(URL, '_blank');
+  // }, []);
+
+  // console.log(imageDownloadUrls);
 
   const handleDeleteTrip = useCallback(async () => {
     try {
@@ -60,7 +69,7 @@ const TravelCard: FC<Props> = ({travel}) => {
 
         for (let i = 0; i < imageUrl.length; i++) {
           const url = await getDownloadURL(ref(storage, imageUrl[i].url));
-          downloadedUrls.push({url, type: imageUrl[i].type});
+          downloadedUrls.push({url, type: imageUrl[i].type, description: imageUrl[i].description});
         }
 
         setImageDownloadUrls(downloadedUrls);
@@ -117,11 +126,6 @@ const TravelCard: FC<Props> = ({travel}) => {
   const handleCloseEditModal = useCallback(() => {
     setEditModalIsOpen(false);
   }, []);
-  
-  const photos = [
-    { src: "https://img.freepik.com/free-photo/abstract-glowing-flame-drops-electric-illumination-generative-ai_188544-8092.jpg?size=626&ext=jpg&ga=GA1.1.1395991368.1710201600&semt=sph", width: 800, height: 600 },
-    { src: "https://img.freepik.com/free-photo/abstract-glowing-flame-drops-electric-illumination-generative-ai_188544-8092.jpg?size=626&ext=jpg&ga=GA1.1.1395991368.1710201600&semt=sph", width: 1600, height: 900 },
-  ];
 
   return (
     <div className={styles.container}>
@@ -138,9 +142,42 @@ const TravelCard: FC<Props> = ({travel}) => {
 
       <div className={styles.mainContainer}>
         <div className={styles.gallery}>
-          {setting.photos.length > 0 && getLayout.length && getHeight.length ? (
+          {/* {setting.photos.length > 0 && getLayout.length && getHeight.length ? (
             <ReactPhotoCollage {...setting}/>
-          ) : null}
+          ) : null} */}
+
+          {
+            imageDownloadUrls.map((image, index) => {
+              if (image.type === 'image/jpeg') {
+                return (
+                  <img
+                    key={index}
+                    src={image.url}
+                    alt="travel"
+                    className={styles.image}
+                    onClick={() => {
+                      setSelectedImage(image);
+                      setIsPhotosModalOpen(true);
+                    }}
+                  />
+                )
+              } else if(image.type === 'video/mp4') {
+                return (
+                  <video
+                    key={index}
+                    src={image.url}
+                    className={styles.image}
+                    controls
+                    onClick={() => {
+                      setSelectedImage(image);
+                      setIsPhotosModalOpen(true);
+                    }}
+                    // onClick={() => setIsPhotosModalOpen(true)}
+                  />
+                )
+              }
+              })
+          }
         </div>
 
         <div className={styles.textContainer}>
@@ -148,9 +185,6 @@ const TravelCard: FC<Props> = ({travel}) => {
 
          
           <p className={styles.text}>{text}</p>
-          {
-            imageUrl.map(image => <p key={image.url}>{image.description}</p>)
-          }
 
 
           <div className={styles.daysDescriptionContainer}>
@@ -245,6 +279,14 @@ const TravelCard: FC<Props> = ({travel}) => {
           }}
         />
       </CustomModal>
+
+      <LightBox 
+        isOpen={isPhotosModalOpen} 
+        onCloseModal={() => setIsPhotosModalOpen(false)} 
+        selectedImage={selectedImage} 
+        onChangeSelectedPhoto={setSelectedImage} 
+        images={imageDownloadUrls}
+      />
     </div>
   );
 };

@@ -59,7 +59,7 @@ const InvitePeople = () => {
           }
         });
 
-        console.log(response);
+        // console.log(response);
       } catch (err) {
         console.log('[ERROR sending email] => ', err);
       }

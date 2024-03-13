@@ -34,7 +34,7 @@ const LoginPage = () => {
             id: doc.id,
           }));
 
-          console.log(fetchedPosts);
+          // console.log(fetchedPosts);
 
           setPosts(fetchedPosts as IPost[]);
         } catch (err) {

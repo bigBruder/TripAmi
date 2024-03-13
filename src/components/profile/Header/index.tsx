@@ -101,9 +101,9 @@ const Header = () => {
             })
           );
   
-          console.log(imageUrls);
+          // console.log(imageUrls);
 
-          console.log(result.hits[0]);
+          // console.log(result.hits[0]);
   
   
           setSearchResult(result.hits.map((hit, idx) => {
@@ -169,7 +169,7 @@ const Header = () => {
           const fetchedPost = querySnapshot.docs[0].data() as IPost;
           const imageUrl = await getDownloadURL(ref(storage, fetchedPost.imageUrls[0]));
 
-          console.log("imageURL: ", imageUrl);
+          // console.log("imageURL: ", imageUrl);
 
           if (fetchedPost && imageUrl) {
             navigate(

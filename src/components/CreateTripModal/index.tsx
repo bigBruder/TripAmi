@@ -94,14 +94,13 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
         for (let i = 0; i < file.length; i++) {
           const storageRef = ref(storage, `trips/${firestoreUser?.id}/${location + uuidv4()}`);
           const uploadResult = await uploadBytes(storageRef, file[i]);
-          console.log(file[i].name);
-          console.log(imagesDescription.map(image => image.name));
+          // console.log(file[i].name);
+          console.log(imagesDescription,"---", file[i].name);
           
           uploadedImages.push({
             url: uploadResult.ref.fullPath, 
             type: file[i].type, 
             description: imagesDescription.find(image => image.name === file[i].name)?.value || '',
-            // description: imagesDescription.find(image => image.name === file[i].name)?.value;
           });
         }
 
@@ -138,7 +137,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
     } finally {
       setIsLoading(false);
     }
-  }, [selectedLocation, file, firestoreUser?.id, firestoreUser?.tripCount, rating, startDate, tickIsChecked, selectedGeoTags, location, text, updateFirestoreUser]);
+  }, [selectedLocation, imagesDescription, file, firestoreUser?.id, firestoreUser?.tripCount, rating, startDate, tickIsChecked, selectedGeoTags, location, text, updateFirestoreUser]);
 
   const onSelectPlace = useCallback((address: string, placeID: string) => {
     setLocation(address);
@@ -219,7 +218,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
   }
 
   const onSelectCity = useCallback((address: string, placeID: string) => {
-    console.log(selectedCities);
+    // console.log(selectedCities);
     if(!selectedCities.map(city => city.address.toString()).includes(address)) {
       setSelectedCities(prevState => [...prevState, {address, placeID}]);
       setCity('');

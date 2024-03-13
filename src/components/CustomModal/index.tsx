@@ -7,6 +7,10 @@ interface Props {
   children: React.ReactNode;
   isOpen: boolean;
   onCloseModal: () => void;
+  images?: {
+    url: string;
+    type: string;
+  }[]
 }
 
 const CustomModal: React.FC<Props> = ({ children, isOpen, onCloseModal }) => {

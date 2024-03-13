@@ -1,0 +1,63 @@
+.ReactModal__Overlay {
+    opacity: 0;
+    transition: all 500ms ease-in-out;
+    z-index: 99999;
+}
+
+.ReactModal__Overlay--after-open {
+    opacity: 1;
+}
+
+.ReactModal__Overlay--before-close {
+    opacity: 0;
+}
+
+.ReactModal__Content {
+    padding: 0;
+}
+
+.ReactModal__Content--after-open {
+    padding: 0;
+    height: 100%;
+    inset: 10% 20% !important;
+    position: relative;
+
+}
+
+.modal {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.selectedImageContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-height: 500px;
+    min-height: 500px;
+}
+
+.selectedImage {
+    width: 100%;
+    object-fit: contain;
+}
+
+.image {
+    max-height: 100px;
+    overflow: hidden;
+    object-fit: contain;
+    border-radius: 5px;
+}
+
+.slider {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    overflow: hidden;
+    opacity: .6;
+    position: absolute;
+    bottom: 5px;
+}

@@ -26,7 +26,7 @@
 
     useEffect(() => {
       (async () => {
-        console.log(id);
+        // console.log(id);
         const q = query(usersCollection, where('id', '==', id));
         const querySnapshot = await getDocs(q);
 
@@ -53,7 +53,7 @@
     }, [userData]);
 
     useEffect(() => {
-      console.log(id);
+      // console.log(id);
 
       (async () => {
         try {
