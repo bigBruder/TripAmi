@@ -15,7 +15,7 @@ import Dots from '@assets/icons/dots.svg';
 import CreateTripModal from "~/components/CreateTripModal";
 import CustomModal from "~/components/CustomModal";
 import { Marker } from "~/assets/icons/map/Marker";
-import PhotoAlbum from "react-photo-album";
+import { ReactPhotoCollage } from "react-photo-collage";
 
 interface Props {
   travel: ITravel;
@@ -137,16 +137,10 @@ const TravelCard: FC<Props> = ({travel}) => {
 
 
       <div className={styles.mainContainer}>
-        {/* <div className={styles.gallery}>
+        <div className={styles.gallery}>
           {setting.photos.length > 0 && getLayout.length && getHeight.length ? (
             <ReactPhotoCollage {...setting}/>
           ) : null}
-        </div> */}
-
-
-        <div className={styles.album}>
-          <PhotoAlbum targetRowHeight={150} layout="rows" photos={imageDownloadUrls.map(image => ({src: image.url,width: 400}))}/>
-
         </div>
 
         <div className={styles.textContainer}>
