@@ -61,8 +61,7 @@ const Place = () => {
       if (id) {
         try {
           setIsLoading(true);
-          const {data}: {data?: {data: IPlace}} = await axios.get('https://us-central1-tripami-3e954.cloudfunctions.net/getGoogleMapsDetails?placeId=' + id);
-
+          const {data}: {data?: {data: IPlace}} = await axios.get('https://getgooglemapsdetails-dp6fh5oj2q-uc.a.run.app/helloWorld?placeId=' + id);
           if (data?.data) {
             setPlaceData(data.data);
           }

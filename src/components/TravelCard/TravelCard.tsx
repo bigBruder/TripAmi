@@ -45,12 +45,6 @@ const TravelCard: FC<Props> = ({travel}) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [isModalDeleteOpen, setIsModalDeleteOpen] = useState(false);
 
-  // const handleOpenImage = useCallback((URL: string) => {
-  //   // window.open(URL, '_blank');
-  // }, []);
-
-  // console.log(imageDownloadUrls);
-
   const handleDeleteTrip = useCallback(async () => {
     try {
       await deleteDoc(doc(db, 'trips', id));
