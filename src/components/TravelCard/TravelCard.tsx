@@ -18,7 +18,6 @@ import { Marker } from "~/assets/icons/map/Marker";
 import { ReactPhotoCollage } from "react-photo-collage";
 import { LightBox } from "../Lightbox/LightBox";
 
-
 interface Props {
   travel: ITravel;
 }
@@ -44,6 +43,7 @@ const TravelCard: FC<Props> = ({travel}) => {
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
   const [isPhotosModalOpen, setIsPhotosModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [isModalDeleteOpen, setIsModalDeleteOpen] = useState(false);
 
   // const handleOpenImage = useCallback((URL: string) => {
   //   // window.open(URL, '_blank');
@@ -257,7 +257,7 @@ const TravelCard: FC<Props> = ({travel}) => {
             </div>
             {firestoreUser?.id === userId ? (
               <>
-                <div className={styles.shareContainer} onClick={handleDeleteTrip}>
+                <div className={styles.shareContainer} onClick={() => setIsModalDeleteOpen(true)}>
                   <img className={styles.dotsIcon} src={BinIcon} alt="dots"/>
                   <span className={styles.share}>Delete</span>
                 </div>
@@ -287,6 +287,22 @@ const TravelCard: FC<Props> = ({travel}) => {
             text: travel.text,
           }}
         />
+      </CustomModal>
+
+      <CustomModal isOpen={isModalDeleteOpen} onCloseModal={() => setIsModalDeleteOpen(false)}>
+
+        <div className={styles.deleteModalContainer}>
+
+        <div className={styles.deleteModal}>
+          <h3 className={styles.deleteModal_title}>Delete Trip</h3>
+          <p>Are you sure to delete the trip?</p>
+          <div className={styles.deleteControlContainer}>
+            <button className={`${styles.buttonModal}, ${styles.buttonModal_delete}`} onClick={handleDeleteTrip}>Delete</button>
+            <button className={`${styles.buttonModal}, ${styles.buttonModal_cancel}`} onClick={() => setIsModalDeleteOpen(false)}>Cancel</button>
+          </div>
+        </div>
+          
+        </div>
       </CustomModal>
 
       <LightBox 

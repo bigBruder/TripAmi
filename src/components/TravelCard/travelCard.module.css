@@ -210,3 +210,49 @@
     color: grey;
     font-size: 12px;
 }
+
+.deleteModalContainer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    /* background-color: rgba(255, 0, 0, 0.539); */
+}
+
+.deleteModal {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.deleteIcon {
+    width: 300px;
+}
+
+.deleteControlContainer {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.buttonModal {
+    width: 30%;
+}
+
+.buttonModal_delete {
+    width: 30%;
+    background-color: #FF0000;
+    color: white;
+}
+
+.buttonModal_cancel {
+    width: 30%;
+    background-color: #55BEF5;
+    color: white;
+}
+
+.deleteModal_title {
+    font-size: 30px;
+}
