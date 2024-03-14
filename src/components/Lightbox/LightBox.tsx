@@ -61,9 +61,15 @@ export const LightBox: React.FC<Props> = ({isOpen, onCloseModal, selectedImage, 
                   />
                 )
             }
-                            <div className={styles.slider}>
-              {
-                  images && images.map((image, index) => {
+                            
+                 
+              </div>
+                <div className={styles.descriptionContainer}>
+                  {selectedImage?.description && (<p className={styles.description}>{selectedImage?.description}l;k;lk;lkl;k</p>)}
+                </div>
+                <div className={styles.slider}>
+                {
+                    images && images.map((image, index) => {
                       if (image.type === 'image/jpeg') {
                         return (
                           <img
@@ -90,12 +96,8 @@ export const LightBox: React.FC<Props> = ({isOpen, onCloseModal, selectedImage, 
                         )
                       }
                       })
-                  }
+                }
               </div>
-              </div>
-                <div className={styles.descriptionContainer}>
-                  {selectedImage?.description && (<p className={styles.description}>{selectedImage?.description}l;k;lk;lkl;k</p>)}
-                </div>
             </div>
           </Modal>
         </CSSTransition>
