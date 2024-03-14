@@ -8,7 +8,7 @@ import {FileUploader} from "react-drag-drop-files";
 import {addDoc} from "@firebase/firestore";
 import {tripsCollection} from "~/types/firestoreCollections";
 import {ref, uploadBytes} from "@firebase/storage";
-import {storage} from "~/firebase";
+import {db, storage} from "~/firebase";
 import {v4 as uuidv4} from "uuid";
 import {AuthContext} from "~/providers/authContext";
 import {LoadingScreen} from "~/components/LoadingScreen";
@@ -19,6 +19,7 @@ import {toast, ToastContainer} from "react-toastify";
 import Plus from '~/assets/icons/plus.svg';
 import ReactPlayer from "react-player";
 import PlaceAutocomplete from '../PlaceAutocomplete/PlaceAutocomplete';
+import { doc, getDocs, updateDoc } from 'firebase/firestore';
 
 const fileTypes = ["JPEG", "PNG", "JPG", "MP4"];
 
@@ -108,25 +109,51 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
           });
         }
 
-        await addDoc(tripsCollection, {
-          userId: firestoreUser?.id,
-          imageUrl: uploadedImages,
-          rate: rating,
-          startDate: startDate,
-          endDate: endDate,
-          public: tickIsChecked,
-          geoTags: selectedGeoTags,
-          cities: selectedCities,
-          tripName: tripName,
-          location: {
-            name: location,
-            longitude: geocode[0].geometry.location.lng(),
-            latitude: geocode[0].geometry.location.lat(),
-            color: randomColor(),
-          },
-          dayDescription: daysDescription,
-          text,
-        });
+        if (isEdit) {
+          const tripRef = doc(db, 'trips', data?.id);
+          const tripSnapshot = await getDocs(tripRef);
+
+          if (tripSnapshot.exists()) {
+            await updateDoc(tripRef, {
+              imageUrl: uploadedImages,
+              rate: rating,
+              startDate: startDate,
+              endDate: endDate,
+              public: tickIsChecked,
+              geoTags: selectedGeoTags,
+              cities: selectedCities,
+              tripName: tripName,
+              location: {
+                name: location,
+                longitude: geocode[0].geometry.location.lng(),
+                latitude: geocode[0].geometry.location.lat(),
+                color: randomColor(),
+              },
+              dayDescription: daysDescription,
+              text,
+            });
+          }
+        } else {
+          await addDoc(tripsCollection, {
+            userId: firestoreUser?.id,
+            imageUrl: uploadedImages,
+            rate: rating,
+            startDate: startDate,
+            endDate: endDate,
+            public: tickIsChecked,
+            geoTags: selectedGeoTags,
+            cities: selectedCities,
+            tripName: tripName,
+            location: {
+              name: location,
+              longitude: geocode[0].geometry.location.lng(),
+              latitude: geocode[0].geometry.location.lat(),
+              color: randomColor(),
+            },
+            dayDescription: daysDescription,
+            text,
+          });
+        }
 
         updateFirestoreUser({
           tripCount: firestoreUser?.tripCount ? firestoreUser?.tripCount + 1 : 1,

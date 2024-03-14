@@ -18,6 +18,7 @@ import { Marker } from "~/assets/icons/map/Marker";
 import { ReactPhotoCollage } from "react-photo-collage";
 import { LightBox } from "../Lightbox/LightBox";
 
+
 interface Props {
   travel: ITravel;
 }
@@ -181,7 +182,7 @@ const TravelCard: FC<Props> = ({travel}) => {
         </div>
 
         <div className={styles.textContainer}>
-          <h3>{tripName}</h3>
+          <h3 className={styles.tripName}>{tripName}</h3>
 
          
           <p className={styles.text}>{text}</p>
@@ -198,12 +199,11 @@ const TravelCard: FC<Props> = ({travel}) => {
           }
           </div>
 
-          {
-            cities && (
-              <div>
-                <p className={styles.text}>Cities visited: </p>
-                <div className={styles.tagsContainer}>
-                {travel?.cities?.map(tag => (
+          <div className={styles.visitedContainer}>
+          <div>
+              <p className={styles.text}>Places: </p>
+              <div className={styles.tagsContainer}>
+                {travel?.geoTags?.map(tag => (
                   <p
                     onClick={() => navigate('/place/' + tag.placeID)}
                     key={tag.placeID}
@@ -213,24 +213,29 @@ const TravelCard: FC<Props> = ({travel}) => {
                   </p>
                 ))}
               </div>
+                
             </div>
-            )
-          }
-          <div>
-            <p className={styles.text}>Places visited: </p>
-            <div className={styles.tagsContainer}>
-              {travel?.geoTags?.map(tag => (
-                <p
-                  onClick={() => navigate('/place/' + tag.placeID)}
-                  key={tag.placeID}
-                  className={styles.tag}
-                >
-                  {tag.address}
-                </p>
-              ))}
-            </div>
-            
+
+            {
+              cities && (
+                <div>
+                  <p className={styles.text}>Cities: </p>
+                  <div className={styles.tagsContainer}>
+                  {travel?.cities?.map(tag => (
+                    <p
+                      onClick={() => navigate('/place/' + tag.placeID)}
+                      key={tag.placeID}
+                      className={styles.tag}
+                    >
+                      {tag.address}
+                    </p>
+                  ))}
+                </div>
+              </div>
+              )
+            }
           </div>
+          
 
           
         </div>

@@ -13,7 +13,7 @@
 }
 
 .ReactModal__Content {
-    padding: 0;
+    padding: 10px;
 }
 
 .ReactModal__Content--after-open {
@@ -28,6 +28,7 @@
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
+    padding: 20px;
 }
 
 .selectedImageContainer {
@@ -39,7 +40,7 @@
 }
 
 .selectedImage {
-    width: 100%;
+    width: 70%;
     object-fit: contain;
 }
 
@@ -96,7 +97,7 @@
 
 .description {
     display: inline-block;
-    font-size: 16px;
+    font-size: 12px;
     color: grey;
     padding: 20px;
     text-align: justify;
