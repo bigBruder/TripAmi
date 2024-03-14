@@ -10,7 +10,7 @@ import 'swiper/css';
 import {IPost} from "~/types/post";
 import {firebaseErrors} from "~/constants/firebaseErrors";
 import {useWindowDimensions} from "~/hooks/useWindowDimensions";
-import SortDirectionIcon from '@assets/icons/sort_direction.svg';
+import { SortDirection } from '@assets/icons/SortDirection';
 
 export const TravelItinerary = () => {
   const {firestoreUser} = useContext(AuthContext);
@@ -19,7 +19,6 @@ export const TravelItinerary = () => {
   const [isSuggestedPostsLoading, setIsSuggestedPostsLoading] = useState(false);
   const {width} = useWindowDimensions();
   const [sortBy, setSortBy] = useState('date');
-  const [SordDirection, setSortDirection] = useState('desc');
   const [isReverse, setIsReverse] = useState(false);
 
   useEffect(() => {
@@ -106,12 +105,11 @@ export const TravelItinerary = () => {
           <option value="alphabetically">Alphabetically</option>
           <option value="rate">Rating</option>
         </select>
-        <img 
-          src={SortDirectionIcon} 
-          alt="sort direction icon" 
-          className={styles.sort_directionIcon}
-          onClick={() => setIsReverse(!isReverse)}
-        />
+        <div onClick={() => setIsReverse(!isReverse)}>
+          <SortDirection 
+            isReverse={isReverse}
+          />
+        </div>
       </div>
 
       <div className={styles.travelsContainer}>
