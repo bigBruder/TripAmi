@@ -10,6 +10,7 @@ import 'swiper/css';
 import {IPost} from "~/types/post";
 import {firebaseErrors} from "~/constants/firebaseErrors";
 import {useWindowDimensions} from "~/hooks/useWindowDimensions";
+import SortDirectionIcon from '@assets/icons/sort_direction.svg';
 
 export const TravelItinerary = () => {
   const {firestoreUser} = useContext(AuthContext);
@@ -17,10 +18,42 @@ export const TravelItinerary = () => {
   const [suggestedPosts, setSuggestedPosts] = useState<IPost[] | null>(null);
   const [isSuggestedPostsLoading, setIsSuggestedPostsLoading] = useState(false);
   const {width} = useWindowDimensions();
+  const [sortBy, setSortBy] = useState('date');
+  const [SordDirection, setSortDirection] = useState('desc');
+  const [isReverse, setIsReverse] = useState(false);
 
   useEffect(() => {
     if (firestoreUser?.id) {
-      const q = query(tripsCollection, where('userId', '==', firestoreUser?.id));
+      let q;
+
+      switch (sortBy) {
+        case 'date':
+          q = query(
+            tripsCollection, 
+            where('userId', '==', firestoreUser?.id),
+            orderBy('startDate', !isReverse ? 'desc' : 'asc'),
+          );
+          break;
+        case 'alphabetically':
+          q = query(
+            tripsCollection, 
+            where('userId', '==', firestoreUser?.id),
+            orderBy('tripName', !isReverse ? 'desc' : 'asc'),
+          );
+          break;
+        case 'rate':
+          q = query(
+            tripsCollection, 
+            where('userId', '==', firestoreUser?.id),
+            orderBy('rate', !isReverse ? 'desc' : 'asc'),
+          );
+          break;
+      }
+      // const q = query(
+      //   tripsCollection, 
+      //   where('userId', '==', firestoreUser?.id),
+      //   orderBy('createAt', 'desc'),
+      // );
       const unsub = onSnapshot(q, (querySnapshot) => {
         const fetchedTravel = querySnapshot.docs.map(doc => ({
           ...doc.data(),
@@ -58,27 +91,32 @@ export const TravelItinerary = () => {
         unsub();
       }
     }
-  }, [firestoreUser?.id]);
+  }, [firestoreUser?.id, isReverse, setTravels, sortBy]);
+
+ console.log(sortBy, 'sortBy');
 
   return (
     <div className={styles.container}>
       <p className={styles.title}>{firestoreUser?.username}`s travels</p>
+
+
+      <div className={styles.sortContainer}>
+        <select name="order" className={styles.sortby_select} onChange={e => setSortBy(e.target.value)}>
+          <option value="date">Newest</option>
+          <option value="alphabetically">Alphabetically</option>
+          <option value="rate">Rating</option>
+        </select>
+        <img 
+          src={SortDirectionIcon} 
+          alt="sort direction icon" 
+          className={styles.sort_directionIcon}
+          onClick={() => setIsReverse(!isReverse)}
+        />
+      </div>
+
       <div className={styles.travelsContainer}>
         {travels.map(travel => <TravelCard key={travel.id} travel={travel} />)}
       </div>
-      {/*<p className={styles.title}>You may also like</p>*/}
-      {/*<div className={styles.bottomSliderContainer}>*/}
-      {/*  <Swiper*/}
-      {/*    spaceBetween={30}*/}
-      {/*    slidesPerView={getSlidesPerPage}*/}
-      {/*  >*/}
-      {/*    {suggestedPosts?.map(post => (*/}
-      {/*      <SwiperSlide key={post.id}>*/}
-      {/*        /!*<PostItem postData={post}/>*!/*/}
-      {/*      </SwiperSlide>*/}
-      {/*    ))}*/}
-      {/*  </Swiper>*/}
-      {/*</div>*/}
     </div>
   );
 }

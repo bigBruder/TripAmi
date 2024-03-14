@@ -120,24 +120,10 @@
               <div className={styles.travelsContainer}>
                 {userTravels.map(travel => <TravelCard key={travel.id} travel={travel} />)}
               </div>
-              {/*<p className={styles.title}>You may also like</p>*/}
-              {/*<div className={styles.bottomSliderContainer}>*/}
-              {/*  <Swiper*/}
-              {/*    spaceBetween={30}*/}
-              {/*    slidesPerView={getSlidesPerPage}*/}
-              {/*  >*/}
-              {/*    {suggestedPosts?.map(post => (*/}
-              {/*      <SwiperSlide key={post.id}>*/}
-              {/*        /!*<PostItem postData={post}/>*!/*/}
-              {/*      </SwiperSlide>*/}
-              {/*    ))}*/}
-              {/*  </Swiper>*/}
-              {/*</div>*/}
             </div>
             )
           }
             
-
             <Footer/>
           </>
         </div>

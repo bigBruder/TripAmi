@@ -45,7 +45,7 @@ interface Props {
 
 const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
   const {firestoreUser, updateFirestoreUser} = useContext(AuthContext);
-  const [tickIsChecked, setTickIsChecked] = useState(data?.isPublic);
+  const [tickIsChecked, setTickIsChecked] = useState(data?.isPublic || false);
   const [file, setFile] = useState<File[] >([]);
   const [rating, setRating] = useState(data?.rate || 0);
   const [location, setLocation] = useState(data?.location || null);
@@ -108,32 +108,25 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
             description: imagesDescription.find(image => image.name === file[i].name)?.value || '',
           });
         }
-
-        if (isEdit) {
-          const tripRef = doc(db, 'trips', data?.id);
-          const tripSnapshot = await getDocs(tripRef);
-
-          if (tripSnapshot.exists()) {
-            await updateDoc(tripRef, {
-              imageUrl: uploadedImages,
-              rate: rating,
-              startDate: startDate,
-              endDate: endDate,
-              public: tickIsChecked,
-              geoTags: selectedGeoTags,
-              cities: selectedCities,
-              tripName: tripName,
-              location: {
-                name: location,
-                longitude: geocode[0].geometry.location.lng(),
-                latitude: geocode[0].geometry.location.lat(),
-                color: randomColor(),
-              },
-              dayDescription: daysDescription,
-              text,
-            });
-          }
-        } else {
+        console.log({
+          userId: firestoreUser?.id,
+          imageUrl: uploadedImages,
+          rate: rating,
+          startDate: startDate,
+          endDate: endDate,
+          public: tickIsChecked,
+          geoTags: selectedGeoTags,
+          cities: selectedCities,
+          tripName: tripName,
+          location: {
+            name: location,
+            longitude: geocode[0].geometry.location.lng(),
+            latitude: geocode[0].geometry.location.lat(),
+            color: randomColor(),
+          },
+          dayDescription: daysDescription,
+          text,
+        })
           await addDoc(tripsCollection, {
             userId: firestoreUser?.id,
             imageUrl: uploadedImages,
@@ -153,7 +146,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
             dayDescription: daysDescription,
             text,
           });
-        }
+        
 
         updateFirestoreUser({
           tripCount: firestoreUser?.tripCount ? firestoreUser?.tripCount + 1 : 1,
