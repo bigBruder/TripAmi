@@ -188,7 +188,7 @@ const Header = () => {
                         <img src={resultOption.avatar} alt="avatar" className={styles.avatar} />
                         <p>{resultOption.location.name}</p>
                         <p>{resultOption.text.length > 50 ? resultOption.text.slice(0, 20) + '...' : resultOption.text}</p>
-                        <Rating rate={resultOption.rate} />
+                        <Rating selectedStars={resultOption.rate} />
                     </div>
                   );
                 })}
