@@ -185,9 +185,11 @@ const Header = () => {
                 {searchResult?.map(resultOption => {
                   return (
                     <div className={styles.autocompleteOption} key={resultOption.id} onClick={() => handleSelectAutocomplete(resultOption)}>
-                        <img src={resultOption.avatar} alt="avatar" className={styles.avatar} />
-                        <p>{resultOption.location.name}</p>
-                        <p>{resultOption.text.length > 50 ? resultOption.text.slice(0, 20) + '...' : resultOption.text}</p>
+                        <div className={styles.autocompleteLeftBox}>
+                          <img src={resultOption.avatar} alt="avatar" className={styles.avatar} />
+                          <p>{resultOption.location.name.split(',')[0]}</p>
+                          <p className={styles.tripDescription}>{resultOption.text.length > 50 ? resultOption.text.slice(0, 40) + '...' : resultOption.text}</p>
+                        </div>
                         <Rating selectedStars={resultOption.rate} />
                     </div>
                   );

@@ -190,6 +190,17 @@
   border-radius: 20px;
 }
 
+.autocompleteLeftBox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tripDescription {
+  color: #717171;
+  flex-grow: 1;
+}
+
 .IconButton {
   border: none;
   font-family: inherit;

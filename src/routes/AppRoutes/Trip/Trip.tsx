@@ -1,6 +1,6 @@
 import { doc, documentId, getDocs, onSnapshot, orderBy, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { PageTitle } from "~/components/PageTitle";
 import Header from "~/components/profile/Header";
 import { IComment } from "~/types/comments";
@@ -36,6 +36,7 @@ export const Trip = () => {
     type: string; 
     description: string | undefined;
   } | null>(null);
+  const navigate = useNavigate();
 
 
   useEffect(() => {
@@ -98,7 +99,7 @@ export const Trip = () => {
 
   return (
     <div className={styles.mainContainer}>
-    <Header />
+        <Header />
         <div className={styles.main}>
           <PageTitle title={'Posts'} />
       
@@ -159,19 +160,54 @@ export const Trip = () => {
                   ))
                 }
           </div>
+
+          <div className={styles.visitedContainer}>
+            <div>
+                <p className={styles.text}>Places: </p>
+                <div className={styles.tagsContainer}>
+                  {trip?.geoTags?.map(tag => (
+                    <p
+                      onClick={() => navigate('/place/' + tag.placeID)}
+                      key={tag.placeID}
+                      className={styles.tag}
+                    >
+                      {tag.address}
+                    </p>
+                  ))}
+                </div> 
+            </div>
+
+            {
+              trip?.cities && (
+                <div>
+                  <p className={styles.text}>Cities: </p>
+                  <div className={styles.tagsContainer}>
+                  {trip?.cities?.map(tag => (
+                    <p
+                      onClick={() => navigate('/place/' + tag.placeID)}
+                      key={tag.placeID}
+                      className={styles.tag}
+                    >
+                      {tag.address}
+                    </p>
+                  ))}
+                </div>
+              </div>
+              )}
+          </div>
+        </div>
+      </div>
         </div>
         {/* <CommentField postId={post.id} commentsCount={post.comments_count} /> */}
         {/* {comments?.map(comment => <Comment key={comment.id} comment={comment} />)} */}
-      </div>
-    </div>
 
-    <LightBox 
-        isOpen={isLightBoxOpen} 
-        onCloseModal={() => setIsLightBoxOpen(false)} 
-        selectedImage={selectedImage} 
-        onChangeSelectedPhoto={setSelectedImage} 
-        images={imageUrls}
-      />
-  </div>
+        <LightBox 
+          isOpen={isLightBoxOpen} 
+          onCloseModal={() => setIsLightBoxOpen(false)} 
+          selectedImage={selectedImage} 
+          onChangeSelectedPhoto={setSelectedImage} 
+          images={imageUrls}
+        />
+      </div>
   );
 };

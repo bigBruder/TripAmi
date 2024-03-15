@@ -150,3 +150,28 @@
         flex-grow: 1;
     }
 }
+
+.tagsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    overflow-y: hidden;
+}
+
+.tag {
+    font-size: 10px;
+    cursor: pointer;
+    background-color:  rgb(218, 224, 225);
+    padding: 2px;
+    padding-left: 5px;
+    border-radius: 10px;
+    color: grey;
+}
+
+.visitedContainer {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    gap: 10px;
+}
