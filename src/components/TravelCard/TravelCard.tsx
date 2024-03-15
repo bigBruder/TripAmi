@@ -55,7 +55,7 @@ const TravelCard: FC<Props> = ({travel}) => {
     } catch (err) {
       console.log('[ERROR deleting trip] => ', err);
     }
-  }, [id]);
+  }, [firestoreUser?.tripCount, id, updateFirestoreUser]);
 
   useEffect(() => {
     (async () => {
