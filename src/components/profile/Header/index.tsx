@@ -85,7 +85,33 @@ const Header = () => {
           hitsPerPage: 5,
         });
 
+        // result.hits.map(hit => {
+        //  console.log(hit._highlightResult.rate.matchLevel);
+        // });
 
+        const matchedCities = result.hits.map(hit => {
+          if(hit._highlightResult.location.name.matchLevel === 'full') {
+            // console.log(hit._highlightResult.cities[i]);
+            return (hit._highlightResult.location.name.value.replace('<em>', '').replace('</em>', '').split(',')[0]);
+          }
+          
+          for (let key in hit._highlightResult) {
+            // if(hit._highlightResult[key].matchLevel === 'full') {
+            //   console.log(hit._highlightResult[key].value);
+            //   // return hit[key];
+            // }
+            
+            if (key === 'cities' && hit._highlightResult.cities.length > 0) {
+              for (let i = 0; i < hit._highlightResult.cities.length; i++) {
+                console.log( hit._highlightResult.cities[i].address.matchLevel)
+                if(hit._highlightResult.cities[i].address.matchLevel === 'full') {
+                  // console.log(hit._highlightResult.cities[i]);
+                  return (hit._highlightResult.cities[i].address.value.replace('<em>', '').replace('</em>', '').split(',')[0]);
+                }
+              }
+            }
+          }
+        });
 
           const imageUrls = await Promise.all(
             result.hits.map(async hit => {
@@ -109,6 +135,7 @@ const Header = () => {
             type: CONTENT_TYPE.TRAVEL,
             id: hit.objectID,
             avatar: imageUrls[i],
+            matchedCity: matchedCities[i],
           });
         }));     
       } 
@@ -181,12 +208,13 @@ const Header = () => {
               <div 
                 className={styles.searchResultsContainer} 
               >
-                {searchResult?.map(resultOption => {
+                {searchResult?.map((resultOption, id ) => {
                   return (
                     <div className={styles.autocompleteOption} key={resultOption.id} onClick={() => handleSelectAutocomplete(resultOption)}>
                         <div className={styles.autocompleteLeftBox}>
                           <img src={resultOption.avatar} alt="avatar" className={styles.avatar} />
-                          <p>{resultOption.location.name.split(',')[0]}</p>
+                          {/* <p>{resultOption.location.name.split(',')[0]}</p> */}
+                          <p>{resultOption.matchedCity}</p>
                           <p className={styles.tripDescription}>{resultOption.text.length > 50 ? resultOption.text.slice(0, 40) + '...' : resultOption.text}</p>
                         </div>
                         <Rating selectedStars={resultOption.rate} />
