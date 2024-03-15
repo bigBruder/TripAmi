@@ -58,6 +58,8 @@ interface SearchResult {
   createdAt: string
 }
 
+
+
 const Header = () => {
   const {signOutUser, firestoreUser} = useContext(AuthContext);
   const navigate = useNavigate();
@@ -68,9 +70,6 @@ const Header = () => {
   const [searchResult, setSearchResult] = useState<SearchResult[]>([]);
   const [tripModalIsOpen, setTripModalIsOpen] = useState(false);
   const { inputProps: searchProps, isFocused: isSearchFocused } = useInputFocus();
-
-
-  const [selectedPost, setSelectedPost] = useState<IPost | null>();
 
   const handleChange = useCallback((e) => {
     setSearchTerm(e.target.value);
@@ -91,6 +90,7 @@ const Header = () => {
         });
 
 
+
           const imageUrls = await Promise.all(
             result.hits.map(async hit => {
               const q = query(usersCollection, where('id', '==', hit.userId));
@@ -103,7 +103,6 @@ const Header = () => {
           );
 
           setSearchResult(result.hits.map((hit, i) => {
-
           return ({
             geoTag: hit.geoTag,
             location: hit.location,

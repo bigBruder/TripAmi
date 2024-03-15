@@ -152,7 +152,7 @@ export const Trip = () => {
             </div>
 
             {
-                  trip?.dayDescription.map((day, index) => (
+                 trip?.dayDescription && trip.dayDescription.map((day, index) => (
                     <div key={index}>
                       <h2 className={styles.date}>{day.date}</h2>
                       <p className={styles.dayDescription}>{day.description}</p>
