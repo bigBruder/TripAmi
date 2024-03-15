@@ -9,6 +9,7 @@ import {InvitePeople} from "~/routes/AppRoutes/InvitePeople";
 import {Settings} from "~/routes/AppRoutes/Settings";
 import {Place} from "~/routes/AppRoutes/Place";
 import {UserProfile} from "~/routes/AppRoutes/UserProfile";
+import { Trip } from "./AppRoutes/Trip/Trip";
 
 const router = createBrowserRouter([
   {
@@ -38,6 +39,10 @@ const router = createBrowserRouter([
   {
     path: '/place/:id',
     element: <Place />,
+  },
+  {
+    path: '/trip/:id',
+    element: <Trip />,
   },
   {
     path: '/user/:id',

@@ -1,0 +1,152 @@
+.title {
+    margin: 0 0 20px 0;
+}
+
+.mainContainer {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    padding: 60px 60px 0 60px;
+
+    background-image: url('../../../assets/images/LoginBackground.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    overflow: scroll;
+}
+
+.trip {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+
+    margin-top: 30px;
+    padding: 10px 16px 42px 16px;
+    background-color: #FFFFFF;
+
+    border-radius: 8px;
+}
+
+.tripContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.topContainer {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 20px;
+}
+
+@media (max-width: 768px) {
+    /* .postContainer {
+        flex-direction: row;
+    } */
+
+    .topContainer {
+       flex-wrap: wrap;
+    }
+}
+
+.topRightContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.rateContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.swiperContainer {
+    width: 100%;
+}
+
+.postIMage {
+    width: 100%;
+    height: auto;
+}
+
+.postText {
+    color: #262626;
+    font-family: Gilroy, sans-serif;
+    font-size: 16px;
+    text-align: justify;
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .postText {
+        font-size: 12px;
+    }
+}
+
+.textContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-top: 14px;
+}
+
+@media (max-width: 768px) {
+    .date {
+        font-size: 12px;
+    }
+}
+
+.date {
+    font-size: 14px;
+    color: #717171;
+}
+
+.dayDescription {
+    font-size: 14px;
+    color: #262626;
+    font-family: Gilroy, sans-serif;
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .dayDescription {
+        font-size: 12px;
+    }
+}
+
+
+.postActionsWrapper {
+    align-items: flex-start;
+}
+
+.swiperContainer {
+    width: 40%;
+}
+
+@media (max-width: 768px) {
+    /* .postContainer {
+        flex-direction: row;
+    } */
+
+    .swiperContainer {
+        flex-grow: 1;
+    }
+}

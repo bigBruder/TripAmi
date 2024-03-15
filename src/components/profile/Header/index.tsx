@@ -36,11 +36,13 @@ import CreateTripModal from "~/components/CreateTripModal";
 
 import algoliasearch from "algoliasearch";
 import { doc, documentId, getDoc, getDocs, limit, query, where } from "firebase/firestore";
-import { postsCollection } from "~/types/firestoreCollections";
+import { postsCollection, tripsCollection, usersCollection } from "~/types/firestoreCollections";
 import { IPost } from "~/types/post";
 import { useInputFocus } from "~/hooks/useInputRef";
+import Rating from "~/components/Rating";
 const client = algoliasearch("W8J2M4GNE3", "18fbb3c4cc4108ead5479d90911f3507");
-const index = client.initIndex("prod_users");
+// const index = client.initIndex("prod_users");
+const index = client.initIndex("trips");
 
 enum CONTENT_TYPE {
   POST = 'post',
@@ -83,45 +85,38 @@ const Header = () => {
       setSearchIsLoading(true);
 
       if (searchTerm.length) {
-        const result = await index.search(searchTerm);
+        const result = await index.search(searchTerm, {
+          attributesToRetrieve: ['userId', 'cities', 'geoTag', 'location', 'rate', 'text', 'objectID',],
+          hitsPerPage: 5,
+        });
 
-        if (result.hits.length > 0) {
-          const url = await getDownloadURL(ref(storage, result.hits[0].imageUrls[0]));        
-          console.log("url: ", url)
-  
+
           const imageUrls = await Promise.all(
             result.hits.map(async hit => {
-              if (hit.imageUrls[0]) {
-                const url = await getDownloadURL(ref(storage, hit.imageUrls[0]));
-              } else {
-                // remove the block statement later when photos in new posts will become must have
-                const url = "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png"
-              }
+              const q = query(usersCollection, where('id', '==', hit.userId));
+              const querySnapshot = await getDocs(q);
+              const user = querySnapshot.docs[0].data();
+    
+              const url = await getDownloadURL(ref(storage, user.avatarUrl));
               return url;
             })
           );
-  
-          // console.log(imageUrls);
 
-          // console.log(result.hits[0]);
-  
-  
-          setSearchResult(result.hits.map((hit, idx) => {
-            return ({
-              type: CONTENT_TYPE.POST,
-              text: hit?._highlightResult?.text.value || hit.text || '',
-              id: hit.objectID,
-              imageUrl: imageUrls[idx],
-              createdAt: hit.createdAt,
-            });
-          }));
-        }
+          setSearchResult(result.hits.map((hit, i) => {
 
-       
+          return ({
+            geoTag: hit.geoTag,
+            location: hit.location,
+            public: hit.public,
+            rate: hit.rate,
+            text: hit.text,
+            userId: hit.userId,
+            type: CONTENT_TYPE.TRAVEL,
+            id: hit.objectID,
+            avatar: imageUrls[i],
+          });
+        }));     
       } 
-      // else {
-      //   setSearchResult([]);
-      // }
     } catch (e) {
       console.log('[ERROR searching] => ', e);
     } finally {
@@ -156,44 +151,17 @@ const Header = () => {
     setTripModalIsOpen(false);
   }, []);
 
-  const handleSelectAutocomplete = (searchResult: SearchResult) => {
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  const handleSelectAutocomplete = (searchResult: any) => {
     (async () => {
-      if (firestoreUser?.id) {
-        try {
-          const q = query(
-            postsCollection,
-            where(documentId(), '==', searchResult.id),
-          );
 
-          const querySnapshot = await getDocs(q);
-          const fetchedPost = querySnapshot.docs[0].data() as IPost;
-          const imageUrl = await getDownloadURL(ref(storage, fetchedPost.imageUrls[0]));
-
-          // console.log("imageURL: ", imageUrl);
-
-          if (fetchedPost && imageUrl) {
-            navigate(
-              '/posts',
-                {state: {
-                  ...fetchedPost,
-                  imageUrls:[imageUrl],
-                  id:searchResult.id
-                }})
-          }
-
-          // return navigate(
-          //   '/posts',
-          //     {state: {
-          //       ...fetchedPost,
-          //     }});
-         
-        } catch (err) {
-          // @ts-ignore
-          alert(firebaseErrors[err.code]);
-        } finally {
-          // setIsPostsLoading(false);
-
-        }
+      if (firestoreUser?.id && searchResult.id) {
+        navigate(
+          '/trip' + `/${searchResult.id}`,
+            {state: {
+              // ...fetchedPost,
+              postId:searchResult.id,
+            }})
       }
     })();
   }
@@ -214,11 +182,13 @@ const Header = () => {
               <div 
                 className={styles.searchResultsContainer} 
               >
-                {searchResult?.map(searchResult => {
+                {searchResult?.map(resultOption => {
                   return (
-                    <div className={styles.searchResult} key={searchResult.id} onClick={() => handleSelectAutocomplete(searchResult)}>
-                      <img src={searchResult.imageUrl} alt={'search result image'} className={styles.autocomplete_photo}/>
-                      <div dangerouslySetInnerHTML={{__html: `${searchResult.text}`}} />
+                    <div className={styles.autocompleteOption} key={resultOption.id} onClick={() => handleSelectAutocomplete(resultOption)}>
+                        <img src={resultOption.avatar} alt="avatar" className={styles.avatar} />
+                        <p>{resultOption.location.name}</p>
+                        <p>{resultOption.text.length > 50 ? resultOption.text.slice(0, 20) + '...' : resultOption.text}</p>
+                        <Rating rate={resultOption.rate} />
                     </div>
                   );
                 })}
