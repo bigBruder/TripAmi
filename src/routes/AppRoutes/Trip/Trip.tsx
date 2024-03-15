@@ -114,7 +114,7 @@ export const Trip = () => {
                 spaceBetween={0}
                 slidesPerView={1}
                 loop={true}
-                style={{width: '100%', height: '100%'}}
+                style={{width: '100%', height: '100%', cursor: 'pointer'}}
                 wrapperClass={styles.swiperWrapper}
                 pagination={true}
                 modules={[Pagination]}
