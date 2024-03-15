@@ -75,10 +75,6 @@ const Header = () => {
     setSearchTerm(e.target.value);
   }, []);
 
-  useEffect(() => {
-    handleSearch();
-  }, [searchTerm]);
-
   const handleSearch = useCallback(async () => {
     try {
       setSearchIsLoading(true);
@@ -123,9 +119,13 @@ const Header = () => {
     }
   }, [searchTerm]);
 
+  useEffect(() => {
+    handleSearch();
+  }, [handleSearch, searchTerm]);
+  
   const debouncedResults = useMemo(() => {
     return debouce(handleChange, 300);
-  }, []);
+  }, [handleChange]);
 
   useEffect(() => {
     return () => {
@@ -177,7 +177,7 @@ const Header = () => {
               onBlur={searchProps.onBlur}
           >
             <input className={styles.input} placeholder="Search" onChange={debouncedResults} />
-            {searchResult.length && isSearchFocused ? (
+            {searchTerm.length > 0 && searchResult.length > 0 && isSearchFocused ? (
               <div 
                 className={styles.searchResultsContainer} 
               >
