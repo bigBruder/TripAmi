@@ -12,57 +12,35 @@ const InvitePeople = () => {
 
   const handleSendInvitation = useCallback(async () => {
     if (firestoreUser?.email) {
-      try {
 
-        const response = await axios.post('https://api.elasticemail.com/v4/emails', {
-          Recipients: [{
-            Email: "visosensey@gmail.com",
-          }],
-          Content: {
-            // Body: [{
-            //   ContentType: "HTML",
-            //   Content: "string",
-            //   Charset: "string"
-            // }],
-            // Merge: {
-            //   city: "New York",
-            //   age: "34"
-            // },
-            // Headers: {
-            //   city: "New York",
-            //   age: "34"
-            // },
-            // Postback: "string",
-            // EnvelopeFrom: "John Doe email@domain.com",
-            From: "visosensey@gmail.com",
-            // ReplyTo: "John Doe email@domain.com",
-            // Subject: "Hello!",
-            // TemplateName: "Template01",
-            // Utm: {
-            //   Source: "string",
-            //   Medium: "string",
-            //   Campaign: "string",
-            //   Content: "string"
-            // }
-          },
-          // Options: {
-          //   TimeOffset: null,
-          //   PoolName: "My Custom Pool",
-          //   ChannelName: "Channel01",
-          //   Encoding: "UserProvided",
-          //   TrackOpens: "true",
-          //   TrackClicks: "true"
-          // }
-        }, {
-          headers: {
-            'X-ElasticEmail-ApiKey': '418DBF78CAA63D902B87F1DC9B6F9850FF9A8EA6FC0276CD7A95DB65A1B0E41F163B354E2CC0814C4079A7A77685A840',
-          }
-        });
+        try {
+          const response = await axios.post('https://api.elasticemail.com/v4/emails', {
+            Recipients: [{
+              Email: email,
+            }],
+            Content: {
+              Body: [{
+                ContentType: "HTML",
+                // Content: "string",
+                Charset: "string"
+              }],
+              From: "visosensey@gmail.com",
+              Subject: "string",
+              TemplateName: "TripAmi",
+              Merge: {
+               linkTo: "https://tripamicities.netlify.app",
+              },
+            },
+          }, {
+            headers: {
+              'X-ElasticEmail-ApiKey': 'BE74E3AE0AD551541906080E491A880B630B0DB2E63B63573F4AEE255C011D805F60BBC6D8EFBCC03AA7440DC3DADE3D',
+            }
+          }).then((response) => {console.log(response)});
+          
+        } catch (err) {
+          console.log('[ERROR sending email] => ', err);
+        }
 
-        // console.log(response);
-      } catch (err) {
-        console.log('[ERROR sending email] => ', err);
-      }
     }
   }, [email, firestoreUser?.email]);
 
@@ -77,9 +55,9 @@ const InvitePeople = () => {
             className={styles.input}
             placeholder={'Name'}
             type={'text'}
-            onChange={(e) => setEmail(e.target.value)}
+            
           />
-          <input className={styles.input} placeholder={'Email'} type={'email'} />
+          <input className={styles.input} placeholder={'Email'} type={'email'} onChange={(e) => setEmail(e.target.value)}/>
           <button onClick={handleSendInvitation} className={styles.sendButton}>Invite</button>
         </div>
       </div>
