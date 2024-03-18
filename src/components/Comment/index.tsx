@@ -10,6 +10,8 @@ import {db, storage} from "~/firebase";
 import {firebaseErrors} from "~/constants/firebaseErrors";
 import {getDownloadURL} from "firebase/storage";
 import {ref} from "@firebase/storage";
+import { documentId, getDocs, query, where } from "firebase/firestore";
+import { usersCollection } from "~/types/firestoreCollections";
 
 interface Props {
   comment: IComment | IPlaceComment;
@@ -36,10 +38,13 @@ export const Comment: FC<Props> = ({comment}) => {
     console.log(comment.userImage);
     (async () => {
       if (comment.userId) {
+        const q = query(usersCollection, where(documentId(), '==', comment.userId),);
+        const querySnapshot = await getDocs(q);
+        const fetchedUser = querySnapshot.docs[0].data();
         // const url = await getDownloadURL(ref(storage, comment.userImage));
         // console.log(url);
 
-        setUserPhotoUrl(comment.userImage);
+        setUserPhotoUrl(fetchedUser.avatarUrl);
       }
     })();
   }, [comment.userId, comment.userImage]);
@@ -134,7 +139,7 @@ export const Comment: FC<Props> = ({comment}) => {
           username: comment.userName,
           id: comment.userId,
           firebaseUid: firestoreUser?.firebaseUid,
-          avatarUrl: comment.userImage,
+          avatarUrl: userPhotoUrl,
         }}
         // userPhotoUrl={userPhotoUrl}
         createdAt={comment.createdAt}
