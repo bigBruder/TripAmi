@@ -264,9 +264,6 @@
     align-items: center;
     gap: 6px;
     height: 100%;
-    
-
-    cursor: pointer;
 }
 
 .shareButtonsContainer {
@@ -284,6 +281,7 @@
     padding: 10px 20px;
     align-items: center;
     font-size: 16px;
+    cursor: pointer;
 }
 
 .copiedActive {
