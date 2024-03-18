@@ -12,25 +12,29 @@
   import {ref} from "@firebase/storage";
   import Map from "~/components/Map/Map";
   import Avatar from '@assets/icons/defaultUserIcon.svg';
-  import { onSnapshot } from "firebase/firestore";
+  import { onSnapshot, orderBy } from "firebase/firestore";
   import { ITravel } from "~/types/travel";
   import TravelCard from "~/components/TravelCard/TravelCard";
   import { firebaseErrors } from "~/constants/firebaseErrors";
+import { Sort } from "~/components/Sort/Sort";
 
   const UserProfile = () => {
     const {id} = useParams();
     const [userData, setUserData] = useState<IUser>();
     const [userPhotoUrl, setUserPhotoUrl] = useState<string>();
     const [avatarIsLoading, setAvatarIsLoading] = useState<boolean>(false);
+    const [travelsIsLoading, setTravelsIsLoading] = useState<boolean>(true);
     const [userTravels, setUserTravels] = useState<ITravel[]>([]);
+    const [isReverse, setIsReverse] = useState(false);
+    const [sortBy, setSortBy] = useState('date');
 
     useEffect(() => {
       (async () => {
+
         // console.log(id);
-        const q = query(usersCollection, where('id', '==', id));
+        const q = query(usersCollection, where('id', '==', id), orderBy('tripCount', isReverse ? 'desc' : 'asc'));
         const querySnapshot = await getDocs(q);
 
-        console.log(querySnapshot.docs[0]);
         setUserData(querySnapshot.docs[0].data());
       })();
     }, [id]);
@@ -57,19 +61,47 @@
 
       (async () => {
         try {
-          const q = query(tripsCollection, where('userId', '==', id));
+          let q;
+  
+          switch (sortBy) {
+            case 'date':
+              q = query(
+                tripsCollection, 
+                where('userId', '==', id),
+                orderBy('startDate', !isReverse ? 'desc' : 'asc'),
+              );
+              break;
+            case 'alphabetically':
+              q = query(
+                tripsCollection, 
+                where('userId', '==', id),
+                orderBy('tripName', !isReverse ? 'desc' : 'asc'),
+              );
+              break;
+            case 'rate':
+              q = query(
+                tripsCollection, 
+                where('userId', '==', id),
+                orderBy('rate', !isReverse ? 'desc' : 'asc'),
+              );
+              break;
+          }
+  
           const querySnapshot = await getDocs(q);
           const fetchedUserTravels = querySnapshot.docs.map(doc => ({
             ...doc.data(),
             id: doc.id,
           }));
+
           setUserTravels(fetchedUserTravels as ITravel[]);
         } catch (err) {
           // @ts-ignore
           alert(firebaseErrors[err.code]);
+        } finally {
+            setTravelsIsLoading(false);
         }
       })();
-    }, [id]);
+    }, [id, isReverse, sortBy]);
 
     return (
       <>
@@ -112,17 +144,24 @@
                 </div>
               </div>
             </div>
-
-          {
-            userTravels && (
-              <div className={styles.container}>
-              <p className={styles.title}>{userData?.username}`s travels</p>
-              <div className={styles.travelsContainer}>
-                {userTravels.map(travel => <TravelCard key={travel.id} travel={travel} />)}
-              </div>
+            <div className={styles.container}>
+              {
+                userTravels.length === 0 ? (
+                  <p className={styles.title}>{userData?.username} has not any travels</p>
+                ) : (
+                  <>
+                    <p className={styles.title}>{userData?.username}`s travels</p>
+                    <Sort onSelect={setSortBy} isReverse={isReverse} setReverse={() => setIsReverse(prevState => !prevState)}/>
+                    <div className={styles.travelsContainer}>
+                      {travelsIsLoading ? <Skeleton count={2} height={100} width={400} style={{margin: '10px 0'}}/> : userTravels.map(travel => <TravelCard key={travel.id} travel={travel} />)}
+                    </div>
+                  </>
+                )
+              }
             </div>
-            )
-          }
+          {/* )} */}
+          
+          
             
             <Footer/>
           </>

@@ -123,7 +123,7 @@ export const Trip = () => {
     <div className={styles.mainContainer}>
         <Header />
         <div className={styles.main}>
-          <PageTitle title={'Posts'} />
+          <PageTitle title={'Trip'} />
       
           <div className={styles.post}>
           <div className={styles.container}>
