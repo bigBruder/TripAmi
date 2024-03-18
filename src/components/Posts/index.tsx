@@ -107,6 +107,7 @@ const PostItem: FC<Props> = ({postData}) => {
             username: userData?.username,
             id: userData?.id,
             firebaseUid: userData?.firebaseUid,
+            avatarUrl: userData?.avatarUrl,
           }}
           userPhotoUrl={userPhotoUrl}
           createdAt={createAt}
