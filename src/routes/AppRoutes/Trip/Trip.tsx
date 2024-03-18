@@ -17,6 +17,8 @@ import { getDownloadURL, ref } from "firebase/storage";
 import { storage } from "~/firebase";
 import Rating from "~/components/Rating";
 import { LightBox } from "~/components/Lightbox/LightBox";
+import { CommentField } from "~/components/CommentField";
+import {Comment} from "~/components/Comment";
 
 
 
@@ -36,11 +38,11 @@ export const Trip = () => {
     type: string; 
     description: string | undefined;
   } | null>(null);
+  const [comments, setComments] = useState<IComment[] | null>(null);
   const navigate = useNavigate();
 
 
   useEffect(() => {
-    console.log("postID", state.postId);
     (async () => {
       const q = query(tripsCollection, where(documentId(), '==', state.postId),);
       const querySnapshot = await getDocs(q);
@@ -95,7 +97,25 @@ export const Trip = () => {
   const handleSelectImage = (index: number) => {
     setSelectedImage(imageUrls[index]);
   };
+  
+  useEffect(() => {
+    const q = query(
+      commentsCollection,
+      where('postId', '==', state.postId),
+      orderBy('createdAt', 'desc'),
+    );
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const fetchedDocs = querySnapshot.docs.map(doc => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+      setComments(fetchedDocs as IComment[]);
+    });
 
+    return () => {
+      unsubscribe();
+    }
+  }, [state.postId]);
 
   return (
     <div className={styles.mainContainer}>
@@ -197,10 +217,11 @@ export const Trip = () => {
           </div>
         </div>
       </div>
-        </div>
-        {/* <CommentField postId={post.id} commentsCount={post.comments_count} /> */}
-        {/* {comments?.map(comment => <Comment key={comment.id} comment={comment} />)} */}
 
+        <CommentField postId={state.postId} commentsCount={trip?.comments_count || 0} contentType='trip'/>
+        {comments?.map(comment => <Comment key={comment.id} comment={comment} />)}
+
+        </div>
         <LightBox 
           isOpen={isLightBoxOpen} 
           onCloseModal={() => setIsLightBoxOpen(false)} 
@@ -208,6 +229,6 @@ export const Trip = () => {
           onChangeSelectedPhoto={setSelectedImage} 
           images={imageUrls}
         />
-      </div>
+    </div>
   );
 };

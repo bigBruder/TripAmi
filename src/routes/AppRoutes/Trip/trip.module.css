@@ -14,6 +14,7 @@
     flex-direction: column;
     flex-grow: 1;
     padding: 60px 60px 0 60px;
+    gap: 20px;
 
     background-image: url('../../../assets/images/LoginBackground.png');
     background-repeat: no-repeat;

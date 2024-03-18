@@ -10,15 +10,17 @@ import {IPost} from "~/types/post";
 interface Props {
   postId: string;
   commentsCount: number;
+  contentType: 'post' | 'trip';
 }
 
-export const CommentField: FC<Props> = ({postId, commentsCount}) => {
+export const CommentField: FC<Props> = ({postId, commentsCount, contentType}) => {
   const {firestoreUser} = useContext(AuthContext);
   const [enteredText, setEnteredText] = useState('');
 
   const handleComment = useCallback(async () => {
     try {
-      const docRef = doc(db, "posts", postId);
+      const collection = contentType === 'post' ? 'posts' : 'trips';
+      const docRef = doc(db, collection, postId);
 
       await updateDoc<IPost>(docRef, {
         comments_count: commentsCount + 1,
@@ -40,7 +42,7 @@ export const CommentField: FC<Props> = ({postId, commentsCount}) => {
       // @ts-ignore
       alert(firebaseErrors[e.code]);
     }
-  }, [postId, commentsCount, firestoreUser?.id, firestoreUser?.username, enteredText]);
+  }, [contentType, postId, commentsCount, firestoreUser?.id, firestoreUser?.username, enteredText]);
 
   return (
     <div className={styles.container}>
