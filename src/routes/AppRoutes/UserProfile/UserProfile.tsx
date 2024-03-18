@@ -30,8 +30,6 @@ import { Sort } from "~/components/Sort/Sort";
 
     useEffect(() => {
       (async () => {
-
-        // console.log(id);
         const q = query(usersCollection, where('id', '==', id), orderBy('tripCount', isReverse ? 'desc' : 'asc'));
         const querySnapshot = await getDocs(q);
 
@@ -57,8 +55,6 @@ import { Sort } from "~/components/Sort/Sort";
     }, [userData]);
 
     useEffect(() => {
-      // console.log(id);
-
       (async () => {
         try {
           let q;

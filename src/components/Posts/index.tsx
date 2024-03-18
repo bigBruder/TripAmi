@@ -38,6 +38,9 @@ const PostItem: FC<Props> = ({postData}) => {
   const navigate = useNavigate();
   const [userPhotoUrl, setUserPhotoUrl] = useState<string>();
 
+
+  console.log('111111', postData);
+
   useEffect(() => {
     (async () => {
       try {
@@ -85,8 +88,6 @@ const PostItem: FC<Props> = ({postData}) => {
           const querySnapshot = await getDocs(q);
           const fetchedUser = querySnapshot.docs[0].data();
 
-          console.log('fetchedUser', fetchedUser);
-
           setUserData(fetchedUser as IUser);
         } catch (error) {
           console.log('[ERROR getting user from firestore] => ', error);
@@ -98,6 +99,7 @@ const PostItem: FC<Props> = ({postData}) => {
   }, [firestoreUser?.firebaseUid, firestoreUser?.id, setIsLoading, userId]);
 
   const isPostMy = useMemo(() => firestoreUser?.id === userId, [firestoreUser?.id, userId]);
+
 
   return (
     <div className={styles.cardContainer}>

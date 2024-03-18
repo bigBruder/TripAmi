@@ -34,8 +34,6 @@ const LoginPage = () => {
             id: doc.id,
           }));
 
-          // console.log(fetchedPosts);
-
           setPosts(fetchedPosts as IPost[]);
         } catch (err) {
           // @ts-ignore
@@ -46,9 +44,6 @@ const LoginPage = () => {
       }
     })();
   }, [firestoreUser?.id]);
-
-  // console.log(posts);
-
 
   const getSlidesPerPage = useMemo(() => {
     if (width < 480) {

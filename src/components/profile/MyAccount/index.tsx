@@ -123,6 +123,7 @@ const MyAccount = () => {
             id: doc.id,
           }));
 
+
           setSuggestedPosts(fetchedPosts as IPost[]);
 
 

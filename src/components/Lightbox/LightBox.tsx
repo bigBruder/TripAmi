@@ -21,8 +21,6 @@ interface Props {
 
 
 export const LightBox: React.FC<Props> = ({isOpen, onCloseModal, selectedImage, images, onChangeSelectedPhoto }) => {
-  // console.log(images);
-  
     return (
         <CSSTransition
           in={isOpen}

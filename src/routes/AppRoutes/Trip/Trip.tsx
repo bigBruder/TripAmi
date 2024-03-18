@@ -24,8 +24,6 @@ import {Comment} from "~/components/Comment";
 
 export const Trip = () => {
   const {id} = useParams();
-  console.log(id);
-  // const {state} = useLocation();
   const [trip, setTrip] = useState<ITravel | null>(null);
   const [userData, setUserData] = useState<IUser | null>(null);
   const [imageUrls, setImageUrls] = useState<{
@@ -79,7 +77,6 @@ export const Trip = () => {
       const downloadedUrls = [];
 
       if (trip?.imageUrl) {
-        console.log(trip.imageUrl);
         for (let i = 0; i < trip.imageUrl.length; i++) {
           const url = await getDownloadURL(ref(storage, trip.imageUrl[i].url));
           downloadedUrls.push({ url, type: trip.imageUrl[i].type, description: trip.imageUrl[i].description });

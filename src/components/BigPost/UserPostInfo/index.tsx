@@ -15,6 +15,7 @@ interface Props {
 }
 
 export const UserPostInfo: FC<Props> = ({userData, createdAt, userPhotoUrl}) => {
+  console.log('userData', userData);
   const navigate = useNavigate();
   const {firebaseUid} = userData;
   const {firestoreUser} = useContext(AuthContext);
@@ -31,8 +32,7 @@ export const UserPostInfo: FC<Props> = ({userData, createdAt, userPhotoUrl}) => 
   useEffect(() => {
     if (userData?.avatarUrl) {
       (async () => {
-        console.log('userData?.avatarUrl', userData?.avatarUrl)
-        const avatarLink = await getDownloadURL(ref(storage, userData.avatarUrl));
+        const avatarLink = await getDownloadURL(ref(storage, userData?.avatarUrl));
         setUserAvatar(avatarLink);
       })();
     }

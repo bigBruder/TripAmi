@@ -59,7 +59,6 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
 
 
     if (filesList && filesList?.length === 3) {
-      console.log('here');
       notify('The maximum number of photos is 3');
     }
   }, [filesList]);

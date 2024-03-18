@@ -93,8 +93,6 @@ export const TravelItinerary = () => {
     }
   }, [firestoreUser?.id, isReverse, setTravels, sortBy]);
 
- console.log(sortBy, 'sortBy');
-
   return (
     <div className={styles.container}>
       <p className={styles.title}>{firestoreUser?.username}`s travels</p>

@@ -13,7 +13,6 @@ import {PageTitle} from "~/components/PageTitle";
 
 const PostsPage = () => {
   const {state} = useLocation();
-  // console.log(state);
   const [comments, setComments] = useState<IComment[] | null>(null);
   const [post, setPost] = useState<IPost>(state);
 

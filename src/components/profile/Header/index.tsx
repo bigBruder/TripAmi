@@ -84,11 +84,7 @@ const Header = () => {
           attributesToRetrieve: ['userId', 'cities', 'geoTag', 'location', 'rate', 'text', 'objectID',],
           hitsPerPage: 5,
         });
-
-        // result.hits.map(hit => {
-        //  console.log(hit._highlightResult.rate.matchLevel);
-        // });
-
+        
         const matchedCities = result.hits.map(hit => {
           if(hit._highlightResult.location.name.matchLevel === 'full') {
             // console.log(hit._highlightResult.cities[i]);
@@ -103,7 +99,6 @@ const Header = () => {
             
             if (key === 'cities' && hit._highlightResult.cities.length > 0) {
               for (let i = 0; i < hit._highlightResult.cities.length; i++) {
-                console.log( hit._highlightResult.cities[i].address.matchLevel)
                 if(hit._highlightResult.cities[i].address.matchLevel === 'full') {
                   // console.log(hit._highlightResult.cities[i]);
                   return (hit._highlightResult.cities[i].address.value.replace('<em>', '').replace('</em>', '').split(',')[0]);

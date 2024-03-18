@@ -35,14 +35,11 @@ export const Comment: FC<Props> = ({comment}) => {
   // }, [firestoreUser?.avatarUrl]);
 
   useEffect(() => {
-    console.log(comment.userImage);
     (async () => {
       if (comment.userId) {
         const q = query(usersCollection, where(documentId(), '==', comment.userId),);
         const querySnapshot = await getDocs(q);
         const fetchedUser = querySnapshot.docs[0].data();
-        // const url = await getDownloadURL(ref(storage, comment.userImage));
-        // console.log(url);
 
         setUserPhotoUrl(fetchedUser.avatarUrl);
       }

@@ -46,23 +46,6 @@ export const BigPost: FC<Props> = ({
     })();
   }, [firestoreUser?.id, post.userId]);
 
-  // useEffect(() => {
-  //   if (post?.imageUrls[0]?.length) {
-  //     (async () => {
-  //       try {
-  //         setIsLoading(true);
-  //
-  //         const url = await getDownloadURL(ref(storage, post.imageUrls[0]));
-  //         setImageUrl(url);
-  //       } catch (error) {
-  //         console.log('[ERROR downloading image] => ', error);
-  //       } finally {
-  //         setIsLoading(false);
-  //       }
-  //     })();
-  //   }
-  // }, [post?.imageUrls]);
-
   useEffect(() => {
     (async () => {
       if (firestoreUser?.id && firestoreUser?.id !== post?.userId) {

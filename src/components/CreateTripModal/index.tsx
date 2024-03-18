@@ -242,7 +242,6 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
   }
 
   const onSelectCity = useCallback((address: string, placeID: string) => {
-    // console.log(selectedCities);
     if(!selectedCities.map(city => city.address.toString()).includes(address)) {
       setSelectedCities(prevState => [...prevState, {address: address.split(',')[0], placeID}]);
       setCity('');
@@ -251,7 +250,6 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
     }
     
     setIsAddCityOpen(false);
-    // setIsAddingPlace(false);
   }, [selectedCities]);
 
   return (
