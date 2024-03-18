@@ -1,6 +1,6 @@
 import { doc, documentId, getDocs, onSnapshot, orderBy, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { PageTitle } from "~/components/PageTitle";
 import Header from "~/components/profile/Header";
 import { IComment } from "~/types/comments";
@@ -23,7 +23,9 @@ import {Comment} from "~/components/Comment";
 
 
 export const Trip = () => {
-  const {state} = useLocation();
+  const {id} = useParams();
+  console.log(id);
+  // const {state} = useLocation();
   const [trip, setTrip] = useState<ITravel | null>(null);
   const [userData, setUserData] = useState<IUser | null>(null);
   const [imageUrls, setImageUrls] = useState<{
@@ -44,12 +46,12 @@ export const Trip = () => {
 
   useEffect(() => {
     (async () => {
-      const q = query(tripsCollection, where(documentId(), '==', state.postId),);
+      const q = query(tripsCollection, where(documentId(), '==', id),);
       const querySnapshot = await getDocs(q);
       const fetchedPost = querySnapshot.docs[0].data() as ITravel;
       setTrip(fetchedPost);
     })();
-  }, [state.postId]);
+  }, [id]);
 
   useEffect(() => {
     (async () => {
@@ -101,7 +103,7 @@ export const Trip = () => {
   useEffect(() => {
     const q = query(
       commentsCollection,
-      where('postId', '==', state.postId),
+      where('postId', '==', id),
       orderBy('createdAt', 'desc'),
     );
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -115,7 +117,7 @@ export const Trip = () => {
     return () => {
       unsubscribe();
     }
-  }, [state.postId]);
+  }, [id]);
 
   return (
     <div className={styles.mainContainer}>
@@ -218,8 +220,9 @@ export const Trip = () => {
         </div>
       </div>
 
-        <CommentField postId={state.postId} commentsCount={trip?.comments_count || 0} contentType='trip'/>
-        {comments?.map(comment => <Comment key={comment.id} comment={comment} />)}
+        {id && <CommentField postId={id} commentsCount={trip?.comments_count || 0} contentType='trip'/>}
+        
+        {comments && comments?.map(comment => <Comment key={comment.id} comment={comment} />)}
 
         </div>
         <LightBox 

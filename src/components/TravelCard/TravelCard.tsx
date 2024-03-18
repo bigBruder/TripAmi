@@ -243,7 +243,7 @@ const TravelCard: FC<Props> = ({travel}) => {
                 src={commentsIcon}
                 alt="comments"
               />
-              <span className={styles.comments}>{comments_count} Comments</span>
+              <span className={styles.comments} onClick={() => navigate('/trip/' + id)}>{comments_count} Comments</span>
             </div>
             <div className={styles.shareContainer}>
               <img className={styles.shareIcon} src={shareIcon} alt="share" />
