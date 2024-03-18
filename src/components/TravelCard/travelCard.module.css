@@ -256,3 +256,43 @@
 .deleteModal_title {
     font-size: 30px;
 }
+
+.shareModalContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    height: 100%;
+    
+
+    cursor: pointer;
+}
+
+.shareButtonsContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.linkContainer {
+    display: flex;
+    border-radius: 44px;
+    border: 1px solid #5280F4;
+    background: transparent;
+    padding: 10px 20px;
+    align-items: center;
+    font-size: 16px;
+}
+
+.copiedActive {
+    background-color: rgba(172, 172, 172, 0.22);
+}
+
+.doneContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+}

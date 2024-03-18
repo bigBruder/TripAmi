@@ -15,6 +15,9 @@ import Dots from '@assets/icons/dots.svg';
 import CreateTripModal from "~/components/CreateTripModal";
 import CustomModal from "~/components/CustomModal";
 import { LightBox } from "../Lightbox/LightBox";
+import {EmailIcon, EmailShareButton, TelegramIcon, TelegramShareButton, WhatsappIcon, WhatsappShareButton} from "react-share";
+import {CopyToClipboard} from 'react-copy-to-clipboard';
+import Done from '@assets/icons/done.svg';
 
 interface Props {
   travel: ITravel;
@@ -42,6 +45,8 @@ const TravelCard: FC<Props> = ({travel}) => {
   const [isPhotosModalOpen, setIsPhotosModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [isModalDeleteOpen, setIsModalDeleteOpen] = useState(false);
+  const [isModalShareOpen, setIsModalShareOpen] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
 
   const handleDeleteTrip = useCallback(async () => {
     try {
@@ -243,9 +248,19 @@ const TravelCard: FC<Props> = ({travel}) => {
               />
               <span className={styles.comments} onClick={() => navigate('/trip/' + id)}>{comments_count} Comments</span>
             </div>
-            <div className={styles.shareContainer}>
+            <div className={styles.shareContainer} onClick={() => setIsModalShareOpen(true)}>
               <img className={styles.shareIcon} src={shareIcon} alt="share" />
               <span className={styles.share}>Share</span>
+                  {/* <div className="Demo__some-network">
+                    <WhatsappShareButton
+                      url={'test url'}
+                      title={'Check out this trip'}
+                      separator=":: "
+                      className="Demo__some-network__share-button"
+                    >
+                      <WhatsappIcon size={20} round />
+                    </WhatsappShareButton>
+                  </div> */}
             </div>
             {firestoreUser?.id === userId ? (
               <>
@@ -260,6 +275,56 @@ const TravelCard: FC<Props> = ({travel}) => {
               </>
             ) : null}
           </div>
+
+      <CustomModal isOpen={isModalShareOpen} onCloseModal={() => {
+        setIsModalShareOpen(false);
+        setIsCopied(false)}}
+      >
+        <div className={styles.shareModalContainer}>
+          <h3>Share with your friends</h3>
+          <div className={styles.shareButtonsContainer}>
+            <WhatsappShareButton
+              url={'https://tripamicities.netlify.app/oilslNyzo62jvdQNJUh0'}
+              title={'Check out this trip'}
+              separator=":: "
+              className="Demo__some-network__share-button"
+            >
+              <WhatsappIcon size={40} round />
+            </WhatsappShareButton>
+            <TelegramShareButton
+              url={'https://tripamicities.netlify.app/oilslNyzo62jvdQNJUh0'}
+              title={'Check out this trip'}
+              className="Demo__some-network__share-button"
+            >
+              <TelegramIcon size={40} round />
+            </TelegramShareButton>
+            <EmailShareButton
+              url={'https://tripamicities.netlify.app/oilslNyzo62jvdQNJUh0'}
+              subject={'Check out this trip'}
+              body="body"
+              className="Demo__some-network__share-button"
+            >
+              <EmailIcon size={40} round />
+            </EmailShareButton>
+            
+          </div>
+          <CopyToClipboard text={'https://tripamicities.netlify.app/oilslNyzo62jvdQNJUh0'}
+          >
+            <div className={`${styles.linkContainer} ${isCopied ? styles.copiedActive : ''}`} onClick={() => setIsCopied(true)}>
+               <p>https://tripamicities.netlify.app/oilslNyzo62jvdQNJUh0</p>
+            </div>
+          </CopyToClipboard>
+          {
+              isCopied && (
+              <div className={styles.doneContainer}>
+                <p className={styles.copied}>Copied</p>
+                <img src={Done} alt="done" />
+              </div>
+              )
+               
+          }
+        </div>
+      </CustomModal>
 
       <CustomModal isOpen={editModalIsOpen} onCloseModal={handleCloseEditModal}>
         <CreateTripModal
