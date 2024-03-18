@@ -11,6 +11,7 @@ import {IPost} from "~/types/post";
 import {firebaseErrors} from "~/constants/firebaseErrors";
 import {useWindowDimensions} from "~/hooks/useWindowDimensions";
 import { SortDirection } from '@assets/icons/SortDirection';
+import { Sort } from '../Sort/Sort';
 
 export const TravelItinerary = () => {
   const {firestoreUser} = useContext(AuthContext);
@@ -99,7 +100,7 @@ export const TravelItinerary = () => {
       <p className={styles.title}>{firestoreUser?.username}`s travels</p>
 
 
-      <div className={styles.sortContainer}>
+      {/* <div className={styles.sortContainer}>
         <select name="order" className={styles.sortby_select} onChange={e => setSortBy(e.target.value)}>
           <option value="date">Newest</option>
           <option value="alphabetically">Alphabetically</option>
@@ -110,7 +111,9 @@ export const TravelItinerary = () => {
             isReverse={isReverse}
           />
         </div>
-      </div>
+      </div> */}
+
+      <Sort onSelect={setSortBy} isReverse={isReverse} setReverse={() => setIsReverse(prevState => !prevState)}/>
 
       <div className={styles.travelsContainer}>
         {travels.map(travel => <TravelCard key={travel.id} travel={travel} />)}

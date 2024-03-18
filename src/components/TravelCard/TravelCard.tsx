@@ -14,8 +14,6 @@ import {useNavigate} from "react-router-dom";
 import Dots from '@assets/icons/dots.svg';
 import CreateTripModal from "~/components/CreateTripModal";
 import CustomModal from "~/components/CustomModal";
-import { Marker } from "~/assets/icons/map/Marker";
-import { ReactPhotoCollage } from "react-photo-collage";
 import { LightBox } from "../Lightbox/LightBox";
 
 interface Props {
