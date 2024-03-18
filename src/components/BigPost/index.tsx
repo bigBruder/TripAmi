@@ -53,7 +53,7 @@ export const BigPost: FC<Props> = ({
           setIsLoading(true);
           const q = query(
             usersCollection,
-            where('firebaseUid', '!=', firestoreUser?.firebaseUid),
+            where('firebaseUid', '==', post.userId),
           );
           const querySnapshot = await getDocs(q);
           const fetchedUser = querySnapshot.docs[0].data();
