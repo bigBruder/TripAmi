@@ -81,12 +81,11 @@ const PostItem: FC<Props> = ({postData}) => {
       if (firestoreUser?.id && firestoreUser?.id !== userId) {
         try {
           setIsLoading(true);
-          const q = query(
-            usersCollection,
-            where('id', '==', userId),
-          );
+          const q = query(usersCollection,where('id', '==', userId));
           const querySnapshot = await getDocs(q);
           const fetchedUser = querySnapshot.docs[0].data();
+
+          console.log('fetchedUser', fetchedUser);
 
           setUserData(fetchedUser as IUser);
         } catch (error) {

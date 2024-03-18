@@ -29,10 +29,13 @@ export const UserPostInfo: FC<Props> = ({userData, createdAt, userPhotoUrl}) => 
   }, [firebaseUid, firestoreUser?.firebaseUid, navigate]);
 
   useEffect(() => {
-    (async () => {
-      const avatarLink = await getDownloadURL(ref(storage, userData?.avatarUrl));
-      setUserAvatar(avatarLink);
-    })();
+    if (userData?.avatarUrl) {
+      (async () => {
+        console.log('userData?.avatarUrl', userData?.avatarUrl)
+        const avatarLink = await getDownloadURL(ref(storage, userData.avatarUrl));
+        setUserAvatar(avatarLink);
+      })();
+    }
   }, [userData?.avatarUrl, userPhotoUrl]);
 
   return (
