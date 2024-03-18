@@ -20,8 +20,8 @@ const PostsPage = () => {
   useEffect(() => {
     const q = query(
       commentsCollection,
-      where('postId', '==', post.id),
-      orderBy('createdAt', 'desc'),
+      where('postId', "==", post.id),
+      orderBy('createdAt', "desc"),
     );
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const fetchedDocs = querySnapshot.docs.map(doc => ({
@@ -44,7 +44,7 @@ const PostsPage = () => {
 
         <div className={styles.post}>
           <BigPost post={post} setPost={setPost} />
-          <CommentField postId={post.id} commentsCount={post.comments_count} />
+          <CommentField postId={post.id} commentsCount={post.comments_count} contentType="post"/>
           {comments?.map(comment => <Comment key={comment.id} comment={comment} />)}
         </div>
       </div>

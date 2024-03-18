@@ -32,7 +32,7 @@ export const CommentField: FC<Props> = ({postId, commentsCount, contentType}) =>
         postId,
         userId: firestoreUser?.id,
         userName: firestoreUser?.username,
-        // userImage: firestoreUser?.userImage,
+        userImage: firestoreUser?.avatarUrl,
         createdAt: new Date().toISOString(),
         text: enteredText,
       });

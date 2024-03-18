@@ -22,15 +22,27 @@ export const Comment: FC<Props> = ({comment}) => {
   const dislikedByUser = useMemo(() => firestoreUser?.id && dislikes.includes(firestoreUser.id),[dislikes, firestoreUser?.id]);
   const [userPhotoUrl, setUserPhotoUrl] = useState<string>();
 
-  useEffect(() => {
-    (async () => {
-      if (firestoreUser?.avatarUrl) {
-        const url = await getDownloadURL(ref(storage, firestoreUser.avatarUrl));
+  // useEffect(() => {
+  //   (async () => {
+  //     if (firestoreUser?.avatarUrl) {
+  //       const url = await getDownloadURL(ref(storage, firestoreUser.avatarUrl));
 
-        setUserPhotoUrl(url);
+  //       setUserPhotoUrl(url);
+  //     }
+  //   })();
+  // }, [firestoreUser?.avatarUrl]);
+
+  useEffect(() => {
+    console.log(comment.userImage);
+    (async () => {
+      if (comment.userId) {
+        // const url = await getDownloadURL(ref(storage, comment.userImage));
+        // console.log(url);
+
+        setUserPhotoUrl(comment.userImage);
       }
     })();
-  }, [firestoreUser?.avatarUrl]);
+  }, [comment.userId, comment.userImage]);
 
   const spliceFromArr = useCallback((arr: string[], value: string) => {
     const index = arr.indexOf(value);
@@ -122,8 +134,9 @@ export const Comment: FC<Props> = ({comment}) => {
           username: comment.userName,
           id: comment.userId,
           firebaseUid: firestoreUser?.firebaseUid,
+          avatarUrl: comment.userImage,
         }}
-        userPhotoUrl={userPhotoUrl}
+        // userPhotoUrl={userPhotoUrl}
         createdAt={comment.createdAt}
       />
       <p>{comment.text}</p>
