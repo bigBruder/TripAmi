@@ -42,12 +42,13 @@ const InvitePeople = () => {
         },
         {
           headers: {
-            'X-ElasticEmail-ApiKey': 'YOUR_API_KEY',
+            'X-ElasticEmail-ApiKey': 'BE74E3AE0AD551541906080E491A880B630B0DB2E63B63573F4AEE255C011D805F60BBC6D8EFBCC03AA7440DC3DADE3D',
           }
         }
       );
-      
       notify('Invitation successfully sent');
+      setName('');
+      setEmail('');
     } catch (err) {
       console.log('[ERROR sending email] => ', err);
       notifyError('Something went wrong, please try again');
@@ -66,9 +67,10 @@ const InvitePeople = () => {
             className={styles.input}
             placeholder={'Name'}
             type={'text'}
+            value={name}
             onChange={(e) => setName(e.target.value)}
           />
-          <input className={styles.input} placeholder={'Email'} type={'email'} onChange={(e) => setEmail(e.target.value)}/>
+          <input className={styles.input} placeholder={'Email'} type={'email'} value={email} onChange={(e) => setEmail(e.target.value)}/>
           <button onClick={handleSendInvitation} className={styles.sendButton}>Invite</button>
         </div>
       </div>
