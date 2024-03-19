@@ -48,6 +48,7 @@ const TravelCard: FC<Props> = ({travel}) => {
   const [isModalShareOpen, setIsModalShareOpen] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
 
+
   const handleDeleteTrip = useCallback(async () => {
     try {
       await deleteDoc(doc(db, 'trips', id));
@@ -81,8 +82,6 @@ const TravelCard: FC<Props> = ({travel}) => {
       }
     })();
   }, [imageUrl]);
-
-  console.log('imageDownloadUrls', imageDownloadUrls);
 
   const getLayout = useMemo(() => {
     switch (imageDownloadUrls?.length) {
@@ -132,8 +131,6 @@ const TravelCard: FC<Props> = ({travel}) => {
     setEditModalIsOpen(false);
   }, []);
 
-  console.log(location.name);
-
   return (
     <div className={styles.container}>
       <div className={styles.topContainer}>
@@ -145,8 +142,6 @@ const TravelCard: FC<Props> = ({travel}) => {
           <p className={styles.date}>{startDate} - {endDate}</p>
         </div>
       </div>
-
-
 
       <div className={styles.mainContainer}>
         <div className={styles.gallery}>

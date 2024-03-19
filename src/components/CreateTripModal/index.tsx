@@ -69,6 +69,9 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
   const [downloadedImages, setDownloadedImages] = useState<{url: string, type: string, description: string}[]>(data?.imageUrl || []);
   const [imagesDescription, setImagesDescription] = useState<{name: string, value:string, id?: number}[]>(downloadedImages?.map((image, id) => ({name: image.url, value: image.description, id: id})) || []);
 
+
+  console.log(daysDescription, 'dayDescription');
+
   useEffect(() => {
     if (isMaxError) {
       notify('The maximum number of media is 5');
@@ -96,6 +99,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
   const handleOnSave = useCallback(async () => {
     try {
       if ((file || downloadedImages)) {
+
         // const geocode = await geocodeByPlaceId(selectedLocation);
 
         setIsLoading(true);
@@ -123,6 +127,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
               public: tickIsChecked,
               geoTags: selectedGeoTags,
               cities: selectedCities,
+              value: 'fjlksdfjlksdfj',
               tripName: tripName,
               location: {
                 name: location.name,
@@ -189,7 +194,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
     } finally {
       setIsLoading(false);
     }
-  }, [selectedLocation, imagesDescription, file, firestoreUser?.id, firestoreUser?.tripCount, rating, startDate, tickIsChecked, selectedGeoTags, location, text, updateFirestoreUser]);
+  }, [selectedLocation, imagesDescription, file, firestoreUser?.id, firestoreUser?.tripCount, rating, startDate, tickIsChecked, selectedGeoTags, location, text, updateFirestoreUser, daysDescription]);
 
   const onSelectPlace = useCallback(async (address: string, placeID: string) => {
     const geocode = await geocodeByPlaceId(placeID);
