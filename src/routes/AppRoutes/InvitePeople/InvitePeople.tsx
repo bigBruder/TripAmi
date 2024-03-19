@@ -15,44 +15,45 @@ const InvitePeople = () => {
   const notifyError = (text: string) => toast.error(text);
 
   const handleSendInvitation = useCallback(async () => {
-    if (email && name) {
-      if (firestoreUser?.email) {
-        try {
-          const response = await axios.post('https://api.elasticemail.com/v4/emails', {
-            Recipients: [{
-              Email: email,
-            }],
-            Content: {
-              Body: [{
-                ContentType: "HTML",
-                // Content: "string",
-                Charset: "string"
-              }],
-              From: "visosensey@gmail.com",
-              Subject: "string",
-              TemplateName: "TripAmi",
-              Merge: {
-               linkTo: "https://tripamicities.netlify.app",
-              },
-            },
-          }, {
-            headers: {
-              'X-ElasticEmail-ApiKey': 'BE74E3AE0AD551541906080E491A880B630B0DB2E63B63573F4AEE255C011D805F60BBC6D8EFBCC03AA7440DC3DADE3D',
-            }
-          })
-            .then(() => {notify('Invitation succesfully sent')})
-        } catch (err) {
-          console.log('[ERROR sending email] => ', err);
-          notifyError('Somethinf went wrong, please try again')
-        }
-      } else {
-        notifyError('You need to be logged in to invite someone');
-      }
-    } else {
+    const userEmail = firestoreUser?.email;
+  
+    if (!email || !name) {
       notifyError('You need to fill all the fields');
+      return;
     }
-
-  }, [email, firestoreUser?.email, name]);
+  
+    if (!userEmail) {
+      notifyError('You need to be logged in to invite someone');
+      return;
+    }
+  
+    try {
+      const response = await axios.post(
+        'https://api.elasticemail.com/v4/emails',
+        {
+          Recipients: [{ Email: email }],
+          Content: {
+            Body: [{ ContentType: "HTML", Charset: "string" }],
+            From: "visosensey@gmail.com",
+            Subject: "string",
+            TemplateName: "TripAmi",
+            Merge: { linkTo: "https://tripamicities.netlify.app" },
+          },
+        },
+        {
+          headers: {
+            'X-ElasticEmail-ApiKey': 'YOUR_API_KEY',
+          }
+        }
+      );
+      
+      notify('Invitation successfully sent');
+    } catch (err) {
+      console.log('[ERROR sending email] => ', err);
+      notifyError('Something went wrong, please try again');
+    }
+  }, [firestoreUser?.email, email, name]);
+  
 
   return (
     <div className={styles.wrapper}>
