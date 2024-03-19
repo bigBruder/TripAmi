@@ -6,11 +6,17 @@ import {useCallback, useContext, useState} from "react";
 import {AuthContext} from "~/providers/authContext";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
+import { InviteLetter } from "~/components/InviteLetter/InviteLetter";
+
+const defaultTitle = 'No More Travel Advice From Strangers!';
+const defaultDescription = 'We\'ve created a platform to get travel advice from your friend\'s circle';
 
 const InvitePeople = () => {
   const {firestoreUser} = useContext(AuthContext);
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
   const notify = (text: string) => toast.info(text);
   const notifyError = (text: string) => toast.error(text);
 
@@ -71,9 +77,28 @@ const InvitePeople = () => {
             onChange={(e) => setName(e.target.value)}
           />
           <input className={styles.input} placeholder={'Email'} type={'email'} value={email} onChange={(e) => setEmail(e.target.value)}/>
+          <input 
+            type="text" 
+            className={styles.input} 
+            placeholder={`Optional: title`}
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+          <input 
+            type="text" 
+            className={styles.input} 
+            placeholder={`Optional: description`}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
           <button onClick={handleSendInvitation} className={styles.sendButton}>Invite</button>
         </div>
+
+        <h2>Preview:</h2>
+        <InviteLetter link="#" title={title || defaultTitle} description={description || defaultDescription}/>      
+
       </div>
+
       <Footer />
       <ToastContainer closeOnClick autoClose={2000} limit={1} pauseOnHover={false} />
     </div>
