@@ -336,7 +336,7 @@ const TravelCard: FC<Props> = ({travel}) => {
             rate: travel.rate,
             startDate: startDate,
             endDate: endDate,
-            public: travel.public,
+            isPublic: travel.public,
             geoTags: travel.geoTags,
             cities: travel.cities,
             tripName: tripName,

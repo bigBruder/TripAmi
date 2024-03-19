@@ -48,6 +48,7 @@ interface Props {
 const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
   const {firestoreUser, updateFirestoreUser} = useContext(AuthContext);
   const [tickIsChecked, setTickIsChecked] = useState(data?.isPublic || false);
+  console.log("isPublic: ", data?.isPublic);
   const [file, setFile] = useState<File[] >([]);
   const [rating, setRating] = useState(data?.rate || 0);
   const [location, setLocation] = useState(data?.location || null);
