@@ -3,7 +3,7 @@ import React from 'react';
 export const InviteLetter = ({ link, title, description }) => {
   return (
     <div style={{ margin: '0', padding: '0 !important', backgroundColor: '#DAE0E1' }}>
-      <center role="article" aria-roledescription="email" lang="en" style={{ width: '100%', backgroundColor: '#F5F6F8' }}>
+      <center role="article" aria-roledescription="email" lang="en" style={{ width: '100%', backgroundColor: '#DAE0E1' }}>
         {/* Email Body */}
         <table align="center" role="presentation" cellSpacing="0" cellPadding="0" border="0" width="640" style={{ margin: 'auto' }} className="email-container">
           {/* Unsubscribe */}
@@ -16,7 +16,7 @@ export const InviteLetter = ({ link, title, description }) => {
           </tr>
           {/* Logo */}
           <tr>
-            <td className="logo" style={{ padding: '10px 0 32px', textAlign: 'center' }}>
+            <td className="logo" style={{ padding: '10px 0 32px', textAlign: 'center', backgroundColor: "#fff" }}>
               <img src="https://api.smtprelay.co/userfile/98d7bd03-3ba8-47b6-a9a0-cb2594bf32cd/headerLogo.png" title="headerLogo.png" alt="headerLogo.png" style={{ maxWidth: '100%', height: 'auto' }} />
             </td>
           </tr>
