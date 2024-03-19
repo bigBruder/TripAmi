@@ -51,6 +51,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
   const [file, setFile] = useState<File[] >([]);
   const [rating, setRating] = useState(data?.rate || 0);
   const [location, setLocation] = useState(data?.location || null);
+  const [whereToGo, setWhereToGo] = useState(data?.location.name || '');
   const [city, setCity] = useState('');
   const [startDate, setStartDate] = useState<string>(data?.startDate || moment().format('yyyy-MM-D'));
   const [endDate, setEndDate] = useState<string>(data?.endDate || moment().format('yyyy-MM-D'));
@@ -58,7 +59,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
   const [text, setText] = useState(data?.text || '');
   const [selectedLocation, setSelectedLocation] = useState<string | null>(data?.locationName || null);
   const [isMaxError, setIsMaxError] = useState(false);
-  const [geoTags, setGeoTags] = useState(data?.geoTags || '');
+  const [geoTags, setGeoTags] = useState('');
   const [selectedGeoTags, setSelectedGeoTags] = useState<{address: string, placeID: string}[]>(data?.geoTags || []);
   const [selectedCities, setSelectedCities] = useState<{address: string, placeID: string}[]>(data?.cities || []);
   const [isAddingPlace, setIsAddingPlace] = useState(false);
@@ -167,7 +168,8 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
   }, [selectedLocation, imagesDescription, file, firestoreUser?.id, firestoreUser?.tripCount, rating, startDate, tickIsChecked, selectedGeoTags, location, text, updateFirestoreUser]);
 
   const onSelectPlace = useCallback((address: string, placeID: string) => {
-    setLocation(address);
+    // setLocation(address);
+    setWhereToGo(address);
     setSelectedLocation(placeID);
   }, []);
 
@@ -303,12 +305,50 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
 
           <p>Where’d you go?</p>
           <div  className={styles.autocomplete}>
-            <PlaceAutocomplete 
+            {/* <PlaceAutocomplete 
               searchOptions={{ types: ['country'] }}
               location={location}
               setLocation={setLocation}
               onSelectPlace={onSelectPlace}
-            />
+            /> */}
+            <PlacesAutocomplete
+              searchOptions={{ types: ['country'] }}
+              value={whereToGo}
+              onChange={(value) => setWhereToGo(value)}
+              onSelect={onSelectPlace}
+            >
+              {({getInputProps, suggestions, getSuggestionItemProps, loading}) => {
+                return (
+                  <div className={suggestions.length ? styles.inputContainer : undefined}>
+                    <input
+                      {...getInputProps({
+                        placeholder: 'Venice, Italy.',
+                        className: styles.input,
+                      })}
+                    />
+                    <div className={suggestions.length ? styles.dropdown : undefined}>
+                      {loading && <div>Loading...</div>}
+                      {suggestions.map(suggestion => {
+                        const style = suggestion.active
+                          ? {backgroundColor: '#fafafa', cursor: 'pointer'}
+                          : {backgroundColor: '#ffffff', cursor: 'pointer'};
+                        return (
+                          // eslint-disable-next-line react/jsx-key
+                          <div
+                            {...getSuggestionItemProps(suggestion, {
+                              className: styles.dropdownItem,
+                              style,
+                            })}
+                          >
+                            <p>{suggestion.description}</p>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              }}
+            </PlacesAutocomplete>
           </div>
           
 
