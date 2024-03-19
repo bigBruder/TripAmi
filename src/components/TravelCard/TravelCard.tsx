@@ -191,40 +191,18 @@ const TravelCard: FC<Props> = ({travel}) => {
             dayDescription && dayDescription.map((day, index) => (
               <div key={`day_${index}`} className={styles.dayDescription}>
                 <p className={styles.date}>{day.date}</p>
-                <p>{day.description}</p>
+                <p className={styles.additionalText}>{day.description}</p>
               </div>
             ))
           }
           </div>
 
           <div className={styles.visitedContainer}>
-          <div>
-            {
-              travel.geoTags && travel.geoTags.length > 0 && (
-                <>
-                <p className={styles.text}>Places: </p>
-                <div className={styles.tagsContainer}>
-                  {travel?.geoTags?.map(tag => (
-                    <p
-                      onClick={() => navigate('/place/' + tag.placeID)}
-                      key={tag.placeID}
-                      className={styles.tag}
-                    >
-                      {tag.address}
-                    </p>
-                  ))}
-                </div>
-                </>
-              )
-            }
-             
-                
-            </div>
-
-            {
+          
+          {
               cities && cities?.length > 0 && (
                 <div>
-                  <p className={styles.text}>Cities: </p>
+                  <p className={styles.mark}>Cities: </p>
                   <div className={styles.tagsContainer}>
                   {travel?.cities?.map(tag => (
                     <p
@@ -239,6 +217,29 @@ const TravelCard: FC<Props> = ({travel}) => {
               </div>
               )
             }
+
+          <div>
+            {
+              travel.geoTags && travel.geoTags.length > 0 && (
+                <>
+                <p className={styles.mark}>Places: </p>
+                <div className={styles.tagsContainer}>
+                  {travel?.geoTags?.map(tag => (
+                    <p
+                      onClick={() => navigate('/place/' + tag.placeID)}
+                      key={tag.placeID}
+                      className={styles.tag}
+                    >
+                      {tag.address}
+                    </p>
+                  ))}
+                </div>
+                </>
+              )
+            }  
+          </div>
+
+
           </div>
           
 

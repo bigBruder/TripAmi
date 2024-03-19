@@ -111,6 +111,18 @@
     font-style: normal;
     font-weight: 500;
     line-height: normal;
+    word-break: normal;
+    text-align: justify;
+}
+
+@media screen and (max-width: 768px) {
+    .text {
+        font-size: 12px;
+    }
+}
+
+.additionalText {
+    text-align: justify;
 }
 
 .textContainer {
@@ -124,10 +136,16 @@
 
 .visitedContainer {
     display: flex;
-    justify-content: space-evenly;
-    align-items: center;
+    justify-content: flex-start;
     width: 100%;
     gap: 10px;
+}
+
+@media screen and (max-width: 500px) {
+    .visitedContainer {
+        flex-wrap: wrap;
+    }
+    
 }
 
 
@@ -350,4 +368,8 @@
     .title {
         font-size: 15px;
     }
+}
+
+.mark {
+    color: #717171;
 }
