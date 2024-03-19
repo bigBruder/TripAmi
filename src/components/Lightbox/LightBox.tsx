@@ -44,7 +44,7 @@ export const LightBox: React.FC<Props> = ({isOpen, onCloseModal, selectedImage, 
             <div className={styles.modal}>
               <div className={styles.selectedImageContainer}>
                 {
-                  selectedImage?.type === 'image/jpeg' ? (
+                  selectedImage?.type.includes('image') ? (
                     <img
                       src={selectedImage.url}
                       alt="travel"
@@ -66,7 +66,7 @@ export const LightBox: React.FC<Props> = ({isOpen, onCloseModal, selectedImage, 
               <div className={styles.slider}>
               {
                 images && images.map((image, index) => {
-                  if (image.type === 'image/jpeg') {
+                  if (image.type.includes('image')) {
                     return (
                       <img
                         key={index}
@@ -78,7 +78,7 @@ export const LightBox: React.FC<Props> = ({isOpen, onCloseModal, selectedImage, 
                         }}
                       />
                     )
-                  } else if(image.type === 'video/mp4') {
+                  } else if(image.type.includes('video')) {
                     return (
                       <video
                         key={index}

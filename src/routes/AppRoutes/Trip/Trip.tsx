@@ -145,7 +145,7 @@ export const Trip = () => {
                     onClick={() => handleSelectImage(idx)}
                   >
                     {
-                      image.type === 'video/mp4' ? (
+                      image.type.includes('video') ? (
                         <video src={image.url} className={styles.postIMage}/>
                       ) : (
                         <img src={image.url} className={styles.postIMage} onClick={() => setSelectedImage(imageUrls[idx])}/>

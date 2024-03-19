@@ -151,7 +151,7 @@ const TravelCard: FC<Props> = ({travel}) => {
 
           {
             imageDownloadUrls.map((image, index) => {
-              if (image.type === 'image/jpeg') {
+              if (image.type.includes('image')) {
                 return (
                   <img
                     key={index}
@@ -164,7 +164,7 @@ const TravelCard: FC<Props> = ({travel}) => {
                     }}
                   />
                 )
-              } else if(image.type === 'video/mp4') {
+              } else if(image.type.includes('video')) {
                 return (
                   <video
                     key={index}
