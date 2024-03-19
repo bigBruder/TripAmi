@@ -271,20 +271,44 @@
 
 .shareButtonsContainer {
     display: flex;
-    justify-content: center;
-    align-items: center;
     gap: 10px;
 }
 
 .linkContainer {
-    display: flex;
     border-radius: 44px;
+    margin-top: 20px;
+    width: 80%;
     border: 1px solid #5280F4;
     background: transparent;
     padding: 10px 20px;
     align-items: center;
     font-size: 16px;
     cursor: pointer;
+}
+
+.shareLink {
+    width: 100%;
+    display: block;
+    word-wrap:break-word;
+    text-align: center;
+
+}
+
+@media screen and (max-width: 768px) {
+    .linkContainer {
+        padding: 5px 10px;
+        border-radius: 22px;
+    }
+    .shareLink {
+        font-size: 15px;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .shareLink {
+        padding: 5px 5px;
+        font-size: 10px;
+    }
 }
 
 .copiedActive {
@@ -296,4 +320,34 @@
     justify-content: center;
     align-items: center;
     gap: 30px;
+}
+
+.socialIcon {
+    cursor: pointer;
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@media screen and (max-width: 768px) {
+    .socialIcon {
+        width: 30px;
+    }
+}
+
+.title {
+    font-size: 30px;
+}
+
+@media screen and (max-width: 768px) {
+    .title {
+        font-size: 20px;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .title {
+        font-size: 15px;
+    }
 }

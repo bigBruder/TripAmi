@@ -289,7 +289,7 @@ const TravelCard: FC<Props> = ({travel}) => {
         setIsCopied(false)}}
       >
         <div className={styles.shareModalContainer}>
-          <h3>Share with your friends</h3>
+          <h3 className={styles.title}>Share with your friends</h3>
           <div className={styles.shareButtonsContainer}>
             <WhatsappShareButton
               url={'https://tripamicities.netlify.app/oilslNyzo62jvdQNJUh0'}
@@ -297,14 +297,14 @@ const TravelCard: FC<Props> = ({travel}) => {
               separator=":: "
               className="Demo__some-network__share-button"
             >
-              <WhatsappIcon size={40} round />
+              <WhatsappIcon className={styles.socialIcon} round />
             </WhatsappShareButton>
             <TelegramShareButton
               url={'https://tripamicities.netlify.app/oilslNyzo62jvdQNJUh0'}
               title={'Check out this trip'}
               className="Demo__some-network__share-button"
             >
-              <TelegramIcon size={40} round />
+              <TelegramIcon className={styles.socialIcon} round />
             </TelegramShareButton>
             <EmailShareButton
               url={'https://tripamicities.netlify.app/oilslNyzo62jvdQNJUh0'}
@@ -312,14 +312,14 @@ const TravelCard: FC<Props> = ({travel}) => {
               body="body"
               className="Demo__some-network__share-button"
             >
-              <EmailIcon size={40} round />
+              <EmailIcon className={styles.socialIcon} round />
             </EmailShareButton>
             
           </div>
           <CopyToClipboard text={'https://tripamicities.netlify.app/oilslNyzo62jvdQNJUh0'}
           >
             <div className={`${styles.linkContainer} ${isCopied ? styles.copiedActive : ''}`} onClick={() => setIsCopied(true)}>
-               <p>https://tripamicities.netlify.app/oilslNyzo62jvdQNJUh0</p>
+               <p className={styles.shareLink}>https://tripamicities.netlify.app/oilslNyzo62jvdQNJUh0</p>
             </div>
           </CopyToClipboard>
           {
