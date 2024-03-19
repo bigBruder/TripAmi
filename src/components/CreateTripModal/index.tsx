@@ -95,8 +95,8 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
 
   const handleOnSave = useCallback(async () => {
     try {
-      if (selectedLocation && (file || downloadedImages)) {
-        const geocode = await geocodeByPlaceId(selectedLocation);
+      if ((file || downloadedImages)) {
+        // const geocode = await geocodeByPlaceId(selectedLocation);
 
         setIsLoading(true);
 
@@ -112,25 +112,6 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
             description: imagesDescription.find(image => image.name === file[i].name)?.value || '',
           });
         }
-        console.log({
-          userId: firestoreUser?.id,
-          imageUrl: uploadedImages,
-          rate: rating,
-          startDate: startDate,
-          endDate: endDate,
-          public: tickIsChecked,
-          geoTags: selectedGeoTags,
-          cities: selectedCities,
-          tripName: tripName,
-          location: {
-            name: location?.name,
-            longitude: geocode[0].geometry.location.lng(),
-            latitude: geocode[0].geometry.location.lat(),
-            color: randomColor(),
-          },
-          dayDescription: daysDescription,
-          text,
-        })
           if (isEdit) {
             const docRef = doc(db, 'trips', data.id);
             await updateDoc(docRef, {
@@ -145,8 +126,8 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
               tripName: tripName,
               location: {
                 name: location.name,
-                longitude: geocode[0].geometry.location.lng(),
-                latitude: geocode[0].geometry.location.lat(),
+                longitude: location?.longitude,
+                latitude: location?.latitude,
                 color: randomColor(),
               },
               dayDescription: daysDescription,
@@ -164,9 +145,9 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
               cities: selectedCities,
               tripName: tripName,
               location: {
-                name: location,
-                longitude: geocode[0].geometry.location.lng(),
-                latitude: geocode[0].geometry.location.lat(),
+                name: location.name,
+                longitude: location?.longitude,
+                latitude: location?.latitude,
                 color: randomColor(),
               },
               dayDescription: daysDescription,
@@ -210,8 +191,10 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
     }
   }, [selectedLocation, imagesDescription, file, firestoreUser?.id, firestoreUser?.tripCount, rating, startDate, tickIsChecked, selectedGeoTags, location, text, updateFirestoreUser]);
 
-  const onSelectPlace = useCallback((address: string, placeID: string) => {
-    // setLocation(address);
+  const onSelectPlace = useCallback(async (address: string, placeID: string) => {
+    const geocode = await geocodeByPlaceId(placeID);
+    
+    setLocation({name: address, longitude: geocode[0].geometry.location.lng(), latitude: geocode[0].geometry.location.lat(), color: randomColor()});
     setWhereToGo(address);
     setSelectedLocation(placeID);
   }, []);

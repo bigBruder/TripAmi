@@ -82,6 +82,8 @@ const TravelCard: FC<Props> = ({travel}) => {
     })();
   }, [imageUrl]);
 
+  console.log('imageDownloadUrls', imageDownloadUrls);
+
   const getLayout = useMemo(() => {
     switch (imageDownloadUrls?.length) {
       case 1:
