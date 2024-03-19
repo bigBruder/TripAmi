@@ -43,59 +43,57 @@ export const LightBox: React.FC<Props> = ({isOpen, onCloseModal, selectedImage, 
 
             <div className={styles.modal}>
               <div className={styles.selectedImageContainer}>
-              {
-                selectedImage?.type === 'image/jpeg' ? (
-                  <img
-                    src={selectedImage.url}
-                    alt="travel"
-                    className={styles.selectedImage}
-                  />
-                ) : (
-                  <video
-                    src={selectedImage?.url}
-                    className={styles.selectedImage}
-                    controls
-                    onClick={() => {}}
-                  />
-                )
-            }
-                            
-                 
+                {
+                  selectedImage?.type === 'image/jpeg' ? (
+                    <img
+                      src={selectedImage.url}
+                      alt="travel"
+                      className={styles.selectedImage}
+                    />
+                  ) : (
+                    <video
+                      src={selectedImage?.url}
+                      className={styles.selectedImage}
+                      controls
+                      onClick={() => {}}
+                    />
+                  )
+                } 
               </div>
                 <div className={styles.descriptionContainer}>
                   {selectedImage?.description && (<p className={styles.description}>{selectedImage?.description}l;k;lk;lkl;k</p>)}
                 </div>
-                <div className={styles.slider}>
-                {
-                    images && images.map((image, index) => {
-                      if (image.type === 'image/jpeg') {
-                        return (
-                          <img
-                            key={index}
-                            src={image.url}
-                            alt="travel"
-                            className={styles.image}
-                            onClick={() => {
-                              onChangeSelectedPhoto(image);
-                            }}
-                          />
-                        )
-                      } else if(image.type === 'video/mp4') {
-                        return (
-                          <video
-                            key={index}
-                            src={image.url}
-                            className={styles.image}
-                            controls={false}
-                            onClick={() => {
-                              onChangeSelectedPhoto(image);
-                            }}
-                          />
-                        )
-                      }
-                      })
+              <div className={styles.slider}>
+              {
+                images && images.map((image, index) => {
+                  if (image.type === 'image/jpeg') {
+                    return (
+                      <img
+                        key={index}
+                        src={image.url}
+                        alt="travel"
+                        className={styles.image}
+                        onClick={() => {
+                          onChangeSelectedPhoto(image);
+                        }}
+                      />
+                    )
+                  } else if(image.type === 'video/mp4') {
+                    return (
+                      <video
+                        key={index}
+                        src={image.url}
+                        className={styles.image}
+                        controls={false}
+                        onClick={() => {
+                          onChangeSelectedPhoto(image);
+                        }}
+                      />
+                    )
+                  }
+                  })
                 }
-              </div>
+              </div> 
             </div>
           </Modal>
         </CSSTransition>
