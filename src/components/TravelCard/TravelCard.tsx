@@ -135,7 +135,7 @@ const TravelCard: FC<Props> = ({travel}) => {
     <div className={styles.container}>
       <div className={styles.topContainer}>
           {/* <p className={styles.location}>{location?.name.slice(0, 50)}{location.name.length > 50 && '...'}</p> */}
-          <p className={styles.location}>{location.name.toString()}</p>
+          <p className={styles.location} onClick={() => navigate('/trip/' + id)}>{location.name.toString()}</p>
         <Rating disabled selectedStars={rate} />
         <div className={styles.dateContainer}>
           {/* <p className={styles.location}>Date</p> */}
