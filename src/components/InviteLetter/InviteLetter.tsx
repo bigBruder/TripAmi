@@ -13,13 +13,6 @@ export const InviteLetter: FC<Props> = ({ link, title, description }) => {
         {/* Email Body */}
         <table align="center" role="presentation" cellSpacing="0" cellPadding="0" border="0" width="100%" style={{ margin: 'auto', maxWidth: '640px' }} className="email-container">
           {/* Unsubscribe */}
-          <tr>
-            <td style={{ padding: '20px 16px', textAlign: 'center' }}>
-              <p style={{ height: 'auto', margin: '15px 0', background: '#F5F6F8', fontFamily: 'Open Sans', fontSize: '11px', lineHeight: '15px', color: '#555555', backgroundColor: '#F5F6F8' }}>
-                {/* Unable to view? Read it <a href={viewLink} className="link-btn">online</a> */}
-              </p>
-            </td>
-          </tr>
           {/* Logo */}
           <tr>
             <td className="logo" style={{ padding: '10px 0 32px', textAlign: 'center', backgroundColor: '#ffffff' }}>

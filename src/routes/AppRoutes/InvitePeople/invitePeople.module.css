@@ -39,6 +39,9 @@
     width: 100%;
     padding: 6px 2px;
     display: inline-block;
+
+    font-family: Gilroy, sans-serif;
+    font-size: 17px;
 }
 
 .input::placeholder {
