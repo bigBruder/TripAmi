@@ -38,9 +38,6 @@ const PostItem: FC<Props> = ({postData}) => {
   const navigate = useNavigate();
   const [userPhotoUrl, setUserPhotoUrl] = useState<string>();
 
-
-  console.log('111111', postData);
-
   useEffect(() => {
     (async () => {
       try {

@@ -15,7 +15,6 @@ interface Props {
 }
 
 export const UserPostInfo: FC<Props> = ({userData, createdAt, userPhotoUrl}) => {
-  console.log('userData', userData);
   const navigate = useNavigate();
   const {firebaseUid} = userData;
   const {firestoreUser} = useContext(AuthContext);

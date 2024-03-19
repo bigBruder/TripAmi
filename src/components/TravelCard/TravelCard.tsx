@@ -331,6 +331,7 @@ const TravelCard: FC<Props> = ({travel}) => {
           closeModal={handleCloseEditModal}
           isEdit
           data={{
+            id: id,
             imageUrl: travel.imageUrl,
             rate: travel.rate,
             startDate: startDate,

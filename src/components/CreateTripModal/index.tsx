@@ -19,7 +19,8 @@ import {toast, ToastContainer} from "react-toastify";
 import Plus from '~/assets/icons/plus.svg';
 import ReactPlayer from "react-player";
 import PlaceAutocomplete from '../PlaceAutocomplete/PlaceAutocomplete';
-import { doc, getDocs, updateDoc } from 'firebase/firestore';
+import { doc, documentId, getDocs, query, updateDoc, where } from 'firebase/firestore';
+import { getDownloadURL } from 'firebase/storage';
 
 const fileTypes = ["JPEG", "PNG", "JPG", "MP4"];
 
@@ -27,6 +28,7 @@ interface Props {
   closeModal: () => void;
   isEdit?: boolean;
   data?: {
+    id: string;
     isPublic: boolean;
     rate: number;
     startDate: string;
@@ -63,7 +65,8 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
   const [tripName, setTripName] = useState(data?.tripName || '');
   const [daysDescription, setDaysDescription] = useState(data?.dayDescription || []);
   const [isAddCityOpen, setIsAddCityOpen] = useState(false);
-  const [imagesDescription, setImagesDescription] = useState<{name: string, value:string}[]>([]);
+  const [downloadedImages, setDownloadedImages] = useState<{url: string, type: string, description: string}[]>(data?.imageUrl || []);
+  const [imagesDescription, setImagesDescription] = useState<{name: string, value:string, id?: number}[]>(downloadedImages?.map((image, id) => ({name: image.url, value: image.description, id: id})) || []);
 
   useEffect(() => {
     if (isMaxError) {
@@ -203,7 +206,17 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
     }
   }
 
+  const handleChangeDownloadedImageDescription = (event, id) => {
+    event.preventDefault();
 
+    const {name, value} = event.target;
+
+    if(imagesDescription.find(image => image.id === id)) {
+      setImagesDescription(prevState => prevState.map(obj => obj.id === id ? {...obj, value: value} : obj))
+    } else {
+      setImagesDescription(prevState => [...prevState, {name: name, value: value, id: imagesDescription.length + 1}])
+    }
+  }
 
   const handleOpenAddGeocode = (e: React.MouseEventHandler<HTMLButtonElement>) => {
     if (e) {
@@ -251,6 +264,29 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
     
     setIsAddCityOpen(false);
   }, [selectedCities]);
+
+  useEffect(() => {
+   (async () => {
+    if (isEdit && data) {
+      const querySnapshot = await query(tripsCollection, where(documentId(), '==', data.id));
+      const docRef = await getDocs(querySnapshot);
+      const docData = docRef.docs[0].data();
+      for (let i = 0; i < docData.imageUrl.length; i++) {
+        const url = await getDownloadURL(ref(storage, docData.imageUrl[i].url));
+        docData.imageUrl[i].url = url;
+      }
+      setDownloadedImages(docData.imageUrl);
+    }
+   })();
+  }, [data, isEdit]);
+
+  console.log(downloadedImages);
+  console.log(imagesDescription);
+
+  const handleRemoveDownloadedPhoto = (id: number) => {
+    setImagesDescription(prevState => prevState.filter((image, idx) => idx !== id));
+    setDownloadedImages(prevState => prevState.filter((image, idx) => idx !== id));
+  };
 
   return (
     <div className={styles.outer_container}>
@@ -522,6 +558,45 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
                           name={item.name}
                         />
                       <button onClick={(e) => handleRemovePhoto(e, item.name)} className={styles.removePhotoButton}>X</button>
+                    </div>
+                  )}
+                </div>
+              )
+            })}
+
+          {downloadedImages?.map((item, id) => {
+              return (
+                <div key={item.url} className={styles.uploadedImagesContainer}>
+                  {item.type.includes('image') ? (
+                      <div className={styles.imageContainer}>
+                        <img src={item.url} alt={'trip image'} className={styles.image} />
+                        <input 
+                          placeholder='Describe the photo'
+                          value={imagesDescription.find(image => image.id === id)?.value || ''}
+                          className={styles.input} 
+                          onChange={(e) => handleChangeDownloadedImageDescription(e, id)}
+                          name={item.url}
+                        />
+                        <button onClick={(e) => handleRemoveDownloadedPhoto(id)} className={styles.removePhotoButton}>X</button>
+                      </div>
+                  ) : (
+                    <div className={styles.imageContainer}>
+                      <ReactPlayer
+                        playing
+                        stopOnUnmount={false}
+                        loop
+                        url={item.url}
+                        width='100%'
+                        height='100%'
+                      />
+                        <input 
+                          placeholder='Describe the photo'
+                          value={imagesDescription.find(image => image.id === id)?.value || ''}
+                          className={styles.input} 
+                          onChange={(e) => handleRemoveDownloadedPhoto(id)}
+                          name={item.url}
+                        />
+                      {/* <button onClick={(e) => handleRemovePhoto(e, item.name)} className={styles.removePhotoButton}>X</button> */}
                     </div>
                   )}
                 </div>
