@@ -534,6 +534,8 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
               onChange={e => handleDayDateDescriptionChange(e, idx, 'date')}
               type="date"
               className={styles.input}
+              min={startDate}
+              max={endDate}
             />
             <div className={styles.dayDescriptionContainer}>
                 <textarea
