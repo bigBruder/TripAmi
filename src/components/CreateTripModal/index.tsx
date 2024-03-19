@@ -547,22 +547,6 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
           </div>
           ))
         }
-                
-        <div className={styles.startContainer}>
-          <FileUploader
-            multiple={true}
-            handleChange={handleChange}
-            name="file"
-            types={fileTypes}
-            hoverTitle={' '}
-          >
-            <div className={styles.uploadContainer}>
-              {/* <p>Image and Video </p> */}
-              <p className={styles.dragText}>Drag and drop image/video or click on </p>
-              <button className={styles.buttonUpload}>Upload</button>
-            </div>
-          </FileUploader>
-        </div>
 
         <div className={styles.startWrapper}>
           <div className={styles.startContainer}>
@@ -583,6 +567,22 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
             <Rating setSelectedStars={setRating} selectedStars={rating}/>
           </div>
           
+        </div>
+                
+        <div className={styles.startContainer}>
+          <FileUploader
+            multiple={true}
+            handleChange={handleChange}
+            name="file"
+            types={fileTypes}
+            hoverTitle={' '}
+          >
+            <div className={styles.uploadContainer}>
+              {/* <p>Image and Video </p> */}
+              <p className={styles.dragText}>Drag and drop image/video or click on </p>
+              <button className={styles.buttonUpload}>Upload</button>
+            </div>
+          </FileUploader>
         </div>
 
         <div className={styles.imagesDescriptions}>
