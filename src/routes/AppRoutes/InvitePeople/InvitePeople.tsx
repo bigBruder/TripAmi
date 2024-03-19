@@ -20,6 +20,8 @@ const InvitePeople = () => {
   const notify = (text: string) => toast.info(text);
   const notifyError = (text: string) => toast.error(text);
 
+  console.log(title, description);
+
   const handleSendInvitation = useCallback(async () => {
     const userEmail = firestoreUser?.email;
   
@@ -43,7 +45,11 @@ const InvitePeople = () => {
             From: "visosensey@gmail.com",
             Subject: "string",
             TemplateName: "TripAmi",
-            Merge: { linkTo: "https://tripamicities.netlify.app" },
+            Merge: { 
+              linkTo: "https://tripamicities.netlify.app",
+              title: title || defaultTitle,
+              description: description || defaultDescription,
+            },
           },
         },
         {
@@ -60,6 +66,22 @@ const InvitePeople = () => {
       notifyError('Something went wrong, please try again');
     }
   }, [firestoreUser?.email, email, name]);
+
+  const handleChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value.length > 40) {
+      return;
+    } else {
+      setTitle(e.target.value);
+    }
+  }
+
+  const handleChangeDescription = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value.length > 100) {
+      return;
+    } else {
+      setDescription(e.target.value);
+    }
+  }
   
 
   return (
@@ -82,14 +104,14 @@ const InvitePeople = () => {
             className={styles.input} 
             placeholder={`Optional: title`}
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={handleChangeTitle}
           />
           <input 
             type="text" 
             className={styles.input} 
             placeholder={`Optional: description`}
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            onChange={handleChangeDescription}
           />
           <button onClick={handleSendInvitation} className={styles.sendButton}>Invite</button>
         </div>
