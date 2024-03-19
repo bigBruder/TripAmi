@@ -49,11 +49,7 @@ export const TravelItinerary = () => {
           );
           break;
       }
-      // const q = query(
-      //   tripsCollection, 
-      //   where('userId', '==', firestoreUser?.id),
-      //   orderBy('createAt', 'desc'),
-      // );
+
       const unsub = onSnapshot(q, (querySnapshot) => {
         const fetchedTravel = querySnapshot.docs.map(doc => ({
           ...doc.data(),
@@ -97,23 +93,10 @@ export const TravelItinerary = () => {
     <div className={styles.container}>
       <p className={styles.title}>{firestoreUser?.username}`s travels</p>
 
-
-      {/* <div className={styles.sortContainer}>
-        <select name="order" className={styles.sortby_select} onChange={e => setSortBy(e.target.value)}>
-          <option value="date">Newest</option>
-          <option value="alphabetically">Alphabetically</option>
-          <option value="rate">Rating</option>
-        </select>
-        <div onClick={() => setIsReverse(!isReverse)}>
-          <SortDirection 
-            isReverse={isReverse}
-          />
-        </div>
-      </div> */}
-
-      <Sort onSelect={setSortBy} isReverse={isReverse} setReverse={() => setIsReverse(prevState => !prevState)}/>
-
       <div className={styles.travelsContainer}>
+        <div style={{alignSelf: "flex-start"}}>
+          <Sort onSelect={setSortBy} isReverse={isReverse} setReverse={() => setIsReverse(prevState => !prevState)}/>
+        </div>
         {travels.map(travel => <TravelCard key={travel.id} travel={travel} />)}
       </div>
     </div>

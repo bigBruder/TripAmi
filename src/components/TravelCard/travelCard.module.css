@@ -14,6 +14,13 @@
     margin-bottom: 14px;
 }
 
+@media screen and (max-width: 768px) {
+    .topContainer {
+        flex-wrap: wrap;
+    }
+    
+}
+
 .list {
     display: flex;
     align-items: center;
@@ -81,8 +88,6 @@
 }
 
 .gallery {
-    /* display: block;
-    max-height: max-content; */
     align-items: center;
     background-color: rgba(172, 172, 172, 0.22);
     padding: 10px;
@@ -90,10 +95,8 @@
     display: block;
     width: 95%;
     gap: 2px;
-    /* height: 400px; */
     display: flex;
     flex-wrap: wrap;
-    /* flex-wrap: wrap; */
 }
 
 .tripName {

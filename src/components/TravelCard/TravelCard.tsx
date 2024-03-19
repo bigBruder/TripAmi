@@ -185,11 +185,7 @@ const TravelCard: FC<Props> = ({travel}) => {
 
         <div className={styles.textContainer}>
           <h3 className={styles.tripName}>{tripName}</h3>
-
-         
-          <p className={styles.text}>{text}</p>
-
-
+          <p className={styles.text} style={{wordBreak: "break-all"}}>{text}</p>
           <div className={styles.daysDescriptionContainer}>
           {
             dayDescription && dayDescription.map((day, index) => (
@@ -203,23 +199,30 @@ const TravelCard: FC<Props> = ({travel}) => {
 
           <div className={styles.visitedContainer}>
           <div>
-              <p className={styles.text}>Places: </p>
-              <div className={styles.tagsContainer}>
-                {travel?.geoTags?.map(tag => (
-                  <p
-                    onClick={() => navigate('/place/' + tag.placeID)}
-                    key={tag.placeID}
-                    className={styles.tag}
-                  >
-                    {tag.address}
-                  </p>
-                ))}
-              </div>
+            {
+              travel.geoTags && travel.geoTags.length > 0 && (
+                <>
+                <p className={styles.text}>Places: </p>
+                <div className={styles.tagsContainer}>
+                  {travel?.geoTags?.map(tag => (
+                    <p
+                      onClick={() => navigate('/place/' + tag.placeID)}
+                      key={tag.placeID}
+                      className={styles.tag}
+                    >
+                      {tag.address}
+                    </p>
+                  ))}
+                </div>
+                </>
+              )
+            }
+             
                 
             </div>
 
             {
-              cities && (
+              cities && cities?.length > 0 && (
                 <div>
                   <p className={styles.text}>Cities: </p>
                   <div className={styles.tagsContainer}>
