@@ -368,10 +368,24 @@ const TravelCard: FC<Props> = ({travel}) => {
         />
       </CustomModal>
 
-      <CustomModal isOpen={isModalDeleteOpen} onCloseModal={() => setIsModalDeleteOpen(false)}>
+      {/* <CustomModal isOpen={isModalDeleteOpen} onCloseModal={() => setIsModalDeleteOpen(false)}> */}
 
+      <Modal
+        closeTimeoutMS={500}
+        isOpen={isModalDeleteOpen}
+        style={{
+          content: {
+            padding: 0,
+            margin: 'auto',
+            height: 300,
+          },
+        }}
+        contentLabel="Example Modal"
+        onRequestClose={() => setIsModalDeleteOpen(false)}
+        shouldCloseOnOverlayClick
+        shouldCloseOnEsc
+      >
         <div className={styles.deleteModalContainer}>
-
         <div className={styles.deleteModal}>
           <h3 className={styles.deleteModal_title}>Delete Trip</h3>
           <p>Are you sure to delete the trip?</p>
@@ -382,7 +396,8 @@ const TravelCard: FC<Props> = ({travel}) => {
         </div>
           
         </div>
-      </CustomModal>
+        </Modal>
+      {/* </CustomModal> */}
 
       <LightBox 
         isOpen={isPhotosModalOpen} 
