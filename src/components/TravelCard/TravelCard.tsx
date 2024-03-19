@@ -18,6 +18,7 @@ import { LightBox } from "../Lightbox/LightBox";
 import {EmailIcon, EmailShareButton, TelegramIcon, TelegramShareButton, WhatsappIcon, WhatsappShareButton} from "react-share";
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 import Done from '@assets/icons/done.svg';
+import Modal from 'react-modal';
 
 interface Props {
   travel: ITravel;
@@ -260,16 +261,6 @@ const TravelCard: FC<Props> = ({travel}) => {
             <div className={styles.shareContainer} onClick={() => setIsModalShareOpen(true)}>
               <img className={styles.shareIcon} src={shareIcon} alt="share" />
               <span className={styles.share}>Share</span>
-                  {/* <div className="Demo__some-network">
-                    <WhatsappShareButton
-                      url={'test url'}
-                      title={'Check out this trip'}
-                      separator=":: "
-                      className="Demo__some-network__share-button"
-                    >
-                      <WhatsappIcon size={20} round />
-                    </WhatsappShareButton>
-                  </div> */}
             </div>
             {firestoreUser?.id === userId ? (
               <>
@@ -285,10 +276,29 @@ const TravelCard: FC<Props> = ({travel}) => {
             ) : null}
           </div>
 
-      <CustomModal isOpen={isModalShareOpen} onCloseModal={() => {
+      {/* <CustomModal isOpen={isModalShareOpen} onCloseModal={() => {
         setIsModalShareOpen(false);
         setIsCopied(false)}}
+      > */}
+      <Modal
+        closeTimeoutMS={500}
+        isOpen={isModalShareOpen}
+        style={{
+          content: {
+            padding: 0,
+            height: 300,
+            margin: 'auto',
+          },
+        }}
+        contentLabel="Example Modal"
+        onRequestClose={() => {
+          setIsCopied(false);
+          setIsModalShareOpen(false);
+        s}}
+        shouldCloseOnOverlayClick
+        shouldCloseOnEsc
       >
+      
         <div className={styles.shareModalContainer}>
           <h3 className={styles.title}>Share with your friends</h3>
           <div className={styles.shareButtonsContainer}>
@@ -317,12 +327,14 @@ const TravelCard: FC<Props> = ({travel}) => {
             </EmailShareButton>
             
           </div>
+         
           <CopyToClipboard text={'https://tripamicities.netlify.app/oilslNyzo62jvdQNJUh0'}
           >
             <div className={`${styles.linkContainer} ${isCopied ? styles.copiedActive : ''}`} onClick={() => setIsCopied(true)}>
                <p className={styles.shareLink}>https://tripamicities.netlify.app/oilslNyzo62jvdQNJUh0</p>
             </div>
           </CopyToClipboard>
+
           {
               isCopied && (
               <div className={styles.doneContainer}>
@@ -330,10 +342,10 @@ const TravelCard: FC<Props> = ({travel}) => {
                 <img src={Done} alt="done" />
               </div>
               )
-               
           }
         </div>
-      </CustomModal>
+        </Modal>
+      {/* </CustomModal> */}
 
       <CustomModal isOpen={editModalIsOpen} onCloseModal={handleCloseEditModal}>
         <CreateTripModal
