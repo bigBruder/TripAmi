@@ -48,7 +48,6 @@ interface Props {
 const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
   const {firestoreUser, updateFirestoreUser} = useContext(AuthContext);
   const [tickIsChecked, setTickIsChecked] = useState(data?.isPublic || false);
-  console.log("isPublic: ", data?.isPublic);
   const [file, setFile] = useState<File[] >([]);
   const [rating, setRating] = useState(data?.rate || 0);
   const [location, setLocation] = useState(data?.location || null);
@@ -96,7 +95,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
 
   const handleOnSave = useCallback(async () => {
     try {
-      if (selectedLocation && file) {
+      if (selectedLocation && (file || downloadedImages)) {
         const geocode = await geocodeByPlaceId(selectedLocation);
 
         setIsLoading(true);
@@ -124,7 +123,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
           cities: selectedCities,
           tripName: tripName,
           location: {
-            name: location,
+            name: location?.name,
             longitude: geocode[0].geometry.location.lng(),
             latitude: geocode[0].geometry.location.lat(),
             color: randomColor(),
@@ -132,30 +131,73 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
           dayDescription: daysDescription,
           text,
         })
-          await addDoc(tripsCollection, {
-            userId: firestoreUser?.id,
-            imageUrl: uploadedImages,
-            rate: rating,
-            startDate: startDate,
-            endDate: endDate,
-            public: tickIsChecked,
-            geoTags: selectedGeoTags,
-            cities: selectedCities,
-            tripName: tripName,
-            location: {
-              name: location,
-              longitude: geocode[0].geometry.location.lng(),
-              latitude: geocode[0].geometry.location.lat(),
-              color: randomColor(),
-            },
-            dayDescription: daysDescription,
-            text,
-          });
+          if (isEdit) {
+            const docRef = doc(db, 'trips', data.id);
+            await updateDoc(docRef, {
+              userId: firestoreUser?.id,
+              imageUrl: [...uploadedImages, ...downloadedImages],
+              rate: rating,
+              startDate: startDate,
+              endDate: endDate,
+              public: tickIsChecked,
+              geoTags: selectedGeoTags,
+              cities: selectedCities,
+              tripName: tripName,
+              location: {
+                name: location.name,
+                longitude: geocode[0].geometry.location.lng(),
+                latitude: geocode[0].geometry.location.lat(),
+                color: randomColor(),
+              },
+              dayDescription: daysDescription,
+              text,
+            });
+          } else {
+            await addDoc(tripsCollection, {
+              userId: firestoreUser?.id,
+              imageUrl: uploadedImages,
+              rate: rating,
+              startDate: startDate,
+              endDate: endDate,
+              public: tickIsChecked,
+              geoTags: selectedGeoTags,
+              cities: selectedCities,
+              tripName: tripName,
+              location: {
+                name: location,
+                longitude: geocode[0].geometry.location.lng(),
+                latitude: geocode[0].geometry.location.lat(),
+                color: randomColor(),
+              },
+              dayDescription: daysDescription,
+              text,
+            });
+          }
+          // await addDoc(tripsCollection, {
+          //   userId: firestoreUser?.id,
+          //   imageUrl: uploadedImages,
+          //   rate: rating,
+          //   startDate: startDate,
+          //   endDate: endDate,
+          //   public: tickIsChecked,
+          //   geoTags: selectedGeoTags,
+          //   cities: selectedCities,
+          //   tripName: tripName,
+          //   location: {
+          //     name: location,
+          //     longitude: geocode[0].geometry.location.lng(),
+          //     latitude: geocode[0].geometry.location.lat(),
+          //     color: randomColor(),
+          //   },
+          //   dayDescription: daysDescription,
+          //   text,
+          // });
         
-
-        updateFirestoreUser({
-          tripCount: firestoreUser?.tripCount ? firestoreUser?.tripCount + 1 : 1,
-        });
+          if (!isEdit) {
+            updateFirestoreUser({
+              tripCount: firestoreUser?.tripCount ? firestoreUser?.tripCount + 1 : 1,
+            });
+          }
 
         closeModal();
       } else {
@@ -282,9 +324,6 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
     }
    })();
   }, [data, isEdit]);
-
-  console.log(downloadedImages);
-  console.log(imagesDescription);
 
   const handleRemoveDownloadedPhoto = (id: number) => {
     setImagesDescription(prevState => prevState.filter((image, idx) => idx !== id));

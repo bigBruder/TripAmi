@@ -66,7 +66,12 @@ const TravelCard: FC<Props> = ({travel}) => {
         const downloadedUrls = [];
 
         for (let i = 0; i < imageUrl.length; i++) {
-          const url = await getDownloadURL(ref(storage, imageUrl[i].url));
+          let url;
+          if (imageUrl[i].url.includes('htttp://firebasestorage.googleapis.com')) {
+            url = imageUrl[i].url;
+          } else {
+            url = await getDownloadURL(ref(storage, imageUrl[i].url));
+          }
           downloadedUrls.push({url, type: imageUrl[i].type, description: imageUrl[i].description});
         }
 
@@ -75,7 +80,7 @@ const TravelCard: FC<Props> = ({travel}) => {
         console.log('[ERROR getting download url for the image] => ', err)
       }
     })();
-  }, []);
+  }, [imageUrl]);
 
   const getLayout = useMemo(() => {
     switch (imageDownloadUrls?.length) {
@@ -125,10 +130,13 @@ const TravelCard: FC<Props> = ({travel}) => {
     setEditModalIsOpen(false);
   }, []);
 
+  console.log(location.name);
+
   return (
     <div className={styles.container}>
       <div className={styles.topContainer}>
-          <p className={styles.location}>{location?.name.slice(0, 50)}{location.name.length > 50 && '...'}</p>
+          {/* <p className={styles.location}>{location?.name.slice(0, 50)}{location.name.length > 50 && '...'}</p> */}
+          <p className={styles.location}>{location.name.toString()}</p>
         <Rating disabled selectedStars={rate} />
         <div className={styles.dateContainer}>
           {/* <p className={styles.location}>Date</p> */}
