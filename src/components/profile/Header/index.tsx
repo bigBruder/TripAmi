@@ -81,22 +81,17 @@ const Header = () => {
 
       if (searchTerm.length) {
         const result = await index.search(searchTerm, {
-          attributesToRetrieve: ['userId', 'cities', 'geoTag', 'location', 'rate', 'text', 'objectID',],
+          attributesToRetrieve: ['userId', 'cities', 'geoTag', 'location', 'rate', 'text', 'objectID', 'geoTags',],
           hitsPerPage: 5,
         });
         
         const matchedCities = result.hits.map(hit => {
+          console.log(hit._highlightResult);
           if(hit._highlightResult.location.name.matchLevel === 'full') {
-            // console.log(hit._highlightResult.cities[i]);
             return (hit._highlightResult.location.name.value.replace('<em>', '').replace('</em>', '').split(',')[0]);
           }
           
           for (let key in hit._highlightResult) {
-            // if(hit._highlightResult[key].matchLevel === 'full') {
-            //   console.log(hit._highlightResult[key].value);
-            //   // return hit[key];
-            // }
-            
             if (key === 'cities' && hit._highlightResult.cities.length > 0) {
               for (let i = 0; i < hit._highlightResult.cities.length; i++) {
                 if(hit._highlightResult.cities[i].address.matchLevel === 'full') {
@@ -106,7 +101,20 @@ const Header = () => {
               }
             }
           }
+
+          for (let key in hit._highlightResult) {
+            if (key === 'geoTags' && hit._highlightResult.geoTags.length > 0) {
+              for (let i = 0; i < hit._highlightResult.geoTags.length; i++) {
+                if(hit._highlightResult.geoTags[i].address.matchLevel === 'full') {
+                  // console.log(hit._highlightResult.cities[i]);
+                  console.log(hit._highlightResult.geoTags[i].address.value);
+                  return (hit._highlightResult.geoTags[i].address.value.replace('<em>', '').replace('</em>', '').split(',')[0]);
+                }
+              }
+            }
+          }
         });
+        console.log(matchedCities);
 
           const imageUrls = await Promise.all(
             result.hits.map(async hit => {
@@ -209,7 +217,7 @@ const Header = () => {
                         <div className={styles.autocompleteLeftBox}>
                           <img src={resultOption.avatar} alt="avatar" className={styles.avatar} />
                           {/* <p>{resultOption.location.name.split(',')[0]}</p> */}
-                          <p>{resultOption.matchedCity}</p>
+                          <p>{resultOption.matchedCity?.length > 20 ? resultOption.matchedCity?.slice(0, 20) + '...' : resultOption.matchedCity}</p>
                           <p className={styles.tripDescription}>{resultOption.text.length > 50 ? resultOption.text.slice(0, 40) + '...' : resultOption.text}</p>
                         </div>
                         <Rating selectedStars={resultOption.rate} />
