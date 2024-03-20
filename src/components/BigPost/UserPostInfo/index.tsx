@@ -7,14 +7,17 @@ import {useNavigate} from "react-router-dom";
 import {AuthContext} from "~/providers/authContext";
 import { getDownloadURL, ref } from 'firebase/storage';
 import { storage } from '~/firebase';
+import { IPost } from '~/types/post';
 
 interface Props {
   userData: IUser;
   createdAt: string;
   userPhotoUrl?: string;
+  postData: IPost;
+  imagesUrl: string[] | null;
 }
 
-export const UserPostInfo: FC<Props> = ({userData, createdAt, userPhotoUrl}) => {
+export const UserPostInfo: FC<Props> = ({userData, createdAt, userPhotoUrl, postData, imagesUrl}) => {
   const navigate = useNavigate();
   const {firestoreUser} = useContext(AuthContext);
   const [userAvatar, setUserAvatar] = useState<string | null>(null);
@@ -39,8 +42,8 @@ export const UserPostInfo: FC<Props> = ({userData, createdAt, userPhotoUrl}) => 
   }, [userData?.avatarUrl, userPhotoUrl]);
 
   return (
-    <div className={styles.userContainer} onClick={handleOpenUserProfile}>
-      <div className={styles.leftContainer}>
+    <div className={styles.userContainer}>
+      <div className={styles.leftContainer} onClick={handleOpenUserProfile}>
         <img src={userAvatar || Avatar} style={{width: 24, height: 24, borderRadius: 50}} />
         <div>
           <p className={styles.location}>{userData?.username}</p>
@@ -48,7 +51,14 @@ export const UserPostInfo: FC<Props> = ({userData, createdAt, userPhotoUrl}) => 
         </div>
       </div>
       <button className={styles.button}>
-        <p className={styles.buttonText}>
+        <p className={styles.buttonText} onClick={() =>
+                navigate(
+                  '/posts/' + postData.id,
+                  {state: {
+                      ...postData,
+                      imageUrls: imagesUrl,
+                  }})
+              }>
           join
         </p>
       </button>

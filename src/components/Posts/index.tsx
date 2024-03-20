@@ -110,6 +110,8 @@ const PostItem: FC<Props> = ({postData}) => {
           }}
           userPhotoUrl={userPhotoUrl}
           createdAt={createAt}
+          postData={postData}
+          imagesUrl={imageUrl}
         />
       ) : null}
       <div className={styles.header}>
@@ -132,14 +134,6 @@ const PostItem: FC<Props> = ({postData}) => {
               className={styles.img}
               src={link || ''}
               alt="img"
-              onClick={() =>
-                navigate(
-                  '/posts',
-                  {state: {
-                      ...postData,
-                      imageUrls: [...imageUrl],
-                    }})
-              }
               onLoadedData={() => setIsLoading(false)}
             />
           </SwiperSlide>
