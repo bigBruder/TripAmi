@@ -16,17 +16,18 @@ interface Props {
 
 export const UserPostInfo: FC<Props> = ({userData, createdAt, userPhotoUrl}) => {
   const navigate = useNavigate();
-  const {firebaseUid} = userData;
   const {firestoreUser} = useContext(AuthContext);
   const [userAvatar, setUserAvatar] = useState<string | null>(null);
 
   const handleOpenUserProfile = useCallback(() => {
-    if (firebaseUid !== firestoreUser?.firebaseUid) {
-      navigate('/user/' + firebaseUid);
+    console.log('userData', userData);
+    console.log('firestoreUser', firestoreUser);
+    if (userData.id !== firestoreUser?.id) {
+      navigate('/user/' + userData.id);
     } else {
       navigate('/profile');
     }
-  }, [firebaseUid, firestoreUser?.firebaseUid, navigate]);
+  }, [firestoreUser, navigate, userData]);
 
   useEffect(() => {
     if (userData?.avatarUrl) {
