@@ -19,6 +19,7 @@ import {EmailIcon, EmailShareButton, TelegramIcon, TelegramShareButton, Whatsapp
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 import Done from '@assets/icons/done.svg';
 import Modal from 'react-modal';
+import ShareModal from "../ShareModal/ShareModal";
 
 interface Props {
   travel: ITravel;
@@ -276,76 +277,7 @@ const TravelCard: FC<Props> = ({travel}) => {
             ) : null}
           </div>
 
-      {/* <CustomModal isOpen={isModalShareOpen} onCloseModal={() => {
-        setIsModalShareOpen(false);
-        setIsCopied(false)}}
-      > */}
-      <Modal
-        closeTimeoutMS={500}
-        isOpen={isModalShareOpen}
-        style={{
-          content: {
-            padding: 0,
-            height: 300,
-            margin: 'auto',
-          },
-        }}
-        contentLabel="Example Modal"
-        onRequestClose={() => {
-          setIsCopied(false);
-          setIsModalShareOpen(false);
-        s}}
-        shouldCloseOnOverlayClick
-        shouldCloseOnEsc
-      >
-      
-        <div className={styles.shareModalContainer}>
-          <h3 className={styles.title}>Share with your friends</h3>
-          <div className={styles.shareButtonsContainer}>
-            <WhatsappShareButton
-              url={'https://tripamicities.netlify.app/oilslNyzo62jvdQNJUh0'}
-              title={'Check out this trip'}
-              separator=":: "
-              className="Demo__some-network__share-button"
-            >
-              <WhatsappIcon className={styles.socialIcon} round />
-            </WhatsappShareButton>
-            <TelegramShareButton
-              url={'https://tripamicities.netlify.app/oilslNyzo62jvdQNJUh0'}
-              title={'Check out this trip'}
-              className="Demo__some-network__share-button"
-            >
-              <TelegramIcon className={styles.socialIcon} round />
-            </TelegramShareButton>
-            <EmailShareButton
-              url={'https://tripamicities.netlify.app/oilslNyzo62jvdQNJUh0'}
-              subject={'Check out this trip'}
-              body="body"
-              className="Demo__some-network__share-button"
-            >
-              <EmailIcon className={styles.socialIcon} round />
-            </EmailShareButton>
-            
-          </div>
-         
-          <CopyToClipboard text={'https://tripamicities.netlify.app/oilslNyzo62jvdQNJUh0'}
-          >
-            <div className={`${styles.linkContainer} ${isCopied ? styles.copiedActive : ''}`} onClick={() => setIsCopied(true)}>
-               <p className={styles.shareLink}>https://tripamicities.netlify.app/oilslNyzo62jvdQNJUh0</p>
-            </div>
-          </CopyToClipboard>
-
-          {
-              isCopied && (
-              <div className={styles.doneContainer}>
-                <p className={styles.copied}>Copied</p>
-                <img src={Done} alt="done" />
-              </div>
-              )
-          }
-        </div>
-        </Modal>
-      {/* </CustomModal> */}
+      <ShareModal isOpen={isModalShareOpen} onRequestClose={() => setIsModalShareOpen(false)} linkTo={'https://tripamimain.netlify.app/' + travel.id}/>
 
       <CustomModal isOpen={editModalIsOpen} onCloseModal={handleCloseEditModal}>
         <CreateTripModal

@@ -279,14 +279,7 @@
     font-size: 30px;
 }
 
-.shareModalContainer {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 6px;
-    height: 100%;
-}
+
 
 .shareButtonsContainer {
     display: flex;
