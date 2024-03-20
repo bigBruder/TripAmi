@@ -277,7 +277,7 @@ const TravelCard: FC<Props> = ({travel}) => {
             ) : null}
           </div>
 
-      <ShareModal isOpen={isModalShareOpen} onRequestClose={() => setIsModalShareOpen(false)} linkTo={'https://tripamimain.netlify.app/' + travel.id}/>
+      <ShareModal isOpen={isModalShareOpen} onRequestClose={() => setIsModalShareOpen(false)} linkTo={'https://tripamimain.netlify.app/trip' + travel.id}/>
 
       <CustomModal isOpen={editModalIsOpen} onCloseModal={handleCloseEditModal}>
         <CreateTripModal

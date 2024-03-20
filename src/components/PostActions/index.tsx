@@ -3,11 +3,12 @@ import {LikeIcon} from "@assets/icons/likeIcon";
 import commentsIcon from "@assets/icons/comments.svg";
 import shareIcon from "@assets/icons/share.svg";
 import BinIcon from "@assets/icons/BinIcon.svg";
-import {FC, useContext, useMemo} from "react";
+import {FC, useContext, useMemo, useState} from "react";
 import {AuthContext} from "~/providers/authContext";
 import {usePost} from "~/hooks/post/usePost";
 import {IPost} from "~/types/post";
 import {useNavigate} from "react-router-dom";
+import ShareModal from '../ShareModal/ShareModal';
 
 interface Props {
   postData: IPost;
@@ -26,6 +27,7 @@ export const PostActions: FC<Props> = ({postData}) => {
   } = postData;
   const {handleDeletePost, isLoading, setIsLoading, handleLikePost} = usePost(id);
   const navigate = useNavigate();
+  const [isModalShareOpen, setIsModalShareOpen] = useState(false);
 
   const likedByUser = useMemo(() => firestoreUser?.id && likes.includes(firestoreUser.id),[likes, firestoreUser?.id]);
 
@@ -54,9 +56,9 @@ export const PostActions: FC<Props> = ({postData}) => {
         />
         <span className={`${styles.share} ${styles.comments}`}>{comments_count} Comments</span>
       </div>
-      <div className={styles.shareContainer}>
+      <div className={styles.shareContainer} onClick={() => setIsModalShareOpen(true)}>
         <img className={styles.icon} src={shareIcon} alt="share" />
-        <span className={styles.share}>Share</span>
+        <span className={styles.share} >Share</span>
       </div>
       {firestoreUser?.id === userId ? (
         <div className={styles.shareContainer} onClick={() => handleDeletePost(imageUrls)}>
@@ -64,6 +66,9 @@ export const PostActions: FC<Props> = ({postData}) => {
           <span className={styles.share}>Delete</span>
         </div>
       ) : null}
+
+      <ShareModal isOpen={isModalShareOpen} onRequestClose={() => setIsModalShareOpen(false)} linkTo={'https://tripamimain.netlify.app/posts/' + postData.id}/>
+
     </div>
   );
 };
