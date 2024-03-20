@@ -16,6 +16,7 @@ import { v4 as uuidv4 } from 'uuid';
 import {toast, ToastContainer} from "react-toastify";
 import { IPost } from '~/types/post';
 import { doc, updateDoc } from 'firebase/firestore';
+import { getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 
 const fileTypes = ["JPEG", "PNG", "JPG"];
 
@@ -32,6 +33,30 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, startPost }) => {
   const [selectedStars, setSelectedStars] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [isMaxError, setIsMaxError] = useState(false);
+  // const [images, setImages] = useState<string[]>(startPost?.imageUrls || []);
+
+  
+  // useEffect(() => {
+  //   (async () => {
+  //     console.log('startPost', startPost);
+  //     const files = [];
+  //     if (startPost?.imageUrls) {
+  //       for (let i = 0; i < startPost.imageUrls.length; i++) {
+  //         console.log('startPost.imageUrls');
+
+  //         const url = await getDownloadURL(ref(storage, startPost.imageUrls[i]));
+  //         const response = await fetch(url);
+  //         const data = await response.blob();
+  //         const metadata = {
+  //           type: "image/jpeg",
+  //         };
+  //         const file = new File([data], `image${i}`, metadata);
+  //         files.push(file);
+  //       }
+  //     }
+  //   setFilesList(files);
+  // })();
+  // }, [startPost]);
 
   useEffect(() => {
     if (isMaxError) {
@@ -81,6 +106,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, startPost }) => {
           const storageRef = ref(storage, `postsImages/${filesList[i]?.name + uuidv4()}`);
 
           if (filesList[i]) {
+            console.log(filesList[i]);
             const uploadResult = await uploadBytes(storageRef, filesList[i]);
             imageUrls.push(uploadResult.ref.fullPath);
           }
@@ -137,7 +163,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, startPost }) => {
             {filesList ? (
               <div className={styles.uploadOuterContainer}>
                 {filesList.map(item => (
-                  <div className={styles.imagesContainer}>
+                  <div className={styles.imagesContainer} key={item.name}>
                     <img src={URL.createObjectURL(item)} alt={'User image'} className={styles.image} />
                   </div>
                 ))}
