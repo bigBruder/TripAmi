@@ -9,6 +9,9 @@ import {usePost} from "~/hooks/post/usePost";
 import {IPost} from "~/types/post";
 import {useNavigate} from "react-router-dom";
 import ShareModal from '../ShareModal/ShareModal';
+import Dots from "@assets/icons/dots.svg";
+import CustomModal from '../CustomModal';
+import CreatePostModal from '../CreatePostModal';
 
 interface Props {
   postData: IPost;
@@ -28,6 +31,7 @@ export const PostActions: FC<Props> = ({postData}) => {
   const {handleDeletePost, isLoading, setIsLoading, handleLikePost} = usePost(id);
   const navigate = useNavigate();
   const [isModalShareOpen, setIsModalShareOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const likedByUser = useMemo(() => firestoreUser?.id && likes.includes(firestoreUser.id),[likes, firestoreUser?.id]);
 
@@ -55,14 +59,22 @@ export const PostActions: FC<Props> = ({postData}) => {
         <span className={styles.share} >Share</span>
       </div>
       {firestoreUser?.id === userId ? (
-        <div className={styles.shareContainer} onClick={() => handleDeletePost(imageUrls)}>
-          <img className={styles.icon} src={BinIcon} alt="dots" />
-          <span className={styles.share}>Delete</span>
-        </div>
+        <>
+          <div className={styles.shareContainer} onClick={() => handleDeletePost(imageUrls)}>
+            <img className={styles.icon} src={BinIcon} alt="dots" />
+            <span className={styles.share}>Delete</span>
+          </div>
+          <div className={styles.shareContainer} onClick={() => setIsEditModalOpen(true)}>
+            <img className={styles.dotsIcon} src={Dots} alt="dots"/>
+            <span className={styles.share}>Edit</span>
+          </div>
+        </>
       ) : null}
 
       <ShareModal isOpen={isModalShareOpen} onRequestClose={() => setIsModalShareOpen(false)} linkTo={'https://tripamimain.netlify.app/posts/' + postData.id}/>
-
+      <CustomModal isOpen={isEditModalOpen} onCloseModal={() => setIsEditModalOpen(false)}>
+        <CreatePostModal closeModal={() => setIsEditModalOpen(false)} startPost={postData}/>
+      </CustomModal>
     </div>
   );
 };

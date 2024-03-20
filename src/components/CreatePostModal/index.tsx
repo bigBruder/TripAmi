@@ -8,24 +8,27 @@ import Rating from "~/components/Rating";
 import {addDoc} from "@firebase/firestore";
 import {postsCollection} from "~/types/firestoreCollections";
 import {AuthContext} from "~/providers/authContext";
-import {storage} from "~/firebase";
+import {db, storage} from "~/firebase";
 import {ref, uploadBytes} from "@firebase/storage";
 import {firebaseErrors} from "~/constants/firebaseErrors";
 import {LoadingScreen} from "~/components/LoadingScreen";
 import { v4 as uuidv4 } from 'uuid';
 import {toast, ToastContainer} from "react-toastify";
+import { IPost } from '~/types/post';
+import { doc, updateDoc } from 'firebase/firestore';
 
 const fileTypes = ["JPEG", "PNG", "JPG"];
 
 interface Props {
   closeModal: () => void;
+  startPost?: IPost;
 }
 
-const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
+const CreatePostModal: React.FC<Props> = ({ closeModal, startPost }) => {
   const [activeTab, setActiveTab] = useState(0);
   const [filesList, setFilesList] = useState<null | File[]>(null);
   const [isDragging, setIsDragging] = useState(false);
-  const [postText, setPostText] = useState('');
+  const [postText, setPostText] = useState(startPost?.text || '');
   const [selectedStars, setSelectedStars] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [isMaxError, setIsMaxError] = useState(false);
@@ -84,19 +87,27 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
         }
       }
 
-      await addDoc(postsCollection, {
-        userId: firestoreUser?.id,
-        createAt: new Date().toISOString(),
-        comments: [],
-        comments_count: 0,
-        likes: [],
-        imageUrls: imageUrls,
-        text: postText,
-      });
-
-      updateFirestoreUser({
-        postsCount: firestoreUser?.postsCount ? firestoreUser?.postsCount + 1 : 1,
-      });
+      if(startPost) {
+        const docRef = doc(db, 'posts', startPost.id);
+            await updateDoc(docRef, {
+              imageUrls: imageUrls,
+              text: postText,
+            });
+      } else {
+        await addDoc(postsCollection, {
+          userId: firestoreUser?.id,
+          createAt: new Date().toISOString(),
+          comments: [],
+          comments_count: 0,
+          likes: [],
+          imageUrls: imageUrls,
+          text: postText,
+        });
+        
+        updateFirestoreUser({
+          postsCount: firestoreUser?.postsCount ? firestoreUser?.postsCount + 1 : 1,
+        });
+      }
 
       closeModal();
     } catch (err) {
@@ -105,7 +116,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal }) => {
     } finally {
       setIsLoading(false);
     }
-  }, [filesList, postText, firestoreUser, selectedStars]);
+  }, [filesList, startPost, closeModal, postText, firestoreUser?.id, firestoreUser?.postsCount, updateFirestoreUser]);
 
   const content = useMemo(() => {
     switch (activeTab) {
