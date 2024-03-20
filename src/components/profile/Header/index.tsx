@@ -206,7 +206,7 @@ const Header = () => {
               onFocus={searchProps.onFocus} 
               onBlur={searchProps.onBlur}
           >
-            <input className={styles.input} placeholder="Search" onChange={debouncedResults} />
+            <input className={styles.input} placeholder="Search reviews" onChange={debouncedResults} />
             {searchTerm.length > 0 && searchResult.length > 0 && isSearchFocused ? (
               <div 
                 className={styles.searchResultsContainer} 
