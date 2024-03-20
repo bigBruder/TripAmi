@@ -40,15 +40,19 @@ export default function Intro() {
 
   
   useEffect(() => {
+    if (firestoreUser?.friends?.length > 0) {
       const q = query(tripsCollection, where('userId', 'in', firestoreUser?.friends));
       const unsub = onSnapshot(q, (querySnapshot) => {
         const fetchedTravel = querySnapshot.docs.map(doc => ({
           ...doc.data(),
           id: doc.id,
         }));
+        console.log(fetchedTravel);
         setTravels(fetchedTravel as ITravel[]);
       });
-  }, []);
+    }
+
+  }, [firestoreUser?.friends, setTravels]);
 
   useEffect(() => {
   (async () => {
@@ -110,7 +114,8 @@ export default function Intro() {
       <APIProvider apiKey="AIzaSyCwDkMaHWXRpO7hY6z62_Gu8eLxMMItjT8">
         <div style={{ height: "450px", width: "100%" }}>
 
-          <Map 
+          <Map
+            
             defaultZoom={5} 
             defaultCenter={position} 
             mapId="9bc3b1605395203e"
