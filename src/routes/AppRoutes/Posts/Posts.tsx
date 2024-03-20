@@ -12,19 +12,17 @@ import {IPost} from "~/types/post";
 import {PageTitle} from "~/components/PageTitle";
 import { useParams } from "react-router-dom";
 import { documentId } from "firebase/firestore";
+import { getDownloadURL, ref } from "firebase/storage";
+import { storage } from "~/firebase";
 
 const PostsPage = () => {
-  const {state} = useLocation();
+  // const {state} = useLocation();
   const [comments, setComments] = useState<IComment[] | null>(null);
   const [post, setPost] = useState<IPost | null>(null);
+  const [imagesUrl, setImagesUrl] = useState<string[] | null>(null);
   const {id} = useParams();
-  console.log(state);
 
   useEffect(() => {
-    console.log('state', state);
-    if(state.id) {
-      setPost(state);
-    } else {
       const q = query(
         postsCollection,
         where(documentId(), '==', id),
@@ -40,11 +38,31 @@ const PostsPage = () => {
       return () => {
         unsubscribe();
       }
-    }
-  }, [id, state]);
+  }, [id]);
 
   useEffect(() => {
+    const downloadedImages: string[] = [];
 
+    (async () => {
+
+    if (post?.imageUrls) {
+      post.imageUrls.forEach(async (url) => {
+        try {
+          const imageUrl = await getDownloadURL(ref(storage, url));
+          downloadedImages.push(imageUrl);
+        } catch (e) {
+          console.log('[ERROR getting image] => ', e);
+        }
+      });
+    }
+
+    return downloadedImages;
+  })().then(() => {setImagesUrl(downloadedImages)});
+  }, [post]);
+
+  console.log('post', imagesUrl);
+
+  useEffect(() => {
     if (post?.id) {
       const q = query(
         commentsCollection,
@@ -74,7 +92,7 @@ const PostsPage = () => {
         {
           post && (
             <div className={styles.post}>
-              <BigPost post={post} setPost={setPost} />
+              <BigPost post={{...post, imageUrls: imagesUrl}} setPost={setPost} />
               <CommentField postId={post.id} commentsCount={post.comments_count} contentType="post"/>
               {comments?.map(comment => <Comment key={comment.id} comment={comment} />)}
             </div>

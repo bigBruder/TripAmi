@@ -25,9 +25,13 @@ export const BigPost: FC<Props> = ({
 }) => {
   const {setIsLoading} = usePost(post.id);
   const {firestoreUser} = useContext(AuthContext);
-  const [imageUrl, setImageUrl] = useState<string[]>(post.imageUrls);
+  const [imageUrl, setImageUrl] = useState<string[]>([]);
   const [userData, setUserData] = useState<IUser | null>(null);
   const [isPostsLoading, setIsPostsLoading] = useState(false);
+
+  useEffect(() => {
+    setImageUrl(post.imageUrls);
+  }, [post])
 
   useEffect(() => {
     (async () => {
@@ -44,7 +48,7 @@ export const BigPost: FC<Props> = ({
         setIsLoading(false);
       }
     })();
-  }, [firestoreUser?.id, post.userId]);
+  }, [firestoreUser.id, post.userId]);
 
   useEffect(() => {
     (async () => {
