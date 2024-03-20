@@ -41,13 +41,7 @@ export const PostActions: FC<Props> = ({postData}) => {
       </div>
       <div
         className={styles.shareContainer}
-        onClick={() =>
-          navigate(
-            '/posts',
-            {state: {
-                ...postData,
-              }})
-        }
+        onClick={() =>navigate('/posts/' + postData.id)}
       >
         <img
           className={styles.icon}
