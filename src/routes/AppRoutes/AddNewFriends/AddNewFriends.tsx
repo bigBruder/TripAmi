@@ -16,6 +16,7 @@ import defaultUserIcon from "@assets/icons/defaultUserIcon.svg";
 import {getDownloadURL} from "firebase/storage";
 import {ref} from "@firebase/storage";
 import { useNavigate } from 'react-router-dom';
+import { deleteDoc } from 'firebase/firestore';
 
 const AddNewFriends = () => {
   const [users, setUsers] = useState<IUser[]>([]);
@@ -77,7 +78,7 @@ const AddNewFriends = () => {
         unsub();
       }
     }
-  }, [firestoreUser?.firebaseUid]);
+  }, [firestoreUser?.firebaseUid, firestoreUser?.id]);
 
   return (
     <div className={styles.main}>
@@ -212,11 +213,11 @@ export const UserCard: FC<Props> = ({
       setUserAvatar(url);
       setIsImageLoading(false);
     }
-  }, [withDefaultUserImage, firestoreUser?.avatarUrl]);
+  }, [withDefaultUserImage, user.avatarUrl]);
 
   useEffect(() => {
     getUserImage();
-  }, [firestoreUser?.avatarUrl]);
+  }, [firestoreUser?.avatarUrl, getUserImage]);
 
 
   const navigate = useNavigate();
@@ -229,10 +230,40 @@ export const UserCard: FC<Props> = ({
     }
   }, [firestoreUser?.firebaseUid, navigate, user.id]);
 
+  const handleCancelInvite = useCallback(async () => {
+    console.log('delete invite');
+    // Ensure both the current user and the target user have valid IDs
+    if (firestoreUser?.id && user?.id) {
+      try {
+        // Query for the pending invitation from the current user to the target user
+        const q = query(
+          friendsRequestsCollection,
+          where('fromUser', '==', firestoreUser.id),
+          where('toUser', '==', user.id),
+          where('status', '==', FriendsRequestStatus.PENDING),
+        );
+  
+        // Execute the query
+        const querySnapshot = await getDocs(q);
+        // Assuming only one document/invitation will match, proceed to delete it
+        querySnapshot.forEach(async (doc) => {
+          await deleteDoc(doc.ref); // Delete the document
+        });
+  
+        // Optionally, update UI state here to reflect the change
+      } catch (err) {
+        console.error("Failed to cancel invite: ", err);
+        // @ts-ignore
+        alert(firebaseErrors[err.code] || 'An unexpected error occurred');
+      }
+    }
+  }, [user, firestoreUser]);
+
+
   return (
     <div className={styles.cardMain}>
       <div className={styles.userCard} onClick={handleOpenUserProfile}>
-        <img src={userAvatar} className={styles.avatar} />
+        <img src={userAvatar} className={styles.avatar} alt="User avatar"/>
         <div className={styles.userInfo}>
           <p className={styles.userName}>{user.username}</p>
           {!withDefaultUserImage && <p className={styles.whereTo}>Where to next? <p className={styles.orangeText}>London</p></p>}
@@ -253,7 +284,7 @@ export const UserCard: FC<Props> = ({
           ) : null}
 
           {invited ? (
-            <button disabled className={`${styles.addToFriendButton} ${styles.invited}`}>Invited</button>
+            <button className={`${styles.addToFriendButton} ${styles.invited}`} onClick={handleCancelInvite}>Invited</button>
           ) : null}
         </>
       ) : null}
