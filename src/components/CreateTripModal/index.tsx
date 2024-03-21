@@ -51,7 +51,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
   const [file, setFile] = useState<File[] >([]);
   const [rating, setRating] = useState(data?.rate || 0);
   // const [location, setLocation] = useState(data?.location || null);
-  const [whereToGo, setWhereToGo] = useState(data?.location.name || '');
+  // const [whereToGo, setWhereToGo] = useState(data?.location.name || '');
   const [city, setCity] = useState('');
   const [startDate, setStartDate] = useState<string>(data?.startDate || moment().format('yyyy-MM-D'));
   const [endDate, setEndDate] = useState<string>(data?.endDate || moment().format('yyyy-MM-D'));

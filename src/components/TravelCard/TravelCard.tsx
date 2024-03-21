@@ -15,9 +15,6 @@ import Dots from '@assets/icons/dots.svg';
 import CreateTripModal from "~/components/CreateTripModal";
 import CustomModal from "~/components/CustomModal";
 import { LightBox } from "../Lightbox/LightBox";
-import {EmailIcon, EmailShareButton, TelegramIcon, TelegramShareButton, WhatsappIcon, WhatsappShareButton} from "react-share";
-import {CopyToClipboard} from 'react-copy-to-clipboard';
-import Done from '@assets/icons/done.svg';
 import Modal from 'react-modal';
 import ShareModal from "../ShareModal/ShareModal";
 
@@ -29,7 +26,7 @@ const TravelCard: FC<Props> = ({travel}) => {
   const {firestoreUser, updateFirestoreUser} = useContext(AuthContext);
   const [imageDownloadUrls, setImageDownloadUrls] = useState<{url: string; type: string, description: string}[]>([]);
   const {
-    location,
+    // location,
     startDate,
     endDate,
     rate,
@@ -48,7 +45,6 @@ const TravelCard: FC<Props> = ({travel}) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [isModalDeleteOpen, setIsModalDeleteOpen] = useState(false);
   const [isModalShareOpen, setIsModalShareOpen] = useState(false);
-  const [isCopied, setIsCopied] = useState(false);
 
 
   const handleDeleteTrip = useCallback(async () => {
