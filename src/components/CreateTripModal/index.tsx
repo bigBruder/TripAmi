@@ -50,7 +50,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
   const [tickIsChecked, setTickIsChecked] = useState(data?.isPublic || false);
   const [file, setFile] = useState<File[] >([]);
   const [rating, setRating] = useState(data?.rate || 0);
-  const [location, setLocation] = useState(data?.location || null);
+  // const [location, setLocation] = useState(data?.location || null);
   const [whereToGo, setWhereToGo] = useState(data?.location.name || '');
   const [city, setCity] = useState('');
   const [startDate, setStartDate] = useState<string>(data?.startDate || moment().format('yyyy-MM-D'));
@@ -116,7 +116,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
             description: imagesDescription.find(image => image.name === file[i].name)?.value || '',
           });
         }
-          if (isEdit) {
+          if (isEdit && data) {
             const docRef = doc(db, 'trips', data.id);
             await updateDoc(docRef, {
               userId: firestoreUser?.id,
@@ -129,12 +129,13 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
               cities: selectedCities,
               value: 'fjlksdfjlksdfj',
               tripName: tripName,
-              location: {
-                name: location.name,
-                longitude: location?.longitude,
-                latitude: location?.latitude,
-                color: randomColor(),
-              },
+              pinColor: randomColor(),
+              // location: {
+              //   name: location.name,
+              //   longitude: location?.longitude,
+              //   latitude: location?.latitude,
+              //   color: randomColor(),
+              // },
               dayDescription: daysDescription,
               text,
             });
@@ -149,12 +150,12 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
               geoTags: selectedGeoTags,
               cities: selectedCities,
               tripName: tripName,
-              location: {
-                name: location.name,
-                longitude: location?.longitude,
-                latitude: location?.latitude,
-                color: randomColor(),
-              },
+              // location: {
+              //   name: location.name,
+              //   longitude: location?.longitude,
+              //   latitude: location?.latitude,
+              //   color: randomColor(),
+              // },
               dayDescription: daysDescription,
               text,
             });
@@ -194,15 +195,15 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
     } finally {
       setIsLoading(false);
     }
-  }, [selectedLocation, imagesDescription, file, firestoreUser?.id, firestoreUser?.tripCount, rating, startDate, tickIsChecked, selectedGeoTags, location, text, updateFirestoreUser, daysDescription]);
+  }, [imagesDescription, file, firestoreUser?.id, firestoreUser?.tripCount, rating, startDate, tickIsChecked, selectedGeoTags, text, updateFirestoreUser, daysDescription]);
 
-  const onSelectPlace = useCallback(async (address: string, placeID: string) => {
-    const geocode = await geocodeByPlaceId(placeID);
+  // const onSelectPlace = useCallback(async (address: string, placeID: string) => {
+  //   const geocode = await geocodeByPlaceId(placeID);
     
-    setLocation({name: address, longitude: geocode[0].geometry.location.lng(), latitude: geocode[0].geometry.location.lat(), color: randomColor()});
-    setWhereToGo(address);
-    setSelectedLocation(placeID);
-  }, []);
+  //   setLocation({name: address, longitude: geocode[0].geometry.location.lng(), latitude: geocode[0].geometry.location.lat(), color: randomColor()});
+  //   setWhereToGo(address);
+  //   setSelectedLocation(placeID);
+  // }, []);
 
   const onSelectGeoTag = useCallback((address: string, placeID: string) => {
     if(!selectedGeoTags.map(tag => tag.address).includes(address)) {
@@ -330,15 +331,10 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
             className={styles.input} 
             onChange={e => setTripName(e.target.value)}
           />
-
+          
+          {/* 
           <p>Where’d you go?</p>
           <div  className={styles.autocomplete}>
-            {/* <PlaceAutocomplete 
-              searchOptions={{ types: ['country'] }}
-              location={location}
-              setLocation={setLocation}
-              onSelectPlace={onSelectPlace}
-            /> */}
             <PlacesAutocomplete
               searchOptions={{ types: ['country'] }}
               value={whereToGo}
@@ -377,7 +373,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
                 );
               }}
             </PlacesAutocomplete>
-          </div>
+          </div> */}
           
 
           <div className={styles.geocodes_top}>

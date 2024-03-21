@@ -136,11 +136,9 @@ const TravelCard: FC<Props> = ({travel}) => {
   return (
     <div className={styles.container}>
       <div className={styles.topContainer}>
-          {/* <p className={styles.location}>{location?.name.slice(0, 50)}{location.name.length > 50 && '...'}</p> */}
-          <p className={styles.location} onClick={() => navigate('/trip/' + id)}>{location.name.toString()}</p>
+          {/* <p className={styles.location} onClick={() => navigate('/trip/' + id)}>{location.name.toString()}</p> */}
         <Rating disabled selectedStars={rate} />
         <div className={styles.dateContainer}>
-          {/* <p className={styles.location}>Date</p> */}
           <p className={styles.date}>{startDate} - {endDate}</p>
         </div>
       </div>
@@ -293,7 +291,8 @@ const TravelCard: FC<Props> = ({travel}) => {
             geoTags: travel.geoTags,
             cities: travel.cities,
             tripName: tripName,
-            location: travel.location,
+            pinColor: travel.pinColor || 'blue',
+            // location: travel.location,
             dayDescription: travel.dayDescription,
             text: travel.text,
           }}

@@ -15,12 +15,13 @@ export interface ITravel {
     address: string;
   }[];
   public: boolean;
-  location: {
-    name: string;
-    latitude: number;
-    longitude: number;
-    color: string;
-  };
+  // location: {
+  //   name: string;
+  //   latitude: number;
+  //   longitude: number;
+  //   color: string;
+  // };
+  pinColor: string;
   text: string;
   tripName: string;
   dayDescription?: {date: string, description: string}[]

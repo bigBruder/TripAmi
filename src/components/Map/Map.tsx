@@ -68,7 +68,7 @@ const Map: FC<Props> = ({onClick, selectedTripId, userId}) => {
   useEffect(() => {
     const tripsToDisplay = userId ? usersTrips : trips;
     if (!tripsToDisplay) return;
-    const citiesPlacesId = tripsToDisplay.flatMap(trip => trip.cities?.map(city => ({ place_id: city.placeID, color: trip.location.color })) || []);
+    const citiesPlacesId = tripsToDisplay.flatMap(trip => trip.cities?.map(city => ({ place_id: city.placeID, color: trip.location ? trip.location.color : trip.pinColor })) || []);
     console.log(citiesPlacesId);
     (async () => {
       const citiesGeoCode: IPin[] = [];
@@ -90,7 +90,7 @@ const Map: FC<Props> = ({onClick, selectedTripId, userId}) => {
   useEffect(() => {
     const tripsToDisplay = userId ? usersTrips : trips;
     if (!tripsToDisplay) return;
-    const tagsPlaceId = tripsToDisplay.flatMap(trip => trip.geoTags?.map(tag => ({ place_id: tag.placeID, color: trip.location.color })) || []);
+    const tagsPlaceId = tripsToDisplay.flatMap(trip => trip.geoTags?.map(tag => ({ place_id: tag.placeID, color: trip.location?.color || trip.pinColor })) || []);
     (async () => {
       const tagsGeoCode: IPin[] = [];
       await Promise.all(tagsPlaceId.map(async (tag) => {
