@@ -27,10 +27,13 @@ import { Sort } from "~/components/Sort/Sort";
     const [userTravels, setUserTravels] = useState<ITravel[]>([]);
     const [isReverse, setIsReverse] = useState(false);
     const [sortBy, setSortBy] = useState('date');
+    console.log("userData => ", userData);
 
     useEffect(() => {
       (async () => {
-        const q = query(usersCollection, where('id', '==', id), orderBy('tripCount', isReverse ? 'desc' : 'asc'));
+        console.log('id => ', id);
+        if (!id) return;
+        const q = query(usersCollection, where('id', '==', id));
         const querySnapshot = await getDocs(q);
 
         setUserData(querySnapshot.docs[0].data());
@@ -155,10 +158,6 @@ import { Sort } from "~/components/Sort/Sort";
                 )
               }
             </div>
-          {/* )} */}
-          
-          
-            
             <Footer/>
           </>
         </div>
