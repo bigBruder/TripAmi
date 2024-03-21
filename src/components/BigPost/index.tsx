@@ -31,7 +31,11 @@ export const BigPost: FC<Props> = ({
 
   useEffect(() => {
     setImageUrl(post.imageUrls);
-  }, [post])
+  }, [post]);
+
+  console.log('post => ', post);
+
+
 
   useEffect(() => {
     (async () => {

@@ -16,7 +16,7 @@ import { v4 as uuidv4 } from 'uuid';
 import {toast, ToastContainer} from "react-toastify";
 import { IPost } from '~/types/post';
 import { doc, updateDoc } from 'firebase/firestore';
-import { getDownloadURL, uploadBytesResumable } from 'firebase/storage';
+import { getBlob, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 
 const fileTypes = ["JPEG", "PNG", "JPG"];
 
@@ -36,27 +36,19 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, startPost }) => {
   // const [images, setImages] = useState<string[]>(startPost?.imageUrls || []);
 
   
-  // useEffect(() => {
-  //   (async () => {
-  //     console.log('startPost', startPost);
-  //     const files = [];
-  //     if (startPost?.imageUrls) {
-  //       for (let i = 0; i < startPost.imageUrls.length; i++) {
-  //         console.log('startPost.imageUrls');
-
-  //         const url = await getDownloadURL(ref(storage, startPost.imageUrls[i]));
-  //         const response = await fetch(url);
-  //         const data = await response.blob();
-  //         const metadata = {
-  //           type: "image/jpeg",
-  //         };
-  //         const file = new File([data], `image${i}`, metadata);
-  //         files.push(file);
-  //       }
-  //     }
-  //   setFilesList(files);
-  // })();
-  // }, [startPost]);
+  useEffect(() => {
+    (async () => {
+      const files = [];
+      if (startPost?.imageUrls) {
+        for (let i = 0; i < startPost.imageUrls.length; i++) {
+          const url = await getDownloadURL(ref(storage, startPost.imageUrls[i]));
+          const blob = await getBlob(ref(storage, startPost.imageUrls[i]));
+          const file = new File([blob], startPost.imageUrls[i]);
+          files.push(file);
+      }
+    setFilesList(files);
+  }})();
+  }, [startPost]);
 
   useEffect(() => {
     if (isMaxError) {

@@ -83,6 +83,8 @@ const PostsPage = () => {
     }
   }, [post]);
 
+  console.log(imagesUrl, 'imagesUrl');
+
   return (
     <div className={styles.mainContainer}>
       <Header />
@@ -98,11 +100,6 @@ const PostsPage = () => {
             </div>
           )
         }
-        {/* <div className={styles.post}>
-          <BigPost post={post} setPost={setPost} />
-          <CommentField postId={post.id} commentsCount={post.comments_count} contentType="post"/>
-          {comments?.map(comment => <Comment key={comment.id} comment={comment} />)}
-        </div> */}
       </div>
     </div>
   );
