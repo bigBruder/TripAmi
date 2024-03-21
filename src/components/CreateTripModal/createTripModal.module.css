@@ -8,12 +8,12 @@
 .container {
     display: flex;
     flex-direction: column;
-    padding: 33px 8px 21px 8px;
+    padding: 21px 12px; /* Adjusted padding to match outer_container */
     height: 100%;
 }
 
 .button {
-    width: 40%;
+    width: 123px; /* Adjusted width to match .buttonUpload */
     border-radius: 25px;
     background: #ff4d00;
     color: #fff;
@@ -23,105 +23,78 @@
     height: 49px;
     cursor: pointer;
 }
-/* 
-@media (min-width: 768px) {
-    font-size: 17px;
-} */
+
+@media (max-width: 768px) {
+    .button {
+        width: 100%; /* Adjusted width to occupy full width on smaller screens */
+    }
+}
 
 .button-gray {
     background-color: #717171;
-}
-
-.bottomRow {
-    display: flex;
-    justify-content: space-evenly;
 }
 
 .startContainer {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 22px;
-    margin-right: 20px;
-    margin-bottom: 20px;
-    gap: 48px;
-}
-
-img {
-    margin: 0;
+    margin: 20px 0; /* Consolidated margin values */
+    gap: 10px;
 }
 
 .inputContainer {
-    position: relative;
     width: 100%;
     box-sizing: border-box;
-
     background: #F6F6F6;
 }
 
 .input {
-    width: 100%;
     height: 36px;
-    flex-shrink: 0;
     border-radius: 8px;
     background: #F6F6F6;
-
     color: #1a1a1a;
-
     outline: none;
     border: none;
     padding: 0 20px;
-
     resize: none;
-
     font-family: Gilroy, sans-serif;
     font-size: 15px;
-    font-style: normal;
     font-weight: 500;
     line-height: normal;
-
     box-sizing: border-box;
-}
-
-.autocomplete {
-    z-index: 1;
-}
-
-.input::-webkit-calendar-picker-indicator {
-    color: #1a1a1a;
+    width: 100%;
 }
 
 .uploadContainer {
     padding: 10px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
     outline: none;
     background-color: rgb(246, 246, 246);
     border-radius: 20px;
     gap: 20px;
 }
-.geocodes_top {
+
+.section {
     display: flex;
-    height: 20px;
-    align-items: center;
+    gap: 20px;
     justify-content: space-between;
-    flex-wrap: wrap;
-}
-
-.geocodes_top button {
-    height: 20px;
-    width: max-content;
-    display: flex;
     align-items: center;
-    justify-content: center;
-    padding: 5px;
-    font-size: 14px;
 }
 
-@media (min-width: 768px) {
-    .uploadContainer {
-        flex-direction: row;
+.section_button {
+    height: 50%;
+}
+
+@media (max-width: 768px) {
+    .section {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .section_button {
+        width: 100%; /* Adjusted width to occupy full width */
+        font-size: 15px;
     }
 }
 
@@ -133,15 +106,11 @@ img {
 .buttonUpload {
     width: 123px;
     height: 32px;
-    flex-shrink: 0;
-
     border-radius: 18px;
     border: 1px solid #000;
-
     color: #000;
     font-family: Gilroy, sans-serif;
     font-size: 17px;
-    font-style: normal;
     font-weight: 600;
     line-height: 12px;
 }
@@ -153,54 +122,67 @@ img {
 .topContainer {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 20px;
 }
 
 .datesContainer {
     display: flex;
     justify-content: space-between;
+    flex-direction: column;
+    gap: 10px;
     flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+    .datesContainer {
+        flex-direction: column;
+        width: 100%;
+        gap: 20px;
+    }
+
+    .dateInput {
+        width: 100%;
+    }
 }
 
 .dateContainer {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 10px;
+    justify-content: flex-start;
+    gap: 20px;
 }
 
 .dateInput {
-    /* width: 100%; */
     height: 30px;
-    /* flex-shrink: 0; */
     border-radius: 8px;
     background: #F6F6F6;
-
     color: #717171;
-
     outline: none;
     border: none;
     padding: 0 20px;
-
     resize: none;
-
     font-family: Gilroy, sans-serif;
     font-size: 15px;
-    font-style: normal;
     font-weight: 500;
     line-height: normal;
-
     box-sizing: border-box;
+    width: 100% ;
 }
 
 .textArea {
     margin-top: 20px;
     padding-top: 20px;
     width: 100%;
-
     height: 100px;
-
     box-sizing: border-box;
+    position: relative;
+    margin-top: 0;
+}
+
+@media (max-width: 768px) {
+    .text {
+        font-size: 15px;
+    }
 }
 
 .startWrapper {
@@ -212,17 +194,11 @@ img {
 .dropdown {
     display: flex;
     flex-direction: column;
-
     position: absolute;
     height: 200px;
     width: 100%;
     z-index: 0;
-
     overflow: scroll;
-}
-
-.dropdownItem {
-    background: #F6F6F6;
 }
 
 .image {
@@ -235,7 +211,6 @@ img {
     display: flex;
     justify-content: space-between;
     width: max-content;
-    /* width: 80%; */
     background-color: rgb(246, 246, 246);
     border-radius: 10px;
     padding: 5px;
@@ -245,30 +220,39 @@ img {
     align-items: center;
     display: flex;
     flex-wrap: wrap;
-    /* flex-direction: column; */
     gap: 10px;
     width: 80%;
 }
 
 .crossIcon {
     rotate: 45deg;
-    /* z-index: 0; */
     cursor: pointer;
 }
+
+.removeDay {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+}
+
 
 .dayDescriptionContainer {
     display: flex;
     align-items: center;
     justify-content: flex-start;
     gap: 20px;
-}
-
-.dayDescriptionContainer input{
-    max-width: max-content;
-}
-
-.dayDescriptionContainer {
+    margin-top: 20px;
     width: 100%;
+    position: relative;
+}
+
+@media (max-width: 768px) {
+    .dayDescriptionContainer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
 }
 
 .dayDescriptionNav {
@@ -277,7 +261,7 @@ img {
     align-items: center;
 }
 
-.dayDescriptionNav button{
+.dayDescriptionNav button {
     height: 20px;
     width: max-content;
     display: flex;
@@ -291,7 +275,6 @@ img {
     display: flex;
     flex-direction: column;
     gap: 30px;
-
 }
 
 .uploadedImagesContainer {
@@ -309,8 +292,6 @@ img {
     display: flex;
     align-items: center;
     justify-content: center;
-
-
     border-radius: 25px;
     background: #ff4d00;
     color: #fff;
@@ -323,4 +304,30 @@ img {
     flex-direction: column;
     align-items: center;
     gap: 20px;
+}
+
+.submit_container {
+    display: flex;
+    justify-content: space-around;
+}
+
+.submit_button {
+    width: 30%;
+    border-radius: 25px;
+    color: #fff;
+    border: none;
+    font-size: 15px;
+    font-weight: 500;
+    height: 49px;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .submit_container {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .submit_button {
+        width: 100%;
+    }
 }

@@ -324,7 +324,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
       <form>
         <div className={styles.topContainer}>
           {/* <p>Where’d you go?</p> */}
-          <p>Trip name:</p>
+          <p className={styles.text}>Trip name:</p>
           <input
             value={tripName}
             placeholder={'Trip name'} 
@@ -376,13 +376,13 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
           </div> */}
           
 
-          <div className={styles.geocodes_top}>
+          <div className={styles.section}>
               {/* <p>Tag Your Favorite Places on this Trip: </p> */}
-              <p>Do you wanna add city? (You can add multiply cities)</p>
+              <p className={styles.text}>Do you wanna add city? (You can add multiply cities)</p>
               <button 
-                className={styles.button}
+                className={`${styles.section_button} ${styles.button}`}
                 onClick={handleOpenAddCity}
-              >+</button>
+              >Add city</button>
             </div>
 
             {
@@ -405,7 +405,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
               <>
                 {selectedCities.map(selectedCity => (
                   <div className={styles.geoTagContainer} key={selectedCity.placeID}>
-                    <p>{selectedCity.address.split(",")[0]}</p>
+                    <p className={styles.text}>{selectedCity.address.split(",")[0]}</p>
                     <img src={Plus} className={styles.crossIcon} onClick={() => handleRemoveCity(selectedCity.placeID)} />
                   </div>
                 ))}
@@ -413,12 +413,12 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
             ) : null}
           </div>
 
-            <div className={styles.geocodes_top}>
-              <p>Tag Your Places: </p>
+            <div className={styles.section}>
+              <p className={styles.text}>Tag Your Places: </p>
               <button 
-                className={styles.button}
+                className={`${styles.section_button} ${styles.button}`}
                 onClick={handleOpenAddGeocode}
-              >+</button>
+              >Add place</button>
             </div>
           {
           isAddingPlace && (
@@ -482,7 +482,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
 
         <div className={styles.datesContainer}>
           <div className={styles.dateContainer}>
-            <p>Start Date:</p>
+            <p className={styles.text}>Start Date:</p>
             <input 
               value={startDate} 
               onChange={e => setStartDate(e.target.value)} 
@@ -492,7 +492,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
           </div>
          
           <div className={styles.dateContainer}>
-            <p>End Date:</p>
+            <p className={styles.text}>End Date:</p>
             <input 
               id="end_date"
               value={endDate} 
@@ -517,10 +517,10 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
               />
           </div>
 
-        <div className={styles.dayDescriptionNav}>
-          <p>Do you wanna description some day?</p>
+        <div className={styles.section}>
+          <p className={styles.text}>Do you wanna description some day?</p>
           <button 
-                className={styles.button}
+                className={`${styles.section_button} ${styles.button}`}
                 onClick={handleAddDayDescription}
           >
             Add day description
@@ -546,14 +546,14 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
                   onChange={e => handleDayDateDescriptionChange(e, idx, 'description')}
                 />
             </div>
-            <img src={Plus} className={styles.crossIcon} onClick={() => {handleRemoveDayDescription(idx)}} />
+            <img src={Plus} className={`${styles.crossIcon} ${styles.removeDay}`} onClick={() => {handleRemoveDayDescription(idx)}} />
           </div>
           ))
         }
 
         <div className={styles.startWrapper}>
           <div className={styles.startContainer}>
-            <p>Public:</p>
+            <p className={styles.text}>Public:</p>
             <Checkbox
               checked={tickIsChecked}
               icon={<img src={Tick} style={{width: 24}} alt=""/>}
@@ -566,7 +566,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
             />
           </div>
           <div className={styles.startContainer}>
-            <p>Rating:</p>
+            <p className={styles.text}>Rating:</p>
             <Rating setSelectedStars={setRating} selectedStars={rating}/>
           </div>
           
@@ -582,7 +582,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
           >
             <div className={styles.uploadContainer}>
               {/* <p>Image and Video </p> */}
-              <p className={styles.dragText}>Drag and drop image/video or click on </p>
+              <p className={styles.text}>Drag and drop image/video or click on </p>
               <button className={styles.buttonUpload}>Upload</button>
             </div>
           </FileUploader>
@@ -670,17 +670,15 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
             })}
         </div>
       </form>
-      <div className={styles.container}>
-        <div className={styles.bottomRow}>
-          <button className={styles.button} onClick={async () => {
+      <div className={styles.submit_container}>
+          <button className={`${styles.submit_button} ${styles.button}`} onClick={async () => {
             await handleOnSave();
           }}>
             {isEdit ? 'Save' : 'Post'}
           </button>
-          <button className={`${styles.button} ${styles['button-gray']}`} onClick={closeModal}>
+          <button className={`${styles.submit_button} ${styles.button} ${styles['button-gray']}`} onClick={closeModal}>
             Cancel
           </button>
-        </div>
       </div>
 
       <ToastContainer closeOnClick autoClose={3000} limit={1} pauseOnHover={false} />
