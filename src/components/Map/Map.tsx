@@ -96,7 +96,7 @@ const Map: FC<Props> = ({onClick, selectedTripId, userId}) => {
       await Promise.all(tagsPlaceId.map(async (tag) => {
         if (!tag) return;
         const geocode = await geocodeByPlaceId(tag.place_id);
-        const randomOffset = Math.random() * 0.01 - 0.005;
+        const randomOffset = Math.random() * 0.001 - 0.0005;
         tagsGeoCode.push({
           lng: geocode[0].geometry.location.lng() + randomOffset, 
           lat: geocode[0].geometry.location.lat() + randomOffset, 
