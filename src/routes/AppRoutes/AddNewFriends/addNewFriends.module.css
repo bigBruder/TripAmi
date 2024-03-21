@@ -57,6 +57,7 @@
     padding-top: 7px;
     padding-bottom: 21px;
     cursor: pointer;
+    align-items: center;
 
     flex-grow: 1;
 }

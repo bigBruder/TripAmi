@@ -266,7 +266,7 @@ export const UserCard: FC<Props> = ({
         <img src={userAvatar} className={styles.avatar} alt="User avatar"/>
         <div className={styles.userInfo}>
           <p className={styles.userName}>{user.username}</p>
-          {!withDefaultUserImage && <p className={styles.whereTo}>Where to next? <p className={styles.orangeText}>London</p></p>}
+          {user.whereToNext && <p className={styles.whereTo}>Where to next? <p className={styles.orangeText}>{user.whereToNext}</p></p>}
         </div>
       </div>
       {!withDefaultUserImage ? (
