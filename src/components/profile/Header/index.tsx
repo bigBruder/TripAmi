@@ -87,9 +87,9 @@ const Header = () => {
         
         const matchedCities = result.hits.map(hit => {
           console.log(hit._highlightResult);
-          if(hit._highlightResult.location.name.matchLevel === 'full') {
-            return (hit._highlightResult.location.name.value.replace('<em>', '').replace('</em>', '').split(',')[0]);
-          }
+          // if(hit._highlightResult.location.name.matchLevel === 'full') {
+          //   return (hit._highlightResult.location.name.value.replace('<em>', '').replace('</em>', '').split(',')[0]);
+          // }
           
           for (let key in hit._highlightResult) {
             if (key === 'cities' && hit._highlightResult.cities.length > 0) {
@@ -130,7 +130,7 @@ const Header = () => {
           setSearchResult(result.hits.map((hit, i) => {
           return ({
             geoTag: hit.geoTag,
-            location: hit.location,
+            // location: hit.location,
             public: hit.public,
             rate: hit.rate,
             text: hit.text,

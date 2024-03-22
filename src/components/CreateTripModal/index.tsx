@@ -387,7 +387,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
 
             {
               isAddCityOpen && (
-                <div  className={styles.autocomplete}>
+                <div  className={`${styles.autocomplete} ${styles.cityAutocomplete}`}>
                   <PlaceAutocomplete 
                     searchOptions={{ types: ['locality'] }}
                     location={city}

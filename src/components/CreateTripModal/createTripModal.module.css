@@ -70,7 +70,7 @@
     font-weight: 500;
     line-height: normal;
     box-sizing: border-box;
-    width: 100%;
+    width: 50%;
 }
 
 .uploadContainer {
@@ -139,6 +139,7 @@
     flex-direction: column;
     gap: 10px;
     flex-wrap: wrap;
+    margin: 10px 0;
 }
 
 @media (max-width: 768px) {
@@ -174,7 +175,6 @@
     font-weight: 500;
     line-height: normal;
     box-sizing: border-box;
-    width: 100% ;
 }
 
 .textArea {
@@ -217,6 +217,14 @@
     width: 100%;
     z-index: 0;
     overflow: scroll;
+}
+
+.autocomplete {
+    width: 100%;
+}
+
+.cityAutocomplete {
+    width: 50%;
 }
 
 .image {

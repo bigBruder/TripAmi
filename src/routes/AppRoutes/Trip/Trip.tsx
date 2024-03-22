@@ -158,7 +158,6 @@ export const Trip = () => {
               <div className={styles.topRightContainer}>
                 <h1 className={styles.title}>{trip?.tripName}</h1>
                 <div className={styles.rateContainer}>
-                  <p className={styles.location}>{trip?.location.name}</p>
                   <Rating rating={trip?.rate} />
                 </div>
                 <div className={styles.textContainer}>
