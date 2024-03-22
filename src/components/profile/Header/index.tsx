@@ -31,7 +31,7 @@ import CustomModal from "~/components/CustomModal";
 import {getDownloadURL} from "firebase/storage";
 import {ref} from "@firebase/storage";
 import {db, storage} from "~/firebase";
-import debouce from "lodash.debounce";
+import debounce from "lodash.debounce";
 import CreateTripModal from "~/components/CreateTripModal";
 
 import algoliasearch from "algoliasearch";
@@ -41,8 +41,9 @@ import { IPost } from "~/types/post";
 import { useInputFocus } from "~/hooks/useInputRef";
 import Rating from "~/components/Rating";
 const client = algoliasearch("W8J2M4GNE3", "18fbb3c4cc4108ead5479d90911f3507");
-// const index = client.initIndex("prod_users");
 const index = client.initIndex("trips");
+// const index = client.initIndex("prod_users");
+// const index = client.initIndex("trips");
 
 enum CONTENT_TYPE {
   POST = 'post',
@@ -70,77 +71,70 @@ const Header = () => {
   const [searchResult, setSearchResult] = useState<SearchResult[]>([]);
   const [tripModalIsOpen, setTripModalIsOpen] = useState(false);
   const { inputProps: searchProps, isFocused: isSearchFocused } = useInputFocus();
-
+  
   const handleChange = useCallback((e) => {
     setSearchTerm(e.target.value);
   }, []);
 
+  useEffect(() => { 
+    if (!isSearchFocused) {
+      setSearchResult([]);
+      client.clearCache();
+    }
+  }, [isSearchFocused]);
+
+
   const handleSearch = useCallback(async () => {
+    console.log('render');
+
     try {
       setSearchIsLoading(true);
 
       if (searchTerm.length) {
+        const index = client.initIndex("trips");
         const result = await index.search(searchTerm, {
-          attributesToRetrieve: ['userId', 'cities', 'geoTag', 'location', 'rate', 'text', 'objectID', 'geoTags','createdAt'],
+          attributesToRetrieve: ['userId', 'cities','location', 'rate', 'text', 'objectID', 'geoTags'],
           hitsPerPage: 5,
         });
+        console.log('result.hits: ',result.hits);
         
+        // Moved the declaration outside of the map function for better readability
         const matchedCities = result.hits.map(hit => {
-          console.log(hit._highlightResult);
-          // if(hit._highlightResult.location.name.matchLevel === 'full') {
-          //   return (hit._highlightResult.location.name.value.replace('<em>', '').replace('</em>', '').split(',')[0]);
-          // }
-          
-          for (let key in hit._highlightResult) {
-            if (key === 'cities' && hit._highlightResult.cities.length > 0) {
-              for (let i = 0; i < hit._highlightResult.cities.length; i++) {
-                if(hit._highlightResult.cities[i].address.matchLevel === 'full') {
-                  // console.log(hit._highlightResult.cities[i]);
-                  return (hit._highlightResult.cities[i].address.value.replace('<em>', '').replace('</em>', '').split(',')[0]);
-                }
-              }
+          // Check for matched cities or geoTags for city names
+          for (let i = 0; i < hit._highlightResult.cities.length; i++) {
+            if(hit._highlightResult.cities[i].address.matchLevel === 'full') {
+              return hit._highlightResult.cities[i].address.value.replace('<em>', '').replace('</em>', '').split(',')[0];
             }
           }
-
-          for (let key in hit._highlightResult) {
-            if (key === 'geoTags' && hit._highlightResult.geoTags.length > 0) {
-              for (let i = 0; i < hit._highlightResult.geoTags.length; i++) {
-                if(hit._highlightResult.geoTags[i].address.matchLevel === 'full') {
-                  // console.log(hit._highlightResult.cities[i]);
-                  console.log(hit._highlightResult.geoTags[i].address.value);
-                  return (hit._highlightResult.geoTags[i].address.value.replace('<em>', '').replace('</em>', '').split(',')[0]);
-                }
-              }
+          for (let i = 0; i < hit._highlightResult.geoTags.length; i++) {
+            if(hit._highlightResult.geoTags[i].address.matchLevel === 'full') {
+              return hit._highlightResult.geoTags[i].address.value.replace('<em>', '').replace('</em>', '').split(',')[0];
             }
           }
         });
-        console.log(matchedCities);
 
-          const imageUrls = await Promise.all(
-            result.hits.map(async hit => {
-              const q = query(usersCollection, where('id', '==', hit.userId));
-              const querySnapshot = await getDocs(q);
-              const user = querySnapshot.docs[0].data();
-    
-              const url = await getDownloadURL(ref(storage, user.avatarUrl));
-              return url;
-            })
-          );
+        const imageUrls = await Promise.all(
+          result.hits.map(async hit => {
+            const q = query(usersCollection, where('id', '==', hit.userId));
+            const querySnapshot = await getDocs(q);
+            const user = querySnapshot.docs[0].data();
+            const url = await getDownloadURL(ref(storage, user.avatarUrl));
+            return url;
+          })
+        );
 
-          setSearchResult(result.hits.map((hit, i) => {
-          return ({
-            geoTag: hit.geoTag,
-            public: hit.public,
-            rate: hit.rate,
-            text: hit.text,
-            userId: hit.userId,
-            type: CONTENT_TYPE.TRAVEL,
-            id: hit.objectID,
-            avatar: imageUrls[i],
-            matchedCity: matchedCities[i],
-            createdAt: hit.createdAt,
-          });
-        }));     
+        setSearchResult(result.hits.map((hit, i) => ({
+          geoTag: hit.geoTag,
+          public: hit.public,
+          rate: hit.rate,
+          text: hit.text,
+          userId: hit.userId,
+          type: CONTENT_TYPE.TRAVEL,
+          id: hit.objectID,
+          avatar: imageUrls[i],
+          matchedCity: matchedCities[i], // Fixed typo in variable name
+          createdAt: hit.createdAt,
+        })));
       } 
     } catch (e) {
       console.log('[ERROR searching] => ', e);
@@ -152,16 +146,18 @@ const Header = () => {
   useEffect(() => {
     handleSearch();
   }, [handleSearch, searchTerm]);
+
+  console.log(searchResult);
   
   const debouncedResults = useMemo(() => {
-    return debouce(handleChange, 300);
+    return debounce(handleChange, 300);
   }, [handleChange]);
 
   useEffect(() => {
     return () => {
       debouncedResults.cancel();
     };
-  });
+  }, [debouncedResults]);
 
   const closeModal = useCallback(() => {
     setModalIsOpen(false);
