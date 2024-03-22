@@ -523,7 +523,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
                 className={`${styles.section_button} ${styles.button}`}
                 onClick={handleAddDayDescription}
           >
-            Add day description
+            Add description
           </button>
         </div>
 
