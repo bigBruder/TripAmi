@@ -1,6 +1,6 @@
 import {useContext, useEffect} from "react";
 import {AuthContext} from "~/providers/authContext";
-import {createBrowserRouter, RouterProvider} from "react-router-dom";
+import {createBrowserRouter, createHashRouter, RouterProvider} from "react-router-dom";
 import {Intro} from "~/routes/Auth/Intro";
 import {Profile} from "~/routes/AppRoutes/Profile";
 import {PostsPage} from "~/routes/AppRoutes/Posts";
@@ -11,7 +11,7 @@ import {Place} from "~/routes/AppRoutes/Place";
 import {UserProfile} from "~/routes/AppRoutes/UserProfile";
 import { Trip } from "./AppRoutes/Trip/Trip";
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     path: "/",
     element: <Intro />,

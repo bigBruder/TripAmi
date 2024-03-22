@@ -81,7 +81,7 @@ const Header = () => {
 
       if (searchTerm.length) {
         const result = await index.search(searchTerm, {
-          attributesToRetrieve: ['userId', 'cities', 'geoTag', 'location', 'rate', 'text', 'objectID', 'geoTags',],
+          attributesToRetrieve: ['userId', 'cities', 'geoTag', 'location', 'rate', 'text', 'objectID', 'geoTags','createdAt'],
           hitsPerPage: 5,
         });
         
@@ -130,7 +130,6 @@ const Header = () => {
           setSearchResult(result.hits.map((hit, i) => {
           return ({
             geoTag: hit.geoTag,
-            // location: hit.location,
             public: hit.public,
             rate: hit.rate,
             text: hit.text,
@@ -139,6 +138,7 @@ const Header = () => {
             id: hit.objectID,
             avatar: imageUrls[i],
             matchedCity: matchedCities[i],
+            createdAt: hit.createdAt,
           });
         }));     
       } 
