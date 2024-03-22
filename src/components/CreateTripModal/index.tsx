@@ -481,18 +481,18 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
          
 
         <div className={styles.datesContainer}>
+          <div className={styles.dateDescriptionsContainer}>
+            <p className={`${styles.text} ${styles.dateDescription}`}>Start Date:</p>
+            <p className={`${styles.text} ${styles.dateDescription}`}>End Date:</p>
+          </div>
+         
           <div className={styles.dateContainer}>
-            <p className={styles.text}>Start Date:</p>
             <input 
               value={startDate} 
               onChange={e => setStartDate(e.target.value)} 
               type="date"
               className={styles.dateInput}
             />
-          </div>
-         
-          <div className={styles.dateContainer}>
-            <p className={styles.text}>End Date:</p>
             <input 
               id="end_date"
               value={endDate} 

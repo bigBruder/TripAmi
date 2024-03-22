@@ -37,14 +37,14 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 20px 0; /* Consolidated margin values */
+    margin: 10px 0;
     gap: 10px;
 }
 
 @media (max-width: 768px) {
     .startContainer {
         margin: 10px 0;
-        justify-content: space-between;
+        justify-content: flex-start;
         width: 100%;
     }
     
@@ -70,7 +70,14 @@
     font-weight: 500;
     line-height: normal;
     box-sizing: border-box;
-    width: 50%;
+    width: 75%;
+}
+
+@media (max-width: 768px) {
+    .input {
+        width: 100%; /* Adjusted width to occupy full width */
+    }
+    
 }
 
 .uploadContainer {
@@ -135,16 +142,17 @@
 
 .datesContainer {
     display: flex;
-    justify-content: space-between;
-    flex-direction: column;
-    gap: 10px;
+    justify-content: flex-start;
     flex-wrap: wrap;
-    margin: 10px 0;
+    gap: 20px;
+    margin-bottom: 20px;
 }
 
 @media (max-width: 768px) {
     .datesContainer {
-        flex-direction: column;
+        /* flex-direction: column; */
+        flex-direction: row;
+        justify-content: space-between;
         width: 100%;
         gap: 20px;
     }
@@ -156,9 +164,21 @@
 
 .dateContainer {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    gap: 20px;
+    gap: 10px;
+}
+
+.dateDescriptionsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.dateDescription {
+    line-height: 30px;
+    height: 30px;
 }
 
 .dateInput {
@@ -195,8 +215,11 @@
 
 .startWrapper {
     display: flex;
-    justify-content: space-evenly;
+    align-items: flex-start;
+    flex-direction: column;
     flex-wrap: wrap;
+    gap: 10px;
+    margin: 20px 0;
 }
 
 @media (max-width: 768px) {
@@ -224,7 +247,13 @@
 }
 
 .cityAutocomplete {
-    width: 50%;
+    width: 75%;
+}
+
+@media (max-width: 768px) {
+    .cityAutocomplete {
+        width: 100%;
+    }
 }
 
 .image {
@@ -309,6 +338,10 @@
 
 .imageContainer {
     position: relative;
+}
+
+.imageContainer input {
+    width: 100%;
 }
 
 .removePhotoButton {

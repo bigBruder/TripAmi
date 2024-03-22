@@ -147,8 +147,6 @@ const Header = () => {
     handleSearch();
   }, [handleSearch, searchTerm]);
 
-  console.log(searchResult);
-  
   const debouncedResults = useMemo(() => {
     return debounce(handleChange, 300);
   }, [handleChange]);
