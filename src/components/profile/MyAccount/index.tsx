@@ -329,10 +329,16 @@ const MyAccount = () => {
               <Swiper
                 spaceBetween={30}
                 slidesPerView={getSlidesPerPage}
+                centeredSlides
+                loop
               >
                 {suggestedPosts?.map(post => (
                   <SwiperSlide key={post.id}>
-                    <PostItem postData={post}/>
+                     {({ isActive }) => (
+                      <div style={isActive ? {scale: '1', transition: "scale 0.5s"} : {scale: "0.7", transition: "scale 0.5s"}}>
+                          <PostItem postData={post} />
+                      </div>
+                      )}
                   </SwiperSlide>
                 ))}
               </Swiper>

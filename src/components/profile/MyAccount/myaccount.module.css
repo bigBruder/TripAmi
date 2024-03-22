@@ -379,3 +379,9 @@ span {
   top: 0;
   left: 0;
 }
+
+.bottomSliderContainer {
+  background-image: url('../../../assets/images/line.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+}
