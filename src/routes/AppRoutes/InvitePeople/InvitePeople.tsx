@@ -47,8 +47,8 @@ const InvitePeople = () => {
             TemplateName: "TripAmi",
             Merge: { 
               linkTo: "https://tripamicities.netlify.app",
-              title: title || defaultTitle,
-              description: description || defaultDescription,
+              title: title.length > 0 ? title : defaultTitle,
+              description: description.length > 0 ? description : defaultDescription,
             },
           },
         },
