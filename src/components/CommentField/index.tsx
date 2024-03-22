@@ -17,7 +17,11 @@ interface Props {
 export const CommentField: FC<Props> = ({postId, commentsCount, contentType}) => {
   const {firestoreUser} = useContext(AuthContext);
   const [enteredText, setEnteredText] = useState('');
-  const notify = (text: string) => toast.error(text);
+  const notify = (text: string) => {
+    if (!toast.isActive('error')) {
+      toast.error(text, {toastId: 'error'});
+    }
+  };
 
   const handleComment = useCallback(async () => {
     try {
