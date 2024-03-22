@@ -41,24 +41,27 @@ const PostsPage = () => {
   }, [id]);
 
   useEffect(() => {
-    const downloadedImages: string[] = [];
-
-    (async () => {
-
-    if (post?.imageUrls) {
-      post.imageUrls.forEach(async (url) => {
-        try {
-          const imageUrl = await getDownloadURL(ref(storage, url));
-          downloadedImages.push(imageUrl);
-        } catch (e) {
-          console.log('[ERROR getting image] => ', e);
-        }
+    const fetchImages = async () => {
+      if (!post?.imageUrls) return;
+  
+      const promises = post.imageUrls.map((url) => {
+        return getDownloadURL(ref(storage, url)).catch((error) => {
+          console.log('[ERROR getting image] => ', error);
+          return null;
+        });
       });
-    }
-
-    return downloadedImages;
-  })().then(() => {setImagesUrl(downloadedImages)});
+  
+      const results = await Promise.allSettled(promises);
+      const downloadedImages = results
+        .filter((result) => result.status === 'fulfilled')
+        .map((result) => result.value);
+  
+      setImagesUrl(downloadedImages);
+    };
+  
+    fetchImages();
   }, [post]);
+  
 
   console.log('post', imagesUrl);
 
