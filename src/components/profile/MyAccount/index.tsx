@@ -232,25 +232,17 @@ const MyAccount = () => {
                 {avatarIsLoading && <Skeleton className={styles.loader} />}
               </div>
               <div className={styles.description}>
-                {firestoreUser?.username ? (
-                  <div className={styles.edit}>
-                    <p className={styles.text}
-                       style={{margin: 0}}>{firestoreUser?.username}</p>
-                    <div className={styles.inputWrapper}>
-                      <button className={styles['trip-button']} onClick={() => setTripModalIsOpen(true)}>
-                        Post a trip
-                      </button>
-                    </div>
-                  </div>
-                ) : null}
+                <div>
                 {!firestoreUser?.username && <Skeleton style={{width: 100, height: 20}}/>}
+                  <p className={styles.text}
+                      style={{margin: 0}}>{firestoreUser?.username}
+                  </p>
                 <p className={styles.text}>
                   {firestoreUser?.tripCount !== undefined ? `My trips: ${firestoreUser?.tripCount || 0}` : ''}
                 </p>
                 {firestoreUser?.tripCount === undefined && <Skeleton style={{width: 100, height: 20}}/>}
-                <p className={styles.text}>
                   <div className={styles.whereToNextContainer}>
-                    {firestoreUser?.tripCount !== undefined ? 'Where to next?:' : ''}
+                    {firestoreUser?.tripCount !== undefined ? <p className={styles.text}>Where to next?:</p> : ''}
 
                     {
                       isEditWhereToNext ? (
@@ -263,7 +255,7 @@ const MyAccount = () => {
                           />
                         </div>
                       ) : (
-                        <p className={styles.value}>{firestoreUser?.whereToNext}</p>
+                        <p className={`${styles.value} ${styles.text}`}>{firestoreUser?.whereToNext}</p>
                       )
                     }
                     
@@ -274,8 +266,17 @@ const MyAccount = () => {
                       onClick={() => setIsEditWhereToNext(!isEditWhereToNext)}
                     />
                   </div>
-                </p>
                 {firestoreUser?.tripCount === undefined && <Skeleton style={{width: 100, height: 20}}/>}
+              </div>
+              {firestoreUser?.username ? (
+                  <div className={styles.edit}>
+                    <div className={styles.inputWrapper}>
+                      <button className={styles['trip-button']} onClick={() => setTripModalIsOpen(true)}>
+                        Post a trip
+                      </button>
+                    </div>
+                  </div>
+                ) : null}
               </div>
             </div>
             <div className={styles.divider}></div>

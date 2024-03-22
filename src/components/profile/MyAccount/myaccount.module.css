@@ -48,6 +48,11 @@
 }
 
 .description {
+  padding-right: 20px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  align-items: flex-start;
   margin: 10px 0 0 25px;
   font-size: 20px;
   font-weight: 500;
@@ -332,6 +337,13 @@ span {
   font-weight: 500;
   height: 31px;
   cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .trip-button {
+    width: 100%;
+    font-size: 15px;
+  }
 }
 
 .postsTitle {
