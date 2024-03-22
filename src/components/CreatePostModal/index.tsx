@@ -143,7 +143,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, startPost }) => {
           <>
             <textarea
               className={styles.textArea}
-              placeholder={'Text'}
+              placeholder={'Describe your post...'}
               onChange={(e) => setPostText(e.target.value)}
               value={postText}
             />
