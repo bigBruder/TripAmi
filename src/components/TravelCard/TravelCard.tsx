@@ -17,10 +17,14 @@ import CustomModal from "~/components/CustomModal";
 import { LightBox } from "../Lightbox/LightBox";
 import Modal from 'react-modal';
 import ShareModal from "../ShareModal/ShareModal";
+import { ToastContainer, toast } from "react-toastify";
 
 interface Props {
   travel: ITravel;
 }
+
+const notifyInfo = (message: string) => toast.info(message);
+const notifyError = (message: string) => toast.error(message);
 
 const TravelCard: FC<Props> = ({travel}) => {
   const {firestoreUser, updateFirestoreUser} = useContext(AuthContext);
@@ -46,7 +50,6 @@ const TravelCard: FC<Props> = ({travel}) => {
   const [isModalDeleteOpen, setIsModalDeleteOpen] = useState(false);
   const [isModalShareOpen, setIsModalShareOpen] = useState(false);
 
-
   const handleDeleteTrip = useCallback(async () => {
     try {
       await deleteDoc(doc(db, 'trips', id));
@@ -54,7 +57,9 @@ const TravelCard: FC<Props> = ({travel}) => {
       updateFirestoreUser({
         tripCount: firestoreUser?.tripCount ? firestoreUser?.tripCount - 1 : 0,
       });
+      notifyInfo('Trip deleted successfully');
     } catch (err) {
+      notifyError('Error deleting trip');
       console.log('[ERROR deleting trip] => ', err);
     }
   }, [firestoreUser?.tripCount, id, updateFirestoreUser]);
@@ -333,6 +338,7 @@ const TravelCard: FC<Props> = ({travel}) => {
         onChangeSelectedPhoto={setSelectedImage} 
         images={imageDownloadUrls}
       />
+      <ToastContainer closeOnClick autoClose={2000} limit={1} pauseOnHover={false} />
     </div>
   );
 };
