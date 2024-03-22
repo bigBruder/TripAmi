@@ -6,6 +6,7 @@ import {AuthContext} from "~/providers/authContext";
 import {firebaseErrors} from "~/constants/firebaseErrors";
 import {db} from "~/firebase";
 import {IPost} from "~/types/post";
+import { ToastContainer, toast } from "react-toastify";
 
 interface Props {
   postId: string;
@@ -16,9 +17,14 @@ interface Props {
 export const CommentField: FC<Props> = ({postId, commentsCount, contentType}) => {
   const {firestoreUser} = useContext(AuthContext);
   const [enteredText, setEnteredText] = useState('');
+  const notify = (text: string) => toast.error(text);
 
   const handleComment = useCallback(async () => {
     try {
+      if (!enteredText) {
+        notify('Please enter a comment');
+        return;
+      }
       const collection = contentType === 'post' ? 'posts' : 'trips';
       const docRef = doc(db, collection, postId);
 
@@ -55,6 +61,8 @@ export const CommentField: FC<Props> = ({postId, commentsCount, contentType}) =>
       <div className={styles.buttonsContainer}>
         <button className={styles.commentButton} onClick={handleComment}>Comment</button>
       </div>
+
+      <ToastContainer closeOnClick autoClose={2000} limit={1} pauseOnHover={false} />
     </div>
   );
 };
