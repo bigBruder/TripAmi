@@ -71,7 +71,7 @@ export const PostActions: FC<Props> = ({postData}) => {
         </>
       ) : null}
 
-      <ShareModal isOpen={isModalShareOpen} onRequestClose={() => setIsModalShareOpen(false)} linkTo={'https://tripamimain.netlify.app/posts/' + postData.id}/>
+      <ShareModal isOpen={isModalShareOpen} onRequestClose={() => setIsModalShareOpen(false)} linkTo={'https://tripamimain.netlify.app/#/posts/' + postData.id}/>
       <CustomModal isOpen={isEditModalOpen} onCloseModal={() => setIsEditModalOpen(false)}>
         <CreatePostModal closeModal={() => setIsEditModalOpen(false)} startPost={postData}/>
       </CustomModal>
