@@ -328,9 +328,22 @@ const MyAccount = () => {
             <div className={styles.bottomSliderContainer}>
               <Swiper
                 spaceBetween={30}
-                slidesPerView={getSlidesPerPage}
+                slidesPerView={1}
                 centeredSlides
                 loop
+                breakpoints={
+                  {
+                    500: {
+                      slidesPerView: 1,
+                    },
+                    768: {
+                      slidesPerView: 2,
+                    },
+                    1142: {
+                      slidesPerView: 3,
+                    },
+                  }
+                }
               >
                 {suggestedPosts?.map(post => (
                   <SwiperSlide key={post.id}>

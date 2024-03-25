@@ -385,3 +385,10 @@ span {
   background-repeat: no-repeat;
   background-size: cover;
 }
+
+@media (max-width: 768px) {
+  .bottomSliderContainer {
+    background-image: none;
+    padding: 0 30px;
+  }
+}
