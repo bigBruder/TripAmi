@@ -313,7 +313,20 @@ const MyAccount = () => {
                 <div className={styles.sliderContainer}>
                   <Swiper
                     spaceBetween={30}
-                    slidesPerView={getSlidesPerPage}
+                    slidesPerView={1}
+                    breakpoints={
+                      {
+                        500: {
+                          slidesPerView: 1,
+                        },
+                        768: {
+                          slidesPerView: 2,
+                        },
+                        1142: {
+                          slidesPerView: 3,
+                        },
+                      }
+                    }
                   >
                     {posts?.map(post => (
                       <SwiperSlide key={post.id}>

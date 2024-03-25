@@ -106,7 +106,7 @@
 
 @media (max-width: 500px) {
   .cardContainer {
-    width: 270px;
+    /* width: 270px; */
     justify-content: space-between;
   }
 }
