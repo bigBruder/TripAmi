@@ -89,6 +89,14 @@
     gap: 20px;
 }
 
+@media (max-width: 768px) {
+    .uploadContainer {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+}
+
 .section {
     display: flex;
     gap: 20px;
