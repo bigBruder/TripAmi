@@ -399,9 +399,9 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
               )
             }
           
-
-          <div className={styles.selectedTagsContainer}>
-            {selectedCities.length ? (
+          {!!selectedCities.length && (
+            <div className={styles.selectedTagsContainer}>
+           
               <>
                 {selectedCities.map(selectedCity => (
                   <div className={styles.geoTagContainer} key={selectedCity.placeID}>
@@ -410,9 +410,9 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
                   </div>
                 ))}
               </>
-            ) : null}
-          </div>
-
+          
+            </div>
+          )}
             <div className={styles.section}>
               <p className={styles.text}>Tag Your Places: </p>
               <button 
@@ -465,34 +465,38 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
           </div>
             )
           }
-          
-          <div className={styles.selectedTagsContainer}>
-            {selectedGeoTags.length ? (
-              <>
-                {selectedGeoTags.map(geoTag => (
-                  <div className={styles.geoTagContainer} key={geoTag.placeID}>
-                    <p>{geoTag.address.split(',')[0]}</p>
-                    <img src={Plus} className={styles.crossIcon} onClick={() => handleRemoveGeoTag(geoTag.placeID)} />
-                  </div>
-                ))}
-              </>
-            ) : null}
-          </div>
+
+          {selectedGeoTags.length ? (
+            <div className={styles.selectedTagsContainer}>
+                <>
+                  {selectedGeoTags.map(geoTag => (
+                    <div className={styles.geoTagContainer} key={geoTag.placeID}>
+                      <p>{geoTag.address.split(',')[0]}</p>
+                      <img src={Plus} className={styles.crossIcon} onClick={() => handleRemoveGeoTag(geoTag.placeID)} />
+                    </div>
+                  ))}
+                </>
+            </div>
+          ) : null}
+
          
 
         <div className={styles.datesContainer}>
-          <div className={styles.dateDescriptionsContainer}>
-            <p className={`${styles.text} ${styles.dateDescription}`}>Start Date:</p>
-            <p className={`${styles.text} ${styles.dateDescription}`}>End Date:</p>
-          </div>
+          {/* <div className={styles.dateDescriptionsContainer}>
+          </div> */}
          
           <div className={styles.dateContainer}>
+            <p className={`${styles.text} ${styles.dateDescription}`}>Start Date:</p>
+
             <input 
               value={startDate} 
               onChange={e => setStartDate(e.target.value)} 
               type="date"
               className={styles.dateInput}
             />
+          </div>
+          <div className={styles.dateContainer}>
+            <p className={`${styles.text} ${styles.dateDescription}`}>End Date:</p>
             <input 
               id="end_date"
               value={endDate} 
