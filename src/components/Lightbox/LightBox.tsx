@@ -62,7 +62,13 @@ export const LightBox: React.FC<Props> = ({isOpen, onCloseModal, selectedImage, 
                 } 
               </div>
                 <div className={styles.descriptionContainer}>
-                  {selectedImage?.description && (<p className={styles.description}>{selectedImage?.description}</p>)}
+                  {selectedImage?.description ? (
+                    <p className={styles.description}>{selectedImage?.description}</p>
+                    ) : (
+                      <p className={styles.description}>No description</p>
+                    )
+                  
+                }
                 </div>
                
               <div className={styles.slider}>

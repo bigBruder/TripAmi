@@ -172,7 +172,7 @@
     .descriptionContainer {
         display: block;
         max-height: 30vh;
-        overflow-y: scroll;
+        overflow-y: auto;
     }
 
     .description {
@@ -206,7 +206,7 @@
     .descriptionContainer {
         display: block;
         max-height: 30vh;
-        overflow-y: scroll;
+        overflow-y: auto;
     }
 
     /* .selectedImageContainer {
