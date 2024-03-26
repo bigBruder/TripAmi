@@ -5,6 +5,12 @@
     width: 70%;
 }
 
+@media (max-width: 500px) {
+    .container {
+        width: 90%;
+    }
+}
+
 .topContainer {
     display: flex;
     justify-content: space-between;

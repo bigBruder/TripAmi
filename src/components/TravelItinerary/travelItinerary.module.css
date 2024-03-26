@@ -24,6 +24,12 @@
     margin-bottom: 70px;
 }
 
+@media (min-width: 500px) {
+    .travelsContainer {
+        width: 100%;
+    }
+}
+
 .bottomSliderContainer {
     width: 100%;
     margin-left: -60px;
