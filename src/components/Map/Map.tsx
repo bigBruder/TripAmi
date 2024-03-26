@@ -120,16 +120,17 @@ const Map: FC<Props> = ({onClick, selectedTripId, userId}) => {
     <div style={{position: 'relative'}}>
       <ComposableMap>
         <ZoomableGroup
-          translateExtent={[[-100, 0], [900, 600]]}
+          translateExtent={[[0, 0], [900, 600]]}
           zoom={position.zoom}
           center={position.coordinates}
           onMoveEnd={handleMoveEnd}
           onMove={({ zoom }) => setScaleFactor(zoom)}
+          style={{width: '100%', height: '100%'}}
         >
           <Geographies geography={GeoJson}>
             {({geographies}) =>
               geographies.map((geo) => (
-                <Geography key={geo.rsmKey} geography={geo} fill={'rgb(178, 178, 178)'}   
+                <Geography key={geo.rsmKey} geography={geo} fill={'grey'}   
                   style={{
                     default: { outline: "none" },
                     hover: { outline: "none" },

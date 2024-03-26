@@ -232,7 +232,8 @@
 }
 
 .mapContainer {
-  margin: 20px;
+  box-sizing: border-box;
+  /* margin: 20px; */
   flex-grow: 1;
 }
 
@@ -245,6 +246,12 @@
 @media (min-width: 990px) {
   .mapContainer {
     margin: 20px 20px 0 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .mapContainer {
+    margin: 10px 10px;
   }
 }
 
