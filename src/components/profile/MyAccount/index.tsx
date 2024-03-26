@@ -219,7 +219,7 @@ const MyAccount = () => {
 
   return (
     <>
-      <div>
+      <div className={styles.content}>
         <div className={styles.myAccount}>
           <div className={styles.genaralInfo}>
             <div className={styles.userInfo}>
@@ -298,9 +298,9 @@ const MyAccount = () => {
           )}
         </div>
         {activeTab === 0 ? (
-          <>
+          <div className={styles.main_content}>
             <div className={styles.travelContainer}>
-              <span className={styles.title}>My posts</span>
+              <span className={styles.postsTitle}>My posts</span>
               {(!posts?.length && !isPostsLoading) ? (
                 <>
                   <p className={styles.paragraph}>
@@ -322,11 +322,16 @@ const MyAccount = () => {
                         768: {
                           slidesPerView: 2,
                         },
-                        1142: {
+                        1200: {
                           slidesPerView: 3,
+                        },
+                        1400: {
+                          slidesPerView: 4,
                         },
                       }
                     }
+                    className="mySwiper"
+                    // style={{overflow: "hidden"}}
                   >
                     {posts?.map(post => (
                       <SwiperSlide key={post.id}>
@@ -359,7 +364,7 @@ const MyAccount = () => {
                 }
               >
                 {suggestedPosts?.map(post => (
-                  <SwiperSlide key={post.id}>
+                  <SwiperSlide key={post.id} style={{overflow: "hidden"}}>
                      {({ isActive }) => (
                       <div style={isActive ? {scale: '1', transition: "scale 0.5s"} : {scale: "0.7", transition: "scale 0.5s"}}>
                           <PostItem postData={post} />
@@ -369,7 +374,7 @@ const MyAccount = () => {
                 ))}
               </Swiper>
             </div>
-          </>
+          </div>
         ) : activeTab === 1 ? (
           <MyFriends />
         ) : activeTab === 2 ? (
