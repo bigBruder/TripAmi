@@ -242,7 +242,13 @@ const MyAccount = () => {
                 </p>
                 {firestoreUser?.tripCount === undefined && <Skeleton style={{width: 100, height: 20}}/>}
                   <div className={styles.whereToNextContainer}>
-                    {firestoreUser?.tripCount !== undefined ? <p className={styles.text}>Where to next?:</p> : ''}
+                    
+                    {
+                      !isEditWhereToNext && firestoreUser?.tripCount !== undefined && (
+                        <p className={styles.text}>Where to next?:</p>
+                      )
+                    }
+                    {/* { ? <p className={styles.text}>Where to next?:</p> : ''} */}
 
                     {
                       isEditWhereToNext ? (
@@ -255,7 +261,7 @@ const MyAccount = () => {
                           />
                         </div>
                       ) : (
-                        <p className={`${styles.value} ${styles.text}`}>{firestoreUser?.whereToNext}</p>
+                        <p className={`${styles.value} ${styles.text}`}>{firestoreUser?.whereToNext && firestoreUser?.whereToNext?.length > 10 ? firestoreUser?.whereToNext?.slice(0, 10) + '...' : firestoreUser?.whereToNext}</p>
                       )
                     }
                     

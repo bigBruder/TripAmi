@@ -53,15 +53,20 @@
 }
 
 .description {
-  padding-right: 20px;
+  /* padding-right: 20px; */
   display: flex;
   justify-content: space-between;
-  flex-wrap: wrap;
   align-items: flex-start;
   margin: 10px 0 0 25px;
   font-size: 20px;
   font-weight: 500;
   flex-grow: 1;
+}
+
+@media (max-width: 500px) {
+  .description {
+    flex-direction: column;
+  }
 }
 
 .text {
@@ -188,6 +193,8 @@
   font-size: 12px;
   font-weight: 500;
   color: #262626;
+  z-index: 2;
+  margin-top: 20px;
 }
 
 .value {
@@ -373,6 +380,7 @@ span {
 }
 
 .imageContainer {
+  margin-top: auto;
   position: relative;
 }
 
