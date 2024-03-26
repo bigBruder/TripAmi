@@ -162,6 +162,7 @@ const TravelCard: FC<Props> = ({travel}) => {
                     onClick={() => {
                       setSelectedImage(image);
                       setIsPhotosModalOpen(true);
+                      document.body.style.overflow = 'hidden';
                     }}
                   />
                 )
@@ -333,7 +334,10 @@ const TravelCard: FC<Props> = ({travel}) => {
 
       <LightBox 
         isOpen={isPhotosModalOpen} 
-        onCloseModal={() => setIsPhotosModalOpen(false)} 
+        onCloseModal={() => {
+          setIsPhotosModalOpen(false)
+          document.body.style.overflow = 'auto';
+        }}
         selectedImage={selectedImage} 
         onChangeSelectedPhoto={setSelectedImage} 
         images={imageDownloadUrls}

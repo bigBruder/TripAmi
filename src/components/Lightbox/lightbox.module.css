@@ -123,4 +123,127 @@
 
 .descriptionContainer {
     display: block;
+    min-height: 40vh;
+    max-height: 40vh;
+    overflow-y: scroll;
+}
+
+@media (min-width: 1200px){
+    .modalContainer {
+        width: 40%;
+        margin: 100px auto;
+        background-color: white;
+    }
+
+    .descriptionContainer {
+        display: block;
+        max-height: 30vh;
+        overflow-y: scroll;
+    }
+
+    .description {
+        font-size: 20px;
+    }
+
+    /* .selectedImageContainer {
+        width: 100%;
+        height: 100%;
+    } */
+
+    .selectedImage {
+        height: 400px;
+        width: 100%;
+        object-fit: cover;
+    }
+
+    .modal {
+        padding: 0;
+        border: none;
+    }
+}
+
+@media (max-width: 1200px){
+    .modalContainer {
+        width: 60%;
+        margin: 100px auto;
+        background-color: white;
+    }
+
+    .descriptionContainer {
+        display: block;
+        max-height: 30vh;
+        overflow-y: scroll;
+    }
+
+    .description {
+        font-size: 20px;
+    }
+
+    /* .selectedImageContainer {
+        width: 100%;
+        height: 100%;
+    } */
+
+    .selectedImage {
+        height: 400px;
+        width: 100%;
+        object-fit: cover;
+    }
+
+    .modal {
+        padding: 0;
+    }
+}
+
+
+@media (max-width: 768px){
+    .modalContainer {
+        width: 70%;
+        margin: 100px auto;
+        background-color: white;
+    }
+
+    .descriptionContainer {
+        display: block;
+        max-height: 30vh;
+        overflow-y: scroll;
+    }
+
+    /* .selectedImageContainer {
+        width: 100%;
+        height: 100%;
+    } */
+
+    .selectedImage {
+        height: 400px;
+        width: 100%;
+        object-fit: cover;
+    }
+
+    .modal {
+        padding: 0;
+    }
+}
+
+@media (max-width: 500px){
+    .modalContainer {
+        width: 90%;
+        margin: 100px auto;
+        background-color: white;
+    }
+
+    /* .selectedImageContainer {
+        width: 100%;
+        height: 100%;
+    } */
+
+    .selectedImage {
+        height: 200px;
+        width: 100%;
+        object-fit: cover;
+    }
+
+    .modal {
+        padding: 0;
+    }
 }

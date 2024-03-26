@@ -39,6 +39,7 @@ export const LightBox: React.FC<Props> = ({isOpen, onCloseModal, selectedImage, 
             onRequestClose={onCloseModal}
             shouldCloseOnOverlayClick
             shouldCloseOnEsc
+            className={styles.modalContainer}
           >
 
             <div className={styles.modal}>
@@ -63,6 +64,7 @@ export const LightBox: React.FC<Props> = ({isOpen, onCloseModal, selectedImage, 
                 <div className={styles.descriptionContainer}>
                   {selectedImage?.description && (<p className={styles.description}>{selectedImage?.description}</p>)}
                 </div>
+               
               <div className={styles.slider}>
               {
                 images && images.map((image, index) => {
