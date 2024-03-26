@@ -89,7 +89,9 @@
     height: auto;
     /* max-width: 100%; */
     width: 30%;
-    object-fit: contain;
+    /* min-height: 200px; */
+    max-height: 250px;
+    object-fit: cover;
     flex-grow: 1;
     border-radius: 5px;
 }

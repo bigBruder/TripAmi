@@ -6,7 +6,7 @@
 }
 
 .container {
-    padding: 62px;
+    padding: 20px;
 }
 
 
@@ -277,6 +277,13 @@ span {
     display: flex;
     flex-direction: column;
     gap: 35px;
+}
+
+@media (min-width: 500px) {
+    .travelsContainer {
+        align-items: center;
+        width: 90%;
+    }
 }
 
 .travelContainer {
