@@ -114,8 +114,7 @@ export default function Intro() {
       <APIProvider apiKey="AIzaSyCwDkMaHWXRpO7hY6z62_Gu8eLxMMItjT8">
         <div style={{ height: "450px", width: "100%" }}>
 
-          <Map
-            
+          {/* <Map
             defaultZoom={5} 
             defaultCenter={position} 
             mapId="9bc3b1605395203e"
@@ -149,7 +148,7 @@ export default function Intro() {
                 friends={friends}
               />
             )}
-          </Map>
+          </Map> */}
         </div>
     </APIProvider>
     )}
