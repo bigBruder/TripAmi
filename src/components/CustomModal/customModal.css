@@ -37,8 +37,8 @@
         margin: 100px auto;
         /* margin: 10vh auto; */
         width: 70%;
-        min-height: 40%;
-        max-height: 70%;
+        min-height: 60%;
+        height: 70%;
         overflow: auto;
         background-color: white;
     }
