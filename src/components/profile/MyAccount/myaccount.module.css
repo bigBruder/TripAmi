@@ -355,6 +355,7 @@ span {
   font-weight: 500;
   height: 31px;
   cursor: pointer;
+  width: max-content;
 }
 
 @media (max-width: 768px) {
