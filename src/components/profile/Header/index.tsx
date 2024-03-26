@@ -211,8 +211,10 @@ const Header = () => {
                         <div className={styles.autocompleteLeftBox}>
                           <img src={resultOption.avatar} alt="avatar" className={styles.avatar} />
                           {/* <p>{resultOption.location.name.split(',')[0]}</p> */}
-                          <p>{resultOption.matchedCity?.length > 20 ? resultOption.matchedCity?.slice(0, 20) + '...' : resultOption.matchedCity}</p>
-                          <p className={styles.tripDescription}>{resultOption.text.length > 50 ? resultOption.text.slice(0, 40) + '...' : resultOption.text}</p>
+                          <div className={styles.autocomplete_description_container}>
+                            <p className={styles.autocomplete_description} >{resultOption.matchedCity?.length > 20 ? resultOption.matchedCity?.slice(0, 20) + '...' : resultOption.matchedCity}</p>
+                            <p className={`${styles.tripDescription} ${styles.autocomplete_description}`}>{resultOption.text.length > 50 ? resultOption.text.slice(0, 40) + '...' : resultOption.text}</p>
+                          </div>
                         </div>
                         <Rating selectedStars={resultOption.rate} />
                     </div>

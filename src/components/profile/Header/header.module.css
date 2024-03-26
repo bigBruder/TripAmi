@@ -293,6 +293,32 @@
   border-bottom: 20px;
 }
 
+@media (max-width: 768px) {
+  .searchResultsContainer {
+    box-sizing: border-box;
+    position: fixed;
+    padding: 5px 20px;
+    left: 0;
+    top: auto;
+    width: 100vw;
+  }
+}
+
+@media (max-width: 500px) {
+
+  .searchResultsContainer {
+    padding: 5px 10px;
+  }
+  .autocomplete_description_container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .autocomplete_description {
+    font-size: 12px;
+  }
+}
+
 em {
   font-weight: 800;
 }
