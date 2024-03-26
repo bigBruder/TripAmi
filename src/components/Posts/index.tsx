@@ -135,6 +135,7 @@ const PostItem: FC<Props> = ({postData}) => {
               src={link || ''}
               alt="img"
               onLoadedData={() => setIsLoading(false)}
+              style={{height: "200px", width: "100%",objectFit: "cover"}}
             />
           </SwiperSlide>
         ))}
