@@ -299,7 +299,7 @@
     position: fixed;
     padding: 5px 20px;
     left: 0;
-    top: auto;
+    top: 64px;
     width: 100vw;
   }
 }
