@@ -3,7 +3,7 @@ import search from "@assets/icons/iconamoon_search-thin.svg";
 import arrow from "@assets/icons/arrowDown.svg";
 import addFile from "@assets/icons/addFile.svg";
 import addUser from "@assets/icons/addUser.svg";
-import notifications from "@assets/icons/notifications.svg";
+import notificationIcon from "@assets/icons/notifications.svg";
 import plus from "@assets/icons/plus.svg";
 import styles from "./header.module.css";
 import Logo from '../../../assets/icons/headerLogo.svg';
@@ -35,11 +35,13 @@ import debounce from "lodash.debounce";
 import CreateTripModal from "~/components/CreateTripModal";
 
 import algoliasearch from "algoliasearch";
-import { doc, documentId, getDoc, getDocs, limit, query, where } from "firebase/firestore";
-import { postsCollection, tripsCollection, usersCollection } from "~/types/firestoreCollections";
+import { doc, documentId, getDoc, getDocs, limit, onSnapshot, query, where } from "firebase/firestore";
+import { notificationsCollection, postsCollection, tripsCollection, usersCollection } from "~/types/firestoreCollections";
 import { IPost } from "~/types/post";
 import { useInputFocus } from "~/hooks/useInputRef";
 import Rating from "~/components/Rating";
+import { Notification } from "~/types/notifications/notifications";
+import { Notifications } from "~/components/Notifications/Notifications";
 const client = algoliasearch("W8J2M4GNE3", "18fbb3c4cc4108ead5479d90911f3507");
 const index = client.initIndex("trips");
 // const index = client.initIndex("prod_users");
@@ -60,7 +62,6 @@ interface SearchResult {
 }
 
 
-
 const Header = () => {
   const {signOutUser, firestoreUser} = useContext(AuthContext);
   const navigate = useNavigate();
@@ -71,10 +72,34 @@ const Header = () => {
   const [searchResult, setSearchResult] = useState<SearchResult[]>([]);
   const [tripModalIsOpen, setTripModalIsOpen] = useState(false);
   const { inputProps: searchProps, isFocused: isSearchFocused } = useInputFocus();
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   
   const handleChange = useCallback((e) => {
     setSearchTerm(e.target.value);
   }, []);
+
+  useEffect(() => {
+    if (!firestoreUser) return;
+    const q = query(
+      notificationsCollection,
+      where('targetUserId', '==', firestoreUser?.id),
+      limit(5)
+    );
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const fetchedDocs = querySnapshot.docs.map(doc => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+      setNotifications(fetchedDocs);
+    });
+
+    console.log('notifications', notifications);
+
+    return () => {
+      unsubscribe();
+    }
+  }, [firestoreUser])
 
   useEffect(() => { 
     if (!isSearchFocused) {
@@ -97,7 +122,6 @@ const Header = () => {
           hitsPerPage: 5,
         });
         console.log('result.hits: ',result.hits);
-        
         // Moved the declaration outside of the map function for better readability
         const matchedCities = result.hits.map(hit => {
           // Check for matched cities or geoTags for city names
@@ -228,9 +252,21 @@ const Header = () => {
           <div className={styles.leftContainer}>
             <img className={styles.icon} src={addFile} alt="addFile" onClick={() => setTripModalIsOpen(true)}/>
             <img className={styles.icon} src={addUser} alt="addUser" onClick={() => navigate('/add-friends')} />
-            <img className={styles.icon} src={notifications} alt="notifications" />
+            <img 
+              className={styles.icon} 
+              src={notificationIcon} 
+              alt="notifications" 
+              style={notifications.length ? {backgroundColor: "rgb(255, 77, 0)"} : {}}
+              onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
+            />
             <img className={styles.icon} src={plus} alt="plus" onClick={() => setModalIsOpen(true)} />
           </div>
+          {
+            isNotificationsOpen && (
+              <Notifications notifications={notifications} />
+            )
+          }
+
           <div className={styles.rightContainer}>
             <img className={styles.avatar} src={avatar} alt="icon" />
             <DropdownMenu.Root>

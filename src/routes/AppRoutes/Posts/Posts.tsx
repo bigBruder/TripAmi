@@ -98,7 +98,7 @@ const PostsPage = () => {
           post && (
             <div className={styles.post}>
               <BigPost post={{...post, imageUrls: imagesUrl}} setPost={setPost} />
-              <CommentField postId={post.id} commentsCount={post.comments_count} contentType="post"/>
+              <CommentField postId={post.id} commentsCount={post.comments_count} contentType="post" postOwnerId={post.userId}/>
               {comments?.map(comment => <Comment key={comment.id} comment={comment} />)}
             </div>
           )

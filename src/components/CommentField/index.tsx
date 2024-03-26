@@ -1,7 +1,7 @@
 import {FC, useCallback, useContext, useState} from "react";
 import styles from './commentField.module.css';
 import {addDoc, doc, updateDoc} from "@firebase/firestore";
-import {commentsCollection} from "~/types/firestoreCollections";
+import {commentsCollection, notificationsCollection} from "~/types/firestoreCollections";
 import {AuthContext} from "~/providers/authContext";
 import {firebaseErrors} from "~/constants/firebaseErrors";
 import {db} from "~/firebase";
@@ -12,9 +12,10 @@ interface Props {
   postId: string;
   commentsCount: number;
   contentType: 'post' | 'trip';
+  postOwnerId: string;
 }
 
-export const CommentField: FC<Props> = ({postId, commentsCount, contentType}) => {
+export const CommentField: FC<Props> = ({postId, commentsCount, contentType, postOwnerId}) => {
   const {firestoreUser} = useContext(AuthContext);
   const [enteredText, setEnteredText] = useState('');
   const notify = (text: string) => {
@@ -52,6 +53,19 @@ export const CommentField: FC<Props> = ({postId, commentsCount, contentType}) =>
       // @ts-ignore
       alert(firebaseErrors[e.code]);
     }
+
+    try {
+      if (firestoreUser?.id === postOwnerId) return;
+      await addDoc(notificationsCollection, {
+        targetUserId: postOwnerId,
+        postId,
+        type: 'comment',
+        text: enteredText,
+      });
+      } catch (e) {
+        // @ts-ignore
+        alert(firebaseErrors[e.code]);
+      }
   }, [contentType, postId, commentsCount, firestoreUser?.id, firestoreUser?.username, enteredText]);
 
   return (

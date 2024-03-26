@@ -10,6 +10,7 @@
     font-size: 15px;
     font-weight: 500;
     border-end-end-radius: 10px;
+    z-index: 3;
 }
 
 .container {
@@ -183,7 +184,6 @@ img {
     position: absolute;
     height: 200px;
     width: 100%;
-    z-index: 0;
 
     overflow: scroll;
 }

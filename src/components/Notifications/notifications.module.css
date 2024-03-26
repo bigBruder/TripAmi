@@ -1,0 +1,34 @@
+.container {
+    position: absolute;
+    padding: 10px;
+    top: 64px;
+    left: -50px;
+    background-color: white;
+    border-radius: 5px;
+    font-size: 14px;
+    gap: 20px;
+
+    display: flex;
+    flex-direction: column;
+    z-index: 2;
+}
+
+.notification {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    background-color: rgba(174, 174, 174, 0.64);
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.button {
+    background-color: rgb(255, 77, 0);
+    color: white;
+    padding: 5px;
+}
+
+.base_text {
+    color: grey;
+}
