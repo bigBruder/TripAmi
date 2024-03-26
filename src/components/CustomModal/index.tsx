@@ -25,17 +25,18 @@ const CustomModal: React.FC<Props> = ({ children, isOpen, onCloseModal }) => {
         isOpen={isOpen}
         style={{
           content: {
-            padding: 0,
-            margin: "auto",
-            maxWidth: '600px',
-            maxHeight: "80%",
-            overflow: "auto",
+            // padding: 0,
+            // margin: "auto",
+            // maxWidth: '600px',
+            // maxHeight: "80%",
+            // overflow: "auto",
           },
         }}
         contentLabel="Example Modal"
         onRequestClose={onCloseModal}
         shouldCloseOnOverlayClick
         shouldCloseOnEsc
+        className={"modal"}
       >
         {children}
       </Modal>

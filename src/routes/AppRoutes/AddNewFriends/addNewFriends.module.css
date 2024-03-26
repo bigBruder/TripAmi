@@ -13,6 +13,12 @@
     overflow: hidden;
 }
 
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+    }
+}
+
 .subTitle {
     color: #717171;
     font-family: Gilroy, sans-serif;
