@@ -122,6 +122,22 @@ const Header = () => {
     }
   }
 
+  const handleDeleteMessage = async (messageId: string) => {
+    try {
+        const q = query(
+          notificationsCollection,
+          where(documentId(), '==', messageId),
+        );
+    
+        const querySnapshot = await getDocs(q);
+        await deleteDoc(querySnapshot.docs[0].ref);
+        notifyInfo('Notification deleted');
+        // setNotifications([]);
+    } catch (error) {
+        console.error("Error removing document: ", error);
+    }
+  }
+
   const notifyInfo = (text: string) => {
     if (!toast.isActive('error')) {
       toast.info(text, {toastId: 'error'});
@@ -290,7 +306,7 @@ const Header = () => {
           </div>
           {
             isNotificationsOpen && !!notifications.length && (
-              <Notifications notifications={notifications} deleteMessages={handleDeleteMessages}/>
+              <Notifications notifications={notifications} deleteMessages={handleDeleteMessages} deleteMessage={handleDeleteMessage}/>
             )
           }
 
