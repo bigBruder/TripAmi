@@ -6,7 +6,7 @@ import styles from './createPostModal.module.css';
 import {FileUploader} from "react-drag-drop-files";
 import Rating from "~/components/Rating";
 import {addDoc} from "@firebase/firestore";
-import {postsCollection} from "~/types/firestoreCollections";
+import {notificationsCollection, postsCollection, tripsCollection} from "~/types/firestoreCollections";
 import {AuthContext} from "~/providers/authContext";
 import {db, storage} from "~/firebase";
 import {ref, uploadBytes} from "@firebase/storage";
@@ -15,8 +15,9 @@ import {LoadingScreen} from "~/components/LoadingScreen";
 import { v4 as uuidv4 } from 'uuid';
 import {toast, ToastContainer} from "react-toastify";
 import { IPost } from '~/types/post';
-import { doc, updateDoc } from 'firebase/firestore';
+import { doc, getDocs, limit, query, updateDoc, where } from 'firebase/firestore';
 import { getBlob, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
+import { NotificationType } from '~/types/notifications/notifications';
 
 const fileTypes = ["JPEG", "PNG", "JPG"];
 
@@ -112,15 +113,32 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, startPost }) => {
               text: postText,
             });
       } else {
+        const time = new Date().toISOString();
         await addDoc(postsCollection, {
           userId: firestoreUser?.id,
-          createAt: new Date().toISOString(),
+          createAt: time,
           comments: [],
           comments_count: 0,
           likes: [],
           imageUrls: imageUrls,
           text: postText,
         });
+
+        // const q = query(usersCollection, where(documentId(), '==', comment.userId),);
+        // const newPost = await db.collection('posts').where('userId', '==', firestoreUser?.id).orderBy('createAt', 'desc').limit(1).get();
+        const q = query(postsCollection, where('userId', '==', firestoreUser?.id), where('createAt', '==', time), limit(1));
+        const querySnapshot = await getDocs(q);
+
+        if (firestoreUser?.friends) {
+          firestoreUser?.friends.forEach(async (friendId) => {
+            await addDoc(notificationsCollection, {
+              targetUserId: friendId,
+              postId: querySnapshot.docs[0].id,
+              type: NotificationType.NewPost,
+              createAt: new Date().toISOString(),
+            });
+          });
+        }
         
         updateFirestoreUser({
           postsCount: firestoreUser?.postsCount ? firestoreUser?.postsCount + 1 : 1,
@@ -136,6 +154,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, startPost }) => {
     }
   }, [filesList, startPost, closeModal, postText, firestoreUser?.id, firestoreUser?.postsCount, updateFirestoreUser]);
 
+  console.log(firestoreUser?.friends);
   const content = useMemo(() => {
     switch (activeTab) {
       case 0:

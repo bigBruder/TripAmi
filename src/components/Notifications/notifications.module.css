@@ -19,7 +19,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 10px;
+    gap: 5px;
     background-color: rgba(174, 174, 174, 0.64);
     padding: 5px;
     border-radius: 5px;
@@ -62,4 +62,9 @@
 
 .base_text {
     color: grey;
+}
+.control_container {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
 }

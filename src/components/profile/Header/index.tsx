@@ -299,7 +299,7 @@ const Header = () => {
               className={styles.icon} 
               src={notificationIcon} 
               alt="notifications" 
-              style={notifications.length ? {backgroundColor: "rgb(255, 77, 0)"} : {}}
+              style={notifications.length ? {backgroundColor: "rgb(255, 77, 0)"} : {cursor: 'unset'}}
               onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
             />
             <img className={styles.icon} src={plus} alt="plus" onClick={() => setModalIsOpen(true)} />

@@ -6,7 +6,7 @@ import Tick from "../../assets/icons/tick.svg";
 import Rating from "~/components/Rating";
 import {FileUploader} from "react-drag-drop-files";
 import {addDoc} from "@firebase/firestore";
-import {tripsCollection} from "~/types/firestoreCollections";
+import {notificationsCollection, tripsCollection} from "~/types/firestoreCollections";
 import {ref, uploadBytes} from "@firebase/storage";
 import {db, storage} from "~/firebase";
 import {v4 as uuidv4} from "uuid";
@@ -19,8 +19,9 @@ import {toast, ToastContainer} from "react-toastify";
 import Plus from '~/assets/icons/plus.svg';
 import ReactPlayer from "react-player";
 import PlaceAutocomplete from '../PlaceAutocomplete/PlaceAutocomplete';
-import { doc, documentId, getDocs, query, updateDoc, where } from 'firebase/firestore';
+import { doc, documentId, getDocs, limit, query, updateDoc, where } from 'firebase/firestore';
 import { getDownloadURL } from 'firebase/storage';
+import { NotificationType } from '~/types/notifications/notifications';
 
 const fileTypes = ["JPEG", "PNG", "JPG", "MP4"];
 
@@ -130,12 +131,6 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
               value: 'fjlksdfjlksdfj',
               tripName: tripName,
               pinColor: randomColor(),
-              // location: {
-              //   name: location.name,
-              //   longitude: location?.longitude,
-              //   latitude: location?.latitude,
-              //   color: randomColor(),
-              // },
               dayDescription: daysDescription,
               text,
             });
@@ -150,35 +145,24 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
               geoTags: selectedGeoTags,
               cities: selectedCities,
               tripName: tripName,
-              // location: {
-              //   name: location.name,
-              //   longitude: location?.longitude,
-              //   latitude: location?.latitude,
-              //   color: randomColor(),
-              // },
               dayDescription: daysDescription,
               text,
+            }).then(async (docRef) => {
+              if (firestoreUser?.friends) {
+                const q = query(tripsCollection, where('userId', '==', firestoreUser?.id), where(documentId(), '==', docRef.id), limit(1));
+                const querySnapshot = await getDocs(q);
+                firestoreUser?.friends.forEach(async (friendId) => {
+                  await addDoc(notificationsCollection, {
+                    targetUserId: friendId,
+                    postId: querySnapshot.docs[0].id,
+                    type: NotificationType.NewTrip,
+                    createAt: new Date().toISOString(),
+                  });
+                });
+              }
             });
           }
-          // await addDoc(tripsCollection, {
-          //   userId: firestoreUser?.id,
-          //   imageUrl: uploadedImages,
-          //   rate: rating,
-          //   startDate: startDate,
-          //   endDate: endDate,
-          //   public: tickIsChecked,
-          //   geoTags: selectedGeoTags,
-          //   cities: selectedCities,
-          //   tripName: tripName,
-          //   location: {
-          //     name: location,
-          //     longitude: geocode[0].geometry.location.lng(),
-          //     latitude: geocode[0].geometry.location.lat(),
-          //     color: randomColor(),
-          //   },
-          //   dayDescription: daysDescription,
-          //   text,
-          // });
+          
         
           if (!isEdit) {
             updateFirestoreUser({
@@ -331,50 +315,6 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
             className={styles.input} 
             onChange={e => setTripName(e.target.value)}
           />
-          
-          {/* 
-          <p>Where’d you go?</p>
-          <div  className={styles.autocomplete}>
-            <PlacesAutocomplete
-              searchOptions={{ types: ['country'] }}
-              value={whereToGo}
-              onChange={(value) => setWhereToGo(value)}
-              onSelect={onSelectPlace}
-            >
-              {({getInputProps, suggestions, getSuggestionItemProps, loading}) => {
-                return (
-                  <div className={suggestions.length ? styles.inputContainer : undefined}>
-                    <input
-                      {...getInputProps({
-                        placeholder: 'Venice, Italy.',
-                        className: styles.input,
-                      })}
-                    />
-                    <div className={suggestions.length ? styles.dropdown : undefined}>
-                      {loading && <div>Loading...</div>}
-                      {suggestions.map(suggestion => {
-                        const style = suggestion.active
-                          ? {backgroundColor: '#fafafa', cursor: 'pointer'}
-                          : {backgroundColor: '#ffffff', cursor: 'pointer'};
-                        return (
-                          // eslint-disable-next-line react/jsx-key
-                          <div
-                            {...getSuggestionItemProps(suggestion, {
-                              className: styles.dropdownItem,
-                              style,
-                            })}
-                          >
-                            <p>{suggestion.description}</p>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                );
-              }}
-            </PlacesAutocomplete>
-          </div> */}
-          
 
           <div className={styles.section}>
               {/* <p>Tag Your Favorite Places on this Trip: </p> */}

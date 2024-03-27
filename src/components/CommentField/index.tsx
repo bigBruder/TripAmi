@@ -7,6 +7,7 @@ import {firebaseErrors} from "~/constants/firebaseErrors";
 import {db} from "~/firebase";
 import {IPost} from "~/types/post";
 import { ToastContainer, toast } from "react-toastify";
+import { NotificationType } from "~/types/notifications/notifications";
 
 interface Props {
   postId: string;
@@ -60,7 +61,7 @@ export const CommentField: FC<Props> = ({postId, commentsCount, contentType, pos
       await addDoc(notificationsCollection, {
         targetUserId: postOwnerId,
         postId,
-        type: 'comment',
+        type: NotificationType.CommentPost,
         text: enteredText,
       });
       } catch (e) {
