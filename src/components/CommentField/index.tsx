@@ -51,7 +51,8 @@ export const CommentField: FC<Props> = ({postId, commentsCount, contentType, pos
       setEnteredText('');
     } catch (e) {
       // @ts-ignore
-      alert(firebaseErrors[e.code]);
+      console.error(e);
+      // alert(firebaseErrors[e.code]);
     }
 
     try {

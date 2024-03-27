@@ -2,12 +2,16 @@ import { FC } from "react";
 import { Notification } from "~/types/notifications/notifications";
 import styles from './notifications.module.css';
 import { useNavigate } from "react-router-dom";
+import { deleteDoc, getDocs, query, where } from "firebase/firestore";
+import { notificationsCollection } from "~/types/firestoreCollections";
+import { ToastContainer, toast } from "react-toastify";
 
 interface Props {
     notifications: Notification[];
+    deleteMessages: () => void;
 }
 
-export const Notifications: FC<Props> = ({notifications}) => {
+export const Notifications: FC<Props> = ({notifications, deleteMessages}) => {
     const navigate = useNavigate();
     const handleNavigate = (postId: string) => {
         navigate(`/posts/${postId}`);
@@ -24,7 +28,7 @@ export const Notifications: FC<Props> = ({notifications}) => {
                     <button className={styles.button} onClick={() => handleNavigate(notification.postId)}>To post</button>
                 </div>
             ))}
-            <button className={styles.button}>Delete messages</button>
+            <button className={styles.button} onClick={deleteMessages}>Delete messages</button>
         </div>
     )
 }

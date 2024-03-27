@@ -35,13 +35,14 @@ import debounce from "lodash.debounce";
 import CreateTripModal from "~/components/CreateTripModal";
 
 import algoliasearch from "algoliasearch";
-import { doc, documentId, getDoc, getDocs, limit, onSnapshot, query, where } from "firebase/firestore";
+import { deleteDoc, doc, documentId, getDoc, getDocs, limit, onSnapshot, query, where } from "firebase/firestore";
 import { notificationsCollection, postsCollection, tripsCollection, usersCollection } from "~/types/firestoreCollections";
 import { IPost } from "~/types/post";
 import { useInputFocus } from "~/hooks/useInputRef";
 import Rating from "~/components/Rating";
 import { Notification } from "~/types/notifications/notifications";
 import { Notifications } from "~/components/Notifications/Notifications";
+import { ToastContainer, toast } from "react-toastify";
 const client = algoliasearch("W8J2M4GNE3", "18fbb3c4cc4108ead5479d90911f3507");
 const index = client.initIndex("trips");
 // const index = client.initIndex("prod_users");
@@ -99,7 +100,33 @@ const Header = () => {
     return () => {
       unsubscribe();
     }
-  }, [firestoreUser])
+  }, [firestoreUser]);
+
+  const handleDeleteMessages = async () => {
+    console.log('notifications', notifications);
+    if (!notifications.length) return;
+    try {
+        const q = query(
+          notificationsCollection,
+          where('targetUserId', '==', notifications[0].targetUserId),
+        );
+    
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach(async (doc) => {
+          await deleteDoc(doc.ref);
+        });
+        notifyInfo('Notifications deleted');
+        setNotifications([]);
+    } catch (error) {
+        console.error("Error removing document: ", error);
+    }
+  }
+
+  const notifyInfo = (text: string) => {
+    if (!toast.isActive('error')) {
+      toast.info(text, {toastId: 'error'});
+    }
+  };
 
   useEffect(() => { 
     if (!isSearchFocused) {
@@ -262,8 +289,8 @@ const Header = () => {
             <img className={styles.icon} src={plus} alt="plus" onClick={() => setModalIsOpen(true)} />
           </div>
           {
-            isNotificationsOpen && (
-              <Notifications notifications={notifications} />
+            isNotificationsOpen && !!notifications.length && (
+              <Notifications notifications={notifications} deleteMessages={handleDeleteMessages}/>
             )
           }
 
@@ -331,6 +358,8 @@ const Header = () => {
       <CustomModal isOpen={tripModalIsOpen} onCloseModal={closeTripModal}>
         <CreateTripModal closeModal={closeTripModal} />
       </CustomModal>
+      <ToastContainer closeOnClick autoClose={2000} limit={1} pauseOnHover={false} />
+
     </>
   );
 };
