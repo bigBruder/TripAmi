@@ -2,12 +2,12 @@
     position: absolute;
     padding: 10px;
     top: 64px;
-    left: -70px;
+    left: -75px;
     background-color: white;
     border-radius: 5px;
     font-size: 14px;
     gap: 10px;
-    max-height: 300px;
+    max-height: 200px;
     overflow-y: auto;
 
     display: flex;
@@ -29,6 +29,12 @@
     background-color: rgb(255, 77, 0);
     color: white;
     padding: 5px;
+}
+
+.button_delete {
+    position: sticky;
+    bottom: 0;
+    left: 0;
 }
 
 .base_text {

@@ -28,7 +28,7 @@ export const Notifications: FC<Props> = ({notifications, deleteMessages}) => {
                     <button className={styles.button} onClick={() => handleNavigate(notification.postId)}>To post</button>
                 </div>
             ))}
-            <button className={styles.button} onClick={deleteMessages}>Delete messages</button>
+            <button className={`${styles.button} ${styles.button_delete}`} onClick={deleteMessages}>Delete messages</button>
         </div>
     )
 }
