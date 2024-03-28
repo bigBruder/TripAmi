@@ -93,8 +93,6 @@ const PostsPage = () => {
     }
   }, [post?.id]);
 
-  console.log(state, '-- state');
-
   return (
     <div className={styles.mainContainer}>
       <Header />

@@ -1,12 +1,10 @@
 import { useEffect, useState } from 'react';
-import { contextType } from 'react-modal';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import { doc, documentId, getDocs, onSnapshot, orderBy, query, where } from 'firebase/firestore';
+import { documentId, getDocs, onSnapshot, orderBy, query, where } from 'firebase/firestore';
 import { getDownloadURL, ref } from 'firebase/storage';
 import { Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { BigPost } from '~/components/BigPost';
 import { UserPostInfo } from '~/components/BigPost/UserPostInfo';
 import { Comment } from '~/components/Comment';
 import { CommentField } from '~/components/CommentField';
@@ -161,7 +159,7 @@ export const Trip = () => {
                 <div className={styles.topRightContainer}>
                   <h1 className={styles.title}>{trip?.tripName}</h1>
                   <div className={styles.rateContainer}>
-                    <Rating rating={trip?.rate} />
+                    <Rating selectedStars={trip?.rate || 1} />
                   </div>
                   <div className={styles.textContainer}>
                     <p className={styles.postText}>{trip?.text}</p>
@@ -228,7 +226,7 @@ export const Trip = () => {
 
         {comments &&
           comments?.map((comment) => (
-            <Comment key={comment.id} comment={comment} typeOfContent={'trip'} />
+            <Comment key={comment.id} comment={comment} contentType={'trip'} />
           ))}
       </div>
       <LightBox

@@ -22,11 +22,11 @@ import styles from './comment.module.css';
 interface Props {
   comment: IComment | IPlaceComment;
   isReply?: boolean;
-  isCommentOpen: boolean;
+  isCommentOpen?: boolean;
   contentType?: string;
 }
 
-export const Comment: FC<Props> = ({ comment, isReply, isCommentOpen, contentType }) => {
+export const Comment: FC<Props> = ({ comment, isReply, isCommentOpen = false, contentType }) => {
   const { likes, dislikes, id } = comment;
   const { firestoreUser } = useContext(AuthContext);
   const likedByUser = useMemo(
