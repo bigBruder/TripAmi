@@ -1,23 +1,26 @@
-import {ITravel} from "~/types/travel";
-import {FC, useCallback, useContext, useEffect, useMemo, useState} from "react";
-import styles from './travelCard.module.css';
-import Rating from "~/components/Rating";
-import {getDownloadURL} from "firebase/storage";
-import {ref} from "@firebase/storage";
-import {db, storage} from "~/firebase";
-import commentsIcon from "@assets/icons/comments.svg";
-import shareIcon from "@assets/icons/share.svg";
-import BinIcon from "@assets/icons/BinIcon.svg";
-import {AuthContext} from "~/providers/authContext";
-import {deleteDoc, doc} from "@firebase/firestore";
-import {useNavigate} from "react-router-dom";
-import Dots from '@assets/icons/dots.svg';
-import CreateTripModal from "~/components/CreateTripModal";
-import CustomModal from "~/components/CustomModal";
-import { LightBox } from "../Lightbox/LightBox";
+import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import Modal from 'react-modal';
-import ShareModal from "../ShareModal/ShareModal";
-import { ToastContainer, toast } from "react-toastify";
+import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+
+import { getDownloadURL } from 'firebase/storage';
+import CreateTripModal from '~/components/CreateTripModal';
+import CustomModal from '~/components/CustomModal';
+import Rating from '~/components/Rating';
+import { db, storage } from '~/firebase';
+import { AuthContext } from '~/providers/authContext';
+import { ITravel } from '~/types/travel';
+
+import BinIcon from '@assets/icons/BinIcon.svg';
+import commentsIcon from '@assets/icons/comments.svg';
+import Dots from '@assets/icons/dots.svg';
+import shareIcon from '@assets/icons/share.svg';
+import { deleteDoc, doc } from '@firebase/firestore';
+import { ref } from '@firebase/storage';
+
+import { LightBox } from '../Lightbox/LightBox';
+import ShareModal from '../ShareModal/ShareModal';
+import styles from './travelCard.module.css';
 
 interface Props {
   travel: ITravel;
@@ -26,9 +29,11 @@ interface Props {
 const notifyInfo = (message: string) => toast.info(message);
 const notifyError = (message: string) => toast.error(message);
 
-const TravelCard: FC<Props> = ({travel}) => {
-  const {firestoreUser, updateFirestoreUser} = useContext(AuthContext);
-  const [imageDownloadUrls, setImageDownloadUrls] = useState<{url: string; type: string, description: string}[]>([]);
+const TravelCard: FC<Props> = ({ travel }) => {
+  const { firestoreUser, updateFirestoreUser } = useContext(AuthContext);
+  const [imageDownloadUrls, setImageDownloadUrls] = useState<
+    { url: string; type: string; description: string }[]
+  >([]);
   const {
     // location,
     startDate,
@@ -76,12 +81,16 @@ const TravelCard: FC<Props> = ({travel}) => {
           } else {
             url = await getDownloadURL(ref(storage, imageUrl[i].url));
           }
-          downloadedUrls.push({url, type: imageUrl[i].type, description: imageUrl[i].description});
+          downloadedUrls.push({
+            url,
+            type: imageUrl[i].type,
+            description: imageUrl[i].description,
+          });
         }
 
         setImageDownloadUrls(downloadedUrls);
       } catch (err) {
-        console.log('[ERROR getting download url for the image] => ', err)
+        console.log('[ERROR getting download url for the image] => ', err);
       }
     })();
   }, [imageUrl]);
@@ -125,9 +134,9 @@ const TravelCard: FC<Props> = ({travel}) => {
       width: '400px',
       height: getHeight,
       layout: getLayout,
-      photos: imageDownloadUrls.map(item => ({source: item.url})),
-      showNumOfRemainingPhotos: true
-    }
+      photos: imageDownloadUrls.map((item) => ({ source: item.url })),
+      showNumOfRemainingPhotos: true,
+    };
   }, [getHeight, getLayout, imageDownloadUrls]);
 
   const handleCloseEditModal = useCallback(() => {
@@ -137,10 +146,12 @@ const TravelCard: FC<Props> = ({travel}) => {
   return (
     <div className={styles.container}>
       <div className={styles.topContainer}>
-          {/* <p className={styles.location} onClick={() => navigate('/trip/' + id)}>{location.name.toString()}</p> */}
+        {/* <p className={styles.location} onClick={() => navigate('/trip/' + id)}>{location.name.toString()}</p> */}
         <Rating disabled selectedStars={rate} />
         <div className={styles.dateContainer}>
-          <p className={styles.date}>{startDate} - {endDate}</p>
+          <p className={styles.date}>
+            {startDate} - {endDate}
+          </p>
         </div>
       </div>
 
@@ -150,63 +161,60 @@ const TravelCard: FC<Props> = ({travel}) => {
             <ReactPhotoCollage {...setting}/>
           ) : null} */}
 
-          {
-            imageDownloadUrls.map((image, index) => {
-              if (image.type.includes('image')) {
-                return (
-                  <img
-                    key={index}
-                    src={image.url}
-                    alt="travel"
-                    className={styles.image}
-                    onClick={() => {
-                      setSelectedImage(image);
-                      setIsPhotosModalOpen(true);
-                      document.body.style.overflow = 'hidden';
-                    }}
-                  />
-                )
-              } else if(image.type.includes('video')) {
-                return (
-                  <video
-                    key={index}
-                    src={image.url}
-                    className={styles.image}
-                    controls
-                    onClick={() => {
-                      setSelectedImage(image);
-                      setIsPhotosModalOpen(true);
-                    }}
-                    // onClick={() => setIsPhotosModalOpen(true)}
-                  />
-                )
-              }
-              })
-          }
+          {imageDownloadUrls.map((image, index) => {
+            if (image.type.includes('image')) {
+              return (
+                <img
+                  key={index}
+                  src={image.url}
+                  alt='travel'
+                  className={styles.image}
+                  onClick={() => {
+                    setSelectedImage(image);
+                    setIsPhotosModalOpen(true);
+                    document.body.style.overflow = 'hidden';
+                  }}
+                />
+              );
+            } else if (image.type.includes('video')) {
+              return (
+                <video
+                  key={index}
+                  src={image.url}
+                  className={styles.image}
+                  controls
+                  onClick={() => {
+                    setSelectedImage(image);
+                    setIsPhotosModalOpen(true);
+                  }}
+                  // onClick={() => setIsPhotosModalOpen(true)}
+                />
+              );
+            }
+          })}
         </div>
 
         <div className={styles.textContainer}>
           <h3 className={styles.tripName}>{tripName}</h3>
-          <p className={styles.text} style={{wordBreak: "break-all"}}>{text}</p>
+          <p className={styles.text} style={{ wordBreak: 'break-all' }}>
+            {text}
+          </p>
           <div className={styles.daysDescriptionContainer}>
-          {
-            dayDescription && dayDescription.map((day, index) => (
-              <div key={`day_${index}`} className={styles.dayDescription}>
-                <p className={styles.date}>{day.date}</p>
-                <p className={styles.additionalText}>{day.description}</p>
-              </div>
-            ))
-          }
+            {dayDescription &&
+              dayDescription.map((day, index) => (
+                <div key={`day_${index}`} className={styles.dayDescription}>
+                  <p className={styles.date}>{day.date}</p>
+                  <p className={styles.additionalText}>{day.description}</p>
+                </div>
+              ))}
           </div>
 
           <div className={styles.visitedContainer}>
-          
-          {
-              cities && cities?.length > 0 && (
-                <div>
-                  <p className={styles.mark}>Cities: </p>
-                  <div className={styles.tagsContainer}>
-                  {travel?.cities?.map(tag => (
+            {cities && cities?.length > 0 && (
+              <div>
+                <p className={styles.mark}>Cities: </p>
+                <div className={styles.tagsContainer}>
+                  {travel?.cities?.map((tag) => (
                     <p
                       onClick={() => navigate('/place/' + tag.placeID)}
                       key={tag.placeID}
@@ -217,67 +225,60 @@ const TravelCard: FC<Props> = ({travel}) => {
                   ))}
                 </div>
               </div>
-              )
-            }
+            )}
 
-          <div>
-            {
-              travel.geoTags && travel.geoTags.length > 0 && (
+            <div>
+              {travel.geoTags && travel.geoTags.length > 0 && (
                 <>
-                <p className={styles.mark}>Places: </p>
-                <div className={styles.tagsContainer}>
-                  {travel?.geoTags?.map(tag => (
-                    <p
-                      onClick={() => navigate('/place/' + tag.placeID)}
-                      key={tag.placeID}
-                      className={styles.tag}
-                    >
-                      {tag.address}
-                    </p>
-                  ))}
-                </div>
+                  <p className={styles.mark}>Places: </p>
+                  <div className={styles.tagsContainer}>
+                    {travel?.geoTags?.map((tag) => (
+                      <p
+                        onClick={() => navigate('/place/' + tag.placeID)}
+                        key={tag.placeID}
+                        className={styles.tag}
+                      >
+                        {tag.address}
+                      </p>
+                    ))}
+                  </div>
                 </>
-              )
-            }  
+              )}
+            </div>
           </div>
-
-
-          </div>
-          
-
-          
         </div>
       </div>
 
-
       <div className={styles.footer}>
-            <div className={styles.shareContainer}>
-              <img
-                className={styles.commentsIcon}
-                src={commentsIcon}
-                alt="comments"
-              />
-              <span className={styles.comments} onClick={() => navigate('/trip/' + id)}>{comments_count} Comments</span>
+        <div className={styles.shareContainer}>
+          <img className={styles.commentsIcon} src={commentsIcon} alt='comments' />
+          <span className={styles.comments} onClick={() => navigate('/trip/' + id)}>
+            {comments_count} Comments
+          </span>
+        </div>
+        <div className={styles.shareContainer} onClick={() => setIsModalShareOpen(true)}>
+          <img className={styles.shareIcon} src={shareIcon} alt='share' />
+          <span className={styles.share}>Share</span>
+        </div>
+        {firestoreUser?.id === userId ? (
+          <>
+            <div className={styles.shareContainer} onClick={() => setIsModalDeleteOpen(true)}>
+              <img className={styles.dotsIcon} src={BinIcon} alt='dots' />
+              <span className={styles.share}>Delete</span>
             </div>
-            <div className={styles.shareContainer} onClick={() => setIsModalShareOpen(true)}>
-              <img className={styles.shareIcon} src={shareIcon} alt="share" />
-              <span className={styles.share}>Share</span>
+            <div className={styles.shareContainer} onClick={() => setEditModalIsOpen(true)}>
+              <img className={styles.dotsIcon} src={Dots} alt='dots' />
+              <span className={styles.share}>Edit</span>
             </div>
-            {firestoreUser?.id === userId ? (
-              <>
-                <div className={styles.shareContainer} onClick={() => setIsModalDeleteOpen(true)}>
-                  <img className={styles.dotsIcon} src={BinIcon} alt="dots"/>
-                  <span className={styles.share}>Delete</span>
-                </div>
-                <div className={styles.shareContainer} onClick={() => setEditModalIsOpen(true)}>
-                  <img className={styles.dotsIcon} src={Dots} alt="dots"/>
-                  <span className={styles.share}>Edit</span>
-                </div>
-              </>
-            ) : null}
-          </div>
+          </>
+        ) : null}
+      </div>
 
-      <ShareModal isOpen={isModalShareOpen} onRequestClose={() => setIsModalShareOpen(false)} linkTo={'https://tripamimain.netlify.app/#/trip/' + travel.id}/>
+      <ShareModal
+        isOpen={isModalShareOpen}
+        onRequestClose={() => setIsModalShareOpen(false)}
+        linkTo={'https://tripamimain.netlify.app/#/trip/' + travel.id}
+      />
 
       <CustomModal isOpen={editModalIsOpen} onCloseModal={handleCloseEditModal}>
         <CreateTripModal
@@ -311,33 +312,42 @@ const TravelCard: FC<Props> = ({travel}) => {
             height: 300,
           },
         }}
-        contentLabel="Example Modal"
+        contentLabel='Example Modal'
         onRequestClose={() => setIsModalDeleteOpen(false)}
         shouldCloseOnOverlayClick
         shouldCloseOnEsc
       >
         <div className={styles.deleteModalContainer}>
-        <div className={styles.deleteModal}>
-          <h3 className={styles.deleteModal_title}>Delete Trip</h3>
-          <p>Are you sure to delete the trip?</p>
-          <div className={styles.deleteControlContainer}>
-            <button className={`${styles.buttonModal}, ${styles.buttonModal_delete}`} onClick={handleDeleteTrip}>Delete</button>
-            <button className={`${styles.buttonModal}, ${styles.buttonModal_cancel}`} onClick={() => setIsModalDeleteOpen(false)}>Cancel</button>
+          <div className={styles.deleteModal}>
+            <h3 className={styles.deleteModal_title}>Delete Trip</h3>
+            <p>Are you sure to delete the trip?</p>
+            <div className={styles.deleteControlContainer}>
+              <button
+                className={`${styles.buttonModal}, ${styles.buttonModal_delete}`}
+                onClick={handleDeleteTrip}
+              >
+                Delete
+              </button>
+              <button
+                className={`${styles.buttonModal}, ${styles.buttonModal_cancel}`}
+                onClick={() => setIsModalDeleteOpen(false)}
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
-          
-        </div>
-        </Modal>
+      </Modal>
       {/* </CustomModal> */}
 
-      <LightBox 
-        isOpen={isPhotosModalOpen} 
+      <LightBox
+        isOpen={isPhotosModalOpen}
         onCloseModal={() => {
-          setIsPhotosModalOpen(false)
+          setIsPhotosModalOpen(false);
           document.body.style.overflow = 'auto';
         }}
-        selectedImage={selectedImage} 
-        onChangeSelectedPhoto={setSelectedImage} 
+        selectedImage={selectedImage}
+        onChangeSelectedPhoto={setSelectedImage}
         images={imageDownloadUrls}
       />
       <ToastContainer closeOnClick autoClose={2000} limit={1} pauseOnHover={false} />

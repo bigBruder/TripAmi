@@ -1,29 +1,32 @@
-import React, {ChangeEvent, useCallback, useContext, useEffect, useState} from 'react';
-import styles from './createTripModal.module.css';
+import React, { ChangeEvent, useCallback, useContext, useEffect, useState } from 'react';
 // @ts-ignore
 import Checkbox from 'react-custom-checkbox';
-import Tick from "../../assets/icons/tick.svg";
-import Rating from "~/components/Rating";
-import {FileUploader} from "react-drag-drop-files";
-import {addDoc} from "@firebase/firestore";
-import {notificationsCollection, tripsCollection} from "~/types/firestoreCollections";
-import {ref, uploadBytes} from "@firebase/storage";
-import {db, storage} from "~/firebase";
-import {v4 as uuidv4} from "uuid";
-import {AuthContext} from "~/providers/authContext";
-import {LoadingScreen} from "~/components/LoadingScreen";
-import moment from "moment";
-import PlacesAutocomplete, {geocodeByPlaceId} from 'react-places-autocomplete';
-import randomColor from "randomcolor";
-import {toast, ToastContainer} from "react-toastify";
-import Plus from '~/assets/icons/plus.svg';
-import ReactPlayer from "react-player";
-import PlaceAutocomplete from '../PlaceAutocomplete/PlaceAutocomplete';
+import { FileUploader } from 'react-drag-drop-files';
+import PlacesAutocomplete, { geocodeByPlaceId } from 'react-places-autocomplete';
+import ReactPlayer from 'react-player';
+import { ToastContainer, toast } from 'react-toastify';
+
 import { doc, documentId, getDocs, limit, query, updateDoc, where } from 'firebase/firestore';
 import { getDownloadURL } from 'firebase/storage';
+import moment from 'moment';
+import randomColor from 'randomcolor';
+import { v4 as uuidv4 } from 'uuid';
+import Plus from '~/assets/icons/plus.svg';
+import { LoadingScreen } from '~/components/LoadingScreen';
+import Rating from '~/components/Rating';
+import { db, storage } from '~/firebase';
+import { AuthContext } from '~/providers/authContext';
+import { notificationsCollection, tripsCollection } from '~/types/firestoreCollections';
 import { NotificationType } from '~/types/notifications/notifications';
 
-const fileTypes = ["JPEG", "PNG", "JPG", "MP4"];
+import { addDoc } from '@firebase/firestore';
+import { ref, uploadBytes } from '@firebase/storage';
+
+import Tick from '../../assets/icons/tick.svg';
+import PlaceAutocomplete from '../PlaceAutocomplete/PlaceAutocomplete';
+import styles from './createTripModal.module.css';
+
+const fileTypes = ['JPEG', 'PNG', 'JPG', 'MP4'];
 
 interface Props {
   closeModal: () => void;
@@ -33,37 +36,52 @@ interface Props {
     rate: number;
     startDate: string;
     endDate: string;
-    cities: {placeID: string, address: string}[];
+    cities: { placeID: string; address: string }[];
     tripName: string;
     locationName: string;
     text: string;
-    dayDescription: {date: string, description: string}[];
-    location: {name: string, longitude: number, latitude: number, color: string};
-    geoTags: {address: string, placeID: string}[];
-    imageUrl: {url: string, type: string, description: string}[];
+    dayDescription: { date: string; description: string }[];
+    location: { name: string; longitude: number; latitude: number; color: string };
+    geoTags: { address: string; placeID: string }[];
+    imageUrl: { url: string; type: string; description: string }[];
   };
 }
 
 const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
-  const {firestoreUser, updateFirestoreUser} = useContext(AuthContext);
-  const [file, setFile] = useState<File[] >([]);
+  const { firestoreUser, updateFirestoreUser } = useContext(AuthContext);
+  const [file, setFile] = useState<File[]>([]);
   const [rating, setRating] = useState(data?.rate || 0);
   const [city, setCity] = useState('');
-  const [startDate, setStartDate] = useState<string>(data?.startDate || moment().format('yyyy-MM-D'));
+  const [startDate, setStartDate] = useState<string>(
+    data?.startDate || moment().format('yyyy-MM-D')
+  );
   const [endDate, setEndDate] = useState<string>(data?.endDate || moment().format('yyyy-MM-D'));
   const [isLoading, setIsLoading] = useState(false);
   const [text, setText] = useState(data?.text || '');
-  const [selectedLocation, setSelectedLocation] = useState<string | null>(data?.locationName || null);
+  const [selectedLocation, setSelectedLocation] = useState<string | null>(
+    data?.locationName || null
+  );
   const [isMaxError, setIsMaxError] = useState(false);
   const [geoTags, setGeoTags] = useState('');
-  const [selectedGeoTags, setSelectedGeoTags] = useState<{address: string, placeID: string}[]>(data?.geoTags || []);
-  const [selectedCities, setSelectedCities] = useState<{address: string, placeID: string}[]>(data?.cities || []);
+  const [selectedGeoTags, setSelectedGeoTags] = useState<{ address: string; placeID: string }[]>(
+    data?.geoTags || []
+  );
+  const [selectedCities, setSelectedCities] = useState<{ address: string; placeID: string }[]>(
+    data?.cities || []
+  );
   const [isAddingPlace, setIsAddingPlace] = useState(false);
   const [tripName, setTripName] = useState(data?.tripName || '');
   const [daysDescription, setDaysDescription] = useState(data?.dayDescription || []);
   const [isAddCityOpen, setIsAddCityOpen] = useState(false);
-  const [downloadedImages, setDownloadedImages] = useState<{url: string, type: string, description: string}[]>(data?.imageUrl || []);
-  const [imagesDescription, setImagesDescription] = useState<{name: string, value:string, id?: number}[]>(downloadedImages?.map((image, id) => ({name: image.url, value: image.description, id: id})) || []);
+  const [downloadedImages, setDownloadedImages] = useState<
+    { url: string; type: string; description: string }[]
+  >(data?.imageUrl || []);
+  const [imagesDescription, setImagesDescription] = useState<
+    { name: string; value: string; id?: number }[]
+  >(
+    downloadedImages?.map((image, id) => ({ name: image.url, value: image.description, id: id })) ||
+      []
+  );
 
   useEffect(() => {
     if (isMaxError) {
@@ -76,8 +94,11 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
   const notify = (textValue: string) => toast.error(textValue);
 
   const handleChange = (fileList: FileList) => {
-    setFile(prevState => {
-      if (prevState && Object.values(fileList).length + prevState?.length > 5 || Object.values(fileList).length > 5) {
+    setFile((prevState) => {
+      if (
+        (prevState && Object.values(fileList).length + prevState?.length > 5) ||
+        Object.values(fileList).length > 5
+      ) {
         setIsMaxError(true);
         return prevState;
       }
@@ -91,74 +112,77 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
 
   const handleOnSave = useCallback(async () => {
     try {
-      if ((file || downloadedImages)) {
-
+      if (file || downloadedImages) {
         // const geocode = await geocodeByPlaceId(selectedLocation);
 
         setIsLoading(true);
 
-        const uploadedImages: {url: string, type: string, description: string}[] = [];
+        const uploadedImages: { url: string; type: string; description: string }[] = [];
 
         for (let i = 0; i < file.length; i++) {
           const storageRef = ref(storage, `trips/${firestoreUser?.id}/${location + uuidv4()}`);
           const uploadResult = await uploadBytes(storageRef, file[i]);
-          
+
           uploadedImages.push({
-            url: uploadResult.ref.fullPath, 
-            type: file[i].type, 
-            description: imagesDescription.find(image => image.name === file[i].name)?.value || '',
+            url: uploadResult.ref.fullPath,
+            type: file[i].type,
+            description:
+              imagesDescription.find((image) => image.name === file[i].name)?.value || '',
           });
         }
-          if (isEdit && data) {
-            const docRef = doc(db, 'trips', data.id);
-            await updateDoc(docRef, {
-              userId: firestoreUser?.id,
-              imageUrl: [...uploadedImages, ...downloadedImages],
-              rate: rating,
-              startDate: startDate,
-              endDate: endDate,
-              geoTags: selectedGeoTags,
-              cities: selectedCities,
-              value: 'fjlksdfjlksdfj',
-              tripName: tripName,
-              pinColor: randomColor(),
-              dayDescription: daysDescription,
-              text,
-            });
-          } else {
-            await addDoc(tripsCollection, {
-              userId: firestoreUser?.id,
-              imageUrl: uploadedImages,
-              rate: rating,
-              startDate: startDate,
-              endDate: endDate,
-              geoTags: selectedGeoTags,
-              cities: selectedCities,
-              tripName: tripName,
-              dayDescription: daysDescription,
-              text,
-            }).then(async (docRef) => {
-              if (firestoreUser?.friends) {
-                const q = query(tripsCollection, where('userId', '==', firestoreUser?.id), where(documentId(), '==', docRef.id), limit(1));
-                const querySnapshot = await getDocs(q);
-                firestoreUser?.friends.forEach(async (friendId) => {
-                  await addDoc(notificationsCollection, {
-                    targetUserId: friendId,
-                    postId: querySnapshot.docs[0].id,
-                    type: NotificationType.NewTrip,
-                    createAt: new Date().toISOString(),
-                  });
+        if (isEdit && data) {
+          const docRef = doc(db, 'trips', data.id);
+          await updateDoc(docRef, {
+            userId: firestoreUser?.id,
+            imageUrl: [...uploadedImages, ...downloadedImages],
+            rate: rating,
+            startDate: startDate,
+            endDate: endDate,
+            geoTags: selectedGeoTags,
+            cities: selectedCities,
+            tripName: tripName,
+            dayDescription: daysDescription,
+            text,
+          });
+        } else {
+          await addDoc(tripsCollection, {
+            userId: firestoreUser?.id,
+            imageUrl: uploadedImages,
+            rate: rating,
+            startDate: startDate,
+            endDate: endDate,
+            geoTags: selectedGeoTags,
+            cities: selectedCities,
+            tripName: tripName,
+            pinColor: randomColor(),
+            dayDescription: daysDescription,
+            text,
+          }).then(async (docRef) => {
+            if (firestoreUser?.friends) {
+              const q = query(
+                tripsCollection,
+                where('userId', '==', firestoreUser?.id),
+                where(documentId(), '==', docRef.id),
+                limit(1)
+              );
+              const querySnapshot = await getDocs(q);
+              firestoreUser?.friends.forEach(async (friendId) => {
+                await addDoc(notificationsCollection, {
+                  targetUserId: friendId,
+                  postId: querySnapshot.docs[0].id,
+                  type: NotificationType.NewTrip,
+                  createAt: new Date().toISOString(),
                 });
-              }
-            });
-          }
-          
-        
-          if (!isEdit) {
-            updateFirestoreUser({
-              tripCount: firestoreUser?.tripCount ? firestoreUser?.tripCount + 1 : 1,
-            });
-          }
+              });
+            }
+          });
+        }
+
+        if (!isEdit) {
+          updateFirestoreUser({
+            tripCount: firestoreUser?.tripCount ? firestoreUser?.tripCount + 1 : 1,
+          });
+        }
 
         closeModal();
       } else {
@@ -169,128 +193,171 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
     } finally {
       setIsLoading(false);
     }
-  }, [imagesDescription, file, firestoreUser?.id, firestoreUser?.tripCount, rating, startDate, selectedGeoTags, text, updateFirestoreUser, daysDescription]);
+  }, [
+    imagesDescription,
+    file,
+    firestoreUser?.id,
+    firestoreUser?.tripCount,
+    rating,
+    startDate,
+    selectedGeoTags,
+    text,
+    updateFirestoreUser,
+    daysDescription,
+  ]);
 
   // const onSelectPlace = useCallback(async (address: string, placeID: string) => {
   //   const geocode = await geocodeByPlaceId(placeID);
-    
+
   //   setLocation({name: address, longitude: geocode[0].geometry.location.lng(), latitude: geocode[0].geometry.location.lat(), color: randomColor()});
   //   setWhereToGo(address);
   //   setSelectedLocation(placeID);
   // }, []);
 
-  const onSelectGeoTag = useCallback((address: string, placeID: string) => {
-    if(!selectedGeoTags.map(tag => tag.address).includes(address)) {
-      setSelectedGeoTags(prevState => [...prevState, {address, placeID}]);
-      setGeoTags('');
-      setIsAddingPlace(false);
-    } else {
-      notify('You have already added this tag');
-    }
+  const onSelectGeoTag = useCallback(
+    (address: string, placeID: string) => {
+      if (!selectedGeoTags.map((tag) => tag.address).includes(address)) {
+        setSelectedGeoTags((prevState) => [...prevState, { address, placeID }]);
+        setGeoTags('');
+        setIsAddingPlace(false);
+      } else {
+        notify('You have already added this tag');
+      }
 
-    setIsAddingPlace(false);
-  }, [selectedGeoTags]);
+      setIsAddingPlace(false);
+    },
+    [selectedGeoTags]
+  );
 
   const handleRemoveGeoTag = useCallback((placeId: string) => {
-    setSelectedGeoTags(prevState => prevState.filter(item => item.placeID !== placeId));
+    setSelectedGeoTags((prevState) => prevState.filter((item) => item.placeID !== placeId));
   }, []);
 
-  const handleRemovePhoto = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, photoName: string) => {
+  const handleRemovePhoto = (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    photoName: string
+  ) => {
     event.preventDefault();
 
-    setFile(prevState => prevState.filter(media => media.name !== photoName));
-    setImagesDescription(prevState => prevState.filter(image => image.name !== photoName))
-  }
+    setFile((prevState) => prevState.filter((media) => media.name !== photoName));
+    setImagesDescription((prevState) => prevState.filter((image) => image.name !== photoName));
+  };
 
   const handleChangeImageDescription = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
 
-    const {name, value} = event.target;
+    const { name, value } = event.target;
 
-    if(imagesDescription.find(image => image.name === name)) {
-      setImagesDescription(prevState => prevState.map(obj => obj.name === name ? {...obj, value: value} : obj))
+    if (imagesDescription.find((image) => image.name === name)) {
+      setImagesDescription((prevState) =>
+        prevState.map((obj) => (obj.name === name ? { ...obj, value: value } : obj))
+      );
     } else {
-      setImagesDescription(prevState => [...prevState, {name: name, value: value}])
+      setImagesDescription((prevState) => [...prevState, { name: name, value: value }]);
     }
-  }
+  };
 
-  const handleChangeDownloadedImageDescription = (event: React.ChangeEvent<HTMLInputElement>, id: number) => {
+  const handleChangeDownloadedImageDescription = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    id: number
+  ) => {
     event.preventDefault();
 
-    const {name, value} = event.target;
+    const { name, value } = event.target;
 
-    if(imagesDescription.find(image => image.id === id)) {
-      setImagesDescription(prevState => prevState.map(obj => obj.id === id ? {...obj, value: value} : obj))
+    if (imagesDescription.find((image) => image.id === id)) {
+      setImagesDescription((prevState) =>
+        prevState.map((obj) => (obj.id === id ? { ...obj, value: value } : obj))
+      );
     } else {
-      setImagesDescription(prevState => [...prevState, {name: name, value: value, id: imagesDescription.length + 1}])
+      setImagesDescription((prevState) => [
+        ...prevState,
+        { name: name, value: value, id: imagesDescription.length + 1 },
+      ]);
     }
-  }
+  };
 
-  const handleOpenAddGeocode = (e: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
+  const handleOpenAddGeocode = (
+    e: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>
+  ) => {
     if (e) {
       e.preventDefault();
-      setIsAddingPlace(prevState => !prevState);
+      setIsAddingPlace((prevState) => !prevState);
     }
-  }
+  };
 
   const handleAddDayDescription = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
-    setDaysDescription(prevState => [...prevState, {date: '', description: ''}]);
-  }
+    setDaysDescription((prevState) => [...prevState, { date: '', description: '' }]);
+  };
 
   const handleRemoveDayDescription = (indexToRemove: number) => {
-    setDaysDescription(prevDescriptions => prevDescriptions.filter((day, idx) => idx !== indexToRemove))
-  }
+    setDaysDescription((prevDescriptions) =>
+      prevDescriptions.filter((day, idx) => idx !== indexToRemove)
+    );
+  };
 
-  const handleDayDateDescriptionChange = (event: ChangeEvent<HTMLTextAreaElement> | ChangeEvent<HTMLInputElement>, indexToChange: number, type: string) => {
-   setDaysDescription(prevState => prevState.map((prevDay, index) => {
-    if (index === indexToChange) {
-      return {...prevDay, [type]: event.target.value}
-    } else {
-      return prevDay;
-    }
-   }))
-  }
+  const handleDayDateDescriptionChange = (
+    event: ChangeEvent<HTMLTextAreaElement> | ChangeEvent<HTMLInputElement>,
+    indexToChange: number,
+    type: string
+  ) => {
+    setDaysDescription((prevState) =>
+      prevState.map((prevDay, index) => {
+        if (index === indexToChange) {
+          return { ...prevDay, [type]: event.target.value };
+        } else {
+          return prevDay;
+        }
+      })
+    );
+  };
 
   const handleRemoveCity = useCallback((placeId: string) => {
-    setSelectedCities(prevState => prevState.filter(item => item.placeID !== placeId));
+    setSelectedCities((prevState) => prevState.filter((item) => item.placeID !== placeId));
   }, []);
 
   const handleOpenAddCity = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.preventDefault();
-    setIsAddCityOpen(prevState => !prevState);
-  }
+    setIsAddCityOpen((prevState) => !prevState);
+  };
 
-  const onSelectCity = useCallback((address: string, placeID: string) => {
-    if(!selectedCities.map(city => city.address.toString()).includes(address)) {
-      setSelectedCities(prevState => [...prevState, {address: address.split(',')[0], placeID}]);
-      setCity('');
-    } else {
-      notify('You have already added this city')
-    }
-    
-    setIsAddCityOpen(false);
-  }, [selectedCities]);
+  const onSelectCity = useCallback(
+    (address: string, placeID: string) => {
+      if (!selectedCities.map((city) => city.address.toString()).includes(address)) {
+        setSelectedCities((prevState) => [
+          ...prevState,
+          { address: address.split(',')[0], placeID },
+        ]);
+        setCity('');
+      } else {
+        notify('You have already added this city');
+      }
+
+      setIsAddCityOpen(false);
+    },
+    [selectedCities]
+  );
 
   useEffect(() => {
-   (async () => {
-    if (isEdit && data) {
-      const querySnapshot = await query(tripsCollection, where(documentId(), '==', data.id));
-      const docRef = await getDocs(querySnapshot);
-      const docData = docRef.docs[0].data();
-      for (let i = 0; i < docData.imageUrl.length; i++) {
-        const url = await getDownloadURL(ref(storage, docData.imageUrl[i].url));
-        docData.imageUrl[i].url = url;
+    (async () => {
+      if (isEdit && data) {
+        const querySnapshot = await query(tripsCollection, where(documentId(), '==', data.id));
+        const docRef = await getDocs(querySnapshot);
+        const docData = docRef.docs[0].data();
+        for (let i = 0; i < docData.imageUrl.length; i++) {
+          const url = await getDownloadURL(ref(storage, docData.imageUrl[i].url));
+          docData.imageUrl[i].url = url;
+        }
+        setDownloadedImages(docData.imageUrl);
       }
-      setDownloadedImages(docData.imageUrl);
-    }
-   })();
+    })();
   }, [data, isEdit]);
 
   const handleRemoveDownloadedPhoto = (id: number) => {
-    setImagesDescription(prevState => prevState.filter((image, idx) => idx !== id));
-    setDownloadedImages(prevState => prevState.filter((image, idx) => idx !== id));
+    setImagesDescription((prevState) => prevState.filter((image, idx) => idx !== id));
+    setDownloadedImages((prevState) => prevState.filter((image, idx) => idx !== id));
   };
 
   return (
@@ -301,202 +368,209 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
           <p className={styles.text}>Trip name:</p>
           <input
             value={tripName}
-            placeholder={'Trip name'} 
-            className={styles.input} 
-            onChange={e => setTripName(e.target.value)}
+            placeholder={'Trip name'}
+            className={styles.input}
+            onChange={(e) => setTripName(e.target.value)}
           />
 
           <div className={styles.section}>
-              {/* <p>Tag Your Favorite Places on this Trip: </p> */}
-              <p className={styles.text}>Do you wanna add city? (You can add multiply cities)</p>
-              <button 
-                className={`${styles.section_button} ${styles.button}`}
-                onClick={(e) => handleOpenAddCity(e)}
-              >Add city</button>
-            </div>
+            {/* <p>Tag Your Favorite Places on this Trip: </p> */}
+            <p className={styles.text}>Do you wanna add city? (You can add multiply cities)</p>
+            <button
+              className={`${styles.section_button} ${styles.button}`}
+              onClick={(e) => handleOpenAddCity(e)}
+            >
+              Add city
+            </button>
+          </div>
 
-            {
-              isAddCityOpen && (
-                <div  className={`${styles.autocomplete} ${styles.cityAutocomplete}`}>
-                  <PlaceAutocomplete 
-                    searchOptions={{ types: ['locality'] }}
-                    location={city}
-                    setLocation={setCity}
-                    onSelectPlace={onSelectCity}
-                  />
-                </div>
-                
-              )
-            }
-          
+          {isAddCityOpen && (
+            <div className={`${styles.autocomplete} ${styles.cityAutocomplete}`}>
+              <PlaceAutocomplete
+                searchOptions={{ types: ['locality'] }}
+                location={city}
+                setLocation={setCity}
+                onSelectPlace={onSelectCity}
+              />
+            </div>
+          )}
+
           {!!selectedCities.length && (
             <div className={styles.selectedTagsContainer}>
-           
               <>
-                {selectedCities.map(selectedCity => (
+                {selectedCities.map((selectedCity) => (
                   <div className={styles.geoTagContainer} key={selectedCity.placeID}>
-                    <p className={styles.text}>{selectedCity.address.split(",")[0]}</p>
-                    <img src={Plus} className={styles.crossIcon} onClick={() => handleRemoveCity(selectedCity.placeID)} />
+                    <p className={styles.text}>{selectedCity.address.split(',')[0]}</p>
+                    <img
+                      src={Plus}
+                      className={styles.crossIcon}
+                      onClick={() => handleRemoveCity(selectedCity.placeID)}
+                    />
                   </div>
                 ))}
               </>
-          
             </div>
           )}
-            <div className={styles.section}>
-              <p className={styles.text}>Tag Your Places: </p>
-              <button 
-                className={`${styles.section_button} ${styles.button}`}
-                onClick={handleOpenAddGeocode}
-              >Add place</button>
-            </div>
-          {
-          isAddingPlace && (
-          <div className={styles.autocomplete}>
-            <PlacesAutocomplete
-              searchOptions={{ types: ["establishment"] }}
-              value={geoTags}
-              onChange={(value) => setGeoTags(value)}
-              onSelect={onSelectGeoTag}
+          <div className={styles.section}>
+            <p className={styles.text}>Tag Your Places: </p>
+            <button
+              className={`${styles.section_button} ${styles.button}`}
+              onClick={handleOpenAddGeocode}
             >
-              {({getInputProps, suggestions, getSuggestionItemProps, loading}) => {
-                return (
-                  <div className={suggestions.length ? styles.inputContainer : undefined}>
-                    <input
-                      id={'213'}
-                      {...getInputProps({
-                        placeholder: 'Museum of Dreamers, Viale Angelico, Rome, Metropolitan City of Rome Capital, Italy',
-                        className: styles.input,
-                      })}
-                    />
-                    <div className={suggestions.length ? styles.dropdown : undefined}>
-                      {loading && <div>Loading...</div>}
-                      {suggestions.map(suggestion => {
-                        const style = suggestion.active
-                          ? {backgroundColor: '#fafafa', cursor: 'pointer'}
-                          : {backgroundColor: '#ffffff', cursor: 'pointer'};
-                        return (
-                          <div
-                            {...getSuggestionItemProps(suggestion, {
-                              className: styles.dropdownItem,
-                              style,
-                            })}
-                            key={suggestion.id}
-                          >
-                            <p>{suggestion.description}</p>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                );
-              }}
-            </PlacesAutocomplete>
+              Add place
+            </button>
           </div>
-            )
-          }
+          {isAddingPlace && (
+            <div className={styles.autocomplete}>
+              <PlacesAutocomplete
+                searchOptions={{ types: ['establishment'] }}
+                value={geoTags}
+                onChange={(value) => setGeoTags(value)}
+                onSelect={onSelectGeoTag}
+              >
+                {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => {
+                  return (
+                    <div className={suggestions.length ? styles.inputContainer : undefined}>
+                      <input
+                        id={'213'}
+                        {...getInputProps({
+                          placeholder:
+                            'Museum of Dreamers, Viale Angelico, Rome, Metropolitan City of Rome Capital, Italy',
+                          className: styles.input,
+                        })}
+                      />
+                      <div className={suggestions.length ? styles.dropdown : undefined}>
+                        {loading && <div>Loading...</div>}
+                        {suggestions.map((suggestion) => {
+                          const style = suggestion.active
+                            ? { backgroundColor: '#fafafa', cursor: 'pointer' }
+                            : { backgroundColor: '#ffffff', cursor: 'pointer' };
+                          return (
+                            <div
+                              {...getSuggestionItemProps(suggestion, {
+                                className: styles.dropdownItem,
+                                style,
+                              })}
+                              key={suggestion.id}
+                            >
+                              <p>{suggestion.description}</p>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                }}
+              </PlacesAutocomplete>
+            </div>
+          )}
 
           {selectedGeoTags.length ? (
             <div className={styles.selectedTagsContainer}>
-                <>
-                  {selectedGeoTags.map(geoTag => (
-                    <div className={styles.geoTagContainer} key={geoTag.placeID}>
-                      <p>{geoTag.address.split(',')[0]}</p>
-                      <img src={Plus} className={styles.crossIcon} onClick={() => handleRemoveGeoTag(geoTag.placeID)} />
-                    </div>
-                  ))}
-                </>
+              <>
+                {selectedGeoTags.map((geoTag) => (
+                  <div className={styles.geoTagContainer} key={geoTag.placeID}>
+                    <p>{geoTag.address.split(',')[0]}</p>
+                    <img
+                      src={Plus}
+                      className={styles.crossIcon}
+                      onClick={() => handleRemoveGeoTag(geoTag.placeID)}
+                    />
+                  </div>
+                ))}
+              </>
             </div>
           ) : null}
 
-         
-
-        <div className={styles.datesContainer}>
-          {/* <div className={styles.dateDescriptionsContainer}>
+          <div className={styles.datesContainer}>
+            {/* <div className={styles.dateDescriptionsContainer}>
           </div> */}
-         
-          <div className={styles.dateContainer}>
-            <p className={`${styles.text} ${styles.dateDescription}`}>Start Date:</p>
 
-            <input 
-              value={startDate} 
-              onChange={e => setStartDate(e.target.value)} 
-              type="date"
-              className={styles.dateInput}
-            />
-          </div>
-          <div className={styles.dateContainer}>
-            <p className={`${styles.text} ${styles.dateDescription}`}>End Date:</p>
-            <input 
-              id="end_date"
-              value={endDate} 
-              onChange={e => setEndDate(e.target.value)} 
-              type="date"
-              className={styles.dateInput}
-              min={startDate}
-              lang="fr-CA"
-            />
-          </div>
-        </div>
-          
+            <div className={styles.dateContainer}>
+              <p className={`${styles.text} ${styles.dateDescription}`}>Start Date:</p>
 
-        </div>
-
-          <div>
-              <textarea
-                className={`${styles.input} ${styles.textArea}`}
-                placeholder={'Description'}
-                value={text}
-                onChange={e => setText(e.target.value)}
+              <input
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                type='date'
+                className={styles.dateInput}
               />
+            </div>
+            <div className={styles.dateContainer}>
+              <p className={`${styles.text} ${styles.dateDescription}`}>End Date:</p>
+              <input
+                id='end_date'
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                type='date'
+                className={styles.dateInput}
+                min={startDate}
+                lang='fr-CA'
+              />
+            </div>
           </div>
+        </div>
+
+        <div>
+          <textarea
+            className={`${styles.input} ${styles.textArea}`}
+            placeholder={'Description'}
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+          />
+        </div>
 
         <div className={styles.section}>
           <p className={styles.text}>Do you wanna description some day?</p>
-          <button 
-                className={`${styles.section_button} ${styles.button}`}
-                onClick={handleAddDayDescription}
+          <button
+            className={`${styles.section_button} ${styles.button}`}
+            onClick={handleAddDayDescription}
           >
             Add description
           </button>
         </div>
 
-        {
-          daysDescription && Array.from(Array(daysDescription.length).keys()).map((day, idx) => (
+        {daysDescription &&
+          Array.from(Array(daysDescription.length).keys()).map((day, idx) => (
             <div className={styles.dayDescriptionContainer} key={day}>
-            <input 
-              value={daysDescription[idx].date} 
-              onChange={e => handleDayDateDescriptionChange(e, idx, 'date')}
-              type="date"
-              className={styles.input}
-              min={startDate}
-              max={endDate}
-            />
-            <div className={styles.dayDescriptionContainer}>
+              <input
+                value={daysDescription[idx].date}
+                onChange={(e) => handleDayDateDescriptionChange(e, idx, 'date')}
+                type='date'
+                className={styles.input}
+                min={startDate}
+                max={endDate}
+              />
+              <div className={styles.dayDescriptionContainer}>
                 <textarea
                   className={`${styles.input} ${styles.textArea}`}
                   placeholder={'Description'}
-                  value={daysDescription[idx].description} 
-                  onChange={e => handleDayDateDescriptionChange(e, idx, 'description')}
+                  value={daysDescription[idx].description}
+                  onChange={(e) => handleDayDateDescriptionChange(e, idx, 'description')}
                 />
+              </div>
+              <img
+                src={Plus}
+                className={`${styles.crossIcon} ${styles.removeDay}`}
+                onClick={() => {
+                  handleRemoveDayDescription(idx);
+                }}
+              />
             </div>
-            <img src={Plus} className={`${styles.crossIcon} ${styles.removeDay}`} onClick={() => {handleRemoveDayDescription(idx)}} />
-          </div>
-          ))
-        }
+          ))}
 
         <div className={styles.startWrapper}>
           <div className={styles.startContainer}>
             <p className={styles.text}>Rating:</p>
-            <Rating setSelectedStars={setRating} selectedStars={rating}/>
+            <Rating setSelectedStars={setRating} selectedStars={rating} />
           </div>
         </div>
-                
+
         <div className={styles.startContainer}>
           <FileUploader
             multiple={true}
             handleChange={handleChange}
-            name="file"
+            name='file'
             types={fileTypes}
             hoverTitle={' '}
           >
@@ -511,94 +585,123 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
         <div className={styles.imagesDescriptions}>
           {/* {Slider} */}
 
-          {file?.map(item => {
-              return (
-                <div key={item.name} className={styles.uploadedImagesContainer}>
-                  {item.type.includes('image') ? (
-                      <div className={styles.imageContainer}>
-                        <img src={URL.createObjectURL(item)} alt={'trip image'} className={styles.image} />
-                        <input 
-                          placeholder='Describe the photo'
-                          value={imagesDescription.find(image => image.name === item.name)?.value || ''}
-                          className={styles.input} 
-                          onChange={handleChangeImageDescription}
-                          name={item.name}
-                        />
-                        <button onClick={(e) => handleRemovePhoto(e, item.name)} className={styles.removePhotoButton}>X</button>
-                      </div>
-                  ) : (
-                    <div className={styles.imageContainer}>
-                      <ReactPlayer
-                        playing
-                        stopOnUnmount={false}
-                        loop
-                        url={URL.createObjectURL(item)}
-                        width='100%'
-                        height='100%'
-                      />
-                        <input 
-                          placeholder='Describe the photo'
-                          value={imagesDescription.find(image => image.name === item.name)?.value || ''}
-                          className={styles.input} 
-                          onChange={handleChangeImageDescription}
-                          name={item.name}
-                        />
-                      <button onClick={(e) => handleRemovePhoto(e, item.name)} className={styles.removePhotoButton}>X</button>
-                    </div>
-                  )}
-                </div>
-              )
-            })}
+          {file?.map((item) => {
+            return (
+              <div key={item.name} className={styles.uploadedImagesContainer}>
+                {item.type.includes('image') ? (
+                  <div className={styles.imageContainer}>
+                    <img
+                      src={URL.createObjectURL(item)}
+                      alt={'trip image'}
+                      className={styles.image}
+                    />
+                    <input
+                      placeholder='Describe the photo'
+                      value={
+                        imagesDescription.find((image) => image.name === item.name)?.value || ''
+                      }
+                      className={styles.input}
+                      onChange={handleChangeImageDescription}
+                      name={item.name}
+                    />
+                    <button
+                      onClick={(e) => handleRemovePhoto(e, item.name)}
+                      className={styles.removePhotoButton}
+                    >
+                      X
+                    </button>
+                  </div>
+                ) : (
+                  <div className={styles.imageContainer}>
+                    <ReactPlayer
+                      playing
+                      stopOnUnmount={false}
+                      loop
+                      url={URL.createObjectURL(item)}
+                      width='100%'
+                      height='100%'
+                    />
+                    <input
+                      placeholder='Describe the photo'
+                      value={
+                        imagesDescription.find((image) => image.name === item.name)?.value || ''
+                      }
+                      className={styles.input}
+                      onChange={handleChangeImageDescription}
+                      name={item.name}
+                    />
+                    <button
+                      onClick={(e) => handleRemovePhoto(e, item.name)}
+                      className={styles.removePhotoButton}
+                    >
+                      X
+                    </button>
+                  </div>
+                )}
+              </div>
+            );
+          })}
 
           {downloadedImages?.map((item, id) => {
-              return (
-                <div key={item.url} className={styles.uploadedImagesContainer}>
-                  {item.type.includes('image') ? (
-                      <div className={styles.imageContainer}>
-                        <img src={item.url} alt={'trip image'} className={styles.image} />
-                        <input 
-                          placeholder='Describe the photo'
-                          value={imagesDescription.find(image => image.id === id)?.value || ''}
-                          className={styles.input} 
-                          onChange={(e) => handleChangeDownloadedImageDescription(e, id)}
-                          name={item.url}
-                        />
-                        <button onClick={(e) => handleRemoveDownloadedPhoto(id)} className={styles.removePhotoButton}>X</button>
-                      </div>
-                  ) : (
-                    <div className={styles.imageContainer}>
-                      <ReactPlayer
-                        playing
-                        stopOnUnmount={false}
-                        loop
-                        url={item.url}
-                        width='100%'
-                        height='100%'
-                      />
-                        <input 
-                          placeholder='Describe the photo'
-                          value={imagesDescription.find(image => image.id === id)?.value || ''}
-                          className={styles.input} 
-                          onChange={(e) => handleRemoveDownloadedPhoto(id)}
-                          name={item.url}
-                        />
-                      {/* <button onClick={(e) => handleRemovePhoto(e, item.name)} className={styles.removePhotoButton}>X</button> */}
-                    </div>
-                  )}
-                </div>
-              )
-            })}
+            return (
+              <div key={item.url} className={styles.uploadedImagesContainer}>
+                {item.type.includes('image') ? (
+                  <div className={styles.imageContainer}>
+                    <img src={item.url} alt={'trip image'} className={styles.image} />
+                    <input
+                      placeholder='Describe the photo'
+                      value={imagesDescription.find((image) => image.id === id)?.value || ''}
+                      className={styles.input}
+                      onChange={(e) => handleChangeDownloadedImageDescription(e, id)}
+                      name={item.url}
+                    />
+                    <button
+                      onClick={(e) => handleRemoveDownloadedPhoto(id)}
+                      className={styles.removePhotoButton}
+                    >
+                      X
+                    </button>
+                  </div>
+                ) : (
+                  <div className={styles.imageContainer}>
+                    <ReactPlayer
+                      playing
+                      stopOnUnmount={false}
+                      loop
+                      url={item.url}
+                      width='100%'
+                      height='100%'
+                    />
+                    <input
+                      placeholder='Describe the photo'
+                      value={imagesDescription.find((image) => image.id === id)?.value || ''}
+                      className={styles.input}
+                      onChange={(e) => handleRemoveDownloadedPhoto(id)}
+                      name={item.url}
+                    />
+                    {/* <button onClick={(e) => handleRemovePhoto(e, item.name)} className={styles.removePhotoButton}>X</button> */}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </form>
       <div className={styles.submit_container}>
-          <button className={`${styles.submit_button} ${styles.button}`} onClick={async () => {
+        <button
+          className={`${styles.submit_button} ${styles.button}`}
+          onClick={async () => {
             await handleOnSave();
-          }}>
-            {isEdit ? 'Save' : 'Post'}
-          </button>
-          <button className={`${styles.submit_button} ${styles.button} ${styles['button-gray']}`} onClick={closeModal}>
-            Cancel
-          </button>
+          }}
+        >
+          {isEdit ? 'Save' : 'Post'}
+        </button>
+        <button
+          className={`${styles.submit_button} ${styles.button} ${styles['button-gray']}`}
+          onClick={closeModal}
+        >
+          Cancel
+        </button>
       </div>
 
       <ToastContainer closeOnClick autoClose={3000} limit={1} pauseOnHover={false} />

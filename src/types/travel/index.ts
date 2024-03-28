@@ -1,7 +1,7 @@
 export interface ITravel {
   id: string;
   userId: string;
-  imageUrl: {url: string; type: string, description?: string}[];
+  imageUrl: { url: string; type: string; description?: string }[];
   rate: number;
   startDate: string;
   endDate: string;
@@ -16,6 +16,6 @@ export interface ITravel {
   pinColor: string;
   text: string;
   tripName: string;
-  dayDescription?: {date: string, description: string}[]
+  dayDescription?: { date: string; description: string }[];
   comments_count?: number;
 }

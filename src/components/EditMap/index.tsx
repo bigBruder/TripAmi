@@ -1,17 +1,13 @@
-import styles from './EditMap.module.css';
-import map from "@assets/icons/map.svg";
-import ImageMarker from "react-image-marker";
-import {useCallback, useContext, useEffect, useState} from "react";
-import randomColor from "randomcolor";
-import {ICustomMarker} from "~/components/EditMap/types";
-import CustomMarker from "~/components/EditMap/CustomMarker";
-import useMapContext from "~/components/EditMap/store";
+import { useCallback, useContext, useEffect, useState } from 'react';
+
+import { LoadingScreen } from '~/components/LoadingScreen';
+import Map from '~/components/Map/Map';
+import { db } from '~/firebase';
+
 import Bin from '@assets/icons/BinIcon.svg';
-import {doc, updateDoc} from "@firebase/firestore";
-import {db} from "~/firebase";
-import {AuthContext} from "~/providers/authContext";
-import {LoadingScreen} from "~/components/LoadingScreen";
-import Map from "~/components/Map/Map";
+import { doc, updateDoc } from '@firebase/firestore';
+
+import styles from './EditMap.module.css';
 
 const EditMap = () => {
   const [selectedMarker, setSelectedMarker] = useState<null | string>(null);
@@ -47,14 +43,6 @@ const EditMap = () => {
     }
   }, [selectedMarker]);
 
-  // useEffect(() => {
-  //   setInitialMarkers(markers);
-  //
-  //   return () => {
-  //     setNewMarkers([]);
-  //   }
-  // }, []);
-
   return (
     <div className={styles.container}>
       <p className={styles.title}>Edit Map</p>
@@ -68,7 +56,7 @@ const EditMap = () => {
               onClick={handleDeleteMarker}
               className={`${styles.deleteButton} ${!selectedMarker && styles.disabled}`}
             >
-              Delete the pin <img src={Bin} alt="Bin icon" />
+              Delete the pin <img src={Bin} alt='Bin icon' />
             </button>
           </div>
         </div>
