@@ -1,7 +1,9 @@
 .container {
     display: flex;
-    gap: 26px;
     flex-direction: column;
+    justify-content: space-between;
+    height: 125px;
+    box-sizing: border-box;
 
     border-radius: 8px;
     background: #FFF;
@@ -44,3 +46,17 @@
     color: #F00;
 }
 
+.replies_container {
+    width: 95%;
+    align-self: flex-end;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.replies_top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}

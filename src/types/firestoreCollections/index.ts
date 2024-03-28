@@ -9,3 +9,5 @@ export const commentsCollection = collection(db, "comments");
 export const placesCommentsCollection = collection(db, "places_comments");
 export const friendsRequestsCollection = collection(db, "friends_requests");
 export const notificationsCollection = collection(db, "notifications");
+export const repliesCollection = collection(db, "replies");
+

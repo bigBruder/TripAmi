@@ -8,6 +8,7 @@ export interface IComment {
   userId: string,
   createdAt: string,
   text: string,
+  placeId: string,
 }
 
 export interface IPlaceComment {
