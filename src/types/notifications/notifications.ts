@@ -4,6 +4,7 @@ export interface Notification {
   postId: string;
   type: NotificationType;
   text: string;
+  commentId?: string;
 }
 
 export enum NotificationType {
@@ -11,5 +12,6 @@ export enum NotificationType {
   CommentPost = 'comment post',
   NewTrip = 'new trip',
   CommentTrip = 'comment trip',
-  NewReply = 'new reply',
+  NewReplyTrip = 'new reply trip',
+  NewReplyPost = 'new reply post',
 }

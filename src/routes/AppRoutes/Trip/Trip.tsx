@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { contextType } from 'react-modal';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { doc, documentId, getDocs, onSnapshot, orderBy, query, where } from 'firebase/firestore';
@@ -225,7 +226,10 @@ export const Trip = () => {
           />
         )}
 
-        {comments && comments?.map((comment) => <Comment key={comment.id} comment={comment} />)}
+        {comments &&
+          comments?.map((comment) => (
+            <Comment key={comment.id} comment={comment} typeOfContent={'trip'} />
+          ))}
       </div>
       <LightBox
         isOpen={isLightBoxOpen}

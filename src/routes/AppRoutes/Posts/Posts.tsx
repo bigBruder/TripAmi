@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router';
-import { useParams } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import React from 'react';
+import { flushSync } from 'react-dom';
+import { useLocation, useParams, useSearchParams } from 'react-router-dom';
 
 import { documentId } from 'firebase/firestore';
 import { getDownloadURL, ref } from 'firebase/storage';
@@ -19,11 +20,20 @@ import { onSnapshot, orderBy, query, where } from '@firebase/firestore';
 import styles from './posts.module.css';
 
 const PostsPage = () => {
-  // const {state} = useLocation();
+  const { state } = useLocation();
   const [comments, setComments] = useState<IComment[] | null>(null);
   const [post, setPost] = useState<IPost | null>(null);
   const [imagesUrl, setImagesUrl] = useState<string[] | null>(null);
   const { id } = useParams();
+
+  const commentsRef = useRef(null);
+
+  useEffect(() => {
+    if (commentsRef.current && comments && comments.length > 0) {
+      console.log(commentsRef.current, '-- commentsRef.current');
+      (commentsRef.current as HTMLElement).scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }
+  }, [commentsRef, comments?.length]);
 
   useEffect(() => {
     const q = query(postsCollection, where(documentId(), '==', id));
@@ -60,9 +70,7 @@ const PostsPage = () => {
     };
 
     fetchImages();
-  }, [post]);
-
-  console.log('post', imagesUrl);
+  }, [post?.id]);
 
   useEffect(() => {
     if (post?.id) {
@@ -83,9 +91,9 @@ const PostsPage = () => {
         unsubscribe();
       };
     }
-  }, [post]);
+  }, [post?.id]);
 
-  console.log(imagesUrl, 'imagesUrl');
+  console.log(state, '-- state');
 
   return (
     <div className={styles.mainContainer}>
@@ -102,7 +110,15 @@ const PostsPage = () => {
               contentType='post'
               postOwnerId={post.userId}
             />
-            {comments?.map((comment) => <Comment key={comment.id} comment={comment} />)}
+            {comments?.map((comment) => (
+              <div
+                key={comment.id}
+                ref={state?.open_comment === comment.id ? commentsRef : null}
+                className={styles.replies_container}
+              >
+                <Comment comment={comment} isCommentOpen={state?.open_comment === comment.id} />
+              </div>
+            ))}
           </div>
         )}
       </div>

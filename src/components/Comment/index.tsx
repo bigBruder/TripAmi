@@ -12,19 +12,21 @@ import {
   repliesCollection,
   usersCollection,
 } from '~/types/firestoreCollections';
+import { NotificationType } from '~/types/notifications/notifications';
 
 import { LikeIcon } from '@assets/icons/likeIcon';
 import { doc, updateDoc } from '@firebase/firestore';
 
 import styles from './comment.module.css';
-import { NotificationType } from '~/types/notifications/notifications';
 
 interface Props {
   comment: IComment | IPlaceComment;
   isReply?: boolean;
+  isCommentOpen: boolean;
+  contentType?: string;
 }
 
-export const Comment: FC<Props> = ({ comment, isReply }) => {
+export const Comment: FC<Props> = ({ comment, isReply, isCommentOpen, contentType }) => {
   const { likes, dislikes, id } = comment;
   const { firestoreUser } = useContext(AuthContext);
   const likedByUser = useMemo(
@@ -38,7 +40,7 @@ export const Comment: FC<Props> = ({ comment, isReply }) => {
   const [userPhotoUrl, setUserPhotoUrl] = useState<string>();
   const [replies, setReplies] = useState<IComment[]>([]);
   const [enteredReply, setEnteredReply] = useState<string>('');
-  const [isRepliesOpen, setIsRepliesOpen] = useState<boolean>(false);
+  const [isRepliesOpen, setIsRepliesOpen] = useState<boolean>(isCommentOpen);
 
   useEffect(() => {
     (async () => {
@@ -164,13 +166,19 @@ export const Comment: FC<Props> = ({ comment, isReply }) => {
           text: enteredReply,
         });
 
-        await addDoc(notificationsCollection, {
-          createdAt: new Date().toISOString(),
-          type: NotificationType.NewReply,
-          targetUserId: comment.userId,
-          postId: comment.id,
-          text: `${comment.text}: ${enteredReply}`,
-        });
+        if (firestoreUser.id !== comment.userId) {
+          await addDoc(notificationsCollection, {
+            createdAt: new Date().toISOString(),
+            type:
+              contentType === 'trip'
+                ? NotificationType.NewReplyTrip
+                : NotificationType.NewReplyPost,
+            targetUserId: comment.userId,
+            commentId: comment.id,
+            postId: comment.postId,
+            text: enteredReply,
+          });
+        }
       }
 
       setEnteredReply('');
@@ -236,20 +244,24 @@ export const Comment: FC<Props> = ({ comment, isReply }) => {
             <>
               <div className={styles.replies_container}>
                 <div className={styles.replies_top}>
-                  <input
-                    type='text'
-                    placeholder='Reply'
-                    value={enteredReply}
-                    onChange={(e) => setEnteredReply(e.target.value)}
-                    className={styles.input}
-                  />
-                  <button className={styles.button} onClick={handleReply}>
-                    Reply
-                  </button>
+                  {firestoreUser?.firebaseUid !== comment.userId && (
+                    <>
+                      <input
+                        type='text'
+                        placeholder='Reply'
+                        value={enteredReply}
+                        onChange={(e) => setEnteredReply(e.target.value)}
+                        className={styles.input}
+                      />
+
+                      <button className={styles.button} onClick={handleReply}>
+                        Reply
+                      </button>
+                    </>
+                  )}
                 </div>
                 {replies.length > 0 &&
                   replies?.map((reply) => {
-                    console.log(reply);
                     return <Comment key={reply.id} comment={reply} isReply={true} />;
                   })}
               </div>

@@ -20,8 +20,7 @@ const getTitle = (type: NotificationType) => {
     case NotificationType.NewTrip:
       return 'Your friend has created a new trip!';
     case NotificationType.CommentTrip:
-      return 'Your friend has commented on your trip:';
-    case NotificationType.NewReply:
+    case NotificationType.NewReplyPost:
       return 'Somebody has replied to your comment:';
     default:
       return '';
@@ -36,6 +35,8 @@ const getWay = (type: NotificationType) => {
     case NotificationType.NewTrip:
     case NotificationType.CommentTrip:
       return 'trip';
+    case NotificationType.NewReplyPost:
+      return 'posts';
     default:
       return '';
   }
@@ -46,6 +47,11 @@ export const Notifications: FC<Props> = ({ notifications, deleteMessages, delete
   const handleNavigate = (postId: string, type: NotificationType) => {
     const way = getWay(type);
     navigate(`/${way}/${postId}`);
+  };
+
+  const handleOpenComment = (postId: string, commentId: string, type: NotificationType) => {
+    const way = getWay(type);
+    navigate(`/${way}/${postId}`, { state: { open_comment: commentId } });
   };
 
   return (
@@ -64,14 +70,20 @@ export const Notifications: FC<Props> = ({ notifications, deleteMessages, delete
             )}
           </div>
           <div className={styles.control_container}>
-            {notification.type !== NotificationType.NewReply && (
-              <button
-                className={styles.button}
-                onClick={() => handleNavigate(notification.postId, notification.type)}
-              >
-                Check
-              </button>
-            )}
+            {/* <button
+              className={styles.button}
+              onClick={() => handleNavigate(notification.postId, notification.type)}
+            >
+              Check
+            </button> */}
+            <button
+              className={styles.button}
+              onClick={() =>
+                handleOpenComment(notification.postId, notification.commentId, notification.type)
+              }
+            >
+              Check
+            </button>
             <button
               className={`${styles.button} ${styles.button_remove}`}
               onClick={() => deleteMessage(notification.id)}
