@@ -99,7 +99,6 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, startPost }) => {
           const storageRef = ref(storage, `postsImages/${filesList[i]?.name + uuidv4()}`);
 
           if (filesList[i]) {
-            console.log(filesList[i]);
             const uploadResult = await uploadBytes(storageRef, filesList[i]);
             imageUrls.push(uploadResult.ref.fullPath);
           }
@@ -154,7 +153,6 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, startPost }) => {
     }
   }, [filesList, startPost, closeModal, postText, firestoreUser?.id, firestoreUser?.postsCount, updateFirestoreUser]);
 
-  console.log(firestoreUser?.friends);
   const content = useMemo(() => {
     switch (activeTab) {
       case 0:

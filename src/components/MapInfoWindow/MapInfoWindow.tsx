@@ -19,47 +19,8 @@ interface Props {
 
 export const MapInfoWindow: FC<Props> = ({ selectedTravel, handleClose, travels, friends }) => {
     const { location } = selectedTravel;
-
-
-    //   useEffect(() => {
-    //     (async () => {
-    //       if (firestoreUser?.firebaseUid) {
-    //         try {
-    //           const q = query(usersCollection, where('friends', 'array-contains', firestoreUser.id), limit(40));
-    //         //   'friends', 'array-contains-any', firestoreUser.friends
-    //           const querySnapshot = await getDocs(q);
-    
-    //           const fetchedUsers = querySnapshot.docs.map(doc => ({
-    //             ...doc.data(),
-    //             id: doc.id,
-    //           }));
-
-    //           console.log(q);
-    
-    //           setUsers(fetchedUsers as IUser[]);
-    //         } catch (err) {
-    //           // @ts-ignore
-    //           alert(firebaseErrors[err.code]);
-    //         }
-    //       }
-    //     })});
-    // const [userAvatar, setUserAvatar] = useState(defaultUserIcon);
     const [userAvatars, setUserAvatars] = useState<any>([]);
     const [reviews, setReviews] = useState<ITravel[]>([])
-
-//   const getUserImage = useCallback(async () => {
-//     if (selectedUser?.avatarUrl !== null) {
-//       const url = await getDownloadURL(ref(storage, selectedUser.avatarUrl));
-
-//       setUserAvatar(url);
-//     } else {
-//         setUserAvatar(defaultUserIcon);
-//     }
-//   }, [selectedUser.avatarUrl]);
-
-//   useEffect(() => {
-//     getUserImage();
-//   }, [getUserImage, selectedUser]);
 
     useEffect(() => {
             setReviews(travels.filter(travel => 

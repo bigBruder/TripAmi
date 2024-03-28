@@ -23,6 +23,7 @@ interface IPosition {
 }
 
 interface IPin {
+  name: string,
   lat:number, 
   lng:number, 
   color: string, 
@@ -71,8 +72,7 @@ const Map: FC<Props> = ({onClick, selectedTripId, userId}) => {
   useEffect(() => {
     const tripsToDisplay = userId ? usersTrips : trips;
     if (!tripsToDisplay) return;
-    const citiesPlacesId = tripsToDisplay.flatMap(trip => trip.cities?.map(city => ({ place_id: city.placeID, color: trip.location ? trip.location.color : trip.pinColor, name: city.address })) || []);
-    console.log(citiesPlacesId);
+    const citiesPlacesId = tripsToDisplay.flatMap(trip => trip.cities?.map(city => ({ place_id: city.placeID, color: trip.pinColor, name: city.address })) || []);
     (async () => {
       const citiesGeoCode: IPin[] = [];
       await Promise.all(citiesPlacesId.map(async (city) => {
@@ -94,14 +94,13 @@ const Map: FC<Props> = ({onClick, selectedTripId, userId}) => {
   useEffect(() => {
     const tripsToDisplay = userId ? usersTrips : trips;
     if (!tripsToDisplay) return;
-    const tagsPlaceId = tripsToDisplay.flatMap(trip => trip.geoTags?.map(tag => ({ place_id: tag.placeID, color: trip.location?.color || trip.pinColor, name: tag.address })) || []);
+    const tagsPlaceId = tripsToDisplay.flatMap(trip => trip.geoTags?.map(tag => ({ place_id: tag.placeID, color: trip.pinColor, name: tag.address })) || []);
     (async () => {
       const tagsGeoCode: IPin[] = [];
       await Promise.all(tagsPlaceId.map(async (tag) => {
         if (!tag) return;
         const geocode = await geocodeByPlaceId(tag.place_id);
         const randomOffset = Math.random() * 0.001 - 0.0005;
-        console.log(tag);
         tagsGeoCode.push({
           name: tag.name,
           lng: geocode[0].geometry.location.lng() + randomOffset, 
@@ -132,7 +131,7 @@ const Map: FC<Props> = ({onClick, selectedTripId, userId}) => {
 
   useEffect(() => {
     const timerId = setTimeout(() => {
-      setSelectedMarkerAddress('');
+      setSelectedMarkerAddress(null);
     }, 3000)
 
     return () => {
@@ -178,6 +177,7 @@ const Map: FC<Props> = ({onClick, selectedTripId, userId}) => {
                 key={`${city.place_id}${city.lng}${city.lat}`}
                 coordinates={[city.lng, city.lat]}
                 onClick={() => handleSelectMarker(city.name, city.place_id)}
+                cursor={'pointer'}
               >
                 <g transform={`translate(${-10 / scaleFactor}, ${-26 / scaleFactor})`} className={styles.marker}>
                   <svg width={20 / scaleFactor} height={30 / scaleFactor} viewBox="0 0 16 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -207,25 +207,6 @@ const Map: FC<Props> = ({onClick, selectedTripId, userId}) => {
               </Marker>
             ))
           }
-
-          {/* {selectedTripsList?.map(trip => (
-            trip?.location?.latitude ? (
-              <Marker
-                key={trip.id}
-                onClick={() => onClick?.(trip.id)}
-                coordinates={[trip.location.longitude, trip.location.latitude]}
-              >
-                <g transform={`translate(${-10 / scaleFactor}, ${-26 / scaleFactor})`} className={selectedTripId === trip.id && styles.marker}>
-                  <svg width={20 / scaleFactor} height={30 / scaleFactor} viewBox="0 0 16 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                      d="M8 1.00146e-08C5.89206 -0.00010539 3.86926 0.831759 2.37124 2.31479C0.873231 3.79782 0.0210794 5.81216 0 7.92C0 13.4 7.05 19.5 7.35 19.76C7.53113 19.9149 7.76165 20.0001 8 20.0001C8.23835 20.0001 8.46887 19.9149 8.65 19.76C9 19.5 16 13.4 16 7.92C15.9789 5.81216 15.1268 3.79782 13.6288 2.31479C12.1307 0.831759 10.1079 -0.00010539 8 1.00146e-08ZM8 11C7.30777 11 6.63108 10.7947 6.0555 10.4101C5.47993 10.0256 5.03133 9.47893 4.76642 8.83939C4.50151 8.19985 4.4322 7.49612 4.56725 6.81718C4.7023 6.13825 5.03564 5.51461 5.52513 5.02513C6.01461 4.53564 6.63825 4.2023 7.31718 4.06725C7.99612 3.9322 8.69985 4.00152 9.33939 4.26642C9.97893 4.53133 10.5256 4.97993 10.9101 5.5555C11.2947 6.13108 11.5 6.80777 11.5 7.5C11.5 8.42826 11.1313 9.3185 10.4749 9.97487C9.8185 10.6313 8.92826 11 8 11Z"
-                      fill={trip.location.color || "#1400FF"}/>
-                  </svg>
-                </g>
-              </Marker>
-            ) : null
-          ))} */}
-
         </ZoomableGroup>
       </ComposableMap>
 

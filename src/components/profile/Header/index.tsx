@@ -95,15 +95,12 @@ const Header = () => {
       setNotifications(fetchedDocs);
     });
 
-    console.log('notifications', notifications);
-
     return () => {
       unsubscribe();
     }
   }, [firestoreUser]);
 
   const handleDeleteMessages = async () => {
-    console.log('notifications', notifications);
     if (!notifications.length) return;
     try {
         const q = query(
@@ -153,8 +150,6 @@ const Header = () => {
 
 
   const handleSearch = useCallback(async () => {
-    console.log('render');
-
     try {
       setSearchIsLoading(true);
 
@@ -164,10 +159,7 @@ const Header = () => {
           attributesToRetrieve: ['userId', 'cities','location', 'rate', 'text', 'objectID', 'geoTags'],
           hitsPerPage: 5,
         });
-        console.log('result.hits: ',result.hits);
-        // Moved the declaration outside of the map function for better readability
         const matchedCities = result.hits.map(hit => {
-          // Check for matched cities or geoTags for city names
           for (let i = 0; i < hit._highlightResult.cities.length; i++) {
             if(hit._highlightResult.cities[i].address.matchLevel === 'full') {
               return hit._highlightResult.cities[i].address.value.replace('<em>', '').replace('</em>', '').split(',')[0];
@@ -198,7 +190,7 @@ const Header = () => {
           type: CONTENT_TYPE.TRAVEL,
           id: hit.objectID,
           avatar: imageUrls[i],
-          matchedCity: matchedCities[i], // Fixed typo in variable name
+          matchedCity: matchedCities[i],
           createdAt: hit.createdAt,
         })));
       } 

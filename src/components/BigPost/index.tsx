@@ -29,15 +29,9 @@ export const BigPost: FC<Props> = ({
   const [userData, setUserData] = useState<IUser | null>(null);
   const [isPostsLoading, setIsPostsLoading] = useState(false);
 
-  console.log('post => ', post);
-
   useEffect(() => {
     setImageUrl(post.imageUrls);
   }, [post]);
-
-  console.log('post => ', post);
-
-
 
   useEffect(() => {
     (async () => {

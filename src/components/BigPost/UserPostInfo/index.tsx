@@ -23,8 +23,6 @@ export const UserPostInfo: FC<Props> = ({userData, createdAt, userPhotoUrl, post
   const [userAvatar, setUserAvatar] = useState<string | null>(null);
 
   const handleOpenUserProfile = useCallback(() => {
-    console.log('userData', userData);
-    console.log('firestoreUser', firestoreUser);
     if (userData.id !== firestoreUser?.id) {
       navigate('/user/' + userData.id);
     } else {

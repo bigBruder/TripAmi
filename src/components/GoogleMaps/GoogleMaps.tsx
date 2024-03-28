@@ -40,7 +40,6 @@ export default function Intro() {
           ...doc.data(),
           id: doc.id,
         }));
-        console.log(fetchedTravel);
         setTravels(fetchedTravel as ITravel[]);
       });
     }

@@ -131,10 +131,7 @@ export const Comment: FC<Props> = ({comment, isReply}) => {
     })();
   }, [comment.id]);
 
-  console.log('replies', replies);
-
   const handleReply = useCallback(async () => {
-    console.log('enteredReply', enteredReply);
     try {
       if (enteredReply && firestoreUser?.id) {
         await addDoc(repliesCollection, {

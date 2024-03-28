@@ -31,7 +31,6 @@ import { Sort } from "~/components/Sort/Sort";
 
     useEffect(() => {
       (async () => {
-        console.log('id => ', id);
         if (!id) return;
         const q = query(usersCollection, where('id', '==', id));
         const querySnapshot = await getDocs(q);

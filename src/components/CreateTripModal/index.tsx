@@ -65,9 +65,6 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
   const [downloadedImages, setDownloadedImages] = useState<{url: string, type: string, description: string}[]>(data?.imageUrl || []);
   const [imagesDescription, setImagesDescription] = useState<{name: string, value:string, id?: number}[]>(downloadedImages?.map((image, id) => ({name: image.url, value: image.description, id: id})) || []);
 
-
-  console.log(daysDescription, 'dayDescription');
-
   useEffect(() => {
     if (isMaxError) {
       notify('The maximum number of media is 5');
