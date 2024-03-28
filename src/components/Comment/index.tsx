@@ -1,28 +1,34 @@
-import {IComment, IPlaceComment} from '~/types/comments';
-import {FC, useCallback, useContext, useEffect, useMemo, useState} from 'react';
+import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+
+import { addDoc, documentId, getDocs, onSnapshot, query, where } from 'firebase/firestore';
+import { UserPostInfo } from '~/components/BigPost/UserPostInfo';
+import { CommentActions } from '~/components/CommentActions';
+import { firebaseErrors } from '~/constants/firebaseErrors';
+import { db } from '~/firebase';
+import { AuthContext } from '~/providers/authContext';
+import { IComment, IPlaceComment } from '~/types/comments';
+import { repliesCollection, usersCollection } from '~/types/firestoreCollections';
+
+import { LikeIcon } from '@assets/icons/likeIcon';
+import { doc, updateDoc } from '@firebase/firestore';
+
 import styles from './comment.module.css';
-import {UserPostInfo} from '~/components/BigPost/UserPostInfo';
-import {CommentActions} from '~/components/CommentActions';
-import {LikeIcon} from '@assets/icons/likeIcon';
-import {AuthContext} from '~/providers/authContext';
-import {doc, updateDoc} from '@firebase/firestore';
-import {db} from '~/firebase';
-import {firebaseErrors} from '~/constants/firebaseErrors';
-import {addDoc, documentId, getDocs, query, where} from 'firebase/firestore';
-import {repliesCollection, usersCollection} from '~/types/firestoreCollections';
 
 interface Props {
   comment: IComment | IPlaceComment;
   isReply?: boolean;
 }
 
-export const Comment: FC<Props> = ({comment, isReply}) => {
-  const {likes, dislikes, id} = comment;
-  const {firestoreUser} = useContext(AuthContext);
-  const likedByUser = useMemo(() => firestoreUser?.id && likes.includes(firestoreUser.id), [likes, firestoreUser?.id]);
+export const Comment: FC<Props> = ({ comment, isReply }) => {
+  const { likes, dislikes, id } = comment;
+  const { firestoreUser } = useContext(AuthContext);
+  const likedByUser = useMemo(
+    () => firestoreUser?.id && likes.includes(firestoreUser.id),
+    [likes, firestoreUser?.id]
+  );
   const dislikedByUser = useMemo(
     () => firestoreUser?.id && dislikes.includes(firestoreUser.id),
-    [dislikes, firestoreUser?.id],
+    [dislikes, firestoreUser?.id]
   );
   const [userPhotoUrl, setUserPhotoUrl] = useState<string>();
   const [replies, setReplies] = useState<IComment[]>([]);
@@ -33,9 +39,12 @@ export const Comment: FC<Props> = ({comment, isReply}) => {
     (async () => {
       if (comment.id) {
         const q = query(repliesCollection, where('commentId', '==', comment.id));
-        const querySnapshot = await getDocs(q);
-        const fetchedReplies = querySnapshot.docs[0] ? querySnapshot.docs[0].data() : null;
-        setReplies(fetchedReplies as IComment[]);
+        const unsubscribe = onSnapshot(q, (snapshot) => {
+          const fetchedReplies = snapshot.docs.map((document) => ({...document.data(), id: document.id}));
+          setReplies(fetchedReplies as IComment[]);
+        });
+
+        return () => unsubscribe();
       }
     })();
   }, [comment.id]);
@@ -123,11 +132,13 @@ export const Comment: FC<Props> = ({comment, isReply}) => {
 
   useEffect(() => {
     (async () => {
-      const q = query(repliesCollection, where('commentId', '==', comment.id));
-      const querySnapshot = await getDocs(q);
-      const fetchedReplies = querySnapshot.docs.map(document => document.data());
+      if (comment.id) {
+        const q = query(repliesCollection, where('commentId', '==', comment.id));
+        const querySnapshot = await getDocs(q);
+        const fetchedReplies = querySnapshot.docs.map((document) => document.data());
 
-      setReplies(fetchedReplies as IComment[]);
+        setReplies(fetchedReplies as IComment[]);
+      }
     })();
   }, [comment.id]);
 
@@ -146,18 +157,22 @@ export const Comment: FC<Props> = ({comment, isReply}) => {
         });
       }
 
-      console.log('added reply');
+      setEnteredReply('');
     } catch (e) {
       // @ts-ignore
       alert(firebaseErrors[e.code]);
     }
-  }, [comment.id, enteredReply, firestoreUser?.avatarUrl, firestoreUser?.id, firestoreUser?.username]);
-
-  console.log(isRepliesOpen, 'isRepliesOpen');
+  }, [
+    comment.id,
+    enteredReply,
+    firestoreUser?.avatarUrl,
+    firestoreUser?.id,
+    firestoreUser?.username,
+  ]);
 
   return (
     <>
-      <div className={styles.container}>
+      <div className={`${styles.container} ${isReply ? styles.container_reply : ''}`}>
         <UserPostInfo
           userData={{
             username: comment.userName,
@@ -174,7 +189,9 @@ export const Comment: FC<Props> = ({comment, isReply}) => {
               <div>
                 <LikeIcon color={likedByUser ? '#55BEF5' : undefined} />
               </div>
-              <span className={`${styles.share} ${likedByUser && styles.liked}`}>{likes.length} Likes</span>
+              <span className={`${styles.share} ${likedByUser && styles.liked}`}>
+                {likes.length} Likes
+              </span>
             </div>
             <div className={styles.shareContainer} onClick={handleDislikeComment}>
               <div className={styles.dislike}>
@@ -186,7 +203,15 @@ export const Comment: FC<Props> = ({comment, isReply}) => {
             </div>
           </div>
         ) : (
-          <CommentActions comment={comment} setRepliesOpen={() => setIsRepliesOpen(prevState => !prevState)} />
+          <>
+            {!isReply && (
+              <CommentActions
+                comment={comment}
+                setRepliesOpen={() => setIsRepliesOpen((prevState) => !prevState)}
+                isReply={isReply}
+              />
+            )}
+          </>
         )}
       </div>
       {!isReply && (
@@ -196,18 +221,21 @@ export const Comment: FC<Props> = ({comment, isReply}) => {
               <div className={styles.replies_container}>
                 <div className={styles.replies_top}>
                   <input
-                    type="text"
-                    placeholder="Reply"
+                    type='text'
+                    placeholder='Reply'
                     value={enteredReply}
-                    onChange={e => setEnteredReply(e.target.value)}
+                    onChange={(e) => setEnteredReply(e.target.value)}
+                    className={styles.input}
                   />
                   <button className={styles.button} onClick={handleReply}>
-                    add reply
+                    Reply
                   </button>
                 </div>
-                {replies?.map(reply => (
-                  <Comment key={reply.id} comment={reply} isReply={true} />
-                ))}
+                {replies.length > 0 &&
+                  replies?.map((reply) => {
+                    console.log(reply);
+                    return <Comment key={reply.id} comment={reply} isReply={true} />;
+                  })}
               </div>
             </>
           )}

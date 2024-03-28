@@ -1,6 +1,6 @@
 .mainContainer {
-    height: 100vh;
-    width: 100vw;
+    height: 100%;
+    width: 100%;
     display: flex;
     flex-direction: column;
 }
@@ -9,13 +9,13 @@
     display: flex;
     flex-direction: column;
     flex-grow: 1;
-    padding: 60px 60px 0 60px;
+    padding: 30px;
+    box-sizing: border-box;
 
     background-image: url('../../../assets/images/LoginBackground.png');
     background-repeat: no-repeat;
     background-size: cover;
 
-    overflow: scroll;
 }
 
 .post {

@@ -11,6 +11,10 @@
     padding: 6px 10px;
 }
 
+.container_reply {
+    height: max-content;
+}
+
 .footer {
     display: flex;
     align-items: center;
@@ -59,4 +63,33 @@
     justify-content: space-between;
     align-items: center;
     gap: 10px;
+}
+
+.input {
+    height: 36px;
+    border-radius: 8px;
+    background: #F6F6F6;
+    color: #1a1a1a;
+    outline: none;
+    border: none;
+    padding: 0 20px;
+    resize: none;
+    font-family: Gilroy, sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: normal;
+    box-sizing: border-box;
+    flex-grow: 1;
+}
+
+.button {
+    width: max-content;
+    padding: 10px;
+    height: 100%;
+    border-radius: 10px;
+    background: #ff4d00;
+    color: #fff;
+    border: none;
+    font-weight: 500;
+    cursor: pointer;
 }

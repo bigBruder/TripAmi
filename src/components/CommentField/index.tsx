@@ -1,13 +1,16 @@
-import {FC, useCallback, useContext, useState} from "react";
+import { FC, useCallback, useContext, useState } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+
+import { firebaseErrors } from '~/constants/firebaseErrors';
+import { db } from '~/firebase';
+import { AuthContext } from '~/providers/authContext';
+import { commentsCollection, notificationsCollection } from '~/types/firestoreCollections';
+import { NotificationType } from '~/types/notifications/notifications';
+import { IPost } from '~/types/post';
+
+import { addDoc, doc, updateDoc } from '@firebase/firestore';
+
 import styles from './commentField.module.css';
-import {addDoc, doc, updateDoc} from "@firebase/firestore";
-import {commentsCollection, notificationsCollection} from "~/types/firestoreCollections";
-import {AuthContext} from "~/providers/authContext";
-import {firebaseErrors} from "~/constants/firebaseErrors";
-import {db} from "~/firebase";
-import {IPost} from "~/types/post";
-import { ToastContainer, toast } from "react-toastify";
-import { NotificationType } from "~/types/notifications/notifications";
 
 interface Props {
   postId: string;
@@ -16,12 +19,12 @@ interface Props {
   postOwnerId: string;
 }
 
-export const CommentField: FC<Props> = ({postId, commentsCount, contentType, postOwnerId}) => {
-  const {firestoreUser} = useContext(AuthContext);
+export const CommentField: FC<Props> = ({ postId, commentsCount, contentType, postOwnerId }) => {
+  const { firestoreUser } = useContext(AuthContext);
   const [enteredText, setEnteredText] = useState('');
   const notify = (text: string) => {
     if (!toast.isActive('error')) {
-      toast.error(text, {toastId: 'error'});
+      toast.error(text, { toastId: 'error' });
     }
   };
 
@@ -64,10 +67,9 @@ export const CommentField: FC<Props> = ({postId, commentsCount, contentType, pos
         type: NotificationType.CommentPost,
         text: enteredText,
       });
-      } catch (e) {
-        // @ts-ignore
-        alert(firebaseErrors[e.code]);
-      }
+    } catch (e) {
+      console.error(e);
+    }
   }, [contentType, postId, commentsCount, firestoreUser?.id, firestoreUser?.username, enteredText]);
 
   return (
@@ -79,7 +81,9 @@ export const CommentField: FC<Props> = ({postId, commentsCount, contentType, pos
         value={enteredText}
       />
       <div className={styles.buttonsContainer}>
-        <button className={styles.commentButton} onClick={handleComment}>Comment</button>
+        <button className={styles.commentButton} onClick={handleComment}>
+          Comment
+        </button>
       </div>
 
       <ToastContainer closeOnClick autoClose={2000} limit={1} pauseOnHover={false} />
