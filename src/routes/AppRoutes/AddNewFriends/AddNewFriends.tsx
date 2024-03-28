@@ -2,12 +2,11 @@ import styles from './addNewFriends.module.css';
 import Header from "~/components/profile/Header";
 import {Footer} from "~/components/Footer";
 import {PageTitle} from "~/components/PageTitle";
-import {FC, useCallback, useContext, useEffect, useMemo, useState} from "react";
+import {FC, useCallback, useContext, useEffect, useState} from "react";
 import {firebaseErrors} from "~/constants/firebaseErrors";
 import {addDoc, doc, getDocs, limit, onSnapshot, query, updateDoc, where} from "@firebase/firestore";
 import {friendsRequestsCollection, usersCollection} from "~/types/firestoreCollections";
 import {IUser} from "~/types/user";
-import Avatar from '@assets/icons/ava2.svg';
 import {db, storage} from "~/firebase";
 import {AuthContext} from "~/providers/authContext";
 import {FriendsRequestStatus} from "~/types/friends";
@@ -232,10 +231,8 @@ export const UserCard: FC<Props> = ({
 
   const handleCancelInvite = useCallback(async () => {
     console.log('delete invite');
-    // Ensure both the current user and the target user have valid IDs
     if (firestoreUser?.id && user?.id) {
       try {
-        // Query for the pending invitation from the current user to the target user
         const q = query(
           friendsRequestsCollection,
           where('fromUser', '==', firestoreUser.id),
@@ -243,14 +240,11 @@ export const UserCard: FC<Props> = ({
           where('status', '==', FriendsRequestStatus.PENDING),
         );
   
-        // Execute the query
         const querySnapshot = await getDocs(q);
-        // Assuming only one document/invitation will match, proceed to delete it
         querySnapshot.forEach(async (doc) => {
-          await deleteDoc(doc.ref); // Delete the document
+          await deleteDoc(doc.ref);
         });
   
-        // Optionally, update UI state here to reflect the change
       } catch (err) {
         console.error("Failed to cancel invite: ", err);
         // @ts-ignore

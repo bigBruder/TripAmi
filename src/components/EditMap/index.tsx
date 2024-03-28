@@ -70,18 +70,6 @@ const EditMap = () => {
             >
               Delete the pin <img src={Bin} alt="Bin icon" />
             </button>
-            {/*<div className={styles.smallButtonsContainer}>*/}
-            {/*  <button className={`${styles.button}`}>Save</button>*/}
-            {/*  <button*/}
-            {/*    className={`${styles.button} ${styles.cancel}`}*/}
-            {/*    onClick={() => {*/}
-            {/*      setNewMarkers([]);*/}
-            {/*      // setMarkers(initialMarkers);*/}
-            {/*    }}*/}
-            {/*  >*/}
-            {/*    Cancel*/}
-            {/*  </button>*/}
-            {/*</div>*/}
           </div>
         </div>
       </div>

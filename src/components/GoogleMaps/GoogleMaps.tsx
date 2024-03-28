@@ -2,20 +2,13 @@ import { useContext, useEffect, useState } from "react";
 import {
   APIProvider,
   Map,
-  AdvancedMarker,
-  Pin,
-  InfoWindow,
 } from "@vis.gl/react-google-maps";
-import React from "react";
 import useTravelsContext from "../TravelItinerary/store";
 import { getDocs, onSnapshot, orderBy, query, where } from "@firebase/firestore";
-import {postsCollection, tripsCollection, usersCollection} from "../../types/firestoreCollections";
-import {IPost} from "../../types/post";
+import {tripsCollection, usersCollection} from "../../types/firestoreCollections";
 import {AuthContext} from "../../providers/authContext";
 import {ITravel} from "../../types/travel";
-import TravelCard from "../TravelCard/TravelCard";
 import { MapInfoWindow } from "../MapInfoWindow/MapInfoWindow";
-import { User } from "@firebase/auth";
 import { IUser } from "~/types/user";
 import MapOrange from '@assets/icons/MapOrange.svg';
 import Build from '@assets/icons/build.svg';
@@ -40,7 +33,7 @@ export default function Intro() {
 
   
   useEffect(() => {
-    if (firestoreUser?.friends?.length > 0) {
+    if (firestoreUser?.friends && firestoreUser?.friends?.length > 0) {
       const q = query(tripsCollection, where('userId', 'in', firestoreUser?.friends));
       const unsub = onSnapshot(q, (querySnapshot) => {
         const fetchedTravel = querySnapshot.docs.map(doc => ({
@@ -60,9 +53,7 @@ export default function Intro() {
       setIsFriendsLoading(true);
       const q = query(
         usersCollection,
-        // orderBy('firebaseUid'),
         where('id', 'in', travels.map(travel => travel.userId)),
-        // orderBy('createAt', 'desc'),
       );
       const querySnapshot = await getDocs(q);
       const fetchedFriends = querySnapshot.docs.map(doc => ({
@@ -83,7 +74,7 @@ export default function Intro() {
 
   useEffect(() => {
     if (selectedTravel) {
-      setSelectedUser(friends.find(friend => friend.id === selectedTravel?.userId))
+      setSelectedUser(friends.find(friend => friend.id === selectedTravel?.userId) || null)
     }
   }, [friends, selectedTravel]);
 
@@ -114,12 +105,12 @@ export default function Intro() {
       <APIProvider apiKey="AIzaSyCwDkMaHWXRpO7hY6z62_Gu8eLxMMItjT8">
         <div style={{ height: "450px", width: "100%" }}>
 
-          {/* <Map
+          <Map
             defaultZoom={5} 
             defaultCenter={position} 
             mapId="9bc3b1605395203e"
           >
-            {travels.length > 0 && (
+            {/* {travels.length > 0 && (
               travels?.map(travel => {
 
                 return (
@@ -137,7 +128,7 @@ export default function Intro() {
                       glyphColor={"white"}
                     />
                   </AdvancedMarker>
-            )}))}
+            )}))} */}
 
             {selectedTravel && open && selectedUser &&  (
               <MapInfoWindow 
@@ -148,7 +139,7 @@ export default function Intro() {
                 friends={friends}
               />
             )}
-          </Map> */}
+          </Map>
         </div>
     </APIProvider>
     )}

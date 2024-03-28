@@ -82,7 +82,6 @@ const InvitePeople = () => {
       setDescription(e.target.value);
     }
   }
-  
 
   return (
     <div className={styles.wrapper}>

@@ -15,12 +15,6 @@ export const PlaceCommentField: FC<Props> = ({placeId}) => {
 
   const handleComment = useCallback(async () => {
     try {
-      // const docRef = doc(db, "posts", postId);
-
-      // await updateDoc(docRef, {
-      //
-      // });
-
       await addDoc(placesCommentsCollection, {
         likes: [],
         dislikes: [],
