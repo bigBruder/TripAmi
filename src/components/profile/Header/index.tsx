@@ -421,7 +421,9 @@ const Header = () => {
           </div>
         </div>
       </div>
-
+      {isNotificationsOpen && (
+        <div className={styles.overlay} onClick={() => setIsNotificationsOpen(false)}></div>
+      )}
       <CustomModal isOpen={modalIsOpen} onCloseModal={closeModal}>
         <CreatePostModal closeModal={closeModal} />
       </CustomModal>
