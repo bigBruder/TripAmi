@@ -150,12 +150,13 @@ const Map: FC<Props> = ({ userId }) => {
   }, [selectedMarkerAddress]);
 
   return (
-    <div className={styles.mapContainer}>
+    <div style={{ position: 'relative' }}>
       {selectedMarkerAddress && (
-        <div className={styles.selectedMarkerAddress} onClick={handleSelectPlace}>
+        <div className={styles.selectedMarkerAddress} onClick={() => handleSelectPlace()}>
           {selectedMarkerAddress.address}
         </div>
       )}
+
       <ComposableMap>
         <ZoomableGroup
           translateExtent={[
@@ -184,7 +185,8 @@ const Map: FC<Props> = ({ userId }) => {
               ))
             }
           </Geographies>
-          {(citiesToDisplay || []).map((city) => (
+
+          {citiesToDisplay?.map((city) => (
             <Marker
               key={`${city.place_id}${city.lng}${city.lat}`}
               coordinates={[city.lng, city.lat]}
@@ -212,7 +214,8 @@ const Map: FC<Props> = ({ userId }) => {
               </g>
             </Marker>
           ))}
-          {(placesToDisplay || []).map((place) => (
+
+          {placesToDisplay?.map((place) => (
             <Marker
               key={`${place.place_id}${place.lng}${place.lat}`}
               onClick={() => handleSelectMarker(place.name, place.place_id)}
@@ -244,6 +247,7 @@ const Map: FC<Props> = ({ userId }) => {
           ))}
         </ZoomableGroup>
       </ComposableMap>
+
       <div className={styles.buttonsContainer}>
         <div className={styles.button} onClick={handleZoomIn}>
           <img src={Plus} alt={'Plus zoom icon'} />
