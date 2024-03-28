@@ -1,4 +1,4 @@
-import React, {useCallback, useContext, useEffect, useState} from 'react';
+import React, {ChangeEvent, useCallback, useContext, useEffect, useState} from 'react';
 import styles from './createTripModal.module.css';
 // @ts-ignore
 import Checkbox from 'react-custom-checkbox';
@@ -51,8 +51,6 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
   const [tickIsChecked, setTickIsChecked] = useState(data?.isPublic || false);
   const [file, setFile] = useState<File[] >([]);
   const [rating, setRating] = useState(data?.rate || 0);
-  // const [location, setLocation] = useState(data?.location || null);
-  // const [whereToGo, setWhereToGo] = useState(data?.location.name || '');
   const [city, setCity] = useState('');
   const [startDate, setStartDate] = useState<string>(data?.startDate || moment().format('yyyy-MM-D'));
   const [endDate, setEndDate] = useState<string>(data?.endDate || moment().format('yyyy-MM-D'));
@@ -212,7 +210,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
     setImagesDescription(prevState => prevState.filter(image => image.name !== photoName))
   }
 
-  const handleChangeImageDescription = (event) => {
+  const handleChangeImageDescription = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
 
     const {name, value} = event.target;
@@ -224,7 +222,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
     }
   }
 
-  const handleChangeDownloadedImageDescription = (event, id) => {
+  const handleChangeDownloadedImageDescription = (event: React.ChangeEvent<HTMLInputElement>, id: number) => {
     event.preventDefault();
 
     const {name, value} = event.target;
@@ -236,14 +234,14 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
     }
   }
 
-  const handleOpenAddGeocode = (e: React.MouseEventHandler<HTMLButtonElement>) => {
+  const handleOpenAddGeocode = (e: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
     if (e) {
       e.preventDefault();
       setIsAddingPlace(prevState => !prevState);
     }
   }
 
-  const handleAddDayDescription = (event:  React.MouseEventHandler<HTMLButtonElement>) => {
+  const handleAddDayDescription = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
     setDaysDescription(prevState => [...prevState, {date: '', description: ''}]);
@@ -253,7 +251,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
     setDaysDescription(prevDescriptions => prevDescriptions.filter((day, idx) => idx !== indexToRemove))
   }
 
-  const handleDayDateDescriptionChange = (event: React.ChangeEvent<HTMLInputElement>, indexToChange: number, type: string) => {
+  const handleDayDateDescriptionChange = (event: ChangeEvent<HTMLTextAreaElement> | ChangeEvent<HTMLInputElement>, indexToChange: number, type: string) => {
    setDaysDescription(prevState => prevState.map((prevDay, index) => {
     if (index === indexToChange) {
       return {...prevDay, [type]: event.target.value}
@@ -267,7 +265,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
     setSelectedCities(prevState => prevState.filter(item => item.placeID !== placeId));
   }, []);
 
-  const handleOpenAddCity = (event: React.MouseEventHandler<HTMLButtonElement>) => {
+  const handleOpenAddCity = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.preventDefault();
     setIsAddCityOpen(prevState => !prevState);
   }
@@ -321,7 +319,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
               <p className={styles.text}>Do you wanna add city? (You can add multiply cities)</p>
               <button 
                 className={`${styles.section_button} ${styles.button}`}
-                onClick={handleOpenAddCity}
+                onClick={(e) => handleOpenAddCity(e)}
               >Add city</button>
             </div>
 

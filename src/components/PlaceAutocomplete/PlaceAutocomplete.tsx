@@ -5,7 +5,7 @@ import styles from './PlaceAutocomplete.module.css';
 interface PlaceAutocompleteProps {
     searchOptions: google.maps.places.AutocompleteOptions;
     location: string | null;
-    setLocation: Dispatch<SetStateAction<string | null>> | SetStateAction<string>;
+    setLocation: Dispatch<SetStateAction<string | null>>;
     onSelectPlace: (address: string, placeId: string) => void;
   }
 
