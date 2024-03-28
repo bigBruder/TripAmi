@@ -289,12 +289,10 @@ const TravelCard: FC<Props> = ({travel}) => {
             rate: travel.rate,
             startDate: startDate,
             endDate: endDate,
-            isPublic: travel.public,
             geoTags: travel.geoTags,
             cities: travel.cities,
             tripName: tripName,
             pinColor: travel.pinColor || 'blue',
-            // location: travel.location,
             dayDescription: travel.dayDescription,
             text: travel.text,
           }}

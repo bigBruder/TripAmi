@@ -192,7 +192,6 @@ const Header = () => {
 
         setSearchResult(result.hits.map((hit, i) => ({
           geoTag: hit.geoTag,
-          public: hit.public,
           rate: hit.rate,
           text: hit.text,
           userId: hit.userId,

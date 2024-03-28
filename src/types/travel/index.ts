@@ -3,7 +3,6 @@ export interface ITravel {
   userId: string;
   imageUrl: {url: string; type: string, description?: string}[];
   rate: number;
-  // when: string;
   startDate: string;
   endDate: string;
   geoTags: {
@@ -14,7 +13,6 @@ export interface ITravel {
     placeID: string;
     address: string;
   }[];
-  public: boolean;
   pinColor: string;
   text: string;
   tripName: string;

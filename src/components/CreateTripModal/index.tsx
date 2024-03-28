@@ -30,11 +30,9 @@ interface Props {
   isEdit?: boolean;
   data?: {
     id: string;
-    isPublic: boolean;
     rate: number;
     startDate: string;
     endDate: string;
-    public: boolean;
     cities: {placeID: string, address: string}[];
     tripName: string;
     locationName: string;
@@ -48,7 +46,6 @@ interface Props {
 
 const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
   const {firestoreUser, updateFirestoreUser} = useContext(AuthContext);
-  const [tickIsChecked, setTickIsChecked] = useState(data?.isPublic || false);
   const [file, setFile] = useState<File[] >([]);
   const [rating, setRating] = useState(data?.rate || 0);
   const [city, setCity] = useState('');
@@ -123,7 +120,6 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
               rate: rating,
               startDate: startDate,
               endDate: endDate,
-              public: tickIsChecked,
               geoTags: selectedGeoTags,
               cities: selectedCities,
               value: 'fjlksdfjlksdfj',
@@ -139,7 +135,6 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
               rate: rating,
               startDate: startDate,
               endDate: endDate,
-              public: tickIsChecked,
               geoTags: selectedGeoTags,
               cities: selectedCities,
               tripName: tripName,
@@ -177,7 +172,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
     } finally {
       setIsLoading(false);
     }
-  }, [imagesDescription, file, firestoreUser?.id, firestoreUser?.tripCount, rating, startDate, tickIsChecked, selectedGeoTags, text, updateFirestoreUser, daysDescription]);
+  }, [imagesDescription, file, firestoreUser?.id, firestoreUser?.tripCount, rating, startDate, selectedGeoTags, text, updateFirestoreUser, daysDescription]);
 
   // const onSelectPlace = useCallback(async (address: string, placeID: string) => {
   //   const geocode = await geocodeByPlaceId(placeID);
@@ -495,23 +490,9 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
 
         <div className={styles.startWrapper}>
           <div className={styles.startContainer}>
-            <p className={styles.text}>Public:</p>
-            <Checkbox
-              checked={tickIsChecked}
-              icon={<img src={Tick} style={{width: 24}} alt=""/>}
-              onChange={(value: boolean) => {
-                setTickIsChecked(value);
-              }}
-              borderColor="#55BEF5"
-              borderRadius={0}
-              size={24}
-            />
-          </div>
-          <div className={styles.startContainer}>
             <p className={styles.text}>Rating:</p>
             <Rating setSelectedStars={setRating} selectedStars={rating}/>
           </div>
-          
         </div>
                 
         <div className={styles.startContainer}>
