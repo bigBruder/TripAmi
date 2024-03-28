@@ -9,6 +9,7 @@ interface Props {
   notifications: Notification[];
   deleteMessages: () => void;
   deleteMessage: (id: string) => void;
+  onClose: () => void;
 }
 
 const getTitle = (type: NotificationType) => {
@@ -42,7 +43,12 @@ const getWay = (type: NotificationType) => {
   }
 };
 
-export const Notifications: FC<Props> = ({ notifications, deleteMessages, deleteMessage }) => {
+export const Notifications: FC<Props> = ({
+  notifications,
+  deleteMessages,
+  deleteMessage,
+  onClose,
+}) => {
   const navigate = useNavigate();
   const handleNavigate = (postId: string, type: NotificationType) => {
     const way = getWay(type);
@@ -55,47 +61,49 @@ export const Notifications: FC<Props> = ({ notifications, deleteMessages, delete
   };
 
   return (
-    <div className={styles.container}>
-      <p className={styles.title}>Notifications</p>
-      {notifications.map((notification) => (
-        <div key={notification.id} className={styles.notification}>
-          <div>
-            <p className={styles.base_text}>{getTitle(notification.type)}</p>
-            {notification.text && (
-              <p className={styles.text}>
-                {notification.text.length > 20
-                  ? notification.text.slice(0, 80) + '...'
-                  : notification.text}
-              </p>
-            )}
-          </div>
-          <div className={styles.control_container}>
-            {/* <button
+    <>
+      <div className={styles.container} onBlur={() => onClose()}>
+        <p className={styles.title}>Notifications</p>
+        {notifications.map((notification) => (
+          <div key={notification.id} className={styles.notification}>
+            <div>
+              <p className={styles.base_text}>{getTitle(notification.type)}</p>
+              {notification.text && (
+                <p className={styles.text}>
+                  {notification.text.length > 20
+                    ? notification.text.slice(0, 80) + '...'
+                    : notification.text}
+                </p>
+              )}
+            </div>
+            <div className={styles.control_container}>
+              {/* <button
               className={styles.button}
               onClick={() => handleNavigate(notification.postId, notification.type)}
             >
               Check
             </button> */}
-            <button
-              className={styles.button}
-              onClick={() =>
-                handleOpenComment(notification.postId, notification.commentId, notification.type)
-              }
-            >
-              Check
-            </button>
-            <button
-              className={`${styles.button} ${styles.button_remove}`}
-              onClick={() => deleteMessage(notification.id)}
-            >
-              X
-            </button>
+              <button
+                className={styles.button}
+                onClick={() =>
+                  handleOpenComment(notification.postId, notification.commentId, notification.type)
+                }
+              >
+                Check
+              </button>
+              <button
+                className={`${styles.button} ${styles.button_remove}`}
+                onClick={() => deleteMessage(notification.id)}
+              >
+                X
+              </button>
+            </div>
           </div>
-        </div>
-      ))}
-      <button className={`${styles.button} ${styles.button_delete}`} onClick={deleteMessages}>
-        Delete messages
-      </button>
-    </div>
+        ))}
+        <button className={`${styles.button} ${styles.button_delete}`} onClick={deleteMessages}>
+          Delete messages
+        </button>
+      </div>
+    </>
   );
 };

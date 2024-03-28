@@ -16,6 +16,7 @@ import {
 } from 'firebase/firestore';
 import { getDownloadURL } from 'firebase/storage';
 import debounce from 'lodash.debounce';
+import { NotificationsIcon } from '~/assets/icons/NotificationsIcon';
 import CreatePostModal from '~/components/CreatePostModal';
 import CreateTripModal from '~/components/CreateTripModal';
 import CustomModal from '~/components/CustomModal';
@@ -328,13 +329,8 @@ const Header = () => {
               alt='addUser'
               onClick={() => navigate('/add-friends')}
             />
-            <img
-              className={styles.icon}
-              src={notificationIcon}
-              alt='notifications'
-              style={
-                notifications.length ? { backgroundColor: 'rgb(255, 77, 0)' } : { cursor: 'unset' }
-              }
+            <NotificationsIcon
+              isActive={notifications.length > 0}
               onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
             />
             <img
@@ -346,6 +342,7 @@ const Header = () => {
           </div>
           {isNotificationsOpen && !!notifications.length && (
             <Notifications
+              onClose={() => setIsNotificationsOpen(false)}
               notifications={notifications}
               deleteMessages={handleDeleteMessages}
               deleteMessage={handleDeleteMessage}
