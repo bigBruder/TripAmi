@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { geocodeByPlaceId } from 'react-places-autocomplete';
 import { useNavigate } from 'react-router-dom';
 import { ComposableMap, Geographies, Geography, Marker, ZoomableGroup } from 'react-simple-maps';
@@ -33,7 +33,7 @@ interface IPin {
   place_id: string;
 }
 
-const Map: FC<Props> = ({ onClick, selectedTripId, userId }) => {
+const Map: FC<Props> = ({ userId }) => {
   const { trips } = useMapContext();
   const [position, setPosition] = useState<IPosition>({ coordinates: [0, 0], zoom: 1 });
   const [scaleFactor, setScaleFactor] = useState(1);
@@ -47,47 +47,41 @@ const Map: FC<Props> = ({ onClick, selectedTripId, userId }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    (async () => {
+    const fetchUserTrips = async () => {
       if (userId) {
         const q = query(tripsCollection, where('userId', '==', userId));
         const querySnapshot = await getDocs(q);
-
-        const fetchedTrips = querySnapshot.docs.map((doc) => ({
-          ...doc.data(),
-          id: doc.id,
-        }));
+        const fetchedTrips = querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
         setUsersTrips(fetchedTrips as ITravel[]);
       }
-    })();
+    };
+    fetchUserTrips();
   }, [userId]);
 
-  const handleZoomIn = () => {
-    if (position.zoom >= 4) return;
-    setPosition((pos) => ({ ...pos, zoom: pos.zoom * 2 }));
-  };
+  const handleZoomIn = useCallback(() => {
+    setPosition((pos) => ({ ...pos, zoom: Math.min(pos.zoom * 2, 4) }));
+  }, []);
 
-  const handleZoomOut = () => {
-    if (position.zoom <= 1) return;
-    setPosition((pos) => ({ ...pos, zoom: pos.zoom / 2 }));
-  };
+  const handleZoomOut = useCallback(() => {
+    setPosition((pos) => ({ ...pos, zoom: Math.max(pos.zoom / 2, 1) }));
+  }, []);
 
-  const handleMoveEnd = (positionValue: IPosition) => {
+  const handleMoveEnd = useCallback((positionValue: IPosition) => {
     setPosition(positionValue);
-  };
+  }, []);
 
   useEffect(() => {
-    const tripsToDisplay = userId ? usersTrips : trips;
-    if (!tripsToDisplay) return;
-    console.log('tripsToDisplay => ', tripsToDisplay);
-    const citiesPlacesId = tripsToDisplay.flatMap(
-      (trip) =>
-        trip.cities?.map((city) => ({
-          place_id: city.placeID,
-          color: trip.pinColor,
-          name: city.address,
-        })) || []
-    );
-    (async () => {
+    const fetchCitiesToDisplay = async () => {
+      const tripsToDisplay = userId ? usersTrips : trips;
+      if (!tripsToDisplay) return;
+      const citiesPlacesId = tripsToDisplay.flatMap(
+        (trip) =>
+          trip.cities?.map((city) => ({
+            place_id: city.placeID,
+            color: trip.pinColor,
+            name: city.address,
+          })) || []
+      );
       const citiesGeoCode: IPin[] = [];
       await Promise.all(
         citiesPlacesId.map(async (city) => {
@@ -104,21 +98,22 @@ const Map: FC<Props> = ({ onClick, selectedTripId, userId }) => {
         })
       );
       setCitiesToDisplay(citiesGeoCode);
-    })();
+    };
+    fetchCitiesToDisplay();
   }, [trips, userId, usersTrips]);
 
   useEffect(() => {
-    const tripsToDisplay = userId ? usersTrips : trips;
-    if (!tripsToDisplay) return;
-    const tagsPlaceId = tripsToDisplay.flatMap(
-      (trip) =>
-        trip.geoTags?.map((tag) => ({
-          place_id: tag.placeID,
-          color: trip.pinColor,
-          name: tag.address,
-        })) || []
-    );
-    (async () => {
+    const fetchPlacesToDisplay = async () => {
+      const tripsToDisplay = userId ? usersTrips : trips;
+      if (!tripsToDisplay) return;
+      const tagsPlaceId = tripsToDisplay.flatMap(
+        (trip) =>
+          trip.geoTags?.map((tag) => ({
+            place_id: tag.placeID,
+            color: trip.pinColor,
+            name: tag.address,
+          })) || []
+      );
       const tagsGeoCode: IPin[] = [];
       await Promise.all(
         tagsPlaceId.map(async (tag) => {
@@ -135,45 +130,32 @@ const Map: FC<Props> = ({ onClick, selectedTripId, userId }) => {
         })
       );
       setPlacesToDisplay(tagsGeoCode);
-    })();
+    };
+    fetchPlacesToDisplay();
   }, [trips, userId, usersTrips]);
 
-  const selectedTripsList = useMemo(() => {
-    if (userId) {
-      return usersTrips;
-    } else {
-      return trips;
-    }
-  }, [trips, userId, usersTrips]);
-
-  const handleSelectMarker = (address: string, placeId: string) => {
+  const handleSelectMarker = useCallback((address: string, placeId: string) => {
     setSelectedMarkerAddress({ address, placeId });
-  };
+  }, []);
 
-  const handleSelectPlace = () => {
+  const handleSelectPlace = useCallback(() => {
     navigate(`/place/${selectedMarkerAddress?.placeId}`);
-  };
+  }, [navigate, selectedMarkerAddress]);
 
   useEffect(() => {
     const timerId = setTimeout(() => {
       setSelectedMarkerAddress(null);
     }, 3000);
-
-    return () => {
-      clearTimeout(timerId);
-    };
+    return () => clearTimeout(timerId);
   }, [selectedMarkerAddress]);
 
-  console.log(citiesToDisplay);
-
   return (
-    <div style={{ position: 'relative' }}>
+    <div className={styles.mapContainer}>
       {selectedMarkerAddress && (
-        <div className={styles.selectedMarkerAddress} onClick={() => handleSelectPlace()}>
+        <div className={styles.selectedMarkerAddress} onClick={handleSelectPlace}>
           {selectedMarkerAddress.address}
         </div>
       )}
-
       <ComposableMap>
         <ZoomableGroup
           translateExtent={[
@@ -202,8 +184,7 @@ const Map: FC<Props> = ({ onClick, selectedTripId, userId }) => {
               ))
             }
           </Geographies>
-
-          {citiesToDisplay?.map((city) => (
+          {(citiesToDisplay || []).map((city) => (
             <Marker
               key={`${city.place_id}${city.lng}${city.lat}`}
               coordinates={[city.lng, city.lat]}
@@ -231,8 +212,7 @@ const Map: FC<Props> = ({ onClick, selectedTripId, userId }) => {
               </g>
             </Marker>
           ))}
-
-          {placesToDisplay?.map((place) => (
+          {(placesToDisplay || []).map((place) => (
             <Marker
               key={`${place.place_id}${place.lng}${place.lat}`}
               onClick={() => handleSelectMarker(place.name, place.place_id)}
@@ -264,7 +244,6 @@ const Map: FC<Props> = ({ onClick, selectedTripId, userId }) => {
           ))}
         </ZoomableGroup>
       </ComposableMap>
-
       <div className={styles.buttonsContainer}>
         <div className={styles.button} onClick={handleZoomIn}>
           <img src={Plus} alt={'Plus zoom icon'} />
