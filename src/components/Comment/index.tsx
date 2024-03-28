@@ -7,12 +7,17 @@ import { firebaseErrors } from '~/constants/firebaseErrors';
 import { db } from '~/firebase';
 import { AuthContext } from '~/providers/authContext';
 import { IComment, IPlaceComment } from '~/types/comments';
-import { repliesCollection, usersCollection } from '~/types/firestoreCollections';
+import {
+  notificationsCollection,
+  repliesCollection,
+  usersCollection,
+} from '~/types/firestoreCollections';
 
 import { LikeIcon } from '@assets/icons/likeIcon';
 import { doc, updateDoc } from '@firebase/firestore';
 
 import styles from './comment.module.css';
+import { NotificationType } from '~/types/notifications/notifications';
 
 interface Props {
   comment: IComment | IPlaceComment;
@@ -40,7 +45,10 @@ export const Comment: FC<Props> = ({ comment, isReply }) => {
       if (comment.id) {
         const q = query(repliesCollection, where('commentId', '==', comment.id));
         const unsubscribe = onSnapshot(q, (snapshot) => {
-          const fetchedReplies = snapshot.docs.map((document) => ({...document.data(), id: document.id}));
+          const fetchedReplies = snapshot.docs.map((document) => ({
+            ...document.data(),
+            id: document.id,
+          }));
           setReplies(fetchedReplies as IComment[]);
         });
 
@@ -154,6 +162,14 @@ export const Comment: FC<Props> = ({ comment, isReply }) => {
           userImage: firestoreUser.avatarUrl,
           createdAt: new Date().toISOString(),
           text: enteredReply,
+        });
+
+        await addDoc(notificationsCollection, {
+          createdAt: new Date().toISOString(),
+          type: NotificationType.NewReply,
+          targetUserId: comment.userId,
+          postId: comment.id,
+          text: `${comment.text}: ${enteredReply}`,
         });
       }
 
