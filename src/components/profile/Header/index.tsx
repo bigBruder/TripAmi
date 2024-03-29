@@ -322,25 +322,42 @@ const Header = () => {
               alt='addUser'
               onClick={() => navigate('/add-friends')}
             />
-            <NotificationsIcon
-              isActive={notifications.length > 0}
-              onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
-            />
+
             <img
               className={styles.icon}
               src={plus}
               alt='plus'
               onClick={() => setModalIsOpen(true)}
             />
+             <DropdownMenu.Root onOpenChange={setIsNotificationsOpen}>
+              <DropdownMenu.Trigger>
+                <NotificationsIcon
+                  isActive={notifications.length > 0}
+                  onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
+                  counter={notifications.length}
+                />
+              </DropdownMenu.Trigger>
+              <DropdownMenu.Content>
+                {/* This is the content of the dropdown */}
+                <DropdownMenu.Group>
+                  <DropdownMenu.Item
+                    onSelect={() => console.log('Item 1 clicked')}
+                    style={{ position: 'relative' }}
+                  >
+                    <Notifications
+                      onClose={() => setIsNotificationsOpen(false)}
+                      notifications={notifications}
+                      deleteMessages={handleDeleteMessages}
+                      deleteMessage={handleDeleteMessage}
+                    />
+                  </DropdownMenu.Item>
+                </DropdownMenu.Group>
+              </DropdownMenu.Content>
+            </DropdownMenu.Root>
           </div>
-          {isNotificationsOpen && !!notifications.length && (
-            <Notifications
-              onClose={() => setIsNotificationsOpen(false)}
-              notifications={notifications}
-              deleteMessages={handleDeleteMessages}
-              deleteMessage={handleDeleteMessage}
-            />
-          )}
+          {/* {isNotificationsOpen && !!notifications.length && (
+            
+          )} */}
 
           <div className={styles.rightContainer}>
             <img className={styles.avatar} src={avatar} alt='icon' />

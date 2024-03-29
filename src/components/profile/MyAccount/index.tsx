@@ -303,9 +303,7 @@ const MyAccount = () => {
           </div>
           {activeTab !== 4 && (
             <div className={styles.mapContainer}>
-              <div className={styles.mapContainer}>
-                <Map />
-              </div>
+              <Map />
             </div>
           )}
         </div>

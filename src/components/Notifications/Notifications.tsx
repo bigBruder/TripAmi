@@ -19,11 +19,13 @@ const getTitle = (type: NotificationType) => {
     case NotificationType.NewPost:
       return 'Your friend has created a new post!';
     case NotificationType.CommentPost:
-      return 'Your friend has commented on your post:';
+      return 'Somebody has commented on your post:';
+    case NotificationType.CommentTrip:
+      return 'Somebody has commented on your trip:';
     case NotificationType.NewTrip:
       return 'Your friend has created a new trip!';
-    case NotificationType.CommentTrip:
     case NotificationType.NewReplyPost:
+    case NotificationType.NewReplyTrip:
       return 'Somebody has replied to your comment:';
     default:
       return '';
@@ -32,13 +34,13 @@ const getTitle = (type: NotificationType) => {
 
 const getWay = (type: NotificationType) => {
   switch (type.toLowerCase()) {
-    case NotificationType.NewPost:
-    case NotificationType.CommentPost:
-      return 'posts';
     case NotificationType.NewTrip:
     case NotificationType.CommentTrip:
+    case NotificationType.NewReplyTrip:
       return 'trip';
     case NotificationType.NewReplyPost:
+    case NotificationType.NewPost:
+    case NotificationType.CommentPost:
       return 'posts';
     default:
       return '';
@@ -52,9 +54,23 @@ export const Notifications: FC<Props> = ({
   onClose,
 }) => {
   const navigate = useNavigate();
-  const handleNavigate = (postId: string, type: NotificationType) => {
-    const way = getWay(type);
-    navigate(`/${way}/${postId}`);
+  const handleNavigate = (notification: Notification) => {
+    console.log('note --> ', notification);
+    console.log('note type --> ', notification.type);
+    switch (notification.type) {
+      case NotificationType.NewPost:
+      case NotificationType.NewTrip:
+        navigate(`/${getWay(notification.type)}/${notification.postId}`);
+        break;
+      case NotificationType.CommentPost:
+      case NotificationType.CommentTrip:
+      case NotificationType.NewReplyPost:
+      case NotificationType.NewReplyTrip:
+        handleOpenComment(notification);
+        break;
+      default:
+        break;
+    }
   };
 
   const handleOpenComment = (notification: Notification) => {
@@ -67,6 +83,8 @@ export const Notifications: FC<Props> = ({
           });
         }
         const way = getWay(notification.type);
+        console.log(notification.type);
+        console.log(`/${way}/${notification.postId}`);
         navigate(`/${way}/${notification.postId}`, {
           state: { open_comment: notification.commentId },
         });
@@ -103,12 +121,15 @@ export const Notifications: FC<Props> = ({
                 )}
               </div>
               <div className={styles.control_container}>
-                <button className={styles.button} onClick={() => handleOpenComment(notification)}>
+                <button className={styles.button} onClick={() => handleNavigate(notification)}>
                   Check
                 </button>
                 <button
                   className={`${styles.button} ${styles.button_remove}`}
-                  onClick={() => deleteMessage(notification.id)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    deleteMessage(notification.id);
+                  }}
                 >
                   X
                 </button>

@@ -64,7 +64,7 @@ export const CommentField: FC<Props> = ({ postId, commentsCount, contentType, po
       await addDoc(notificationsCollection, {
         targetUserId: postOwnerId,
         postId,
-        type: NotificationType.CommentPost,
+        type: 'comment ' + contentType,
         text: enteredText,
         createdAt: new Date().toISOString(),
         isReaded: false,

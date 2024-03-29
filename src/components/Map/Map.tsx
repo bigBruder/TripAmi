@@ -150,7 +150,7 @@ const Map: FC<Props> = ({ userId }) => {
   }, [selectedMarkerAddress]);
 
   return (
-    <div style={{ position: 'relative' }}>
+    <div>
       {selectedMarkerAddress && (
         <div className={styles.selectedMarkerAddress} onClick={() => handleSelectPlace()}>
           {selectedMarkerAddress.address}

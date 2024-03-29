@@ -1,7 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import React from 'react';
-import { flushSync } from 'react-dom';
-import { useLocation, useParams, useSearchParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 
 import { documentId } from 'firebase/firestore';
 import { getDownloadURL, ref } from 'firebase/storage';
