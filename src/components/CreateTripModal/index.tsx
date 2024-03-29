@@ -171,7 +171,8 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
                   targetUserId: friendId,
                   postId: querySnapshot.docs[0].id,
                   type: NotificationType.NewTrip,
-                  createAt: new Date().toISOString(),
+                  createdAt: new Date().toISOString(),
+                  isReaded: false,
                 });
               });
             }

@@ -66,6 +66,8 @@ export const CommentField: FC<Props> = ({ postId, commentsCount, contentType, po
         postId,
         type: NotificationType.CommentPost,
         text: enteredText,
+        createdAt: new Date().toISOString(),
+        isReaded: false,
       });
     } catch (e) {
       console.error(e);

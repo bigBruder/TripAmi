@@ -5,12 +5,11 @@ import { ToastContainer, toast } from 'react-toastify';
 import algoliasearch from 'algoliasearch';
 import {
   deleteDoc,
-  doc,
   documentId,
-  getDoc,
   getDocs,
   limit,
   onSnapshot,
+  orderBy,
   query,
   where,
 } from 'firebase/firestore';
@@ -22,17 +21,11 @@ import CreateTripModal from '~/components/CreateTripModal';
 import CustomModal from '~/components/CustomModal';
 import { Notifications } from '~/components/Notifications/Notifications';
 import Rating from '~/components/Rating';
-import { db, storage } from '~/firebase';
+import { storage } from '~/firebase';
 import { useInputFocus } from '~/hooks/useInputRef';
 import { AuthContext } from '~/providers/authContext';
-import {
-  notificationsCollection,
-  postsCollection,
-  tripsCollection,
-  usersCollection,
-} from '~/types/firestoreCollections';
+import { notificationsCollection, usersCollection } from '~/types/firestoreCollections';
 import { Notification } from '~/types/notifications/notifications';
-import { IPost } from '~/types/post';
 
 import addFile from '@assets/icons/addFile.svg';
 import addUser from '@assets/icons/addUser.svg';
@@ -45,7 +38,6 @@ import Logout from '@assets/icons/menu/logout.svg';
 import Plus from '@assets/icons/menu/plus.svg';
 import Settings from '@assets/icons/menu/settings.svg';
 import Switch from '@assets/icons/menu/switch.svg';
-import notificationIcon from '@assets/icons/notifications.svg';
 import icon from '@assets/icons/ph_user-light.svg';
 import plus from '@assets/icons/plus.svg';
 import { ref } from '@firebase/storage';
@@ -57,8 +49,6 @@ import './styles.css';
 
 const client = algoliasearch('W8J2M4GNE3', '18fbb3c4cc4108ead5479d90911f3507');
 const index = client.initIndex('trips');
-// const index = client.initIndex("prod_users");
-// const index = client.initIndex("trips");
 
 enum CONTENT_TYPE {
   POST = 'post',
@@ -96,6 +86,8 @@ const Header = () => {
     const q = query(
       notificationsCollection,
       where('targetUserId', '==', firestoreUser?.id),
+      orderBy('isReaded'),
+      orderBy('createdAt', 'desc'),
       limit(5)
     );
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -109,7 +101,7 @@ const Header = () => {
     return () => {
       unsubscribe();
     };
-  }, [firestoreUser]);
+  }, [firestoreUser?.id]);
 
   const handleDeleteMessages = async () => {
     if (!notifications.length) return;
@@ -136,16 +128,14 @@ const Header = () => {
 
       const querySnapshot = await getDocs(q);
       await deleteDoc(querySnapshot.docs[0].ref);
-      notifyInfo('Notification deleted');
-      // setNotifications([]);
     } catch (error) {
       console.error('Error removing document: ', error);
     }
   };
 
   const notifyInfo = (text: string) => {
-    if (!toast.isActive('error')) {
-      toast.info(text, { toastId: 'error' });
+    if (!toast.isActive('info')) {
+      toast.info(text, { toastId: 'info' });
     }
   };
 
@@ -286,7 +276,7 @@ const Header = () => {
             />
             {searchTerm.length > 0 && searchResult.length > 0 && isSearchFocused ? (
               <div className={styles.searchResultsContainer}>
-                {searchResult?.map((resultOption, id) => {
+                {searchResult?.map((resultOption) => {
                   return (
                     <div
                       className={styles.autocompleteOption}

@@ -149,7 +149,8 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, startPost }) => {
               targetUserId: friendId,
               postId: querySnapshot.docs[0].id,
               type: NotificationType.NewPost,
-              createAt: new Date().toISOString(),
+              createdAt: new Date().toISOString(),
+              isReaded: false,
             });
           });
         }

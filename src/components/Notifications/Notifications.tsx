@@ -1,6 +1,8 @@
 import { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { doc, updateDoc } from 'firebase/firestore';
+import { db } from '~/firebase';
 import { Notification, NotificationType } from '~/types/notifications/notifications';
 
 import styles from './notifications.module.css';
@@ -55,9 +57,23 @@ export const Notifications: FC<Props> = ({
     navigate(`/${way}/${postId}`);
   };
 
-  const handleOpenComment = (postId: string, commentId: string, type: NotificationType) => {
-    const way = getWay(type);
-    navigate(`/${way}/${postId}`, { state: { open_comment: commentId } });
+  const handleOpenComment = (notification: Notification) => {
+    (async () => {
+      try {
+        if (notification.isReaded === false) {
+          const docRef = doc(db, 'notifications', notification.id);
+          await updateDoc(docRef, {
+            isReaded: true,
+          });
+        }
+        const way = getWay(notification.type);
+        navigate(`/${way}/${notification.postId}`, {
+          state: { open_comment: notification.commentId },
+        });
+      } catch (e) {
+        console.error(e);
+      }
+    })();
   };
 
   return (
@@ -72,7 +88,10 @@ export const Notifications: FC<Props> = ({
 
         <div className={styles.notifications_container}>
           {notifications.map((notification) => (
-            <div key={notification.id} className={styles.notification}>
+            <div
+              key={notification.id}
+              className={`${styles.notification} ${notification.isReaded ? styles.notification_readed : ''}`}
+            >
               <div>
                 <p className={styles.base_text}>{getTitle(notification.type)}</p>
                 {notification.text && (
@@ -84,22 +103,7 @@ export const Notifications: FC<Props> = ({
                 )}
               </div>
               <div className={styles.control_container}>
-                {/* <button
-              className={styles.button}
-              onClick={() => handleNavigate(notification.postId, notification.type)}
-            >
-              Check
-            </button> */}
-                <button
-                  className={styles.button}
-                  onClick={() =>
-                    handleOpenComment(
-                      notification.postId,
-                      notification.commentId,
-                      notification.type
-                    )
-                  }
-                >
+                <button className={styles.button} onClick={() => handleOpenComment(notification)}>
                   Check
                 </button>
                 <button

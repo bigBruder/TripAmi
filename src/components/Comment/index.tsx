@@ -177,6 +177,7 @@ export const Comment: FC<Props> = ({ comment, isReply, isCommentOpen = false, co
             commentId: comment.id,
             postId: comment.postId,
             text: enteredReply,
+            isReaded: false,
           });
         }
       }

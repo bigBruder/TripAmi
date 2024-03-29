@@ -34,6 +34,11 @@
     border-radius: 5px;
 }
 
+.notification_readed {
+    /* background-color: rgba(174, 174, 174, 0.3); */
+    opacity: 0.6;
+}
+
 .title {
     font-weight: bold;
     font-family: Gilroy, sans-serif;;
