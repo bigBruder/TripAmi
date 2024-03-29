@@ -48,12 +48,12 @@ const Map: FC<Props> = ({ userId }) => {
 
   useEffect(() => {
     const fetchUserTrips = async () => {
-      if (userId) {
-        const q = query(tripsCollection, where('userId', '==', userId));
-        const querySnapshot = await getDocs(q);
-        const fetchedTrips = querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
-        setUsersTrips(fetchedTrips as ITravel[]);
-      }
+      console.log('userId => ', userId);
+      const q = query(tripsCollection, where('userId', '==', userId));
+      const querySnapshot = await getDocs(q);
+      const fetchedTrips = querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+      console.log('fetchedTrips => ', fetchedTrips);
+      setUsersTrips(fetchedTrips as ITravel[]);
     };
     fetchUserTrips();
   }, [userId]);
@@ -73,6 +73,7 @@ const Map: FC<Props> = ({ userId }) => {
   useEffect(() => {
     const fetchCitiesToDisplay = async () => {
       const tripsToDisplay = userId ? usersTrips : trips;
+      console.log('tripsToDisplay => ', tripsToDisplay);
       if (!tripsToDisplay) return;
       const citiesPlacesId = tripsToDisplay.flatMap(
         (trip) =>
@@ -150,7 +151,7 @@ const Map: FC<Props> = ({ userId }) => {
   }, [selectedMarkerAddress]);
 
   return (
-    <div>
+    <div style={{ position: 'relative' }}>
       {selectedMarkerAddress && (
         <div className={styles.selectedMarkerAddress} onClick={() => handleSelectPlace()}>
           {selectedMarkerAddress.address}

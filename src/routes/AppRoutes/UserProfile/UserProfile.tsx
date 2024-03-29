@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import { useParams } from 'react-router-dom';
 
-import { orderBy } from 'firebase/firestore';
+import { documentId, orderBy } from 'firebase/firestore';
 import { getDownloadURL } from 'firebase/storage';
 import { Footer } from '~/components/Footer';
 import Map from '~/components/Map/Map';
@@ -11,6 +11,7 @@ import TravelCard from '~/components/TravelCard/TravelCard';
 import Header from '~/components/profile/Header';
 import { firebaseErrors } from '~/constants/firebaseErrors';
 import { storage } from '~/firebase';
+import { AuthContext } from '~/providers/authContext';
 import { tripsCollection, usersCollection } from '~/types/firestoreCollections';
 import { ITravel } from '~/types/travel';
 import { IUser } from '~/types/user';
@@ -23,6 +24,7 @@ import styles from './userProfile.module.css';
 
 const UserProfile = () => {
   const { id } = useParams();
+  const { firestoreUser } = useContext(AuthContext);
   const [userData, setUserData] = useState<IUser>();
   const [userPhotoUrl, setUserPhotoUrl] = useState<string>();
   const [avatarIsLoading, setAvatarIsLoading] = useState<boolean>(false);
@@ -30,12 +32,10 @@ const UserProfile = () => {
   const [userTravels, setUserTravels] = useState<ITravel[]>([]);
   const [isReverse, setIsReverse] = useState(false);
   const [sortBy, setSortBy] = useState('date');
-  console.log('userData => ', userData);
-
   useEffect(() => {
     (async () => {
       if (!id) return;
-      const q = query(usersCollection, where('id', '==', id));
+      const q = query(usersCollection, where(documentId(), '==', id));
       const querySnapshot = await getDocs(q);
 
       setUserData(querySnapshot.docs[0].data());
@@ -48,6 +48,7 @@ const UserProfile = () => {
         setAvatarIsLoading(true);
         try {
           const url = await getDownloadURL(ref(storage, userData.avatarUrl));
+          console.log('url => ', url);
           setUserPhotoUrl(url);
         } catch (error) {
           console.log('[ERROR getting user photo] => ', error);
@@ -56,7 +57,7 @@ const UserProfile = () => {
         }
       }
     })();
-  }, [userData]);
+  }, [id]);
 
   useEffect(() => {
     (async () => {
@@ -143,7 +144,7 @@ const UserProfile = () => {
               </div>
               <div className={styles.mapContainer}>
                 <div className={styles.mapContainer}>
-                  <Map userId={userData?.id} />
+                  <Map userId={id} />
                 </div>
               </div>
             </div>
