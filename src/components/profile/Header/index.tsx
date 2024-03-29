@@ -329,7 +329,7 @@ const Header = () => {
               alt='plus'
               onClick={() => setModalIsOpen(true)}
             />
-             <DropdownMenu.Root onOpenChange={setIsNotificationsOpen}>
+            <DropdownMenu.Root onOpenChange={setIsNotificationsOpen}>
               <DropdownMenu.Trigger>
                 <NotificationsIcon
                   isActive={notifications.length > 0}
@@ -337,7 +337,7 @@ const Header = () => {
                   counter={notifications.length}
                 />
               </DropdownMenu.Trigger>
-              <DropdownMenu.Content>
+              <DropdownMenu.Content style={{ zIndex: '5' }}>
                 {/* This is the content of the dropdown */}
                 <DropdownMenu.Group>
                   <DropdownMenu.Item
