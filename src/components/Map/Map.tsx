@@ -223,7 +223,7 @@ const Map: FC<Props> = ({ userId }) => {
                       selectedMarkerAddress?.address === city.name ? 'red' : city.color || '#1400FF'
                     }
                   />
-                  <path d='M25.37,12.13a7,7,0,1,0,5.5,5.5A7,7,0,0,0,25.37,12.13Z' fill='grey' />
+                  <path d='M25.37,12.13a7,7,0,1,0,5.5,5.5A7,7,0,0,0,25.37,12.13Z' fill='white' />
                 </svg>
               </g>
             </Marker>
@@ -271,7 +271,7 @@ const Map: FC<Props> = ({ userId }) => {
                         : place.color || '#1400FF'
                     }
                   />
-                  <path d='M25.37,12.13a7,7,0,1,0,5.5,5.5A7,7,0,0,0,25.37,12.13Z' fill='grey' />
+                  <path d='M25.37,12.13a7,7,0,1,0,5.5,5.5A7,7,0,0,0,25.37,12.13Z' fill='white' />
                 </svg>
               </g>
             </Marker>
