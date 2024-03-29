@@ -261,6 +261,12 @@ const Header = () => {
     })();
   };
 
+  useEffect(() => {
+    if (!notifications || notifications.length === 0) {
+      setIsNotificationsOpen(false);
+    }
+  }, []);
+
   return (
     <>
       <div className={styles.header}>
@@ -329,31 +335,39 @@ const Header = () => {
               alt='plus'
               onClick={() => setModalIsOpen(true)}
             />
-            <DropdownMenu.Root onOpenChange={setIsNotificationsOpen}>
-              <DropdownMenu.Trigger>
-                <NotificationsIcon
-                  isActive={notifications.length > 0}
-                  onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
-                  counter={notifications.length}
-                />
-              </DropdownMenu.Trigger>
-              <DropdownMenu.Content style={{ zIndex: '5' }}>
-                {/* This is the content of the dropdown */}
-                <DropdownMenu.Group>
-                  <DropdownMenu.Item
-                    onSelect={() => console.log('Item 1 clicked')}
-                    style={{ position: 'relative' }}
-                  >
-                    <Notifications
-                      onClose={() => setIsNotificationsOpen(false)}
-                      notifications={notifications}
-                      deleteMessages={handleDeleteMessages}
-                      deleteMessage={handleDeleteMessage}
-                    />
-                  </DropdownMenu.Item>
-                </DropdownMenu.Group>
-              </DropdownMenu.Content>
-            </DropdownMenu.Root>
+            {notifications.length > 0 ? (
+              <DropdownMenu.Root onOpenChange={setIsNotificationsOpen}>
+                <DropdownMenu.Trigger>
+                  <NotificationsIcon
+                    isActive={notifications.length > 0}
+                    onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
+                    counter={notifications.length}
+                  />
+                </DropdownMenu.Trigger>
+                <DropdownMenu.Content style={{ zIndex: '5' }}>
+                  {/* This is the content of the dropdown */}
+                  <DropdownMenu.Group>
+                    <DropdownMenu.Item
+                      onSelect={() => console.log('Item 1 clicked')}
+                      style={{ position: 'relative' }}
+                    >
+                      <Notifications
+                        onClose={() => setIsNotificationsOpen(false)}
+                        notifications={notifications}
+                        deleteMessages={handleDeleteMessages}
+                        deleteMessage={handleDeleteMessage}
+                      />
+                    </DropdownMenu.Item>
+                  </DropdownMenu.Group>
+                </DropdownMenu.Content>
+              </DropdownMenu.Root>
+            ) : (
+              <NotificationsIcon
+                isActive={notifications.length > 0}
+                onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
+                counter={notifications.length}
+              />
+            )}
           </div>
           {/* {isNotificationsOpen && !!notifications.length && (
             
