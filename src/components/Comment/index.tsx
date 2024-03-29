@@ -234,6 +234,7 @@ export const Comment: FC<Props> = ({ comment, isReply, isCommentOpen = false, co
                 comment={comment}
                 setRepliesOpen={() => setIsRepliesOpen((prevState) => !prevState)}
                 isReply={isReply}
+                repliesCount={replies.length}
               />
             )}
           </>

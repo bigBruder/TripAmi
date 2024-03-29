@@ -13,13 +13,14 @@ interface Props {
   comment: IComment;
   setRepliesOpen: () => void;
   isReply?: boolean;
+  repliesCount?: number;
 }
 
-export const CommentActions: FC<Props> = ({ comment, setRepliesOpen, isReply }) => {
+export const CommentActions: FC<Props> = ({ comment, setRepliesOpen, isReply, repliesCount }) => {
   const { handleLikeComment, handleDislikeComment } = useComment(comment);
   const { likes, dislikes } = comment;
   const { firestoreUser } = useContext(AuthContext);
-
+  console.log(repliesCount, 'repliesCount');
   const likedByUser = useMemo(
     () => firestoreUser?.id && likes.includes(firestoreUser.id),
     [likes, firestoreUser?.id]
@@ -51,7 +52,9 @@ export const CommentActions: FC<Props> = ({ comment, setRepliesOpen, isReply }) 
         <div>
           <img src={commentsIcon} alt='comments' />
         </div>
-        <span className={`${styles.share}`}>Comments</span>
+        <span className={`${styles.share}`}>
+          {repliesCount ? repliesCount + ' ' : ''} {repliesCount === 1 ? 'Reply' : 'Replies'}
+        </span>
       </div>
     </div>
   );

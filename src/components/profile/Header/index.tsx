@@ -115,7 +115,6 @@ const Header = () => {
       querySnapshot.forEach(async (doc) => {
         await deleteDoc(doc.ref);
       });
-      notifyInfo('Notifications deleted');
       setNotifications([]);
     } catch (error) {
       console.error('Error removing document: ', error);
@@ -133,11 +132,11 @@ const Header = () => {
     }
   };
 
-  const notifyInfo = (text: string) => {
-    if (!toast.isActive('info')) {
-      toast.info(text, { toastId: 'info' });
-    }
-  };
+  // const notifyInfo = (text: string) => {
+  //   if (!toast.isActive('info')) {
+  //     toast.info(text, { toastId: 'info' });
+  //   }
+  // };
 
   useEffect(() => {
     if (!isSearchFocused) {
