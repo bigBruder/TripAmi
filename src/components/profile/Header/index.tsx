@@ -37,6 +37,7 @@ import { IPost } from '~/types/post';
 import addFile from '@assets/icons/addFile.svg';
 import addUser from '@assets/icons/addUser.svg';
 import arrow from '@assets/icons/arrowDown.svg';
+import DefaultAvatar from '@assets/icons/defaultUserIcon.svg';
 import search from '@assets/icons/iconamoon_search-thin.svg';
 import AddFile from '@assets/icons/menu/addFile.svg';
 import AddFriends from '@assets/icons/menu/addFriends.svg';
@@ -197,8 +198,11 @@ const Header = () => {
             const q = query(usersCollection, where('id', '==', hit.userId));
             const querySnapshot = await getDocs(q);
             const user = querySnapshot.docs[0].data();
-            const url = await getDownloadURL(ref(storage, user.avatarUrl));
-            return url;
+            if (user.avatarUrl) {
+              return await getDownloadURL(ref(storage, user.avatarUrl));
+            } else {
+              return DefaultAvatar;
+            }
           })
         );
 
