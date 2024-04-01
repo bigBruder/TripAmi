@@ -19,6 +19,7 @@ import { NotificationsIcon } from '~/assets/icons/NotificationsIcon';
 import CreatePostModal from '~/components/CreatePostModal';
 import CreateTripModal from '~/components/CreateTripModal';
 import CustomModal from '~/components/CustomModal';
+import { DropdownProvider } from '~/components/DropdownProvider/DropdownProvider';
 import { Notifications } from '~/components/Notifications/Notifications';
 import Rating from '~/components/Rating';
 import { storage } from '~/firebase';
@@ -335,43 +336,26 @@ const Header = () => {
               alt='plus'
               onClick={() => setModalIsOpen(true)}
             />
-            {notifications.length > 0 ? (
-              <DropdownMenu.Root onOpenChange={setIsNotificationsOpen}>
-                <DropdownMenu.Trigger>
+            {notifications && (
+              <DropdownProvider
+                trigger={
                   <NotificationsIcon
                     isActive={notifications.length > 0}
-                    onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
+                    // onClick={() => {}}
                     counter={notifications.length}
                   />
-                </DropdownMenu.Trigger>
-                <DropdownMenu.Content style={{ zIndex: '5' }}>
-                  {/* This is the content of the dropdown */}
-                  <DropdownMenu.Group>
-                    <DropdownMenu.Item
-                      onSelect={() => console.log('Item 1 clicked')}
-                      style={{ position: 'relative' }}
-                    >
-                      <Notifications
-                        onClose={() => setIsNotificationsOpen(false)}
-                        notifications={notifications}
-                        deleteMessages={handleDeleteMessages}
-                        deleteMessage={handleDeleteMessage}
-                      />
-                    </DropdownMenu.Item>
-                  </DropdownMenu.Group>
-                </DropdownMenu.Content>
-              </DropdownMenu.Root>
-            ) : (
-              <NotificationsIcon
-                isActive={notifications.length > 0}
-                onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
-                counter={notifications.length}
+                }
+                content={
+                  <Notifications
+                    onClose={() => {}}
+                    notifications={notifications}
+                    deleteMessages={handleDeleteMessages}
+                    deleteMessage={handleDeleteMessage}
+                  />
+                }
               />
             )}
           </div>
-          {/* {isNotificationsOpen && !!notifications.length && (
-            
-          )} */}
 
           <div className={styles.rightContainer}>
             <img className={styles.avatar} src={avatar} alt='icon' />

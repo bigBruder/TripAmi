@@ -99,43 +99,49 @@ export const Notifications: FC<Props> = ({
       <div className={styles.container} onBlur={() => onClose()}>
         <div className={styles.container_top}>
           <p className={styles.title}>Notifications</p>
-          <button className={`${styles.button} ${styles.button_delete}`} onClick={deleteMessages}>
-            Delete messages
-          </button>
+          {notifications.length > 0 && (
+            <button className={`${styles.button} ${styles.button_delete}`} onClick={deleteMessages}>
+              Delete messages
+            </button>
+          )}
         </div>
 
         <div className={styles.notifications_container}>
-          {notifications.map((notification) => (
-            <div
-              key={notification.id}
-              className={`${styles.notification} ${notification.isReaded ? styles.notification_readed : ''}`}
-            >
-              <div>
-                <p className={styles.base_text}>{getTitle(notification.type)}</p>
-                {notification.text && (
-                  <p className={styles.text}>
-                    {notification.text.length > 20
-                      ? notification.text.slice(0, 80) + '...'
-                      : notification.text}
-                  </p>
-                )}
+          {notifications.length === 0 ? (
+            <p className={styles.base_text}>There are no any new notifications</p>
+          ) : (
+            notifications.map((notification) => (
+              <div
+                key={notification.id}
+                className={`${styles.notification} ${notification.isReaded ? styles.notification_readed : ''}`}
+              >
+                <div>
+                  <p className={styles.base_text}>{getTitle(notification.type)}</p>
+                  {notification.text && (
+                    <p className={styles.text}>
+                      {notification.text.length > 20
+                        ? notification.text.slice(0, 80) + '...'
+                        : notification.text}
+                    </p>
+                  )}
+                </div>
+                <div className={styles.control_container}>
+                  <button className={styles.button} onClick={() => handleNavigate(notification)}>
+                    Check
+                  </button>
+                  <button
+                    className={`${styles.button} ${styles.button_remove}`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      deleteMessage(notification.id);
+                    }}
+                  >
+                    X
+                  </button>
+                </div>
               </div>
-              <div className={styles.control_container}>
-                <button className={styles.button} onClick={() => handleNavigate(notification)}>
-                  Check
-                </button>
-                <button
-                  className={`${styles.button} ${styles.button_remove}`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    deleteMessage(notification.id);
-                  }}
-                >
-                  X
-                </button>
-              </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
     </>
