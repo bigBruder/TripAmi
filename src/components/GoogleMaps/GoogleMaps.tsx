@@ -1,11 +1,12 @@
 import { useContext, useEffect, useState } from 'react';
+import { geocodeByPlaceId } from 'react-places-autocomplete';
 
 import { IUser } from '~/types/user';
 
 import MapOrange from '@assets/icons/MapOrange.svg';
 import Build from '@assets/icons/build.svg';
-import { getDocs, onSnapshot, orderBy, query, where } from '@firebase/firestore';
-import { APIProvider, Map } from '@vis.gl/react-google-maps';
+import { getDocs, onSnapshot, query, where } from '@firebase/firestore';
+import { APIProvider, AdvancedMarker, Map, Pin } from '@vis.gl/react-google-maps';
 
 import { AuthContext } from '../../providers/authContext';
 import { tripsCollection, usersCollection } from '../../types/firestoreCollections';
@@ -14,13 +15,23 @@ import { MapInfoWindow } from '../MapInfoWindow/MapInfoWindow';
 import useTravelsContext from '../TravelItinerary/store';
 import styles from './googleMaps.module.css';
 
+interface Place {
+  name: string;
+  lat: number;
+  lng: number;
+  color: string;
+  placeId: string;
+  travelId: string;
+}
+
 export default function Intro() {
   const position = { lat: 53.54, lng: 10 };
   const [open, setOpen] = useState(false);
   const { travels, setTravels } = useTravelsContext();
   const [isFriendsLoading, setIsFriendsLoading] = useState(false);
   const { firestoreUser } = useContext(AuthContext);
-  const [selectedTravel, setSelectedTravel] = useState<ITravel | null>(null);
+  // const [selectedTravel, setSelectedTravel] = useState<ITravel | null>(null);
+  const [selectedMarker, setSelectedMarker] = useState(null);
   const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
   const [friends, setFriends] = useState<IUser[]>([]);
   const [{ isMapOpen, isGeneralMapOpen, isFriendsMapOpen }, setIsOpen] = useState({
@@ -28,17 +39,40 @@ export default function Intro() {
     isGeneralMapOpen: false,
     isFriendsMapOpen: false,
   });
+  const [placesToDisplay, setPlacesToDisplay] = useState<Place[]>();
 
   useEffect(() => {
     if (firestoreUser?.friends && firestoreUser?.friends?.length > 0) {
       const q = query(tripsCollection, where('userId', 'in', firestoreUser?.friends));
-      const unsub = onSnapshot(q, (querySnapshot) => {
-        const fetchedTravel = querySnapshot.docs.map((doc) => ({
+      const unsub = onSnapshot(q, async (querySnapshot) => {
+        const fetchedTravels = querySnapshot.docs.map((doc) => ({
           ...doc.data(),
           id: doc.id,
         }));
-        setTravels(fetchedTravel as ITravel[]);
+        const places = await Promise.all(
+          fetchedTravels.map(async ({ cities, id }) => {
+            if (!cities) return [];
+            const cityPromises = cities.map(async (city) => {
+              const res = await geocodeByPlaceId(city.placeID);
+              return {
+                travelId: id,
+                name: city.name,
+                lat: +res[0].geometry.location.lat(),
+                lng: +res[0].geometry.location.lng(),
+                placeId: city.placeID,
+              };
+            });
+            return Promise.all(cityPromises);
+          })
+        );
+
+        setPlacesToDisplay(places.flatMap((place) => place) as Place[]);
+        setTravels(fetchedTravels as ITravel[]);
       });
+
+      return () => {
+        unsub();
+      };
     }
   }, [firestoreUser?.friends, setTravels]);
 
@@ -63,20 +97,19 @@ export default function Intro() {
         setFriends(fetchedFriends as IUser[]);
       } catch (err) {
         console.error(err);
-        // @ts-ignore
-        alert(firebaseErrors[err.code]);
       } finally {
         setIsFriendsLoading(false);
       }
     })();
   }, [travels]);
 
-  useEffect(() => {
-    if (selectedTravel) {
-      setSelectedUser(friends.find((friend) => friend.id === selectedTravel?.userId) || null);
-    }
-  }, [friends, selectedTravel]);
+  // useEffect(() => {
+  //   if (selectedTravel) {
+  //     setSelectedUser(friends.find((friend) => friend.id === selectedTravel?.userId) || null);
+  //   }
+  // }, [friends, selectedTravel]);
 
+  console.log(selectedMarker);
   return (
     <div className={styles.container}>
       <div className={styles.titleContainer}>
@@ -84,7 +117,9 @@ export default function Intro() {
           Build a travel itinerary
           <img src={MapOrange} />
         </p>
-        <p className={styles.title}>Build a travel itinerary based on other people's reviews</p>
+        <p className={styles.title}>
+          Build a travel itinerary based on other people&apos;s reviews
+        </p>
       </div>
       <div className={styles.subtitle}>
         <p className={styles.title}>
@@ -103,29 +138,39 @@ export default function Intro() {
         <APIProvider apiKey='AIzaSyCwDkMaHWXRpO7hY6z62_Gu8eLxMMItjT8'>
           <div style={{ height: '450px', width: '100%' }}>
             <Map defaultZoom={5} defaultCenter={position} mapId='9bc3b1605395203e'>
-              {/* {travels.length > 0 && (
-              travels?.map(travel => {
+              {placesToDisplay &&
+                placesToDisplay.length > 0 &&
+                placesToDisplay?.map((place) => {
+                  return (
+                    <AdvancedMarker
+                      position={{ lat: place.lat, lng: place.lng }}
+                      onClick={() => {
+                        console.log(place.travelId);
+                        // setSelectedTravel(
+                        //   {
+                        //     ...travels.find((travel) => travel.id === place.travelId),
+                        //     lat: +place.lat,
+                        //     lng: +place.lng,
+                        //   } || null
+                        // );
+                        setSelectedMarker({
+                          placeId: place.placeId,
+                          name: place.name,
+                          lat: place.lat,
+                          lng: place.lng,
+                        });
+                        setOpen(true);
+                      }}
+                      key={place.lat + place.lng + place.placeId + Math.random()}
+                    >
+                      <Pin background={'red'} borderColor={'white'} glyphColor={'white'} />
+                    </AdvancedMarker>
+                  );
+                })}
 
-                return (
-                  <AdvancedMarker 
-                    position={{lat: travel.location.latitude, lng:travel.location.longitude}}
-                    onClick={() => {
-                      setSelectedTravel(travel);
-                      setOpen(true);
-                    }}
-                    key={travel.id}
-                  >
-                    <Pin
-                      background={travel.location.color}
-                      borderColor={"white"}
-                      glyphColor={"white"}
-                    />
-                  </AdvancedMarker>
-            )}))} */}
-
-              {selectedTravel && open && selectedUser && (
+              {selectedMarker && open && (
                 <MapInfoWindow
-                  selectedTravel={selectedTravel}
+                  selectedMarker={selectedMarker}
                   selectedUser={selectedUser}
                   handleClose={setOpen}
                   travels={travels}

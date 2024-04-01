@@ -1,4 +1,5 @@
 import React, { FC, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { storage } from '~/firebase';
 import { ITravel } from '~/types/travel';
@@ -12,27 +13,44 @@ import Rating from '../Rating';
 import styles from './MapInfoWindow.module.css';
 
 interface Props {
-  selectedTravel: ITravel;
+  selectedMarker: any;
   travels: ITravel[];
   friends: IUser[];
   selectedUser: IUser;
   handleClose: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const MapInfoWindow: FC<Props> = ({ selectedTravel, handleClose, travels, friends }) => {
-  const { location } = selectedTravel;
+export const MapInfoWindow: FC<Props> = ({ selectedMarker, handleClose, travels, friends }) => {
   const [userAvatars, setUserAvatars] = useState<any>([]);
   const [reviews, setReviews] = useState<ITravel[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
+    console.log(travels);
     setReviews(
-      travels.filter(
-        (travel) =>
-          travel.location.latitude === location.latitude &&
-          travel.location.longitude === location.longitude
-      )
+      travels.filter((travel) => {
+        if (travel.cities) {
+          console.log('1: ');
+          return travel?.cities.some((city) => city.placeID === selectedMarker.placeId);
+        }
+
+        return false;
+      })
     );
-  }, [selectedTravel]);
+  }, [selectedMarker]);
+
+  console.log('selectedMarker ==> ', selectedMarker);
+
+  console.log(reviews);
+  // useEffect(() => {
+  // setReviews(
+  //   travels.filter(
+  //     (travel) =>
+  //       travel?.cities.some(city => city.placeID) === selectedTravel. &&
+  //       travel.location.longitude === location.longitude
+  //   )
+  // );
+  // }, [selectedTravel]);
 
   useEffect(() => {
     Promise.all(
@@ -50,14 +68,18 @@ export const MapInfoWindow: FC<Props> = ({ selectedTravel, handleClose, travels,
     });
   }, [reviews]);
 
+  const handleSelectTrip = (id: string) => {
+    navigate(`/trip/${id}`);
+  };
+
   return (
     <InfoWindow
-      position={{ lat: location.latitude, lng: location.longitude }}
+      position={{ lat: selectedMarker.lat, lng: selectedMarker.lng }}
       onCloseClick={() => handleClose(false)}
     >
       <div className={styles.reviews}>
         {reviews.map((review, idx) => (
-          <div className={styles.info} key={review.id}>
+          <div className={styles.info} key={review.id} onClick={() => handleSelectTrip(review.id)}>
             <div className={styles.top_container}>
               <div className={styles.short_info}>
                 <img src={userAvatars[idx]} alt='avatar' className={styles.avatar} />
@@ -66,7 +88,9 @@ export const MapInfoWindow: FC<Props> = ({ selectedTravel, handleClose, travels,
                   <p className={styles.user_name}>
                     {friends.find((friend) => friend.id === review.userId)?.username}
                   </p>
-                  <p className={styles.location_name}>{review.location.name}</p>
+                  <p className={styles.location_name}>
+                    {review.cities?.map((city) => city.address.split(',')[0]).join(' | ')}
+                  </p>
                 </div>
               </div>
               <Rating disabled selectedStars={review.rate} />

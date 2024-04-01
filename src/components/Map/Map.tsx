@@ -47,6 +47,7 @@ const Map: FC<Props> = ({ userId }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!userId) return;
     const fetchUserTrips = async () => {
       const q = query(tripsCollection, where('userId', '==', userId));
       const querySnapshot = await getDocs(q);
@@ -71,7 +72,6 @@ const Map: FC<Props> = ({ userId }) => {
   useEffect(() => {
     const fetchCitiesToDisplay = async () => {
       const tripsToDisplay = userId ? usersTrips : trips;
-      console.log('tripsToDisplay => ', tripsToDisplay);
       if (!tripsToDisplay) return;
       const citiesPlacesId = tripsToDisplay.flatMap(
         (trip) =>
@@ -147,7 +147,6 @@ const Map: FC<Props> = ({ userId }) => {
     }, 3000);
     return () => clearTimeout(timerId);
   }, [selectedMarkerAddress]);
-  console.log(window.innerWidth, 'window.innerWidth');
   return (
     <div style={{ position: 'relative' }}>
       {selectedMarkerAddress && (
