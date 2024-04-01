@@ -22,6 +22,31 @@ import { ref } from '@firebase/storage';
 
 import styles from './userProfile.module.css';
 
+type SortBy = 'endDate' | 'rate' | 'alphabetically';
+
+const getQuery = (sortBy: SortBy, isReverse: boolean, id: string) => {
+  switch (sortBy) {
+    case 'alphabetically':
+      return query(
+        tripsCollection,
+        where('userId', '==', id),
+        orderBy('tripName', !isReverse ? 'desc' : 'asc')
+      );
+    case 'rate':
+      return query(
+        tripsCollection,
+        where('userId', '==', id),
+        orderBy('rate', !isReverse ? 'desc' : 'asc')
+      );
+    default:
+      return query(
+        tripsCollection,
+        where('userId', '==', id),
+        orderBy('endDate', !isReverse ? 'desc' : 'asc')
+      );
+  }
+};
+
 const UserProfile = () => {
   const { id } = useParams();
   const { firestoreUser } = useContext(AuthContext);
@@ -31,7 +56,7 @@ const UserProfile = () => {
   const [travelsIsLoading, setTravelsIsLoading] = useState<boolean>(true);
   const [userTravels, setUserTravels] = useState<ITravel[]>([]);
   const [isReverse, setIsReverse] = useState(false);
-  const [sortBy, setSortBy] = useState('endDate');
+  const [sortBy, setSortBy] = useState<SortBy>('endDate');
   useEffect(() => {
     (async () => {
       if (!id) return;
@@ -61,31 +86,8 @@ const UserProfile = () => {
   useEffect(() => {
     (async () => {
       try {
-        let q;
-
-        switch (sortBy) {
-          case 'endDate':
-            q = query(
-              tripsCollection,
-              where('userId', '==', id),
-              orderBy('startDate', !isReverse ? 'desc' : 'asc')
-            );
-            break;
-          case 'alphabetically':
-            q = query(
-              tripsCollection,
-              where('userId', '==', id),
-              orderBy('tripName', !isReverse ? 'desc' : 'asc')
-            );
-            break;
-          case 'rate':
-            q = query(
-              tripsCollection,
-              where('userId', '==', id),
-              orderBy('rate', !isReverse ? 'desc' : 'asc')
-            );
-            break;
-        }
+        if (!id) return;
+        let q = getQuery(sortBy, isReverse, id);
 
         const querySnapshot = await getDocs(q);
         const fetchedUserTravels = querySnapshot.docs.map((doc) => ({

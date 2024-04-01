@@ -166,7 +166,7 @@ const Map: FC<Props> = ({ userId }) => {
           onMoveEnd={handleMoveEnd}
           onMove={({ zoom }) => setScaleFactor(zoom)}
           style={{ width: '100%', height: '100%' }}
-          minZoom={0.2}
+          minZoom={1}
           maxZoom={30}
         >
           <Geographies geography={GeoJson}>
