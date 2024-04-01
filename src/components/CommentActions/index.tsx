@@ -20,7 +20,6 @@ export const CommentActions: FC<Props> = ({ comment, setRepliesOpen, isReply, re
   const { handleLikeComment, handleDislikeComment } = useComment(comment);
   const { likes, dislikes } = comment;
   const { firestoreUser } = useContext(AuthContext);
-  console.log(repliesCount, 'repliesCount');
   const likedByUser = useMemo(
     () => firestoreUser?.id && likes.includes(firestoreUser.id),
     [likes, firestoreUser?.id]

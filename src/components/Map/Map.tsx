@@ -48,11 +48,9 @@ const Map: FC<Props> = ({ userId }) => {
 
   useEffect(() => {
     const fetchUserTrips = async () => {
-      console.log('userId => ', userId);
       const q = query(tripsCollection, where('userId', '==', userId));
       const querySnapshot = await getDocs(q);
       const fetchedTrips = querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
-      console.log('fetchedTrips => ', fetchedTrips);
       setUsersTrips(fetchedTrips as ITravel[]);
     };
     fetchUserTrips();

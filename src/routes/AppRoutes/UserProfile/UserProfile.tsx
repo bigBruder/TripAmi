@@ -48,7 +48,6 @@ const UserProfile = () => {
         setAvatarIsLoading(true);
         try {
           const url = await getDownloadURL(ref(storage, userData.avatarUrl));
-          console.log('url => ', url);
           setUserPhotoUrl(url);
         } catch (error) {
           console.log('[ERROR getting user photo] => ', error);
@@ -57,7 +56,7 @@ const UserProfile = () => {
         }
       }
     })();
-  }, [id]);
+  }, [userData?.id]);
 
   useEffect(() => {
     (async () => {
@@ -114,11 +113,19 @@ const UserProfile = () => {
               <div className={styles.genaralInfo}>
                 <div className={styles.userInfo}>
                   <div className={styles.imageContainer}>
-                    <img
-                      className={styles.defaultUserIcon}
-                      src={userPhotoUrl || Avatar}
-                      alt='default user icon'
-                    />
+                    {userPhotoUrl ? (
+                      <img
+                        className={styles.defaultUserIcon}
+                        src={userPhotoUrl}
+                        alt='default user icon'
+                      />
+                    ) : (
+                      <img
+                        className={styles.defaultUserIcon}
+                        src={Avatar}
+                        alt='default user icon'
+                      />
+                    )}
                     {avatarIsLoading && <Skeleton className={styles.loader} />}
                   </div>
                   <div className={styles.description}>

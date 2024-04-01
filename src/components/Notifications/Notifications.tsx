@@ -55,8 +55,6 @@ export const Notifications: FC<Props> = ({
 }) => {
   const navigate = useNavigate();
   const handleNavigate = (notification: Notification) => {
-    console.log('note --> ', notification);
-    console.log('note type --> ', notification.type);
     switch (notification.type) {
       case NotificationType.NewPost:
       case NotificationType.NewTrip:
@@ -83,8 +81,6 @@ export const Notifications: FC<Props> = ({
           });
         }
         const way = getWay(notification.type);
-        console.log(notification.type);
-        console.log(`/${way}/${notification.postId}`);
         navigate(`/${way}/${notification.postId}`, {
           state: { open_comment: notification.commentId },
         });
