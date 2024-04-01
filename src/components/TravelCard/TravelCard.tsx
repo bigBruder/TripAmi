@@ -17,7 +17,9 @@ import Dots from '@assets/icons/dots.svg';
 import shareIcon from '@assets/icons/share.svg';
 import { deleteDoc, doc } from '@firebase/firestore';
 import { ref } from '@firebase/storage';
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 
+import { DropdownProvider } from '../DropdownProvider/DropdownProvider';
 import { LightBox } from '../Lightbox/LightBox';
 import ShareModal from '../ShareModal/ShareModal';
 import styles from './travelCard.module.css';
@@ -212,7 +214,17 @@ const TravelCard: FC<Props> = ({ travel }) => {
           <div className={styles.visitedContainer}>
             {cities && cities?.length > 0 && (
               <div>
-                <p className={styles.mark}>Cities: </p>
+                <div className={styles.info_container}>
+                  <p className={styles.mark}>Cities: </p>
+                  <DropdownProvider
+                    trigger={<p className={styles.info}>?</p>}
+                    content={
+                      <div className={styles.info_box}>
+                        <p>Click on tag to see more information about place</p>
+                      </div>
+                    }
+                  />
+                </div>
                 <div className={styles.tagsContainer}>
                   {travel?.cities?.map((tag) => (
                     <p
@@ -230,7 +242,17 @@ const TravelCard: FC<Props> = ({ travel }) => {
             <div>
               {travel.geoTags && travel.geoTags.length > 0 && (
                 <>
-                  <p className={styles.mark}>Places: </p>
+                  <div className={styles.info_container}>
+                    <p className={styles.mark}>Places: </p>
+                    <DropdownProvider
+                      trigger={<p className={styles.info}>?</p>}
+                      content={
+                        <div className={styles.info_box}>
+                          <p>Click on tag to see more information about place</p>
+                        </div>
+                      }
+                    />
+                  </div>
                   <div className={styles.tagsContainer}>
                     {travel?.geoTags?.map((tag) => (
                       <p

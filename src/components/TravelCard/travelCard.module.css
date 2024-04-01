@@ -375,3 +375,26 @@
 .mark {
     color: #717171;
 }
+
+.info_container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.info {
+    /* background-color: rgba(172, 172, 172, 0.22); */
+    border-radius: 10px;
+    width: min-content;
+    /* padding: 2px 7px; */
+    font-size: 10px;
+    font-weight: bold;
+}
+
+.info_box {
+    background-color: white;
+    border-radius: 10px;
+    border: 1px solid #acacac37;
+    padding: 5px 10px;
+    font-family: Gilroy, sans-serif;
+}
