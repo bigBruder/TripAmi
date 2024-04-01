@@ -213,12 +213,14 @@ const Map: FC<Props> = ({ userId }) => {
                   /> */}
                 {/* </svg> */}\{' '}
                 <svg
-                  width={20 / scaleFactor}
-                  height={30 / scaleFactor}
+                  width={30 / scaleFactor}
+                  height={50 / scaleFactor}
                   viewBox='0 0 48 48'
                   xmlns='http://www.w3.org/2000/svg'
                 >
                   <path
+                    width={20 / scaleFactor}
+                    height={30 / scaleFactor}
                     d='M24,1.32c-9.92,0-18,7.8-18,17.38A16.83,16.83,0,0,0,9.57,29.09l12.84,16.8a2,2,0,0,0,3.18,0l12.84-16.8A16.84,16.84,0,0,0,42,18.7C42,9.12,33.92,1.32,24,1.32Z'
                     fill={
                       selectedMarkerAddress?.address === city.name ? 'red' : city.color || '#1400FF'
@@ -259,8 +261,8 @@ const Map: FC<Props> = ({ userId }) => {
                 </svg> */}
 
                 <svg
-                  width={20 / scaleFactor}
-                  height={30 / scaleFactor}
+                  width={30 / scaleFactor}
+                  height={50 / scaleFactor}
                   viewBox='0 0 48 48'
                   xmlns='http://www.w3.org/2000/svg'
                 >
