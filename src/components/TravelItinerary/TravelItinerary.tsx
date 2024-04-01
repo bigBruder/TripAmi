@@ -3,11 +3,11 @@ import { useContext, useEffect, useState } from 'react';
 import TravelCard from '~/components/TravelCard/TravelCard';
 import useTravelsContext from '~/components/TravelItinerary/store';
 import { firebaseErrors } from '~/constants/firebaseErrors';
-import { useWindowDimensions } from '~/hooks/useWindowDimensions';
 import { AuthContext } from '~/providers/authContext';
 import { postsCollection, tripsCollection } from '~/types/firestoreCollections';
 import { IPost } from '~/types/post';
 import { ITravel } from '~/types/travel';
+import { IUser } from '~/types/user';
 
 import { getDocs, onSnapshot, orderBy, query, where } from '@firebase/firestore';
 
@@ -16,42 +16,42 @@ import styles from './travelItinerary.module.css';
 
 import 'swiper/css';
 
+type SortBy = 'endDate' | 'rate' | 'alphabetically';
+
+const getQuery = (sortBy: SortBy, isReverse: boolean, firestoreUser: IUser) => {
+  switch (sortBy) {
+    case 'alphabetically':
+      return query(
+        tripsCollection,
+        where('userId', '==', firestoreUser?.id),
+        orderBy('tripName', !isReverse ? 'desc' : 'asc')
+      );
+    case 'rate':
+      return query(
+        tripsCollection,
+        where('userId', '==', firestoreUser?.id),
+        orderBy('rate', !isReverse ? 'desc' : 'asc')
+      );
+    default:
+      return query(
+        tripsCollection,
+        where('userId', '==', firestoreUser?.id),
+        orderBy('endDate', !isReverse ? 'desc' : 'asc')
+      );
+  }
+};
+
 export const TravelItinerary = () => {
   const { firestoreUser } = useContext(AuthContext);
   const { travels, setTravels } = useTravelsContext();
   const [suggestedPosts, setSuggestedPosts] = useState<IPost[] | null>(null);
   const [isSuggestedPostsLoading, setIsSuggestedPostsLoading] = useState(false);
-  const { width } = useWindowDimensions();
-  const [sortBy, setSortBy] = useState('endDate');
+  const [sortBy, setSortBy] = useState<SortBy>('endDate');
   const [isReverse, setIsReverse] = useState(false);
 
   useEffect(() => {
     if (firestoreUser?.id) {
-      let q;
-
-      switch (sortBy) {
-        case 'alphabetically':
-          q = query(
-            tripsCollection,
-            where('userId', '==', firestoreUser?.id),
-            orderBy('tripName', !isReverse ? 'desc' : 'asc')
-          );
-          break;
-        case 'rate':
-          q = query(
-            tripsCollection,
-            where('userId', '==', firestoreUser?.id),
-            orderBy('rate', !isReverse ? 'desc' : 'asc')
-          );
-          break;
-        default:
-          q = query(
-            tripsCollection,
-            where('userId', '==', firestoreUser?.id),
-            orderBy('endDate', !isReverse ? 'desc' : 'asc')
-          );
-          break;
-      }
+      const q = getQuery(sortBy, isReverse, firestoreUser);
 
       const unsub = onSnapshot(q, (querySnapshot: { docs: any[] }) => {
         const fetchedTravel = querySnapshot.docs.map((doc) => ({
