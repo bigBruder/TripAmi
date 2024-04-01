@@ -22,7 +22,7 @@ export const TravelItinerary = () => {
   const [suggestedPosts, setSuggestedPosts] = useState<IPost[] | null>(null);
   const [isSuggestedPostsLoading, setIsSuggestedPostsLoading] = useState(false);
   const { width } = useWindowDimensions();
-  const [sortBy, setSortBy] = useState('startDate');
+  const [sortBy, setSortBy] = useState('endDate');
   const [isReverse, setIsReverse] = useState(false);
 
   useEffect(() => {
@@ -30,20 +30,6 @@ export const TravelItinerary = () => {
       let q;
 
       switch (sortBy) {
-        case 'startDate':
-          q = query(
-            tripsCollection,
-            where('userId', '==', firestoreUser?.id),
-            orderBy('startDate', !isReverse ? 'desc' : 'asc')
-          );
-          break;
-        case 'endDate':
-          q = query(
-            tripsCollection,
-            where('userId', '==', firestoreUser?.id),
-            orderBy('endDate', !isReverse ? 'desc' : 'asc')
-          );
-          break;
         case 'alphabetically':
           q = query(
             tripsCollection,
@@ -58,9 +44,16 @@ export const TravelItinerary = () => {
             orderBy('rate', !isReverse ? 'desc' : 'asc')
           );
           break;
+        default:
+          q = query(
+            tripsCollection,
+            where('userId', '==', firestoreUser?.id),
+            orderBy('endDate', !isReverse ? 'desc' : 'asc')
+          );
+          break;
       }
 
-      const unsub = onSnapshot(q, (querySnapshot: { docs: any[]; }) => {
+      const unsub = onSnapshot(q, (querySnapshot: { docs: any[] }) => {
         const fetchedTravel = querySnapshot.docs.map((doc) => ({
           ...doc.data(),
           id: doc.id,

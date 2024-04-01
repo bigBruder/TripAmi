@@ -19,8 +19,8 @@ export const Sort: FC<Props> = ({ onSelect, isReverse, setReverse }) =>
           className={styles.sortby_select}
           onChange={(e) => onSelect(e.target.value)}
         >
-          <option value='startDate'>Start date</option>
-          <option value='endDate'>End date</option>
+          {/* <option value='startDate'>Start date</option> */}
+          <option value='endDate'>Date</option>
           <option value='alphabetically'>Alphabetically</option>
           <option value='rate'>Rating</option>
         </select>

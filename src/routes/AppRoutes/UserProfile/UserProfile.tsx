@@ -31,7 +31,7 @@ const UserProfile = () => {
   const [travelsIsLoading, setTravelsIsLoading] = useState<boolean>(true);
   const [userTravels, setUserTravels] = useState<ITravel[]>([]);
   const [isReverse, setIsReverse] = useState(false);
-  const [sortBy, setSortBy] = useState('date');
+  const [sortBy, setSortBy] = useState('endDate');
   useEffect(() => {
     (async () => {
       if (!id) return;
@@ -65,7 +65,7 @@ const UserProfile = () => {
         let q;
 
         switch (sortBy) {
-          case 'date':
+          case 'endDate':
             q = query(
               tripsCollection,
               where('userId', '==', id),
