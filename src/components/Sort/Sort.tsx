@@ -21,7 +21,7 @@ export const Sort: FC<Props> = ({ onSelect, isReverse, setReverse }) =>
         >
           {/* <option value='startDate'>Start date</option> */}
           <option value='endDate'>Date</option>
-          <option value='alphabetically'>Alphabetically</option>
+          <option value='alphabetically'>A to Z</option>
           <option value='rate'>Rating</option>
         </select>
         <div onClick={() => setReverse()}>
