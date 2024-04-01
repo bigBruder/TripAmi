@@ -1,4 +1,5 @@
 import React, { FC, useEffect, useState } from 'react';
+import Skeleton from 'react-loading-skeleton';
 import { useNavigate } from 'react-router-dom';
 
 import { storage } from '~/firebase';
@@ -77,7 +78,11 @@ export const MapInfoWindow: FC<Props> = ({ selectedMarker, handleClose, travels,
           <div className={styles.info} key={review.id} onClick={() => handleSelectTrip(review.id)}>
             <div className={styles.top_container}>
               <div className={styles.short_info}>
-                <img src={userAvatars[idx]} alt='avatar' className={styles.avatar} />
+                {userAvatars[idx] === undefined ? (
+                  <Skeleton circle={true} height={40} width={40} />
+                ) : (
+                  <img src={userAvatars[idx]} alt='avatar' className={styles.avatar} />
+                )}
 
                 <div className={styles.user_container}>
                   <p className={styles.user_name}>
