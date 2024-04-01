@@ -79,6 +79,7 @@ export default function Intro() {
   useEffect(() => {
     (async () => {
       try {
+        if (!travels) return;
         setIsFriendsLoading(true);
         const q = query(
           usersCollection,
@@ -161,7 +162,7 @@ export default function Intro() {
                         });
                         setOpen(true);
                       }}
-                      key={place.lat + place.lng + place.placeId + Math.random()}
+                      key={place.lat + place.lng + place.placeId + place.travelId}
                     >
                       <Pin background={'red'} borderColor={'white'} glyphColor={'white'} />
                     </AdvancedMarker>

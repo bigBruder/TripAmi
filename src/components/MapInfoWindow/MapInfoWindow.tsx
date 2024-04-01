@@ -26,11 +26,9 @@ export const MapInfoWindow: FC<Props> = ({ selectedMarker, handleClose, travels,
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log(travels);
     setReviews(
       travels.filter((travel) => {
         if (travel.cities) {
-          console.log('1: ');
           return travel?.cities.some((city) => city.placeID === selectedMarker.placeId);
         }
 
@@ -39,9 +37,6 @@ export const MapInfoWindow: FC<Props> = ({ selectedMarker, handleClose, travels,
     );
   }, [selectedMarker]);
 
-  console.log('selectedMarker ==> ', selectedMarker);
-
-  console.log(reviews);
   // useEffect(() => {
   // setReviews(
   //   travels.filter(
