@@ -1,6 +1,7 @@
-import React from 'react';
-import Lottie from "lottie-react";
+import Lottie from 'lottie-react';
+
 import Animation from '@assets/animations/loader.json';
+
 import styles from './loadingScreen.module.css';
 
 export const LoadingScreen = () => {

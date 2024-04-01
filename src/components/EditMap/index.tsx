@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { LoadingScreen } from '~/components/LoadingScreen';
 import Map from '~/components/Map/Map';

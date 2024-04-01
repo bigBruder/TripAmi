@@ -61,7 +61,7 @@ export const UserPostInfo: FC<Props> = ({
         <p
           className={styles.buttonText}
           onClick={() =>
-            navigate('/posts/' + postData.id, {
+            navigate('/posts/' + postData?.id, {
               state: {
                 ...postData,
                 imageUrls: imagesUrl,

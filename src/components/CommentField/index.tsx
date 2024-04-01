@@ -1,11 +1,9 @@
 import { FC, useCallback, useContext, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 
-import { firebaseErrors } from '~/constants/firebaseErrors';
 import { db } from '~/firebase';
 import { AuthContext } from '~/providers/authContext';
 import { commentsCollection, notificationsCollection } from '~/types/firestoreCollections';
-import { NotificationType } from '~/types/notifications/notifications';
 import { IPost } from '~/types/post';
 
 import { addDoc, doc, updateDoc } from '@firebase/firestore';

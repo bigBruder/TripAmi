@@ -1,6 +1,7 @@
 import React from 'react';
+
+import Tab, { ITab } from './Tab';
 import styles from './customTabs.module.css';
-import Tab, {ITab} from './Tab';
 
 interface Props {
   tabs: ITab[];
