@@ -1,4 +1,4 @@
-import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useContext, useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
@@ -17,7 +17,6 @@ import Dots from '@assets/icons/dots.svg';
 import shareIcon from '@assets/icons/share.svg';
 import { deleteDoc, doc } from '@firebase/firestore';
 import { ref } from '@firebase/storage';
-import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 
 import { DropdownProvider } from '../DropdownProvider/DropdownProvider';
 import { LightBox } from '../Lightbox/LightBox';
@@ -37,7 +36,6 @@ const TravelCard: FC<Props> = ({ travel }) => {
     { url: string; type: string; description: string }[]
   >([]);
   const {
-    // location,
     startDate,
     endDate,
     rate,
@@ -97,49 +95,49 @@ const TravelCard: FC<Props> = ({ travel }) => {
     })();
   }, [imageUrl]);
 
-  const getLayout = useMemo(() => {
-    switch (imageDownloadUrls?.length) {
-      case 1:
-        return [1];
-      case 2:
-        return [1, 1];
-      case 3:
-        return [1, 2];
-      case 4:
-        return [2, 2];
-      case 5:
-        return [1, 4];
-      default:
-        return [];
-    }
-  }, [imageDownloadUrls?.length]);
+  // const getLayout = useMemo(() => {
+  //   switch (imageDownloadUrls?.length) {
+  //     case 1:
+  //       return [1];
+  //     case 2:
+  //       return [1, 1];
+  //     case 3:
+  //       return [1, 2];
+  //     case 4:
+  //       return [2, 2];
+  //     case 5:
+  //       return [1, 4];
+  //     default:
+  //       return [];
+  //   }
+  // }, [imageDownloadUrls?.length]);
 
-  const getHeight = useMemo(() => {
-    switch (imageDownloadUrls?.length) {
-      case 1:
-        return ['250px'];
-      case 2:
-        return ['150px', '100px'];
-      case 3:
-        return ['150px', '100px'];
-      case 4:
-        return ['125px', '125px'];
-      case 5:
-        return ['150px', '100px'];
-      default:
-        return [];
-    }
-  }, [imageDownloadUrls?.length]);
+  // const getHeight = useMemo(() => {
+  //   switch (imageDownloadUrls?.length) {
+  //     case 1:
+  //       return ['250px'];
+  //     case 2:
+  //       return ['150px', '100px'];
+  //     case 3:
+  //       return ['150px', '100px'];
+  //     case 4:
+  //       return ['125px', '125px'];
+  //     case 5:
+  //       return ['150px', '100px'];
+  //     default:
+  //       return [];
+  //   }
+  // }, [imageDownloadUrls?.length]);
 
-  const setting = useMemo(() => {
-    return {
-      width: '400px',
-      height: getHeight,
-      layout: getLayout,
-      photos: imageDownloadUrls.map((item) => ({ source: item.url })),
-      showNumOfRemainingPhotos: true,
-    };
-  }, [getHeight, getLayout, imageDownloadUrls]);
+  // const setting = useMemo(() => {
+  //   return {
+  //     width: '400px',
+  //     height: getHeight,
+  //     layout: getLayout,
+  //     photos: imageDownloadUrls.map((item) => ({ source: item.url })),
+  //     showNumOfRemainingPhotos: true,
+  //   };
+  // }, [getHeight, getLayout, imageDownloadUrls]);
 
   const handleCloseEditModal = useCallback(() => {
     setEditModalIsOpen(false);
@@ -324,8 +322,6 @@ const TravelCard: FC<Props> = ({ travel }) => {
         />
       </CustomModal>
 
-      {/* <CustomModal isOpen={isModalDeleteOpen} onCloseModal={() => setIsModalDeleteOpen(false)}> */}
-
       <Modal
         closeTimeoutMS={500}
         isOpen={isModalDeleteOpen}
@@ -362,7 +358,6 @@ const TravelCard: FC<Props> = ({ travel }) => {
           </div>
         </div>
       </Modal>
-      {/* </CustomModal> */}
 
       <LightBox
         isOpen={isPhotosModalOpen}
