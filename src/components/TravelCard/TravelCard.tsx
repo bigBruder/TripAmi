@@ -217,6 +217,7 @@ const TravelCard: FC<Props> = ({ travel }) => {
                 <div className={styles.info_container}>
                   <p className={styles.mark}>Cities: </p>
                   <DropdownProvider
+                    side='top'
                     trigger={<p className={styles.info}>?</p>}
                     content={
                       <div className={styles.info_box}>
@@ -245,6 +246,7 @@ const TravelCard: FC<Props> = ({ travel }) => {
                   <div className={styles.info_container}>
                     <p className={styles.mark}>Places: </p>
                     <DropdownProvider
+                      side='top'
                       trigger={<p className={styles.info}>?</p>}
                       content={
                         <div className={styles.info_box}>
