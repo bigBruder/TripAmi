@@ -352,8 +352,9 @@ span {
   background: #ff4d00;
   color: #fff;
   border: none;
-  font-size: 12px;
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
   height: 31px;
   cursor: pointer;
   width: max-content;

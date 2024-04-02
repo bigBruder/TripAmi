@@ -275,7 +275,7 @@ const MyAccount = () => {
                         className={styles['trip-button']}
                         onClick={() => setTripModalIsOpen(true)}
                       >
-                        Post a trip
+                        Post a Trip
                       </button>
                     </div>
                   </div>
