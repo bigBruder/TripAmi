@@ -148,9 +148,11 @@ const UserProfile = () => {
                       <Skeleton style={{ width: 100, height: 20 }} />
                     )}
                     {userData?.whereToNext ? (
-                      <p>Where to next: {userData?.whereToNext}</p>
+                      <p className={styles.text}>Where to next: {userData?.whereToNext}</p>
                     ) : (
-                      avatarIsLoading && <p>User is not planning a trip yet</p>
+                      avatarIsLoading && (
+                        <p className={styles.text}>User is not planning a trip yet</p>
+                      )
                     )}
                   </div>
                 </div>
