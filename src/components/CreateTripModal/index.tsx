@@ -522,12 +522,12 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
         </div>
 
         <div className={styles.section}>
-          <p className={styles.text}>Do you wanna description some day?</p>
+          <p className={styles.text}>Tell us about your trip!</p>
           <button
             className={`${styles.section_button} ${styles.button}`}
             onClick={handleAddDayDescription}
           >
-            Add description
+            Daily Journal
           </button>
         </div>
 

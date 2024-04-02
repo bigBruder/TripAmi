@@ -219,7 +219,7 @@ const TravelCard: FC<Props> = ({ travel }) => {
                     trigger={<p className={styles.info}>?</p>}
                     content={
                       <div className={styles.info_box}>
-                        <p>Click on tag to see more information about place</p>
+                        <p>click tag</p>
                       </div>
                     }
                   />
@@ -248,7 +248,7 @@ const TravelCard: FC<Props> = ({ travel }) => {
                       trigger={<p className={styles.info}>?</p>}
                       content={
                         <div className={styles.info_box}>
-                          <p>Click on tag to see more information about place</p>
+                          <p>Click tag</p>
                         </div>
                       }
                     />

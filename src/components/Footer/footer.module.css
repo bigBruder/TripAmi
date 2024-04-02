@@ -7,6 +7,7 @@
 
     background: #596B6D;
     font-family: 'Beau Rivage', cursive;
+    
 }
 
 .logo {
@@ -33,7 +34,7 @@
 @media (min-width: 768px) {
     .container {
         flex-direction: row;
-        padding-right: 40px;
+        /* padding-right: 40px; */
     }
 
     .logo {
