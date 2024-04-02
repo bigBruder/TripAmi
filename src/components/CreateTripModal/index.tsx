@@ -1,8 +1,7 @@
 import React, { ChangeEvent, useCallback, useContext, useEffect, useState } from 'react';
 // @ts-ignore
-import Checkbox from 'react-custom-checkbox';
 import { FileUploader } from 'react-drag-drop-files';
-import PlacesAutocomplete, { geocodeByPlaceId } from 'react-places-autocomplete';
+import PlacesAutocomplete from 'react-places-autocomplete';
 import ReactPlayer from 'react-player';
 import { ToastContainer, toast } from 'react-toastify';
 
@@ -19,15 +18,53 @@ import { AuthContext } from '~/providers/authContext';
 import { notificationsCollection, tripsCollection } from '~/types/firestoreCollections';
 import { NotificationType } from '~/types/notifications/notifications';
 
+import {
+  blue,
+  cyan,
+  geekblue,
+  gold,
+  green,
+  grey,
+  lime,
+  magenta,
+  purple,
+  red,
+  volcano,
+  yellow,
+} from '@ant-design/colors';
 import { addDoc } from '@firebase/firestore';
 import { ref, uploadBytes } from '@firebase/storage';
 
-import Tick from '../../assets/icons/tick.svg';
 import PlaceAutocomplete from '../PlaceAutocomplete/PlaceAutocomplete';
 import styles from './createTripModal.module.css';
 
 const fileTypes = ['JPEG', 'PNG', 'JPG', 'MP4'];
 
+const generateColor = () => {
+  const colors = [
+    blue,
+    cyan,
+    geekblue,
+    gold,
+    green,
+    grey,
+    lime,
+    magenta,
+    purple,
+    red,
+    volcano,
+    yellow,
+  ];
+  const randomIndex = Math.floor(Math.random() * colors.length);
+  const randomShade = Math.floor(Math.random() * 4) + 2;
+  console.log('random index: ', randomIndex);
+  console.log('random shade: ', randomShade);
+  return colors[randomIndex][randomShade];
+};
+
+for (let i = 0; i < 10; i++) {
+  console.log(generateColor());
+}
 interface Props {
   closeModal: () => void;
   isEdit?: boolean;
@@ -154,7 +191,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
             geoTags: selectedGeoTags,
             cities: selectedCities,
             tripName: tripName,
-            pinColor: randomColor(),
+            pinColor: generateColor(),
             dayDescription: daysDescription,
             text,
           }).then(async (docRef) => {
