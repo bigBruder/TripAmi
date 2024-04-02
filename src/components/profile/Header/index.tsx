@@ -28,9 +28,9 @@ import { AuthContext } from '~/providers/authContext';
 import { notificationsCollection, usersCollection } from '~/types/firestoreCollections';
 import { Notification } from '~/types/notifications/notifications';
 
-import addFile from '@assets/icons/addFile.svg';
 import addUser from '@assets/icons/addUser.svg';
 import arrow from '@assets/icons/arrowDown.svg';
+import addFile from '@assets/icons/create.svg';
 import DefaultAvatar from '@assets/icons/defaultUserIcon.svg';
 import search from '@assets/icons/iconamoon_search-thin.svg';
 import AddFile from '@assets/icons/menu/addFile.svg';

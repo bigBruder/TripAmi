@@ -409,7 +409,7 @@ span {
 }
 
 .bottomSliderContainer {
-  background-image: url('~/assets/images/mountains-transparent.png');
+  background-image: url('~/assets/images/flat.png');
   height: 600px;
   background-size:cover;
   margin-bottom: 0;
