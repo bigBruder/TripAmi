@@ -69,7 +69,7 @@ export const UserPostInfo: FC<Props> = ({
             })
           }
         >
-          join
+          view
         </p>
       </button>
     </div>
