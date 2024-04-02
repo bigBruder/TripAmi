@@ -67,5 +67,5 @@ button:has(.radix_trigger):focus-visible {
 }
 
 button:has(.radix_trigger):hover {
-    border: 1px solid #ff4d00;
+    border: 1px solid #646cff;
 }
