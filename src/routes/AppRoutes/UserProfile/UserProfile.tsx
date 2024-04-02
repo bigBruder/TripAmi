@@ -147,6 +147,11 @@ const UserProfile = () => {
                     {userData?.tripCount === undefined && (
                       <Skeleton style={{ width: 100, height: 20 }} />
                     )}
+                    {userData?.whereToNext ? (
+                      <p>Where to next: {userData?.whereToNext}</p>
+                    ) : (
+                      avatarIsLoading && <p>User is not planning a trip yet</p>
+                    )}
                   </div>
                 </div>
                 <div className={styles.divider}></div>
