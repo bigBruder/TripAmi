@@ -384,6 +384,7 @@
 
 .info {
     /* background-color: rgba(172, 172, 172, 0.22); */
+    height: 10px;
     border-radius: 10px;
     width: min-content;
     /* padding: 2px 7px; */

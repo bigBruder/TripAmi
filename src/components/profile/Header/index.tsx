@@ -317,33 +317,40 @@ const Header = () => {
         </div>
         <div className={styles.icons}>
           <div className={styles.leftContainer}>
-            <img
-              className={styles.icon}
-              src={addFile}
-              alt='addFile'
-              onClick={() => setTripModalIsOpen(true)}
-            />
-            <img
-              className={styles.icon}
-              src={addUser}
-              alt='addUser'
-              onClick={() => navigate('/add-friends')}
-            />
-
-            <img
-              className={styles.icon}
-              src={plus}
-              alt='plus'
-              onClick={() => setModalIsOpen(true)}
-            />
+            <div className={styles.icon_container}>
+              <img
+                className={styles.icon}
+                src={addFile}
+                alt='addFile'
+                onClick={() => setTripModalIsOpen(true)}
+              />
+            </div>
+            <div className={styles.icon_container}>
+              <img
+                className={styles.icon}
+                src={addUser}
+                alt='addUser'
+                onClick={() => navigate('/add-friends')}
+              />
+            </div>
+            <div className={styles.icon_container}>
+              <img
+                className={styles.icon}
+                src={plus}
+                alt='plus'
+                onClick={() => setModalIsOpen(true)}
+              />
+            </div>
             {notifications && (
               <DropdownProvider
                 trigger={
-                  <NotificationsIcon
-                    isActive={notifications.length > 0}
-                    // onClick={() => {}}
-                    counter={notifications.length}
-                  />
+                  <div className='radix_trigger'>
+                    <NotificationsIcon
+                      isActive={notifications.length > 0}
+                      // onClick={() => {}}
+                      counter={notifications.length}
+                    />
+                  </div>
                 }
                 content={
                   <Notifications

@@ -15,6 +15,7 @@ import BinIcon from '@assets/icons/BinIcon.svg';
 import commentsIcon from '@assets/icons/comments.svg';
 import Dots from '@assets/icons/dots.svg';
 import shareIcon from '@assets/icons/share.svg';
+import TouchIcon from '@assets/icons/touch.svg';
 import { deleteDoc, doc } from '@firebase/firestore';
 import { ref } from '@firebase/storage';
 
@@ -216,7 +217,7 @@ const TravelCard: FC<Props> = ({ travel }) => {
                   <p className={styles.mark}>Cities: </p>
                   <DropdownProvider
                     side='top'
-                    trigger={<p className={styles.info}>?</p>}
+                    trigger={<img className={styles.info} src={TouchIcon} alt='info' />}
                     content={
                       <div className={styles.info_box}>
                         <p>click tag</p>
@@ -245,7 +246,7 @@ const TravelCard: FC<Props> = ({ travel }) => {
                     <p className={styles.mark}>Places: </p>
                     <DropdownProvider
                       side='top'
-                      trigger={<p className={styles.info}>?</p>}
+                      trigger={<img className={styles.info} src={TouchIcon} alt='info' />}
                       content={
                         <div className={styles.info_box}>
                           <p>Click tag</p>
