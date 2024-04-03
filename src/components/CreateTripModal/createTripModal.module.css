@@ -21,6 +21,12 @@
     font-weight: 500;
     height: 49px;
     cursor: pointer;
+    border: 1px solid transparent;
+    transition: border-color 0.3s;
+}
+
+.button:hover {
+    border-color:  #646cff;
 }
 
 @media (max-width: 768px) {
@@ -411,6 +417,12 @@
     font-weight: 500;
     height: 49px;
     cursor: pointer;
+    border: 1px solid transparent;
+    transition: border-color 0.3s;
+}
+
+.submit_button:hover {
+    border-color: #646cff;
 }
 
 @media (max-width: 768px) {
@@ -421,4 +433,10 @@
     .submit_button {
         width: 100%;
     }
+}
+
+.storyContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }

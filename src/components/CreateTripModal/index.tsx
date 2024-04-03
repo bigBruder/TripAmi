@@ -8,7 +8,6 @@ import { ToastContainer, toast } from 'react-toastify';
 import { doc, documentId, getDocs, limit, query, updateDoc, where } from 'firebase/firestore';
 import { getDownloadURL } from 'firebase/storage';
 import moment from 'moment';
-import randomColor from 'randomcolor';
 import { v4 as uuidv4 } from 'uuid';
 import Plus from '~/assets/icons/plus.svg';
 import { LoadingScreen } from '~/components/LoadingScreen';
@@ -17,21 +16,8 @@ import { db, storage } from '~/firebase';
 import { AuthContext } from '~/providers/authContext';
 import { notificationsCollection, tripsCollection } from '~/types/firestoreCollections';
 import { NotificationType } from '~/types/notifications/notifications';
+import getNeutralColor from '~/utils/getNeutralColor';
 
-import {
-  blue,
-  cyan,
-  geekblue,
-  gold,
-  green,
-  grey,
-  lime,
-  magenta,
-  purple,
-  red,
-  volcano,
-  yellow,
-} from '@ant-design/colors';
 import { addDoc } from '@firebase/firestore';
 import { ref, uploadBytes } from '@firebase/storage';
 
@@ -40,29 +26,6 @@ import styles from './createTripModal.module.css';
 
 const fileTypes = ['JPEG', 'PNG', 'JPG', 'MP4'];
 
-const generateColor = () => {
-  const colors = [
-    blue,
-    cyan,
-    geekblue,
-    gold,
-    green,
-    grey,
-    lime,
-    magenta,
-    purple,
-    red,
-    volcano,
-    yellow,
-  ];
-  const randomIndex = Math.floor(Math.random() * colors.length);
-  const randomShade = Math.floor(Math.random() * 4) + 2;
-  return colors[randomIndex][randomShade];
-};
-
-for (let i = 0; i < 10; i++) {
-  console.log(generateColor());
-}
 interface Props {
   closeModal: () => void;
   isEdit?: boolean;
@@ -189,7 +152,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
             geoTags: selectedGeoTags,
             cities: selectedCities,
             tripName: tripName,
-            pinColor: generateColor(),
+            pinColor: getNeutralColor(),
             dayDescription: daysDescription,
             text,
           }).then(async (docRef) => {
@@ -547,23 +510,26 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
           </div>
         </div>
 
-        <div>
+        <div className={styles.storyContainer}>
+          <label htmlFor='tripStory'>Tell us about your trip:</label>
           <textarea
+            id='tripStory'
             className={`${styles.input} ${styles.textArea}`}
+            style={{ position: 'relative' }}
             placeholder={'Description'}
             value={text}
             onChange={(e) => setText(e.target.value)}
           />
-        </div>
-
-        <div className={styles.section}>
-          <p className={styles.text}>Tell us about your trip!</p>
           <button
-            className={`${styles.section_button} ${styles.button}`}
+            className={`${styles.section_button} ${styles.button} ${styles.buttonAddDayDescription}`}
             onClick={handleAddDayDescription}
           >
             Daily Journal
           </button>
+        </div>
+
+        <div className={styles.section}>
+          {/* <p className={styles.text}>Tell us about your trip!</p> */}
         </div>
 
         {daysDescription &&
