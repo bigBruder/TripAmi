@@ -178,13 +178,22 @@
 }
 
 .shareContainer {
+
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 6px;
+    padding: 2px 5px;
 
     cursor: pointer;
+    border: 1px solid transparent;
 }
+
+.shareContainer:hover {
+    background-color: #f0f0f0;
+    border: 1px solid #646cff;
+    border-radius: 8px;
+} 
 
 .img {
     cursor: pointer;
