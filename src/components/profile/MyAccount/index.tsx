@@ -3,6 +3,8 @@ import Skeleton from 'react-loading-skeleton';
 
 import { doc, updateDoc } from 'firebase/firestore';
 import { getDownloadURL } from 'firebase/storage';
+import 'swiper/css/navigation';
+import { Navigation } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import CreatePostModal from '~/components/CreatePostModal';
 import CreateTripModal from '~/components/CreateTripModal';
@@ -31,6 +33,7 @@ import { getDocs, limit, onSnapshot, orderBy, query, where } from '@firebase/fir
 import { ref } from '@firebase/storage';
 
 import styles from './myaccount.module.css';
+import './styles.css';
 
 import 'swiper/css';
 
@@ -360,10 +363,13 @@ const MyAccount = () => {
                 <span className={styles.postsTitle}>You may also like</span>
               ) : null}
               <Swiper
+                wrapperClass='alsoLikeSwiper'
                 spaceBetween={30}
                 slidesPerView={1}
+                navigation
                 centeredSlides
                 loop
+                modules={[Navigation]}
                 breakpoints={{
                   500: {
                     slidesPerView: 1,
