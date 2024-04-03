@@ -28,7 +28,11 @@ interface Props {
   travel: ITravel;
 }
 
-const notifyInfo = (message: string) => toast.info(message);
+const notifyInfo = (message: string) => {
+  if (!toast.isActive('info')) {
+    toast.info(message, { toastId: 'info' });
+  }
+};
 const notifyError = (message: string) => toast.error(message);
 
 const TravelCard: FC<Props> = ({ travel }) => {
