@@ -391,6 +391,12 @@
     align-items: center;
 }
 
+@media (min-width: 1200px) {
+    .info_container {
+        display: none;
+    }
+}
+
 .info {
     /* background-color: rgba(172, 172, 172, 0.22); */
     height: 10px;
