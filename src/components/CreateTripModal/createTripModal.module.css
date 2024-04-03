@@ -440,3 +440,13 @@
     flex-direction: column;
     gap: 5px;
 }
+
+.textEditor {
+    width: 75%;
+}
+
+@media (max-width: 768px) {
+    .textEditor {
+        width: 100%;
+    }
+}

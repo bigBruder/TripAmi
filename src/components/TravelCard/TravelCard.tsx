@@ -1,5 +1,6 @@
 import { FC, useCallback, useContext, useEffect, useState } from 'react';
 import Modal from 'react-modal';
+import ReactQuill from 'react-quill';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 
@@ -202,7 +203,7 @@ const TravelCard: FC<Props> = ({ travel }) => {
         <div className={styles.textContainer}>
           <h3 className={styles.tripName}>{tripName}</h3>
           <p className={styles.text} style={{ wordBreak: 'break-all' }}>
-            {text}
+            <ReactQuill value={text} readOnly={true} theme={'bubble'} />
           </p>
           <div className={styles.daysDescriptionContainer}>
             {dayDescription &&
