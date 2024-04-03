@@ -1,22 +1,29 @@
-import React, { createContext, useState, useEffect } from 'react';
-import {auth, db, facebookProvider, googleProvider} from "~/firebase";
-import {signInWithPopup, signInWithRedirect, User} from "@firebase/auth";
-import {createUserWithEmailAndPassword, GoogleAuthProvider, signInWithEmailAndPassword, signOut} from "firebase/auth";
-import {firebaseErrors} from "~/constants/firebaseErrors";
-import {addDoc, doc, where, query, getDocs, updateDoc, onSnapshot} from "@firebase/firestore";
-import {IUser} from "~/types/user";
-import {usersCollection} from "~/types/firestoreCollections";
+import React, { createContext, useEffect, useState } from 'react';
+
+import {
+  GoogleAuthProvider,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+} from 'firebase/auth';
+import { firebaseErrors } from '~/constants/firebaseErrors';
+import { auth, db, facebookProvider, googleProvider } from '~/firebase';
+import { usersCollection } from '~/types/firestoreCollections';
+import { IUser } from '~/types/user';
+
+import { User, signInWithPopup, signInWithRedirect } from '@firebase/auth';
+import { addDoc, doc, getDocs, onSnapshot, query, updateDoc, where } from '@firebase/firestore';
 
 interface AuthContext {
-  currentUser: null | User,
-  signUp: (() => void) | ((email: string, password: string, userName: string) => Promise<boolean>),
-  signIn: (() => void) | ((email: string, password: string) => Promise<boolean>),
-  signOutUser: () => void,
-  loading: boolean,
-  firestoreUser: null | IUser,
-  updateFirestoreUser: (() => void) | ((data: IUser) => void),
-  signInViaFacebook: () => void,
-  signInViaGoogle: () => Promise<unknown>,
+  currentUser: null | User;
+  signUp: (() => void) | ((email: string, password: string, userName: string) => Promise<boolean>);
+  signIn: (() => void) | ((email: string, password: string) => Promise<boolean>);
+  signOutUser: () => void;
+  loading: boolean;
+  firestoreUser: null | IUser;
+  updateFirestoreUser: (() => void) | ((data: IUser) => void);
+  signInViaFacebook: () => void;
+  signInViaGoogle: () => Promise<unknown>;
 }
 
 const defaultValue = {
@@ -28,8 +35,8 @@ const defaultValue = {
   firestoreUser: null,
   updateFirestoreUser: () => {},
   signInViaFacebook: () => {},
-  signInViaGoogle: () => new Promise(resolve => {}),
-}
+  signInViaGoogle: () => new Promise((resolve) => {}),
+};
 
 const AuthContext = createContext<AuthContext>(defaultValue);
 
@@ -39,7 +46,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [firestoreUser, setFirestoreUser] = useState<null | IUser>(null);
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(async user => {
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user?.uid) {
         const q = query(usersCollection, where('firebaseUid', '==', user.uid));
         const querySnapshot = await getDocs(q);
@@ -60,10 +67,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     if (currentUser?.uid) {
-      const q = query(
-        usersCollection,
-        where("firebaseUid", "==", currentUser.uid),
-      );
+      const q = query(usersCollection, where('firebaseUid', '==', currentUser.uid));
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
         setFirestoreUser({
           ...querySnapshot.docs[0].data(),
@@ -71,16 +75,15 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         } as IUser);
       });
 
-
       return () => {
         unsubscribe();
-      }
+      };
     }
   }, [currentUser]);
 
   const updateFirestoreUser = async (data: IUser) => {
     if (firestoreUser?.id) {
-      const docRef = doc(db, "users", firestoreUser?.id);
+      const docRef = doc(db, 'users', firestoreUser?.id);
 
       try {
         await updateDoc(docRef, {
@@ -92,7 +95,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         alert(firebaseErrors[err.code]);
       }
     }
-  }
+  };
 
   const signInViaFacebook = async () => {
     setLoading(true);
@@ -128,6 +131,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           tripCount: 0,
           friends_request_limit: 10,
           avatarUrl: null,
+          whereToNext: '',
         });
       }
 
@@ -161,6 +165,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         postsCount: 0,
         tripCount: 0,
         friends_request_limit: 10,
+        whereToNext: '',
       });
 
       return true;
@@ -214,11 +219,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     signInViaGoogle,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-  </AuthContext.Provider>
-);
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 export { AuthContext, AuthProvider };

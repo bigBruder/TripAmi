@@ -105,6 +105,8 @@ const UserProfile = () => {
     })();
   }, [id, isReverse, sortBy]);
 
+  console.log('userData', userData);
+
   return (
     <>
       <Header />
@@ -147,12 +149,12 @@ const UserProfile = () => {
                     {userData?.tripCount === undefined && (
                       <Skeleton style={{ width: 100, height: 20 }} />
                     )}
-                    {userData?.whereToNext ? (
+                    {userData?.whereToNext === undefined ? (
+                      <Skeleton style={{ width: 100, height: 20 }} />
+                    ) : userData?.whereToNext ? (
                       <p className={styles.text}>Where to next: {userData?.whereToNext}</p>
                     ) : (
-                      avatarIsLoading && (
-                        <p className={styles.text}>User is not planning a trip yet</p>
-                      )
+                      <p className={styles.text}>User is not planning a trip yet</p>
                     )}
                   </div>
                 </div>
