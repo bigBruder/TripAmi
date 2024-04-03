@@ -159,8 +159,8 @@
 .feature {
   display: flex;
   gap: 7px;
-  cursor: pointer;
   align-items: center;
+  padding: 5px 10px;
 
   color: #262626;
   font-family: Gilroy, sans-serif;
@@ -168,6 +168,15 @@
   font-style: normal;
   font-weight: 400;
   line-height: normal;
+
+  transition: border-color .3s;
+  border: 1px solid transparent;
+  border-radius: 25px;
+  cursor: pointer;
+}
+
+.feature:hover {
+  border-color: #646cff;
 }
 
 @media (min-width: 768px) {
@@ -352,12 +361,19 @@ span {
   background: #ff4d00;
   color: #fff;
   border: none;
+  box-sizing: border-box;
   font-size: 14px;
   font-weight: bold;
   text-align: center;
   height: 31px;
   cursor: pointer;
   width: max-content;
+  border: 1px solid transparent;
+  transition: border-color 0.3s;
+}
+
+.trip-button:hover {
+  border-color: #646cff;
 }
 
 @media (max-width: 768px) {
@@ -441,4 +457,14 @@ span {
   position: absolute;
   bottom: 0;
   left: 0;
+}
+
+.emptyPostsContainer {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-direction: column;
+  height: 100%;
+  margin-left: 65px;
+  padding: 10px;
 }
