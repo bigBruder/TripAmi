@@ -310,9 +310,8 @@ const MyAccount = () => {
         {activeTab === 0 ? (
           <div className={styles.main_content}>
             <div className={styles.travelContainer}>
-              <span className={styles.postsTitle}>My posts</span>
               {!posts?.length && !isPostsLoading ? (
-                <>
+                <div className={styles.emptyPostsContainer}>
                   <p className={styles.paragraph}>
                     Hmm... {firestoreUser?.username} hasn't posted anything yet. Start sharing your
                     experience with other participants!
@@ -320,9 +319,10 @@ const MyAccount = () => {
                   <button className={styles.button} onClick={() => setModalIsOpen(true)}>
                     NEW POST
                   </button>
-                </>
+                </div>
               ) : (
                 <div className={styles.sliderContainer}>
+                  <span className={styles.postsTitle}>My posts</span>
                   <Swiper
                     spaceBetween={30}
                     slidesPerView={1}
@@ -352,10 +352,13 @@ const MyAccount = () => {
                 </div>
               )}
             </div>
-            {suggestedPosts?.length ? (
+            {/* {suggestedPosts?.length ? (
               <span className={styles.postsTitle}>You may also like</span>
-            ) : null}
+            ) : null} */}
             <div className={styles.bottomSliderContainer}>
+              {suggestedPosts?.length ? (
+                <span className={styles.postsTitle}>You may also like</span>
+              ) : null}
               <Swiper
                 spaceBetween={30}
                 slidesPerView={1}

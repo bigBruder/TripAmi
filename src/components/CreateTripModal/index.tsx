@@ -57,8 +57,6 @@ const generateColor = () => {
   ];
   const randomIndex = Math.floor(Math.random() * colors.length);
   const randomShade = Math.floor(Math.random() * 4) + 2;
-  console.log('random index: ', randomIndex);
-  console.log('random shade: ', randomShade);
   return colors[randomIndex][randomShade];
 };
 
