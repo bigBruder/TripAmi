@@ -4,6 +4,7 @@ import { FileUploader } from 'react-drag-drop-files';
 import PlacesAutocomplete from 'react-places-autocomplete';
 import ReactPlayer from 'react-player';
 import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import { ToastContainer, toast } from 'react-toastify';
 
 import { doc, documentId, getDocs, limit, query, updateDoc, where } from 'firebase/firestore';
@@ -23,7 +24,6 @@ import { addDoc } from '@firebase/firestore';
 import { ref, uploadBytes } from '@firebase/storage';
 
 import PlaceAutocomplete from '../PlaceAutocomplete/PlaceAutocomplete';
-import { TextEditor } from '../TextEditor/TextEditor';
 import styles from './createTripModal.module.css';
 
 const fileTypes = ['JPEG', 'PNG', 'JPG', 'MP4'];
@@ -519,7 +519,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
             onChange={setText}
             className={`${styles.input} ${styles.textArea}`}
           /> */}
-          <ReactQuill value={text} onChange={setText} className={styles.textEditor} theme='snow' />
+          <ReactQuill value={text} onChange={setText} className={styles.textEditor} />
           {/* <textarea
             id='tripStory'
             className={`${styles.input} ${styles.textArea}`}
