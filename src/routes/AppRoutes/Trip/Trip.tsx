@@ -129,11 +129,11 @@ export const Trip = () => {
               <div className={styles.topContainer}>
                 <div className={styles.swiperContainer}>
                   <Swiper
-                    spaceBetween={0}
+                    // spaceBetween={0}
                     slidesPerView={1}
-                    loop={true}
-                    style={{ width: '100%', height: '100%', cursor: 'pointer' }}
-                    wrapperClass={styles.swiperWrapper}
+                    // loop={true}
+                    // style={{ width: '100%', height: '100%', cursor: 'pointer' }}
+                    // wrapperClass={styles.swiperWrapper}
                     pagination={true}
                     modules={[Pagination]}
                   >

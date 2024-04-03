@@ -7,21 +7,29 @@
     width: 100%;
     display: flex;
     flex-direction: column;
+
+    background-image: url('../../../assets/images/boat.jpeg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
 }
 
 .main {
+    box-sizing: border-box;
+    /* width: 1047px; */
     display: flex;
     flex-direction: column;
     flex-grow: 1;
-    padding: 30px;
+    /* padding: 30px; */
     gap: 20px;
     box-sizing: border-box;
+    margin-left: 62px;
+    margin-top: 59px;
+    margin-bottom: 46px;
 
-    background-image: url('../../../assets/images/LoginBackground.png');
-    background-repeat: no-repeat;
-    background-size: cover;
+    
 
-    overflow: scroll;
+    /* overflow: scroll; */
 }
 
 .trip {
@@ -32,8 +40,10 @@
 
 
 .container {
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
+
     gap: 28px;
 
     margin-top: 30px;
@@ -41,6 +51,40 @@
     background-color: #FFFFFF;
 
     border-radius: 8px;
+}
+
+@media (max-width: 1280px) {
+    .main {
+        /* margin-left: 27px; */
+        margin-right: auto;
+        margin-left: auto;
+        margin-bottom: 28px;
+    }
+    .container {
+        width: 726px;
+        margin: 0 auto;
+    }
+}
+
+@media (max-width: 500px) {
+    .main {
+        margin: 59px 12px;
+        margin-bottom: 57px;
+    }
+    .container {
+        padding: 12px;
+        width: 100%;
+        margin: 0 auto;
+    }
+    .swiperContainer {
+        margin: 0 auto;
+    }
+}
+
+@media (min-width: 1280px) {
+    .main {
+        width: 1047px;
+    }
 }
 
 .tripContainer {
@@ -51,7 +95,8 @@
 
 .topContainer {
     display: flex;
-    justify-content: flex-start;
+    /* justify-content: flex-start; */
+    /* align-items: flex-start; */
     align-items: center;
     gap: 20px;
 }
@@ -80,25 +125,39 @@
 }
 
 .swiperContainer {
-    width: 100%;
+    align-self: flex-start;
+    /* width: 100%; */
 }
 
 .postIMage {
-    width: 100%;
+    width: 400px;
     height: auto;
+}
+
+@media (max-width: 500px) {
+    .postIMage {
+        width: 300px;
+    }
+
 }
 
 .postText {
     color: #262626;
     font-family: Gilroy, sans-serif;
-    font-size: 16px;
+    font-size: 17px;
     text-align: justify;
     font-weight: 500;
 }
-
+/* 
 @media (max-width: 768px) {
     .postText {
         font-size: 12px;
+    }
+} */
+
+@media (max-width: 500) {
+    .postText {
+        font-size: 15px;
     }
 }
 
@@ -140,7 +199,10 @@
 }
 
 .swiperContainer {
-    width: 40%;
+    height: max-content;
+    display: flex;
+    width: 400px;
+    /* width: 40%; */
 }
 
 @media (max-width: 768px) {
@@ -150,6 +212,12 @@
 
     .swiperContainer {
         flex-grow: 1;
+    }
+}
+
+@media (max-width: 500px) {
+    .swiperContainer {
+        width: 300px;
     }
 }
 
