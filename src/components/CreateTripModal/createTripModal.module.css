@@ -112,7 +112,8 @@
 }
 
 .section_button {
-    height: 50%;
+    padding: 5px;
+    height: 100%;
 }
 
 @media (max-width: 768px) {
