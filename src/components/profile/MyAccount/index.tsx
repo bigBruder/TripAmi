@@ -239,7 +239,7 @@ const MyAccount = () => {
                   )}
                   <div className={styles.whereToNextContainer}>
                     {!isEditWhereToNext && firestoreUser?.tripCount !== undefined && (
-                      <p className={styles.text}>Where to next?:</p>
+                      <p className={styles.text}>Where to next? </p>
                     )}
                     {/* { ? <p className={styles.text}>Where to next?:</p> : ''} */}
 
