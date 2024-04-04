@@ -220,15 +220,17 @@ const TravelCard: FC<Props> = ({ travel }) => {
               <div>
                 <div className={styles.info_container}>
                   <p className={styles.mark}>Cities: </p>
-                  <DropdownProvider
-                    side='top'
-                    trigger={<img className={styles.info} src={TouchIcon} alt='info' />}
-                    content={
-                      <div className={styles.info_box}>
-                        <p>click tag</p>
-                      </div>
-                    }
-                  />
+                  <div className={styles.info_button}>
+                    <DropdownProvider
+                      side='top'
+                      trigger={<img className={styles.info} src={TouchIcon} alt='info' />}
+                      content={
+                        <div className={styles.info_box}>
+                          <p>click tag</p>
+                        </div>
+                      }
+                    />
+                  </div>
                 </div>
                 <div className={styles.tagsContainer}>
                   {travel?.cities?.map((tag) => (
@@ -249,15 +251,17 @@ const TravelCard: FC<Props> = ({ travel }) => {
                 <>
                   <div className={styles.info_container}>
                     <p className={styles.mark}>Places: </p>
-                    <DropdownProvider
-                      side='top'
-                      trigger={<img className={styles.info} src={TouchIcon} alt='info' />}
-                      content={
-                        <div className={styles.info_box}>
-                          <p>Click tag</p>
-                        </div>
-                      }
-                    />
+                    <div className={styles.info_button}>
+                      <DropdownProvider
+                        side='top'
+                        trigger={<img className={styles.info} src={TouchIcon} alt='info' />}
+                        content={
+                          <div className={styles.info_box}>
+                            <p>Click tag</p>
+                          </div>
+                        }
+                      />
+                    </div>
                   </div>
                   <div className={styles.tagsContainer}>
                     {travel?.geoTags?.map((tag) => (
