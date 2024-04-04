@@ -372,6 +372,11 @@ span {
   font-weight: 500;
   height: 49px;
   cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.button:hover {
+  border-color: #646cff;
 }
 
 @media (max-width: 500px) {
@@ -394,7 +399,7 @@ span {
   height: 31px;
   cursor: pointer;
   width: max-content;
-  border: 1px solid transparent;
+  border: 2px solid transparent;
   transition: border-color 0.3s;
 }
 
