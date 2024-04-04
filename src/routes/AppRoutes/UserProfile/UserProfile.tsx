@@ -205,37 +205,40 @@ const UserProfile = () => {
               </div>
             </div>
           </div>
-          <div className={styles.userContent}>
-            {userData && (
-              <>
-                <div>
-                  <h3>
-                    Friends(don`t pay attention, design and adaptivity will be little bit later)
-                  </h3>
-                  <AddNewFriends user={userData} />
-                </div>
-              </>
-            )}
-            <div className={styles.container}>
-              {userTravels.length === 0 ? (
-                <p className={styles.title}>{userData?.username} has not any travels</p>
-              ) : (
+
+          <div className={styles.container}>
+            <div className={styles.userContent}>
+              {activeTab === 0 && <p>There is no data</p>}
+              {activeTab === 1 && userData && (
                 <>
-                  <p className={styles.title}>{userData?.username}`s travels</p>
-                  <Sort
-                    onSelect={setSortBy}
-                    isReverse={isReverse}
-                    setReverse={() => setIsReverse((prevState) => !prevState)}
-                  />
-                  <div className={styles.travelsContainer}>
-                    {travelsIsLoading ? (
-                      <Skeleton count={2} height={100} width={400} style={{ margin: '10px 0' }} />
-                    ) : (
-                      userTravels.map((travel) => <TravelCard key={travel.id} travel={travel} />)
-                    )}
+                  <div>
+                    <h3>
+                      Friends(don`t pay attention, design and adaptivity will be little bit later)
+                    </h3>
+                    <AddNewFriends user={userData} />
                   </div>
                 </>
               )}
+              {activeTab === 2 &&
+                (userTravels.length === 0 ? (
+                  <p className={styles.title}>{userData?.username} has not any travels</p>
+                ) : (
+                  <>
+                    <p className={styles.title}>{userData?.username}`s travels</p>
+                    <Sort
+                      onSelect={setSortBy}
+                      isReverse={isReverse}
+                      setReverse={() => setIsReverse((prevState) => !prevState)}
+                    />
+                    <div className={styles.travelsContainer}>
+                      {travelsIsLoading ? (
+                        <Skeleton count={2} height={100} width={400} style={{ margin: '10px 0' }} />
+                      ) : (
+                        userTravels.map((travel) => <TravelCard key={travel.id} travel={travel} />)
+                      )}
+                    </div>
+                  </>
+                ))}
             </div>
             {/* <div className={styles.friendsList}>
               {userData?.friends && <FriendsList friendsId={userData?.friends} />}
