@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import { useParams } from 'react-router-dom';
 
-import { documentId, orderBy } from 'firebase/firestore';
+import { collectionGroup, documentId, orderBy } from 'firebase/firestore';
 import { getDownloadURL } from 'firebase/storage';
 import { Footer } from '~/components/Footer';
 import { FriendsList } from '~/components/FriendsList/FriendsList';
@@ -11,7 +11,7 @@ import { Sort } from '~/components/Sort/Sort';
 import TravelCard from '~/components/TravelCard/TravelCard';
 import Header from '~/components/profile/Header';
 import { firebaseErrors } from '~/constants/firebaseErrors';
-import { storage } from '~/firebase';
+import { db, storage } from '~/firebase';
 import { AuthContext } from '~/providers/authContext';
 import { tripsCollection, usersCollection } from '~/types/firestoreCollections';
 import { ITravel } from '~/types/travel';
@@ -62,6 +62,22 @@ const UserProfile = () => {
   const [sortBy, setSortBy] = useState<SortBy>('endDate');
   const [friends, setFriends] = useState<IUser[]>([]);
   const [activeTab, setActiveTab] = useState(0);
+
+  // useEffect(() => {
+  //     import { collectionGroup, query, where, getDocs } from "firebase/firestore";
+
+  // const museums = query(collectionGroup(db, 'landmarks'), where('type', '==', 'museum'));
+  // const querySnapshot = await getDocs(museums);
+  // querySnapshot.forEach((doc) => {
+  //     console.log(doc.id, ' => ', doc.data());
+  // });
+  //   (async () => {
+  //     const cities = query(collectionGroup(db, 'cities'), where('address', '==', 'addresstest'));
+  //     const querySnapshot = await getDocs(cities);
+  //     const doc = querySnapshot.docs[0];
+  //     console.log('needed doc ==> ', doc.data());
+  //   })();
+  // }, []);
   useEffect(() => {
     (async () => {
       if (!id) return;
@@ -126,6 +142,17 @@ const UserProfile = () => {
     }
   }, [userData?.id]);
 
+  // const amountOfFriends = () => {
+  //   if (firestoreUser?.id && userData?.friends) {
+  //     return userData?.friends?.includes(firestoreUser?.id)
+  //       ? userData?.friends?.length - 1
+  //       : userData?.friends?.length;
+  //   } else {
+  //     return 0;
+  //   }
+  // };
+
+  console.log('userData => ', userData?.friends, '   firestorUser.id =>', firestoreUser?.id);
   return (
     <>
       <Header />
@@ -186,9 +213,13 @@ const UserProfile = () => {
                       key={tab}
                     >
                       {tab}{' '}
-                      {index === 1 && (
+                      {userData?.friends && firestoreUser?.id && index === 1 && (
                         <div className={styles.friendsCount}>
-                          {firestoreUser?.friends_count || 0}
+                          {userData?.friends?.length}
+                          {/* {friends.length || 0} */}
+                          {/* {userData?.friends?.includes(firestoreUser?.id)
+                            ? userData?.friends?.length - 1
+                            : userData?.friends?.length} */}
                         </div>
                       )}
                       {index == 3 && (
@@ -212,6 +243,11 @@ const UserProfile = () => {
               {activeTab === 1 && userData && (
                 <>
                   <div>
+                    {userData &&
+                      firestoreUser?.id &&
+                      userData?.friends?.includes(firestoreUser?.id) && (
+                        <h3>You and {userData.username?.split(' ')[0]} are friends</h3>
+                      )}
                     <AddNewFriends user={userData} />
                   </div>
                 </>
