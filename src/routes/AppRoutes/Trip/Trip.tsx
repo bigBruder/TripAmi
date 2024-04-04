@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import ReactQuill from 'react-quill';
+// import ReactQuill from 'react-quill';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { documentId, getDocs, onSnapshot, orderBy, query, where } from 'firebase/firestore';
@@ -168,8 +168,8 @@ export const Trip = () => {
                     <Rating selectedStars={trip?.rate || 1} />
                   </div>
                   <div className={styles.textContainer}>
-                    <ReactQuill value={trip?.text} readOnly={true} theme={'bubble'} />
-                    {/* <p className={styles.postText}>{trip?.text}</p> */}
+                    {/* <ReactQuill value={trip?.text} readOnly={true} theme={'bubble'} /> */}
+                    <p className={styles.postText}>{trip?.text}</p>
                     {/* <div className={styles.postActionsWrapper}>
                     <PostActions postData={post} />
                   </div> */}

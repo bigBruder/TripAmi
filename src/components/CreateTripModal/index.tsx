@@ -3,7 +3,7 @@ import React, { ChangeEvent, useCallback, useContext, useEffect, useState } from
 import { FileUploader } from 'react-drag-drop-files';
 import PlacesAutocomplete from 'react-places-autocomplete';
 import ReactPlayer from 'react-player';
-import ReactQuill from 'react-quill';
+// import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { ToastContainer, toast } from 'react-toastify';
 
@@ -376,7 +376,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
 
           <div className={styles.section}>
             {/* <p>Tag Your Favorite Places on this Trip: </p> */}
-            <p className={styles.text}>Do you wanna add city? (You can add multiply cities)</p>
+            <p className={styles.text}>Add places you visited</p>
             <button
               className={`${styles.section_button} ${styles.button}`}
               onClick={(e) => handleOpenAddCity(e)}
@@ -413,7 +413,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
             </div>
           )}
           <div className={styles.section}>
-            <p className={styles.text}>Tag Your Places: </p>
+            <p className={styles.text}>Tag Your Spots (beaches, restaurants, bar)</p>
             <button
               className={`${styles.section_button} ${styles.button}`}
               onClick={handleOpenAddGeocode}
@@ -519,15 +519,15 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
             onChange={setText}
             className={`${styles.input} ${styles.textArea}`}
           /> */}
-          <ReactQuill value={text} onChange={setText} className={styles.textEditor} />
-          {/* <textarea
+          {/* <ReactQuill value={text} onChange={setText} className={styles.textEditor} /> */}
+          <textarea
             id='tripStory'
             className={`${styles.input} ${styles.textArea}`}
             style={{ position: 'relative' }}
             placeholder={'Description'}
             value={text}
             onChange={(e) => setText(e.target.value)}
-          /> */}
+          />
           <button
             className={`${styles.section_button} ${styles.button} ${styles.buttonAddDayDescription}`}
             onClick={handleAddDayDescription}
