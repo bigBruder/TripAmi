@@ -212,9 +212,6 @@ const UserProfile = () => {
               {activeTab === 1 && userData && (
                 <>
                   <div>
-                    <h3>
-                      Friends(don`t pay attention, design and adaptivity will be little bit later)
-                    </h3>
                     <AddNewFriends user={userData} />
                   </div>
                 </>
