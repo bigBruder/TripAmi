@@ -18,6 +18,7 @@ interface Props {
   userPhotoUrl?: string;
   postData?: IPost;
   imagesUrl?: string[] | null;
+  isMasterPage?: boolean;
 }
 
 export const UserPostInfo: FC<Props> = ({
@@ -26,6 +27,7 @@ export const UserPostInfo: FC<Props> = ({
   userPhotoUrl,
   postData,
   imagesUrl,
+  isMasterPage = false,
 }) => {
   const navigate = useNavigate();
   const { firestoreUser } = useContext(AuthContext);
@@ -57,21 +59,23 @@ export const UserPostInfo: FC<Props> = ({
           <p className={styles.postedAgo}>{timeAgo(createdAt)}</p>
         </div>
       </div>
-      <button className={styles.button}>
-        <p
-          className={styles.buttonText}
-          onClick={() =>
-            navigate('/posts/' + postData?.id, {
-              state: {
-                ...postData,
-                imageUrls: imagesUrl,
-              },
-            })
-          }
-        >
-          view
-        </p>
-      </button>
+      {!isMasterPage && (
+        <button className={styles.button}>
+          <p
+            className={styles.buttonText}
+            onClick={() =>
+              navigate('/posts/' + postData?.id, {
+                state: {
+                  ...postData,
+                  imageUrls: imagesUrl,
+                },
+              })
+            }
+          >
+            view
+          </p>
+        </button>
+      )}
     </div>
   );
 };

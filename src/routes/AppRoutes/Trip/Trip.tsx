@@ -123,7 +123,12 @@ export const Trip = () => {
         <div className={styles.post}>
           <div className={styles.container}>
             {userData ? (
-              <UserPostInfo userData={userData} createdAt={trip?.endDate || ''} userPhotoUrl='' />
+              <UserPostInfo
+                userData={userData}
+                createdAt={trip?.endDate || ''}
+                userPhotoUrl=''
+                isMasterPage={true}
+              />
             ) : null}
 
             <div className={styles.tripContainer}>

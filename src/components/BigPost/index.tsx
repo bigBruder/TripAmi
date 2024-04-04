@@ -88,7 +88,9 @@ export const BigPost: FC<Props> = ({ post, setPost }) => {
 
   return (
     <div className={styles.container}>
-      {userData ? <UserPostInfo userData={userData} createdAt={post.createAt} /> : null}
+      {userData ? (
+        <UserPostInfo userData={userData} createdAt={post.createAt} isMasterPage={true} />
+      ) : null}
 
       <div className={styles.postContainer}>
         <div className={styles.swiperContainer}>
