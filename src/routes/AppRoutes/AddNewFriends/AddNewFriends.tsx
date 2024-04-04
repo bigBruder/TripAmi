@@ -1,7 +1,7 @@
 import { FC, useCallback, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { deleteDoc } from 'firebase/firestore';
+import { deleteDoc, documentId } from 'firebase/firestore';
 import { getDownloadURL } from 'firebase/storage';
 import { Footer } from '~/components/Footer';
 import { PageTitle } from '~/components/PageTitle';
@@ -29,7 +29,11 @@ import { ref } from '@firebase/storage';
 
 import styles from './addNewFriends.module.css';
 
-const AddNewFriends = () => {
+interface AddNewFriendsProps {
+  user: IUser;
+}
+
+const AddNewFriends: FC<AddNewFriendsProps> = ({ user }) => {
   const [users, setUsers] = useState<IUser[]>([]);
   const [invitedUsers, setInvitedUsers] = useState<string[]>([]);
   const [invitationsFromUsers, setInvitationsFromUsers] = useState<string[]>([]);
@@ -40,11 +44,21 @@ const AddNewFriends = () => {
     (async () => {
       if (firestoreUser?.firebaseUid) {
         try {
-          const q = query(
-            usersCollection,
-            where('firebaseUid', '!=', firestoreUser?.firebaseUid),
-            limit(40)
-          );
+          let q;
+          if (user) {
+            q = query(
+              usersCollection,
+              where(documentId(), 'in', user.friends),
+              where(documentId(), '!=', firestoreUser.id),
+              limit(40)
+            );
+          } else {
+            q = query(
+              usersCollection,
+              where('firebaseUid', '!=', firestoreUser?.firebaseUid),
+              limit(40)
+            );
+          }
           const querySnapshot = await getDocs(q);
 
           const fetchedUsers = querySnapshot.docs.map((doc) => ({
@@ -94,7 +108,52 @@ const AddNewFriends = () => {
         unsub();
       };
     }
-  }, [firestoreUser?.firebaseUid, firestoreUser?.id]);
+  }, [firestoreUser?.firebaseUid, firestoreUser?.id, user?.id]);
+
+  if (user) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.usersContainer}>
+          {users.map((user) => (
+            <UserCard
+              user={user}
+              key={user.firebaseUid}
+              invited={user.id ? invitedUsers.includes(user.id) : false}
+              isFriend={
+                firestoreUser?.friends && user.id ? firestoreUser?.friends.includes(user.id) : false
+              }
+              gotInvite={user.id ? invitationsFromUsers.includes(user.id) : false}
+              invitation={invitations.find((invitation) => invitation.fromUser === user.id)}
+            />
+          ))}
+          {users.map((user) => (
+            <UserCard
+              user={user}
+              key={user.firebaseUid}
+              invited={user.id ? invitedUsers.includes(user.id) : false}
+              isFriend={
+                firestoreUser?.friends && user.id ? firestoreUser?.friends.includes(user.id) : false
+              }
+              gotInvite={user.id ? invitationsFromUsers.includes(user.id) : false}
+              invitation={invitations.find((invitation) => invitation.fromUser === user.id)}
+            />
+          ))}
+          {users.map((user) => (
+            <UserCard
+              user={user}
+              key={user.firebaseUid}
+              invited={user.id ? invitedUsers.includes(user.id) : false}
+              isFriend={
+                firestoreUser?.friends && user.id ? firestoreUser?.friends.includes(user.id) : false
+              }
+              gotInvite={user.id ? invitationsFromUsers.includes(user.id) : false}
+              invitation={invitations.find((invitation) => invitation.fromUser === user.id)}
+            />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.main}>

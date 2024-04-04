@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 import { documentId, orderBy } from 'firebase/firestore';
 import { getDownloadURL } from 'firebase/storage';
 import { Footer } from '~/components/Footer';
+import { FriendsList } from '~/components/FriendsList/FriendsList';
 import Map from '~/components/Map/Map';
 import { Sort } from '~/components/Sort/Sort';
 import TravelCard from '~/components/TravelCard/TravelCard';
@@ -20,9 +21,11 @@ import Avatar from '@assets/icons/defaultUserIcon.svg';
 import { getDocs, query, where } from '@firebase/firestore';
 import { ref } from '@firebase/storage';
 
+import AddNewFriends, { UserCard } from '../AddNewFriends/AddNewFriends';
 import styles from './userProfile.module.css';
 
 type SortBy = 'endDate' | 'rate' | 'alphabetically';
+const TABS = ['Home', 'Friends', 'Trips'];
 
 const getQuery = (sortBy: SortBy, isReverse: boolean, id: string) => {
   switch (sortBy) {
@@ -57,6 +60,8 @@ const UserProfile = () => {
   const [userTravels, setUserTravels] = useState<ITravel[]>([]);
   const [isReverse, setIsReverse] = useState(false);
   const [sortBy, setSortBy] = useState<SortBy>('endDate');
+  const [friends, setFriends] = useState<IUser[]>([]);
+  const [activeTab, setActiveTab] = useState(0);
   useEffect(() => {
     (async () => {
       if (!id) return;
@@ -72,7 +77,9 @@ const UserProfile = () => {
       if (userData?.avatarUrl) {
         setAvatarIsLoading(true);
         try {
+          console.log('userData.avatarUrl: ', userData.avatarUrl);
           const url = await getDownloadURL(ref(storage, userData.avatarUrl));
+          console.log('url: ', url);
           setUserPhotoUrl(url);
         } catch (error) {
           console.log('[ERROR getting user photo] => ', error);
@@ -81,7 +88,7 @@ const UserProfile = () => {
         }
       }
     })();
-  }, [userData?.id]);
+  }, [userData?.id, id, userData?.avatarUrl]);
 
   useEffect(() => {
     (async () => {
@@ -105,7 +112,19 @@ const UserProfile = () => {
     })();
   }, [id, isReverse, sortBy]);
 
-  console.log('userData', userData);
+  useEffect(() => {
+    if (!userData?.friends?.length) return;
+    try {
+      (async () => {
+        console.log('userdataFriends ==>', userData?.friends);
+        const q = query(usersCollection, where(documentId(), 'in', userData?.friends));
+        const querySnapshot = await getDocs(q);
+        const friends = querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }) as IUser);
+      })();
+    } catch (error) {
+      console.error('Error getting documents: ', error);
+    }
+  }, [userData?.id]);
 
   return (
     <>
@@ -152,13 +171,32 @@ const UserProfile = () => {
                     {userData?.whereToNext === undefined ? (
                       <Skeleton style={{ width: 100, height: 20 }} />
                     ) : userData?.whereToNext ? (
-                      <p className={styles.text}>Where to next? {userData?.whereToNext}</p>
+                      <p className={styles.text}>Where to next: {userData?.whereToNext}</p>
                     ) : (
-                      <p className={styles.text}>Where to next? _______</p>
+                      <p className={styles.text}>User is not planning a trip yet</p>
                     )}
                   </div>
                 </div>
                 <div className={styles.divider}></div>
+                <div className={styles.features}>
+                  {TABS.map((tab, index) => (
+                    <span
+                      className={`${styles.feature} ${index === activeTab && styles.activeFeature}`}
+                      onClick={() => setActiveTab(index)}
+                      key={tab}
+                    >
+                      {tab}{' '}
+                      {index === 1 && (
+                        <div className={styles.friendsCount}>
+                          {firestoreUser?.friends_count || 0}
+                        </div>
+                      )}
+                      {index == 3 && (
+                        <div className={styles.friendsCount}>{firestoreUser?.tripCount || 0}</div>
+                      )}
+                    </span>
+                  ))}
+                </div>
               </div>
               <div className={styles.mapContainer}>
                 <div className={styles.mapContainer}>
@@ -167,27 +205,43 @@ const UserProfile = () => {
               </div>
             </div>
           </div>
-          <div className={styles.container}>
-            {userTravels.length === 0 ? (
-              <p className={styles.title}>{userData?.username} has not any travels</p>
-            ) : (
+          <div className={styles.userContent}>
+            {userData && (
               <>
-                <p className={styles.title}>{userData?.username}`s travels</p>
-                <Sort
-                  onSelect={setSortBy}
-                  isReverse={isReverse}
-                  setReverse={() => setIsReverse((prevState) => !prevState)}
-                />
-                <div className={styles.travelsContainer}>
-                  {travelsIsLoading ? (
-                    <Skeleton count={2} height={100} width={400} style={{ margin: '10px 0' }} />
-                  ) : (
-                    userTravels.map((travel) => <TravelCard key={travel.id} travel={travel} />)
-                  )}
+                <div>
+                  <h3>
+                    Friends(don`t pay attention, design and adaptivity will be little bit later)
+                  </h3>
+                  <AddNewFriends user={userData} />
                 </div>
               </>
             )}
+            <div className={styles.container}>
+              {userTravels.length === 0 ? (
+                <p className={styles.title}>{userData?.username} has not any travels</p>
+              ) : (
+                <>
+                  <p className={styles.title}>{userData?.username}`s travels</p>
+                  <Sort
+                    onSelect={setSortBy}
+                    isReverse={isReverse}
+                    setReverse={() => setIsReverse((prevState) => !prevState)}
+                  />
+                  <div className={styles.travelsContainer}>
+                    {travelsIsLoading ? (
+                      <Skeleton count={2} height={100} width={400} style={{ margin: '10px 0' }} />
+                    ) : (
+                      userTravels.map((travel) => <TravelCard key={travel.id} travel={travel} />)
+                    )}
+                  </div>
+                </>
+              )}
+            </div>
+            {/* <div className={styles.friendsList}>
+              {userData?.friends && <FriendsList friendsId={userData?.friends} />}
+            </div> */}
           </div>
+
           <Footer />
         </>
       </div>
