@@ -423,7 +423,15 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
           </div>
           {isAddingPlace && (
             <div className={styles.autocomplete}>
-              <PlacesAutocomplete
+              <div className={`${styles.autocomplete} ${styles.cityAutocomplete}`}>
+                <PlaceAutocomplete
+                  searchOptions={{ types: ['establishment'] }}
+                  location={geoTags}
+                  setLocation={setGeoTags}
+                  onSelectPlace={onSelectGeoTag}
+                />
+              </div>
+              {/* <PlacesAutocomplete
                 searchOptions={{ types: ['establishment'] }}
                 value={geoTags}
                 onChange={(value) => setGeoTags(value)}
@@ -462,7 +470,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
                     </div>
                   );
                 }}
-              </PlacesAutocomplete>
+              </PlacesAutocomplete> */}
             </div>
           )}
 
