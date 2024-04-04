@@ -121,7 +121,7 @@ const UserProfile = () => {
         setUserTravels(fetchedUserTravels as ITravel[]);
       } catch (err) {
         // @ts-ignore
-        alert(firebaseErrors[err.code]);
+        console.error('Error getting documents: ', err);
       } finally {
         setTravelsIsLoading(false);
       }
@@ -152,7 +152,7 @@ const UserProfile = () => {
   //   }
   // };
 
-  console.log('userData => ', userData?.friends, '   firestorUser.id =>', firestoreUser?.id);
+  console.log('userPhotoURL: ', userPhotoUrl);
   return (
     <>
       <Header />
@@ -163,7 +163,7 @@ const UserProfile = () => {
               <div className={styles.genaralInfo}>
                 <div className={styles.userInfo}>
                   <div className={styles.imageContainer}>
-                    {userPhotoUrl ? (
+                    {userData?.avatarUrl ? (
                       <img
                         className={styles.defaultUserIcon}
                         src={userPhotoUrl}
@@ -222,8 +222,8 @@ const UserProfile = () => {
                             : userData?.friends?.length} */}
                         </div>
                       )}
-                      {index == 3 && (
-                        <div className={styles.friendsCount}>{firestoreUser?.tripCount || 0}</div>
+                      {index === 2 && (
+                        <div className={styles.friendsCount}>{userData?.tripCount || 0}</div>
                       )}
                     </span>
                   ))}

@@ -45,13 +45,15 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user }) => {
       if (firestoreUser?.firebaseUid) {
         try {
           let q;
-          if (user) {
+          if (user && user.friends && user.friends.length > 0) {
             q = query(
               usersCollection,
               where(documentId(), 'in', user.friends),
               where(documentId(), '!=', firestoreUser.id),
               limit(40)
             );
+          } else if (user && user.friends && user.friends.length === 0) {
+            q = null;
           } else {
             q = query(
               usersCollection,
@@ -59,6 +61,8 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user }) => {
               limit(40)
             );
           }
+
+          if (!q) return;
           const querySnapshot = await getDocs(q);
 
           const fetchedUsers = querySnapshot.docs.map((doc) => ({
@@ -69,7 +73,8 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user }) => {
           setUsers(fetchedUsers as IUser[]);
         } catch (err) {
           // @ts-ignore
-          alert(firebaseErrors[err.code]);
+          console.error(firebaseErrors[err.code]);
+          // alert(firebaseErrors[err.code]);
         }
       }
     })();
