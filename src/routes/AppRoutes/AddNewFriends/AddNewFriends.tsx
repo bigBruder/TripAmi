@@ -126,30 +126,6 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user }) => {
               invitation={invitations.find((invitation) => invitation.fromUser === user.id)}
             />
           ))}
-          {users.map((user) => (
-            <UserCard
-              user={user}
-              key={user.firebaseUid}
-              invited={user.id ? invitedUsers.includes(user.id) : false}
-              isFriend={
-                firestoreUser?.friends && user.id ? firestoreUser?.friends.includes(user.id) : false
-              }
-              gotInvite={user.id ? invitationsFromUsers.includes(user.id) : false}
-              invitation={invitations.find((invitation) => invitation.fromUser === user.id)}
-            />
-          ))}
-          {users.map((user) => (
-            <UserCard
-              user={user}
-              key={user.firebaseUid}
-              invited={user.id ? invitedUsers.includes(user.id) : false}
-              isFriend={
-                firestoreUser?.friends && user.id ? firestoreUser?.friends.includes(user.id) : false
-              }
-              gotInvite={user.id ? invitationsFromUsers.includes(user.id) : false}
-              invitation={invitations.find((invitation) => invitation.fromUser === user.id)}
-            />
-          ))}
         </div>
       </div>
     );
