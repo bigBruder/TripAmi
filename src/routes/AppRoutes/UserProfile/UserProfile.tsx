@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 import { documentId, orderBy } from 'firebase/firestore';
 import { getDownloadURL } from 'firebase/storage';
 import { Footer } from '~/components/Footer';
+import { FriendsList } from '~/components/FriendsList/FriendsList';
 import Map from '~/components/Map/Map';
 import { Sort } from '~/components/Sort/Sort';
 import TravelCard from '~/components/TravelCard/TravelCard';
@@ -72,7 +73,9 @@ const UserProfile = () => {
       if (userData?.avatarUrl) {
         setAvatarIsLoading(true);
         try {
+          console.log('userData.avatarUrl: ', userData.avatarUrl);
           const url = await getDownloadURL(ref(storage, userData.avatarUrl));
+          console.log('url: ', url);
           setUserPhotoUrl(url);
         } catch (error) {
           console.log('[ERROR getting user photo] => ', error);
@@ -81,7 +84,7 @@ const UserProfile = () => {
         }
       }
     })();
-  }, [userData?.id]);
+  }, [userData?.id, id, userData?.avatarUrl]);
 
   useEffect(() => {
     (async () => {
@@ -104,8 +107,6 @@ const UserProfile = () => {
       }
     })();
   }, [id, isReverse, sortBy]);
-
-  console.log('userData', userData);
 
   return (
     <>
@@ -167,27 +168,33 @@ const UserProfile = () => {
               </div>
             </div>
           </div>
-          <div className={styles.container}>
-            {userTravels.length === 0 ? (
-              <p className={styles.title}>{userData?.username} has not any travels</p>
-            ) : (
-              <>
-                <p className={styles.title}>{userData?.username}`s travels</p>
-                <Sort
-                  onSelect={setSortBy}
-                  isReverse={isReverse}
-                  setReverse={() => setIsReverse((prevState) => !prevState)}
-                />
-                <div className={styles.travelsContainer}>
-                  {travelsIsLoading ? (
-                    <Skeleton count={2} height={100} width={400} style={{ margin: '10px 0' }} />
-                  ) : (
-                    userTravels.map((travel) => <TravelCard key={travel.id} travel={travel} />)
-                  )}
-                </div>
-              </>
-            )}
+          <div className={styles.userContent}>
+            <div className={styles.container}>
+              {userTravels.length === 0 ? (
+                <p className={styles.title}>{userData?.username} has not any travels</p>
+              ) : (
+                <>
+                  <p className={styles.title}>{userData?.username}`s travels</p>
+                  <Sort
+                    onSelect={setSortBy}
+                    isReverse={isReverse}
+                    setReverse={() => setIsReverse((prevState) => !prevState)}
+                  />
+                  <div className={styles.travelsContainer}>
+                    {travelsIsLoading ? (
+                      <Skeleton count={2} height={100} width={400} style={{ margin: '10px 0' }} />
+                    ) : (
+                      userTravels.map((travel) => <TravelCard key={travel.id} travel={travel} />)
+                    )}
+                  </div>
+                </>
+              )}
+            </div>
+            <div className={styles.friendsList}>
+              {userData?.friends && <FriendsList friendsId={userData?.friends} />}
+            </div>
           </div>
+
           <Footer />
         </>
       </div>

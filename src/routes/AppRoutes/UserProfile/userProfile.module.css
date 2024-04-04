@@ -6,7 +6,14 @@
 }
 
 .container {
+    width: 100%;
     padding: 20px;
+}
+
+@media (min-width: 1200px) {
+    .container {
+        max-width: 70%;
+    }
 }
 
 
@@ -274,12 +281,13 @@ span {
 }
 
 .travelsContainer {
+    width:fit-content;
     display: flex;
     flex-direction: column;
     gap: 35px;
 }
 
-@media (min-width: 500px) {
+@media (max-width: 500px) {
     .travelsContainer {
         align-items: center;
         width: 90%;
@@ -369,4 +377,25 @@ span {
     position: absolute;
     top: 0;
     left: 0;
+}
+
+.userContent {
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}
+
+@media (min-width: 768px) {
+    .userContent {
+        flex-direction: column-reverse;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 768px) {
+
+    .friendsList {
+        margin: 0 auto;
+    }
 }
