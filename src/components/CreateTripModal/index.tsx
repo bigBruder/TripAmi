@@ -376,12 +376,12 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
 
           <div className={styles.section}>
             {/* <p>Tag Your Favorite Places on this Trip: </p> */}
-            <p className={styles.text}>Add places you visited</p>
+            <p className={styles.text}>Add Locations you visited</p>
             <button
               className={`${styles.section_button} ${styles.button}`}
               onClick={(e) => handleOpenAddCity(e)}
             >
-              Add city
+              Add Location
             </button>
           </div>
 
@@ -413,12 +413,12 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
             </div>
           )}
           <div className={styles.section}>
-            <p className={styles.text}>Tag Your Spots (beaches, restaurants, bar)</p>
+            <p className={styles.text}>Tag Your Favorite Spots (beaches, restaurants, bar)</p>
             <button
               className={`${styles.section_button} ${styles.button}`}
               onClick={handleOpenAddGeocode}
             >
-              Add place
+              Add Spots
             </button>
           </div>
           {isAddingPlace && (
