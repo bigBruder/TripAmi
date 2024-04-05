@@ -18,6 +18,7 @@ import { IComment } from '~/types/comments';
 import { commentsCollection, tripsCollection, usersCollection } from '~/types/firestoreCollections';
 import { ITravel } from '~/types/travel';
 import { IUser } from '~/types/user';
+import { getDateToDisplay } from '~/utils/getDateToDisplay';
 
 import styles from './trip.module.css';
 
@@ -180,7 +181,7 @@ export const Trip = () => {
               {trip?.dayDescription &&
                 trip.dayDescription.map((day, index) => (
                   <div key={index}>
-                    <h2 className={styles.date}>{day.date}</h2>
+                    <h2 className={styles.date}>{getDateToDisplay(day.date)}</h2>
                     <p className={styles.dayDescription}>{day.description}</p>
                   </div>
                 ))}

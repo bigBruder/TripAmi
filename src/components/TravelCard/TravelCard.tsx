@@ -11,6 +11,7 @@ import Rating from '~/components/Rating';
 import { db, storage } from '~/firebase';
 import { AuthContext } from '~/providers/authContext';
 import { ITravel } from '~/types/travel';
+import { getDateToDisplay } from '~/utils/getDateToDisplay';
 
 import BinIcon from '@assets/icons/BinIcon.svg';
 import commentsIcon from '@assets/icons/comments.svg';
@@ -24,7 +25,6 @@ import { DropdownProvider } from '../DropdownProvider/DropdownProvider';
 import { LightBox } from '../Lightbox/LightBox';
 import ShareModal from '../ShareModal/ShareModal';
 import styles from './travelCard.module.css';
-import { getDateToDisplay } from '~/utils/getDateToDisplay';
 
 interface Props {
   travel: ITravel;
@@ -215,7 +215,7 @@ const TravelCard: FC<Props> = ({ travel }) => {
             {dayDescription &&
               dayDescription.map((day, index) => (
                 <div key={`day_${index}`} className={styles.dayDescription}>
-                  <p className={styles.date}>{day.date}</p>
+                  <p className={styles.date}>{getDateToDisplay(day.date)}</p>
                   <p className={styles.additionalText}>{day.description}</p>
                 </div>
               ))}

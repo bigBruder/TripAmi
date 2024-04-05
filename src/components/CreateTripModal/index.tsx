@@ -294,7 +294,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
   const handleAddDayDescription = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
-    setDaysDescription((prevState) => [...prevState, { date: '', description: '' }]);
+    setDaysDescription((prevState) => [...prevState, { date: new Date(), description: '' }]);
   };
 
   const handleRemoveDayDescription = (indexToRemove: number) => {
@@ -311,7 +311,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
     setDaysDescription((prevState) =>
       prevState.map((prevDay, index) => {
         if (index === indexToChange) {
-          return { ...prevDay, [type]: event.target.value };
+          return { ...prevDay, [type]: type === 'date' ? event : event.target.value };
         } else {
           return prevDay;
         }
@@ -566,14 +566,23 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
         {daysDescription &&
           Array.from(Array(daysDescription.length).keys()).map((day, idx) => (
             <div className={styles.dayDescriptionContainer} key={day}>
-              <input
+              <DatePicker
+                selected={daysDescription[idx].date}
+                onChange={(
+                  date: React.ChangeEvent<HTMLTextAreaElement> | React.ChangeEvent<HTMLInputElement>
+                ) => handleDayDateDescriptionChange(date, idx, 'date')}
+                locale='en-US'
+                className='datePicker'
+                popperPlacement='right'
+              />
+              {/* <input
                 value={daysDescription[idx].date}
                 onChange={(e) => handleDayDateDescriptionChange(e, idx, 'date')}
                 type='date'
                 className={styles.input}
                 min={startDate}
                 max={endDate}
-              />
+              /> */}
               <div className={styles.dayDescriptionContainer}>
                 <textarea
                   className={`${styles.input} ${styles.textArea}`}
