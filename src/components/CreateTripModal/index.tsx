@@ -110,6 +110,8 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
     });
   };
 
+  console.log(daysDescription, 'daysDescription');
+
   const handleOnSave = useCallback(async () => {
     try {
       if (file || downloadedImages) {
@@ -130,6 +132,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
               imagesDescription.find((image) => image.name === file[i].name)?.value || '',
           });
         }
+        const filteredDescriptions = daysDescription.filter((day) => day.description.length > 0);
         if (isEdit && data) {
           const docRef = doc(db, 'trips', data.id);
           await updateDoc(docRef, {
@@ -141,7 +144,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
             geoTags: selectedGeoTags,
             cities: selectedCities,
             tripName: tripName,
-            dayDescription: daysDescription,
+            dayDescription: filteredDescriptions,
             text,
           });
         } else {
@@ -155,7 +158,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
             cities: selectedCities,
             tripName: tripName,
             pinColor: getNeutralColor(),
-            dayDescription: daysDescription,
+            dayDescription: filteredDescriptions,
             text,
           }).then(async (docRef) => {
             if (firestoreUser?.friends) {
