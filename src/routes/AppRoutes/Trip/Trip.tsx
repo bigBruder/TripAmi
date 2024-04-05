@@ -189,7 +189,7 @@ export const Trip = () => {
             <div className={styles.visitedContainer}>
               {trip?.geoTags && trip?.geoTags.length > 0 && (
                 <div>
-                  <p className={styles.text}>Places: </p>
+                  <p className={styles.text}>Spots: </p>
                   <div className={styles.tagsContainer}>
                     {trip?.geoTags?.map((tag) => (
                       <p
@@ -206,7 +206,7 @@ export const Trip = () => {
 
               {trip?.cities && trip.cities.length > 0 && (
                 <div>
-                  <p className={styles.text}>Cities: </p>
+                  <p className={styles.text}>Locations: </p>
                   <div className={styles.tagsContainer}>
                     {trip?.cities?.map((tag) => (
                       <p
