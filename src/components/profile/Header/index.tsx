@@ -365,7 +365,14 @@ const Header = () => {
           </div>
 
           <div className={styles.rightContainer}>
-            <img className={styles.avatar} src={avatar} alt='icon' />
+            <img
+              className={styles.avatar}
+              src={avatar}
+              alt='icon'
+              onClick={() => {
+                navigate('/profile');
+              }}
+            />
             <DropdownMenu.Root>
               <DropdownMenu.Trigger asChild>
                 <button className={styles.IconButton} aria-label='Customise options'>
