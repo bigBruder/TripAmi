@@ -1,4 +1,6 @@
 import React, { ChangeEvent, useCallback, useContext, useEffect, useState } from 'react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 // @ts-ignore
 import { FileUploader } from 'react-drag-drop-files';
 import PlacesAutocomplete from 'react-places-autocomplete';
@@ -25,6 +27,7 @@ import { ref, uploadBytes } from '@firebase/storage';
 
 import PlaceAutocomplete from '../PlaceAutocomplete/PlaceAutocomplete';
 import styles from './createTripModal.module.css';
+import './styles.css';
 
 const fileTypes = ['JPEG', 'PNG', 'JPG', 'MP4'];
 
@@ -52,10 +55,8 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
   const [file, setFile] = useState<File[]>([]);
   const [rating, setRating] = useState(data?.rate || 0);
   const [city, setCity] = useState('');
-  const [startDate, setStartDate] = useState<string>(
-    data?.startDate || moment().format('yyyy-MM-D')
-  );
-  const [endDate, setEndDate] = useState<string>(data?.endDate || moment().format('yyyy-MM-D'));
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
   const [isLoading, setIsLoading] = useState(false);
   const [text, setText] = useState(data?.text || '');
   const [selectedLocation, setSelectedLocation] = useState<string | null>(
@@ -500,17 +501,28 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
 
             <div className={styles.dateContainer}>
               <p className={`${styles.text} ${styles.dateDescription}`}>Start Date:</p>
-
-              <input
+              <DatePicker
+                selected={startDate}
+                onChange={(date) => setStartDate(date)}
+                locale='en-US'
+                className='datePicker'
+              />
+              {/* <input
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
                 type='date'
                 className={styles.dateInput}
-              />
+              /> */}
             </div>
             <div className={styles.dateContainer}>
               <p className={`${styles.text} ${styles.dateDescription}`}>End Date:</p>
-              <input
+              <DatePicker
+                selected={endDate}
+                onChange={(date) => setEndDate(date)}
+                locale='en-US'
+                className='datePicker'
+              />
+              {/* <input
                 id='end_date'
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
@@ -518,7 +530,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
                 className={styles.dateInput}
                 min={startDate}
                 lang='fr-CA'
-              />
+              /> */}
             </div>
           </div>
         </div>

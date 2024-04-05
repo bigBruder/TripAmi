@@ -24,6 +24,7 @@ import { DropdownProvider } from '../DropdownProvider/DropdownProvider';
 import { LightBox } from '../Lightbox/LightBox';
 import ShareModal from '../ShareModal/ShareModal';
 import styles from './travelCard.module.css';
+import { getDateToDisplay } from '~/utils/getDateToDisplay';
 
 interface Props {
   travel: ITravel;
@@ -149,6 +150,9 @@ const TravelCard: FC<Props> = ({ travel }) => {
     setEditModalIsOpen(false);
   }, []);
 
+  // console.log('startDate', startDate);
+  // console.log('endDate', endDate);
+
   return (
     <div className={styles.container}>
       <div className={styles.topContainer}>
@@ -156,7 +160,8 @@ const TravelCard: FC<Props> = ({ travel }) => {
         <Rating disabled selectedStars={rate} />
         <div className={styles.dateContainer}>
           <p className={styles.date}>
-            {startDate} - {endDate}
+            {getDateToDisplay(startDate)} - {getDateToDisplay(endDate)}
+            {/* {startDate} - {endDate} */}
           </p>
         </div>
       </div>
