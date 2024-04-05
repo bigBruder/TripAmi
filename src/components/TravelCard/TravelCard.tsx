@@ -227,7 +227,7 @@ const TravelCard: FC<Props> = ({ travel }) => {
             {cities && cities?.length > 0 && (
               <div>
                 <div className={styles.info_container}>
-                  <p className={styles.mark}>Cities: </p>
+                  <p className={styles.mark}>Locations: </p>
                   <div className={styles.info_button}>
                     <DropdownProvider
                       side='top'
