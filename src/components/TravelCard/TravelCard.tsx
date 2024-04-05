@@ -356,7 +356,7 @@ const TravelCard: FC<Props> = ({ travel }) => {
         <div className={styles.deleteModalContainer}>
           <div className={styles.deleteModal}>
             <h3 className={styles.deleteModal_title}>Delete Trip</h3>
-            <p>Are you sure to delete the trip?</p>
+            <p>Are you sure you want to delete the trip?</p>
             <div className={styles.deleteControlContainer}>
               <button
                 className={`${styles.buttonModal}, ${styles.buttonModal_delete}`}
