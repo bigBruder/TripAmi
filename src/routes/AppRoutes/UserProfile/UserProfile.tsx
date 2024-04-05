@@ -5,7 +5,6 @@ import { useParams } from 'react-router-dom';
 import { collectionGroup, documentId, orderBy } from 'firebase/firestore';
 import { getDownloadURL } from 'firebase/storage';
 import { Footer } from '~/components/Footer';
-import { FriendsList } from '~/components/FriendsList/FriendsList';
 import Map from '~/components/Map/Map';
 import { Sort } from '~/components/Sort/Sort';
 import TravelCard from '~/components/TravelCard/TravelCard';
@@ -248,6 +247,7 @@ const UserProfile = () => {
                       userData?.friends?.includes(firestoreUser?.id) && (
                         <h3>You and {userData.username?.split(' ')[0]} are friends</h3>
                       )}
+                    <h3>Friends</h3>
                     <AddNewFriends user={userData} />
                   </div>
                 </>
@@ -277,10 +277,9 @@ const UserProfile = () => {
               {userData?.friends && <FriendsList friendsId={userData?.friends} />}
             </div> */}
           </div>
-
-          <Footer />
         </>
       </div>
+      <Footer />
     </>
   );
 };

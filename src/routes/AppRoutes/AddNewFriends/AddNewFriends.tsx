@@ -139,7 +139,7 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user }) => {
   return (
     <div className={styles.main}>
       <Header />
-      <div className={styles.container}>
+      <div className={styles.container} style={!user && { padding: '57px' }}>
         <PageTitle title={'Find friends & contacts'} />
         <p className={styles.subTitle}>Here you can see all users of the platform</p>
         <div className={styles.usersContainer}>

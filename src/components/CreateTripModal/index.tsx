@@ -73,7 +73,9 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
   );
   const [isAddingPlace, setIsAddingPlace] = useState(true);
   const [tripName, setTripName] = useState(data?.tripName || '');
-  const [daysDescription, setDaysDescription] = useState(data?.dayDescription || []);
+  const [daysDescription, setDaysDescription] = useState(
+    data?.dayDescription || [{ date: new Date(), description: '' }]
+  );
   const [isAddCityOpen, setIsAddCityOpen] = useState(true);
   const [downloadedImages, setDownloadedImages] = useState<
     { url: string; type: string; description: string }[]
@@ -111,6 +113,8 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
       }
     });
   };
+
+  console.log(getDateToDisplay(startDate), 'startDate');
 
   // console.log(daysDescription, 'daysDescription');
 
@@ -346,7 +350,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
         notify('You have already added this city');
       }
 
-      // setIsAddCityOpen(false);
+      setIsAddCityOpen(false);
     },
     [selectedCities]
   );
@@ -392,12 +396,12 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
           <div className={styles.section}>
             {/* <p>Tag Your Favorite Places on this Trip: </p> */}
             <p className={styles.text}>Add Locations you visited</p>
-            {/* <button
+            <button
               className={`${styles.section_button} ${styles.button}`}
               onClick={(e) => handleOpenAddCity(e)}
             >
               Add Location
-            </button> */}
+            </button>
           </div>
 
           {isAddCityOpen && (
@@ -429,24 +433,24 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
           )}
           <div className={styles.section}>
             <p className={styles.text}>Tag Your Favorite Spots (beaches, restaurants, bar)</p>
-            {/* <button
+            <button
               className={`${styles.section_button} ${styles.button}`}
               onClick={handleOpenAddGeocode}
             >
               Add Spots
-            </button> */}
+            </button>
           </div>
-          {/* {isAddingPlace && ( */}
-          <div className={styles.autocomplete}>
-            <div className={`${styles.autocomplete} ${styles.cityAutocomplete}`}>
-              <PlaceAutocomplete
-                searchOptions={{ types: ['establishment'] }}
-                location={geoTags}
-                setLocation={setGeoTags}
-                onSelectPlace={onSelectGeoTag}
-              />
-            </div>
-            {/* <PlacesAutocomplete
+          {isAddingPlace && (
+            <div className={styles.autocomplete}>
+              <div className={`${styles.autocomplete} ${styles.cityAutocomplete}`}>
+                <PlaceAutocomplete
+                  searchOptions={{ types: ['establishment'] }}
+                  location={geoTags}
+                  setLocation={setGeoTags}
+                  onSelectPlace={onSelectGeoTag}
+                />
+              </div>
+              {/* <PlacesAutocomplete
                 searchOptions={{ types: ['establishment'] }}
                 value={geoTags}
                 onChange={(value) => setGeoTags(value)}
@@ -486,8 +490,8 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
                   );
                 }}
               </PlacesAutocomplete> */}
-          </div>
-          {/* )} */}
+            </div>
+          )}
 
           {selectedGeoTags.length ? (
             <div className={styles.selectedTagsContainer}>
