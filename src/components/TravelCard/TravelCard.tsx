@@ -102,6 +102,8 @@ const TravelCard: FC<Props> = ({ travel }) => {
     })();
   }, [imageUrl]);
 
+  console.log(startDate);
+
   // const getLayout = useMemo(() => {
   //   switch (imageDownloadUrls?.length) {
   //     case 1:
@@ -152,7 +154,7 @@ const TravelCard: FC<Props> = ({ travel }) => {
 
   // console.log('startDate', startDate);
   // console.log('endDate', endDate);
-
+  console.log(startDate);
   return (
     <div className={styles.container}>
       <div className={styles.topContainer}>
@@ -160,7 +162,7 @@ const TravelCard: FC<Props> = ({ travel }) => {
         <Rating disabled selectedStars={rate} />
         <div className={styles.dateContainer}>
           <p className={styles.date}>
-            {getDateToDisplay(startDate)} - {getDateToDisplay(endDate)}
+            {startDate} - {endDate}
             {/* {startDate} - {endDate} */}
           </p>
         </div>
@@ -215,7 +217,7 @@ const TravelCard: FC<Props> = ({ travel }) => {
             {dayDescription &&
               dayDescription.map((day, index) => (
                 <div key={`day_${index}`} className={styles.dayDescription}>
-                  <p className={styles.date}>{getDateToDisplay(day.date)}</p>
+                  <p className={styles.date}>{day.date}</p>
                   <p className={styles.additionalText}>{day.description}</p>
                 </div>
               ))}

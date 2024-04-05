@@ -20,6 +20,7 @@ import { db, storage } from '~/firebase';
 import { AuthContext } from '~/providers/authContext';
 import { notificationsCollection, tripsCollection } from '~/types/firestoreCollections';
 import { NotificationType } from '~/types/notifications/notifications';
+import { getDateToDisplay } from '~/utils/getDateToDisplay';
 import getNeutralColor from '~/utils/getNeutralColor';
 
 import { addDoc } from '@firebase/firestore';
@@ -70,10 +71,10 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
   const [selectedCities, setSelectedCities] = useState<{ address: string; placeID: string }[]>(
     data?.cities || []
   );
-  const [isAddingPlace, setIsAddingPlace] = useState(false);
+  const [isAddingPlace, setIsAddingPlace] = useState(true);
   const [tripName, setTripName] = useState(data?.tripName || '');
   const [daysDescription, setDaysDescription] = useState(data?.dayDescription || []);
-  const [isAddCityOpen, setIsAddCityOpen] = useState(false);
+  const [isAddCityOpen, setIsAddCityOpen] = useState(true);
   const [downloadedImages, setDownloadedImages] = useState<
     { url: string; type: string; description: string }[]
   >(data?.imageUrl || []);
@@ -111,7 +112,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
     });
   };
 
-  console.log(daysDescription, 'daysDescription');
+  // console.log(daysDescription, 'daysDescription');
 
   const handleOnSave = useCallback(async () => {
     try {
@@ -133,15 +134,20 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
               imagesDescription.find((image) => image.name === file[i].name)?.value || '',
           });
         }
-        const filteredDescriptions = daysDescription.filter((day) => day.description.length > 0);
+        const filteredDescriptions = daysDescription
+          .filter((day) => day.description.length > 0)
+          .map((day) => ({
+            date: getDateToDisplay(day.date),
+            description: day.description,
+          }));
         if (isEdit && data) {
           const docRef = doc(db, 'trips', data.id);
           await updateDoc(docRef, {
             userId: firestoreUser?.id,
             imageUrl: [...uploadedImages, ...downloadedImages],
             rate: rating,
-            startDate: startDate,
-            endDate: endDate,
+            startDate: getDateToDisplay(startDate),
+            endDate: getDateToDisplay(endDate),
             geoTags: selectedGeoTags,
             cities: selectedCities,
             tripName: tripName,
@@ -153,8 +159,8 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
             userId: firestoreUser?.id,
             imageUrl: uploadedImages,
             rate: rating,
-            startDate: startDate,
-            endDate: endDate,
+            startDate: getDateToDisplay(startDate),
+            endDate: getDateToDisplay(endDate),
             geoTags: selectedGeoTags,
             cities: selectedCities,
             tripName: tripName,
@@ -229,7 +235,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
         notify('You have already added this tag');
       }
 
-      setIsAddingPlace(false);
+      // setIsAddingPlace(false);
     },
     [selectedGeoTags]
   );
@@ -340,7 +346,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
         notify('You have already added this city');
       }
 
-      setIsAddCityOpen(false);
+      // setIsAddCityOpen(false);
     },
     [selectedCities]
   );
@@ -381,12 +387,12 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
           <div className={styles.section}>
             {/* <p>Tag Your Favorite Places on this Trip: </p> */}
             <p className={styles.text}>Add Locations you visited</p>
-            <button
+            {/* <button
               className={`${styles.section_button} ${styles.button}`}
               onClick={(e) => handleOpenAddCity(e)}
             >
               Add Location
-            </button>
+            </button> */}
           </div>
 
           {isAddCityOpen && (
@@ -418,12 +424,12 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
           )}
           <div className={styles.section}>
             <p className={styles.text}>Tag Your Favorite Spots (beaches, restaurants, bar)</p>
-            <button
+            {/* <button
               className={`${styles.section_button} ${styles.button}`}
               onClick={handleOpenAddGeocode}
             >
               Add Spots
-            </button>
+            </button> */}
           </div>
           {isAddingPlace && (
             <div className={styles.autocomplete}>
