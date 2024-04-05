@@ -93,13 +93,15 @@ const Place = () => {
             <div className={styles.postContainer}>
               {isLoading ? (
                 <Lottie animationData={AnimationData} />
-              ) : placeData?.imageUrl && placeData.articleText ? (
+              ) : placeData?.imageUrl || placeData?.articleText ? (
                 <>
-                  <img
-                    src={placeData.imageUrl || ''}
-                    alt={'place image'}
-                    className={styles.postIMage}
-                  />
+                  {placeData.imageUrl && (
+                    <img
+                      src={placeData.imageUrl || ''}
+                      alt={'place image'}
+                      className={styles.postIMage}
+                    />
+                  )}
 
                   {placeData.articleText ? (
                     <div className={styles.textContainer}>
