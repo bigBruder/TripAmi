@@ -200,7 +200,7 @@ const UserProfile = () => {
                     ) : userData?.whereToNext ? (
                       <p className={styles.text}>{`Where to next? ${userData?.whereToNext}`}</p>
                     ) : (
-                      <p className={styles.text}>{`Where to next?`}</p>
+                      <p className={styles.text}>{`Where to next? ______`}</p>
                     )}
                   </div>
                 </div>
