@@ -350,6 +350,11 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
     },
     [selectedCities]
   );
+  useEffect(() => {
+    if (startDate > endDate) {
+      setEndDate(startDate);
+    }
+  }, [startDate, endDate]);
 
   useEffect(() => {
     (async () => {
@@ -509,7 +514,9 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
               <p className={`${styles.text} ${styles.dateDescription}`}>Start Date:</p>
               <DatePicker
                 selected={startDate}
-                onChange={(date) => setStartDate(date)}
+                onChange={(date) => {
+                  setStartDate(date);
+                }}
                 locale='en-US'
                 className='datePicker'
               />
