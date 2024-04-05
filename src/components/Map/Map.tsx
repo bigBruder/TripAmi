@@ -189,7 +189,7 @@ const Map: FC<Props> = ({ userId }) => {
           {citiesToDisplay?.map((city) => (
             <Marker
               key={`${city.place_id}${city.lng}${city.lat}`}
-              coordinates={[city.lng - 0.5, city.lat + 1]}
+              coordinates={[city.lng - 1, city.lat + 1]}
               onClick={() => handleSelectMarker(city.name, city.place_id)}
               cursor={'pointer'}
             >
