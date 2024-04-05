@@ -431,17 +431,17 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
               Add Spots
             </button> */}
           </div>
-          {isAddingPlace && (
-            <div className={styles.autocomplete}>
-              <div className={`${styles.autocomplete} ${styles.cityAutocomplete}`}>
-                <PlaceAutocomplete
-                  searchOptions={{ types: ['establishment'] }}
-                  location={geoTags}
-                  setLocation={setGeoTags}
-                  onSelectPlace={onSelectGeoTag}
-                />
-              </div>
-              {/* <PlacesAutocomplete
+          {/* {isAddingPlace && ( */}
+          <div className={styles.autocomplete}>
+            <div className={`${styles.autocomplete} ${styles.cityAutocomplete}`}>
+              <PlaceAutocomplete
+                searchOptions={{ types: ['establishment'] }}
+                location={geoTags}
+                setLocation={setGeoTags}
+                onSelectPlace={onSelectGeoTag}
+              />
+            </div>
+            {/* <PlacesAutocomplete
                 searchOptions={{ types: ['establishment'] }}
                 value={geoTags}
                 onChange={(value) => setGeoTags(value)}
@@ -481,8 +481,8 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
                   );
                 }}
               </PlacesAutocomplete> */}
-            </div>
-          )}
+          </div>
+          {/* )} */}
 
           {selectedGeoTags.length ? (
             <div className={styles.selectedTagsContainer}>
