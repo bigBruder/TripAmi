@@ -213,14 +213,19 @@ const TravelCard: FC<Props> = ({ travel }) => {
             {/* <ReactQuill value={text} readOnly={true} theme={'bubble'} /> */}
             {text}
           </p>
-          <div className={styles.daysDescriptionContainer}>
-            {dayDescription &&
-              dayDescription.map((day, index) => (
-                <div key={`day_${index}`} className={styles.dayDescription}>
-                  <p className={styles.date}>{day.date}</p>
-                  <p className={styles.additionalText}>{day.description}</p>
-                </div>
-              ))}
+
+          <div>
+            <h4 className={styles.subtitle}>Daily Journal</h4>
+
+            <div className={styles.daysDescriptionContainer}>
+              {dayDescription &&
+                dayDescription.map((day, index) => (
+                  <div key={`day_${index}`} className={styles.dayDescription}>
+                    <p className={styles.date}>{day.date}</p>
+                    <p className={styles.additionalText}>{day.description}</p>
+                  </div>
+                ))}
+            </div>
           </div>
 
           <div className={styles.visitedContainer}>
