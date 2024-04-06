@@ -225,7 +225,7 @@ const TravelCard: FC<Props> = ({ travel }) => {
                     <p className={styles.date}>
                       {day.date.split('/')[1]}/{day.date.split('/')[0]}/{day.date.split('/')[2]}
                     </p>
-                    <p className={styles.additionalText}>{day.description}</p>
+                    <p className={`${styles.additionalText} ${styles.text}`}>{day.description}</p>
                   </div>
                 ))}
             </div>
