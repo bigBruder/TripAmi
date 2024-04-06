@@ -422,6 +422,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
                 location={city}
                 setLocation={setCity}
                 onSelectPlace={onSelectCity}
+                placeholder='ex.Venice, Italy'
               />
             </div>
           )}
@@ -459,6 +460,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
                   location={geoTags}
                   setLocation={setGeoTags}
                   onSelectPlace={onSelectGeoTag}
+                  placeholder='ex. Bondi Beach'
                 />
               </div>
               {/* <PlacesAutocomplete

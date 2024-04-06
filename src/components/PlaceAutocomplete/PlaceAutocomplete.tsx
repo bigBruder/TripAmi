@@ -8,6 +8,7 @@ interface PlaceAutocompleteProps {
   location: string | null;
   setLocation: Dispatch<SetStateAction<string | null>>;
   onSelectPlace: (address: string, placeId: string) => void;
+  placeholder?: string;
 }
 
 const PlaceAutocomplete: FC<PlaceAutocompleteProps> = ({
@@ -15,6 +16,7 @@ const PlaceAutocomplete: FC<PlaceAutocompleteProps> = ({
   location,
   setLocation,
   onSelectPlace,
+  placeholder = 'Venice, Italy.',
 }) => {
   return (
     <PlacesAutocomplete
@@ -28,7 +30,7 @@ const PlaceAutocomplete: FC<PlaceAutocompleteProps> = ({
           <div className={suggestions.length ? styles.inputContainer : undefined}>
             <input
               {...getInputProps({
-                placeholder: 'Venice, Italy.',
+                placeholder: placeholder,
                 className: styles.input,
               })}
             />
