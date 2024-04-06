@@ -56,8 +56,16 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
   const [file, setFile] = useState<File[]>([]);
   const [rating, setRating] = useState(data?.rate || 0);
   const [city, setCity] = useState('');
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  const start = data?.startDate.toString().split('/');
+  const end = data?.endDate.toString().split('/');
+  const [startDate, setStartDate] = useState(
+    start ? [start[2], start[1], start[0]].join('-') : moment().format('yyyy-MM-DD')
+  );
+  console.log(data?.startDate, 'date');
+  console.log(moment().format('yyyy-MM-DD'), 'moment');
+  const [endDate, setEndDate] = useState(
+    end ? [end[2], end[1], end[0]].join('-') : moment().format('yyyy-MM-DD')
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [text, setText] = useState(data?.text || '');
   const [selectedLocation, setSelectedLocation] = useState<string | null>(
@@ -74,7 +82,10 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
   const [isAddingPlace, setIsAddingPlace] = useState(true);
   const [tripName, setTripName] = useState(data?.tripName || '');
   const [daysDescription, setDaysDescription] = useState(
-    data?.dayDescription || [{ date: new Date(), description: '' }]
+    data?.dayDescription.map((descr) => ({
+      ...descr,
+      date: descr.date.split('/').reverse().join('-'),
+    })) || [{ date: new Date(), description: '' }]
   );
   const [isAddCityOpen, setIsAddCityOpen] = useState(true);
   const [downloadedImages, setDownloadedImages] = useState<
@@ -321,7 +332,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
     setDaysDescription((prevState) =>
       prevState.map((prevDay, index) => {
         if (index === indexToChange) {
-          return { ...prevDay, [type]: type === 'date' ? event : event.target.value };
+          return { ...prevDay, [type]: event.target.value };
         } else {
           return prevDay;
         }
@@ -516,30 +527,30 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
 
             <div className={styles.dateContainer}>
               <p className={`${styles.text} ${styles.dateDescription}`}>Start Date:</p>
-              <DatePicker
+              {/* <DatePicker
                 selected={startDate}
                 onChange={(date) => {
                   setStartDate(date);
                 }}
                 locale='en-US'
                 className='datePicker'
-              />
-              {/* <input
+              /> */}
+              <input
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
                 type='date'
                 className={styles.dateInput}
-              /> */}
+              />
             </div>
             <div className={styles.dateContainer}>
               <p className={`${styles.text} ${styles.dateDescription}`}>End Date:</p>
-              <DatePicker
+              {/* <DatePicker
                 selected={endDate}
                 onChange={(date) => setEndDate(date)}
                 locale='en-US'
                 className='datePicker'
-              />
-              {/* <input
+              /> */}
+              <input
                 id='end_date'
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
@@ -547,7 +558,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
                 className={styles.dateInput}
                 min={startDate}
                 lang='fr-CA'
-              /> */}
+              />
             </div>
           </div>
         </div>
@@ -583,7 +594,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
         {daysDescription &&
           Array.from(Array(daysDescription.length).keys()).map((day, idx) => (
             <div className={styles.dayDescriptionContainer} key={day}>
-              <DatePicker
+              {/* <DatePicker
                 selected={daysDescription[idx].date}
                 onChange={(
                   date: React.ChangeEvent<HTMLTextAreaElement> | React.ChangeEvent<HTMLInputElement>
@@ -591,15 +602,15 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
                 locale='en-US'
                 className='datePicker'
                 popperPlacement='right'
-              />
-              {/* <input
+              /> */}
+              <input
                 value={daysDescription[idx].date}
                 onChange={(e) => handleDayDateDescriptionChange(e, idx, 'date')}
                 type='date'
                 className={styles.input}
                 min={startDate}
                 max={endDate}
-              /> */}
+              />
               <div className={styles.dayDescriptionContainer}>
                 <textarea
                   className={`${styles.input} ${styles.textArea}`}

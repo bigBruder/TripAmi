@@ -154,7 +154,7 @@ const TravelCard: FC<Props> = ({ travel }) => {
 
   // console.log('startDate', startDate);
   // console.log('endDate', endDate);
-  console.log(startDate);
+  console.log(startDate.split('/')[0], typeof startDate);
   return (
     <div className={styles.container}>
       <div className={styles.topContainer}>
@@ -162,7 +162,8 @@ const TravelCard: FC<Props> = ({ travel }) => {
         <Rating disabled selectedStars={rate} />
         <div className={styles.dateContainer}>
           <p className={styles.date}>
-            {startDate} - {endDate}
+            {startDate.split('/')[1]}/{startDate.split('/')[0]}/{startDate.split('/')[2]} -{' '}
+            {endDate.split('/')[1]}/{endDate.split('/')[0]}/{endDate.split('/')[2]}
             {/* {startDate} - {endDate} */}
           </p>
         </div>
@@ -221,7 +222,9 @@ const TravelCard: FC<Props> = ({ travel }) => {
               {dayDescription &&
                 dayDescription.map((day, index) => (
                   <div key={`day_${index}`} className={styles.dayDescription}>
-                    <p className={styles.date}>{day.date}</p>
+                    <p className={styles.date}>
+                      {day.date.split('/')[1]}/{day.date.split('/')[0]}/{day.date.split('/')[2]}
+                    </p>
                     <p className={styles.additionalText}>{day.description}</p>
                   </div>
                 ))}
