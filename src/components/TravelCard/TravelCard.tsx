@@ -216,7 +216,9 @@ const TravelCard: FC<Props> = ({ travel }) => {
           </p>
 
           <div>
-            <h4 className={styles.subtitle}>Daily Journal</h4>
+            {dayDescription && dayDescription.length > 0 && (
+              <h4 className={styles.subtitle}>Daily Journal</h4>
+            )}
 
             <div className={styles.daysDescriptionContainer}>
               {dayDescription &&
