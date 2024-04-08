@@ -1,4 +1,5 @@
 import { FC, useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { documentId, getDoc, getDocs, query, where } from 'firebase/firestore';
 import { getDownloadURL, ref } from 'firebase/storage';
@@ -36,6 +37,7 @@ export const PlaceReview: FC<Props> = ({ trip }) => {
   const [user, setUser] = useState<IUser | null>(null);
   const [images, setImages] = useState<string[]>([]);
   const [isExtended, setIsExtended] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     try {
@@ -60,7 +62,7 @@ export const PlaceReview: FC<Props> = ({ trip }) => {
             const url = await getDownloadURL(ref(storage, image.url));
             return url;
           })
-        );  
+        );
 
         setImages(imagesUrls);
       })();
@@ -74,7 +76,14 @@ export const PlaceReview: FC<Props> = ({ trip }) => {
       <div className={styles.leftContainer}>
         <Rating selectedStars={trip.rate} />
         <div>
-          <img className={styles.avatar} src={user?.avatarUrl || Avatar} alt='user avatar' />
+          <img
+            className={styles.avatar}
+            src={user?.avatarUrl || Avatar}
+            alt='user avatar'
+            onClick={() => {
+              navigate(`/user/${user?.id}`);
+            }}
+          />
         </div>
         <div className={styles.secondContainer}>
           <div className={styles.name}>{user?.username}</div>
@@ -102,8 +111,8 @@ export const PlaceReview: FC<Props> = ({ trip }) => {
           ) : (
             <>
               <p className={styles.description}>
-                {trip.text.slice(0, 200)}{' '}
-                {trip.text.length > 200 && (
+                {trip.text.slice(0, MAX_LENGTH)}{' '}
+                {trip.text.length > MAX_LENGTH && (
                   <button
                     className={styles.seeMoreButton}
                     onClick={() => {
