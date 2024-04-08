@@ -31,7 +31,7 @@ const Place = () => {
   const truncatedText = useRef('');
   const remainingText = useRef('');
   const [comments, setComments] = useState<IPlaceComment[] | null>(null);
-  const [reviews, setReviews] = useState<ITravel | null>(null);
+  const [reviews, setReviews] = useState<ITravel[]>([]);
 
   useEffect(() => {
     const q = query(
@@ -110,9 +110,9 @@ const Place = () => {
         id: document.id,
       }));
 
-      setReviews(trips);
+      trips.length > 0 ? setReviews(trips as ITravel[]) : setReviews([]);
     })();
-  }, []);
+  }, [id]);
 
   return (
     <div className={styles.mainContainer}>
