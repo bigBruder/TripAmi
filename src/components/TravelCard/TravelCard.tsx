@@ -102,8 +102,6 @@ const TravelCard: FC<Props> = ({ travel }) => {
     })();
   }, [imageUrl]);
 
-  console.log(startDate);
-
   // const getLayout = useMemo(() => {
   //   switch (imageDownloadUrls?.length) {
   //     case 1:
@@ -152,9 +150,6 @@ const TravelCard: FC<Props> = ({ travel }) => {
     setEditModalIsOpen(false);
   }, []);
 
-  // console.log('startDate', startDate);
-  // console.log('endDate', endDate);
-  console.log(startDate.split('/')[0], typeof startDate);
   return (
     <div className={styles.container}>
       <div className={styles.topContainer}>

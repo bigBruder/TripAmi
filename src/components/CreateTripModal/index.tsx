@@ -9,7 +9,7 @@ import ReactPlayer from 'react-player';
 import 'react-quill/dist/quill.snow.css';
 import { ToastContainer, toast } from 'react-toastify';
 
-import { doc, documentId, getDocs, limit, query, updateDoc, where } from 'firebase/firestore';
+import { collection, doc, documentId, getDocs, limit, query, updateDoc, where } from 'firebase/firestore';
 import { getDownloadURL } from 'firebase/storage';
 import moment from 'moment';
 import { v4 as uuidv4 } from 'uuid';
@@ -183,6 +183,13 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
             dayDescription: filteredDescriptions,
             text,
           }).then(async (docRef) => {
+            const subcollection = collection(db, `trips/${docRef.id}/cities`);
+            selectedCities.forEach(async (city) => {
+              await addDoc(subcollection, {
+                address: city.address,
+                placeID: city.placeID,
+              });
+            });
             if (firestoreUser?.friends) {
               const q = query(
                 tripsCollection,

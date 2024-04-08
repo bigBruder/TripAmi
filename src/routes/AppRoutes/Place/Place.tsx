@@ -3,14 +3,18 @@ import Skeleton from 'react-loading-skeleton';
 import { useParams } from 'react-router-dom';
 
 import axios from 'axios';
+import { collectionGroup, documentId, getDocs } from 'firebase/firestore';
 import Lottie from 'lottie-react';
 import { Comment } from '~/components/Comment';
 import { PageTitle } from '~/components/PageTitle';
+import { PlaceReview } from '~/components/PlaceReview/PlaceReview';
 import Header from '~/components/profile/Header';
+import { db } from '~/firebase';
 import { PlaceCommentField } from '~/routes/AppRoutes/Place/components/PlaceCommentField';
 import { IPlace } from '~/routes/AppRoutes/Posts/types';
 import { IPlaceComment } from '~/types/comments';
-import { placesCommentsCollection } from '~/types/firestoreCollections';
+import { placesCommentsCollection, tripsCollection } from '~/types/firestoreCollections';
+import { ITravel } from '~/types/travel';
 
 import AnimationData from '@assets/animations/loader.json';
 import { onSnapshot, orderBy, query, where } from '@firebase/firestore';
@@ -27,6 +31,7 @@ const Place = () => {
   const truncatedText = useRef('');
   const remainingText = useRef('');
   const [comments, setComments] = useState<IPlaceComment[] | null>(null);
+  const [reviews, setReviews] = useState<ITravel | null>(null);
 
   useEffect(() => {
     const q = query(
@@ -81,6 +86,27 @@ const Place = () => {
     })();
   }, [id]);
 
+  useEffect(() => {
+    const q = query(collectionGroup(db, 'cities'), where('placeID', '==', id));
+    (async () => {
+      const querySnapshot = await getDocs(q);
+      const tripsId: string[] = [];
+      const subcollectionsId = querySnapshot.docs.map((document) => {
+        if (document.ref.parent && document.ref.parent.parent) {
+          tripsId.push(document.ref?.parent?.parent?.id);
+        }
+      });
+      const tripQuery = query(tripsCollection, where(documentId(), 'in', tripsId));
+      const tripQuerySnapshot = await getDocs(tripQuery);
+      const trips = tripQuerySnapshot.docs.map((document) => ({
+        ...document.data(),
+        id: document.id,
+      }));
+
+      setReviews(trips);
+    })();
+  }, []);
+
   return (
     <div className={styles.mainContainer}>
       <Header />
@@ -127,12 +153,22 @@ const Place = () => {
             </div>
           </div>
 
-          {isLoading ? null : (
+          {reviews && reviews?.length > 0 ? (
+            reviews.map((review) => (
+              <div key={review.id} className={styles.review}>
+                <PlaceReview trip={review} />
+              </div>
+            ))
+          ) : (
+            <h2 className={styles.empty}>There are no reviews for this place</h2>
+          )}
+
+          {/* {isLoading ? null : (
             <>
               {id && <PlaceCommentField placeId={id} />}
               {comments?.map((comment) => <Comment key={comment.id} comment={comment} />)}
             </>
-          )}
+          )} */}
         </div>
       </div>
     </div>
