@@ -87,11 +87,18 @@ const Place = () => {
   }, [id]);
 
   useEffect(() => {
-    const q = query(collectionGroup(db, 'cities'), where('placeID', '==', id));
+    const queryCities = query(collectionGroup(db, 'cities'), where('placeID', '==', id));
+    const queryPlaces = query(collectionGroup(db, 'places'), where('placeID', '==', id));
     (async () => {
-      const querySnapshot = await getDocs(q);
+      const queryCitiesSnapshot = await getDocs(queryCities);
+      const queryPlacesSnapshot = await getDocs(queryPlaces);
       const tripsId: string[] = [];
-      const subcollectionsId = querySnapshot.docs.map((document) => {
+      queryPlacesSnapshot.docs.map((document) => {
+        if (document.ref.parent && document.ref.parent.parent) {
+          tripsId.push(document.ref?.parent?.parent?.id);
+        }
+      });
+      queryCitiesSnapshot.docs.map((document) => {
         if (document.ref.parent && document.ref.parent.parent) {
           tripsId.push(document.ref?.parent?.parent?.id);
         }
