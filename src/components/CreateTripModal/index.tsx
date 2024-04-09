@@ -72,8 +72,6 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
   const [startDate, setStartDate] = useState(
     start ? [start[2], start[1], start[0]].join('-') : moment().format('yyyy-MM-DD')
   );
-  console.log(data?.startDate, 'date');
-  console.log(moment().format('yyyy-MM-DD'), 'moment');
   const [endDate, setEndDate] = useState(
     end ? [end[2], end[1], end[0]].join('-') : moment().format('yyyy-MM-DD')
   );
@@ -136,10 +134,6 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
     });
   };
 
-  console.log(getDateToDisplay(startDate), 'startDate');
-
-  // console.log(daysDescription, 'daysDescription');
-
   const handleOnSave = useCallback(async () => {
     try {
       if (file || downloadedImages) {
@@ -178,7 +172,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
             cities: selectedCities,
             tripName: tripName,
             dayDescription: filteredDescriptions,
-            text,
+            text: text.replace(/(?:\r\n|\r|\n)/g, '<br />'),
           });
           const subcollectionCities = collection(db, `trips/${docRef.id}/cities`);
           const subcollectionPlaces = collection(db, `trips/${docRef.id}/places`);

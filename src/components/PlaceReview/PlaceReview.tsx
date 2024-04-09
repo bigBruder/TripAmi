@@ -115,7 +115,6 @@ export const PlaceReview: FC<Props> = ({ trip }) => {
               <button
                 className={styles.seeMoreButton}
                 onClick={() => {
-                  console.log('clicked');
                   // setIsExtended(true);
                   navigate(`/trip/${trip.id}`);
                 }}

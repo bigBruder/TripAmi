@@ -66,7 +66,6 @@ const Place = () => {
             types: geocode[0].types,
             name: geocode[0].formatted_address,
           };
-          console.log(geocode);
           setGeocode(position);
         } catch (err) {
           console.log('[ERROR getting geocode data] => ', err);
@@ -159,8 +158,6 @@ const Place = () => {
       console.log('[ERROR getting data about place] => ', err);
     }
   }, [id]);
-
-  console.log(geocode);
 
   return (
     <div className={styles.mainContainer}>

@@ -28,7 +28,7 @@ const PostsPage = () => {
 
   useEffect(() => {
     if (commentsRef.current && comments && comments.length > 0) {
-      console.log(commentsRef.current, '-- commentsRef.current');
+      // console.log(commentsRef.current, '-- commentsRef.current');
       (commentsRef.current as HTMLElement).scrollIntoView({ behavior: 'smooth', block: 'end' });
     }
   }, [commentsRef, comments?.length]);

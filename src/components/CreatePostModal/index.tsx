@@ -163,7 +163,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, startPost }) => {
       closeModal();
     } catch (err) {
       // @ts-ignore
-      console.log(firebaseErrors[err.code]);
+      console.error(firebaseErrors[err.code]);
     } finally {
       setIsLoading(false);
     }

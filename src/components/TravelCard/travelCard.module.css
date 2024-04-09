@@ -420,3 +420,10 @@
 .subtitle {
     margin: 0;
 }
+
+.tripText {
+    white-space: pre-line;
+    font-family: Gilroy, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+}

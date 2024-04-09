@@ -110,7 +110,6 @@ export default function Intro() {
   //   }
   // }, [friends, selectedTravel]);
 
-  console.log(selectedMarker);
   return (
     <div className={styles.container}>
       <div className={styles.titleContainer}>
@@ -146,7 +145,6 @@ export default function Intro() {
                     <AdvancedMarker
                       position={{ lat: place.lat, lng: place.lng }}
                       onClick={() => {
-                        console.log(place.travelId);
                         // setSelectedTravel(
                         //   {
                         //     ...travels.find((travel) => travel.id === place.travelId),

@@ -92,9 +92,7 @@ const UserProfile = () => {
       if (userData?.avatarUrl) {
         setAvatarIsLoading(true);
         try {
-          console.log('userData.avatarUrl: ', userData.avatarUrl);
           const url = await getDownloadURL(ref(storage, userData.avatarUrl));
-          console.log('url: ', url);
           setUserPhotoUrl(url);
         } catch (error) {
           console.log('[ERROR getting user photo] => ', error);
@@ -131,7 +129,6 @@ const UserProfile = () => {
     if (!userData?.friends?.length) return;
     try {
       (async () => {
-        console.log('userdataFriends ==>', userData?.friends);
         const q = query(usersCollection, where(documentId(), 'in', userData?.friends));
         const querySnapshot = await getDocs(q);
         const friends = querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }) as IUser);
@@ -151,7 +148,6 @@ const UserProfile = () => {
   //   }
   // };
 
-  console.log('userPhotoURL: ', userPhotoUrl);
   return (
     <>
       <Header />

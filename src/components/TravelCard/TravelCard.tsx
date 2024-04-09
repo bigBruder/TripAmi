@@ -11,6 +11,7 @@ import CustomModal from '~/components/CustomModal';
 import Rating from '~/components/Rating';
 import { db, storage } from '~/firebase';
 import { AuthContext } from '~/providers/authContext';
+import { commentsCollection } from '~/types/firestoreCollections';
 import { ITravel } from '~/types/travel';
 
 import BinIcon from '@assets/icons/BinIcon.svg';
@@ -25,7 +26,6 @@ import { DropdownProvider } from '../DropdownProvider/DropdownProvider';
 import { LightBox } from '../Lightbox/LightBox';
 import ShareModal from '../ShareModal/ShareModal';
 import styles from './travelCard.module.css';
-import { commentsCollection } from '~/types/firestoreCollections';
 
 interface Props {
   travel: ITravel;
@@ -170,7 +170,6 @@ const TravelCard: FC<Props> = ({ travel }) => {
   const handleCloseEditModal = useCallback(() => {
     setEditModalIsOpen(false);
   }, []);
-
   return (
     <div className={styles.container}>
       <div className={styles.topContainer}>
@@ -226,10 +225,11 @@ const TravelCard: FC<Props> = ({ travel }) => {
 
         <div className={styles.textContainer}>
           <h3 className={styles.tripName}>{tripName}</h3>
-          <p className={styles.text} style={{ wordBreak: 'break-all' }}>
-            {/* <ReactQuill value={text} readOnly={true} theme={'bubble'} /> */}
+          {/* <p className={styles.text} style={{ wordBreak: 'break-all', whiteSpace: 'pre-line' }}>
             {text}
-          </p>
+          </p> */}
+          {/* <div dangerouslySetInnerHTML={{ __html: text }} /> */}
+          <div className={styles.tripText}>{text}</div>
 
           <div>
             {dayDescription && dayDescription.length > 0 && (
