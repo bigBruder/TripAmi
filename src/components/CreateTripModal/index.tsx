@@ -1,12 +1,8 @@
 import React, { ChangeEvent, useCallback, useContext, useEffect, useState } from 'react';
-import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 // @ts-ignore
 import { FileUploader } from 'react-drag-drop-files';
-import PlacesAutocomplete from 'react-places-autocomplete';
 import ReactPlayer from 'react-player';
-// import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
 import { ToastContainer, toast } from 'react-toastify';
 
 import {
