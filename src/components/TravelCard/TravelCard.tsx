@@ -4,6 +4,7 @@ import Modal from 'react-modal';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 
+import { addDoc, collection, getDocs, query } from 'firebase/firestore';
 import { getDownloadURL } from 'firebase/storage';
 import CreateTripModal from '~/components/CreateTripModal';
 import CustomModal from '~/components/CustomModal';
@@ -65,6 +66,22 @@ const TravelCard: FC<Props> = ({ travel }) => {
   const handleDeleteTrip = useCallback(async () => {
     try {
       await deleteDoc(doc(db, 'trips', id));
+
+      const subcollectionCities = collection(db, `trips/${id}/cities`);
+      const subcollectionPlaces = collection(db, `trips/${id}/places`);
+
+      const queryCities = query(subcollectionCities);
+      const queryPlaces = query(subcollectionPlaces);
+
+      const [querySnapshotCities, querySnapshotPlaces] = await Promise.all([
+        getDocs(queryCities),
+        getDocs(queryPlaces),
+      ]);
+
+      const deleteCitiesPromises = querySnapshotCities.docs.map((doc) => deleteDoc(doc.ref));
+      const deletePlacesPromises = querySnapshotPlaces.docs.map((doc) => deleteDoc(doc.ref));
+
+      await Promise.all([...deleteCitiesPromises, ...deletePlacesPromises]);
 
       updateFirestoreUser({
         tripCount: firestoreUser?.tripCount ? firestoreUser?.tripCount - 1 : 0,
