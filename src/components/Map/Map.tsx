@@ -86,11 +86,11 @@ const Map: FC<Props> = ({ userId }) => {
         citiesPlacesId.map(async (city) => {
           if (!city) return;
           const geocode = await geocodeByPlaceId(city.place_id);
-          const randomOffset = Math.random() * 0.001 - 0.0005;
+          const randomOffset = Math.random() * 0.0001 - 0.00005;
           citiesGeoCode.push({
             name: city.name,
             lng: geocode[0].geometry.location.lng() + randomOffset,
-            lat: geocode[0].geometry.location.lat() + randomOffset,
+            lat: geocode[0].geometry.location.lat() + randomOffset + 0.2,
             place_id: city.place_id,
             color: city.color,
           });
@@ -100,6 +100,8 @@ const Map: FC<Props> = ({ userId }) => {
     };
     fetchCitiesToDisplay();
   }, [trips, userId, usersTrips]);
+
+  console.log('citiesToDisplay', citiesToDisplay);
 
   useEffect(() => {
     const fetchPlacesToDisplay = async () => {
@@ -118,7 +120,7 @@ const Map: FC<Props> = ({ userId }) => {
         tagsPlaceId.map(async (tag) => {
           if (!tag) return;
           const geocode = await geocodeByPlaceId(tag.place_id);
-          const randomOffset = Math.random() * 0.001 - 0.0005;
+          const randomOffset = Math.random() * 0.0001 - 0.00005;
           tagsGeoCode.push({
             name: tag.name,
             lng: geocode[0].geometry.location.lng() + randomOffset,
@@ -132,6 +134,8 @@ const Map: FC<Props> = ({ userId }) => {
     };
     fetchPlacesToDisplay();
   }, [trips, userId, usersTrips]);
+
+  console.log('random: ', Math.random() * 0.00001 - 0.00005);
 
   const handleSelectMarker = useCallback((address: string, placeId: string) => {
     setSelectedMarkerAddress({ address, placeId });
@@ -189,7 +193,7 @@ const Map: FC<Props> = ({ userId }) => {
           {citiesToDisplay?.map((city) => (
             <Marker
               key={`${city.place_id}${city.lng}${city.lat}`}
-              coordinates={[city.lng - 1, city.lat + 1]}
+              coordinates={[city.lng, city.lat]}
               onClick={() => handleSelectMarker(city.name, city.place_id)}
               cursor={'pointer'}
             >
