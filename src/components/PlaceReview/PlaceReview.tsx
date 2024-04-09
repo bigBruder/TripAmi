@@ -111,19 +111,18 @@ export const PlaceReview: FC<Props> = ({ trip }) => {
           ) : ( */}
           <>
             <p className={styles.description}>
-              {trip.text.slice(0, MAX_LENGTH)}{' '}
-              {trip.text.length > MAX_LENGTH && (
-                <button
-                  className={styles.seeMoreButton}
-                  onClick={() => {
-                    console.log('clicked');
-                    // setIsExtended(true);
-                    navigate(`/trip/${trip.id}`);
-                  }}
-                >
-                  see more
-                </button>
-              )}
+              {trip.text.slice(0, MAX_LENGTH)} {/* {trip.text.length > MAX_LENGTH && ( */}
+              <button
+                className={styles.seeMoreButton}
+                onClick={() => {
+                  console.log('clicked');
+                  // setIsExtended(true);
+                  navigate(`/trip/${trip.id}`);
+                }}
+              >
+                see more
+              </button>
+              {/* )} */}
             </p>
           </>
           {/* )} */}
