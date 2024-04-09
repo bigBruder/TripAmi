@@ -283,7 +283,7 @@ const TravelCard: FC<Props> = ({ travel }) => {
                         key={tag.placeID}
                         className={styles.tag}
                       >
-                        {tag.address}
+                        {tag.address.split(',')[0]}
                       </p>
                     ))}
                   </div>
