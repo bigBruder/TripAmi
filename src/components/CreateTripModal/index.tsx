@@ -11,11 +11,13 @@ import { ToastContainer, toast } from 'react-toastify';
 
 import {
   collection,
+  deleteDoc,
   doc,
   documentId,
   getDocs,
   limit,
   query,
+  setDoc,
   updateDoc,
   where,
 } from 'firebase/firestore';
@@ -177,6 +179,31 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
             tripName: tripName,
             dayDescription: filteredDescriptions,
             text,
+          });
+          const subcollectionCities = collection(db, `trips/${docRef.id}/cities`);
+          const subcollectionPlaces = collection(db, `trips/${docRef.id}/places`);
+          const queryCities = query(subcollectionCities);
+          const queryPlaces = query(subcollectionPlaces);
+          const querySnapshotCities = await getDocs(queryCities);
+          const querySnapshotPlaces = await getDocs(queryCities);
+          querySnapshotCities.docs.forEach(async (doc) => {
+            await deleteDoc(doc.ref);
+          });
+          selectedCities.forEach(async (city) => {
+            await addDoc(subcollectionCities, {
+              address: city.address,
+              placeID: city.placeID,
+            });
+          });
+
+          querySnapshotPlaces.docs.forEach(async (doc) => {
+            await deleteDoc(doc.ref);
+          });
+          selectedGeoTags.forEach(async (city) => {
+            await addDoc(subcollectionPlaces, {
+              address: city.address,
+              placeID: city.placeID,
+            });
           });
         } else {
           await addDoc(tripsCollection, {
