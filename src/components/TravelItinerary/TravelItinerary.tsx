@@ -94,20 +94,29 @@ export const TravelItinerary = () => {
 
   return (
     <div className={styles.container}>
-      <p className={styles.title}>{firestoreUser?.username}`s travels</p>
+      {travels && travels.length > 0 ? (
+        <>
+          <p className={styles.title}>{firestoreUser?.username}`s travels</p>
 
-      <div className={styles.travelsContainer}>
-        <div style={{ alignSelf: 'flex-start' }}>
-          <Sort
-            onSelect={setSortBy}
-            isReverse={isReverse}
-            setReverse={() => setIsReverse((prevState) => !prevState)}
-          />
-        </div>
-        {travels.map((travel) => (
-          <TravelCard key={travel.id} travel={travel} />
-        ))}
-      </div>
+          <div className={styles.travelsContainer}>
+            <div style={{ alignSelf: 'flex-start' }}>
+              <Sort
+                onSelect={setSortBy}
+                isReverse={isReverse}
+                setReverse={() => setIsReverse((prevState) => !prevState)}
+              />
+            </div>
+            {travels.map((travel) => (
+              <TravelCard key={travel.id} travel={travel} />
+            ))}
+          </div>
+        </>
+      ) : (
+        <p className={styles.text}>
+          Hmm... {firestoreUser?.username} hasn't posted anything yet. Start sharing your experience
+          with other participants!
+        </p>
+      )}
     </div>
   );
 };
