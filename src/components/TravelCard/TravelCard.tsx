@@ -4,7 +4,7 @@ import Modal from 'react-modal';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 
-import { collection, getDocs, query } from 'firebase/firestore';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import { getDownloadURL } from 'firebase/storage';
 import CreateTripModal from '~/components/CreateTripModal';
 import CustomModal from '~/components/CustomModal';
@@ -25,6 +25,7 @@ import { DropdownProvider } from '../DropdownProvider/DropdownProvider';
 import { LightBox } from '../Lightbox/LightBox';
 import ShareModal from '../ShareModal/ShareModal';
 import styles from './travelCard.module.css';
+import { commentsCollection } from '~/types/firestoreCollections';
 
 interface Props {
   travel: ITravel;
@@ -81,6 +82,10 @@ const TravelCard: FC<Props> = ({ travel }) => {
       const deletePlacesPromises = querySnapshotPlaces.docs.map((doc) => deleteDoc(doc.ref));
 
       await Promise.all([...deleteCitiesPromises, ...deletePlacesPromises]);
+
+      const queryComments = query(commentsCollection, where('postId', '==', id));
+      const querySnapshotComments = await getDocs(queryComments);
+      querySnapshotComments.docs.map((doc) => deleteDoc(doc.ref));
 
       updateFirestoreUser({
         tripCount: firestoreUser?.tripCount ? firestoreUser?.tripCount - 1 : 0,
