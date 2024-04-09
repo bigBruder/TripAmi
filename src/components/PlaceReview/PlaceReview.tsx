@@ -101,31 +101,32 @@ export const PlaceReview: FC<Props> = ({ trip }) => {
           </div>
         </div>
         <div>
-          {isExtended ? (
+          {/* {isExtended ? (
             <>
               <p className={styles.description}>{trip.text}</p>
               <button className={styles.seeMoreButton} onClick={() => setIsExtended(false)}>
                 see less
               </button>
             </>
-          ) : (
-            <>
-              <p className={styles.description}>
-                {trip.text.slice(0, MAX_LENGTH)}{' '}
-                {trip.text.length > MAX_LENGTH && (
-                  <button
-                    className={styles.seeMoreButton}
-                    onClick={() => {
-                      console.log('clicked');
-                      setIsExtended(true);
-                    }}
-                  >
-                    see more
-                  </button>
-                )}
-              </p>
-            </>
-          )}
+          ) : ( */}
+          <>
+            <p className={styles.description}>
+              {trip.text.slice(0, MAX_LENGTH)}{' '}
+              {trip.text.length > MAX_LENGTH && (
+                <button
+                  className={styles.seeMoreButton}
+                  onClick={() => {
+                    console.log('clicked');
+                    // setIsExtended(true);
+                    navigate(`/trip/${trip.id}`);
+                  }}
+                >
+                  see more
+                </button>
+              )}
+            </p>
+          </>
+          {/* )} */}
           {/* <div dangerouslySetInnerHTML={{ __html: trip.text }} /> */}
         </div>
       </div>
