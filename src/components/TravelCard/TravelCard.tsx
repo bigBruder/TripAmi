@@ -229,25 +229,26 @@ const TravelCard: FC<Props> = ({ travel }) => {
             {text}
           </p> */}
           {/* <div dangerouslySetInnerHTML={{ __html: text }} /> */}
-          <div className={styles.tripText}>{text}</div>
-
-          <div>
-            {dayDescription && dayDescription.length > 0 && (
-              <h4 className={styles.subtitle}>Daily Journal</h4>
-            )}
-
-            <div className={styles.daysDescriptionContainer}>
-              {dayDescription &&
-                dayDescription.map((day, index) => (
-                  <div key={`day_${index}`} className={styles.dayDescription}>
-                    <p className={styles.date}>
-                      {day.date.split('/')[1]}/{day.date.split('/')[0]}/{day.date.split('/')[2]}
-                    </p>
-                    <p className={`${styles.additionalText} ${styles.text}`}>{day.description}</p>
-                  </div>
-                ))}
-            </div>
+          <div className={styles.tripText} style={{ textIndent: '1em' }}>
+            {text}
           </div>
+          {dayDescription && dayDescription.length > 0 && (
+            <div>
+              <h4 className={styles.subtitle}>Daily Journal</h4>
+
+              <div className={styles.daysDescriptionContainer}>
+                {dayDescription &&
+                  dayDescription.map((day, index) => (
+                    <div key={`day_${index}`} className={styles.dayDescription}>
+                      <p className={styles.date}>
+                        {day.date.split('/')[1]}/{day.date.split('/')[0]}/{day.date.split('/')[2]}
+                      </p>
+                      <p className={`${styles.additionalText} ${styles.text}`}>{day.description}</p>
+                    </div>
+                  ))}
+              </div>
+            </div>
+          )}
 
           <div className={styles.visitedContainer}>
             {cities && cities?.length > 0 && (
