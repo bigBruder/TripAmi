@@ -4,7 +4,7 @@ import Modal from 'react-modal';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 
-import { addDoc, collection, getDocs, query } from 'firebase/firestore';
+import { collection, getDocs, query } from 'firebase/firestore';
 import { getDownloadURL } from 'firebase/storage';
 import CreateTripModal from '~/components/CreateTripModal';
 import CustomModal from '~/components/CustomModal';
@@ -12,7 +12,6 @@ import Rating from '~/components/Rating';
 import { db, storage } from '~/firebase';
 import { AuthContext } from '~/providers/authContext';
 import { ITravel } from '~/types/travel';
-import { getDateToDisplay } from '~/utils/getDateToDisplay';
 
 import BinIcon from '@assets/icons/BinIcon.svg';
 import commentsIcon from '@assets/icons/comments.svg';
