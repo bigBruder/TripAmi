@@ -58,7 +58,7 @@ export const PlaceTripReview: FC<Props> = ({ trip }) => {
     try {
       (async () => {
         const imagesUrls = await Promise.all(
-          trip.imageUrl.slice(0, 2).map(async (image) => {
+          trip.imageUrl.map(async (image) => {
             const url = await getDownloadURL(ref(storage, image.url));
             return url;
           })
@@ -88,8 +88,17 @@ export const PlaceTripReview: FC<Props> = ({ trip }) => {
         <div className={styles.secondContainer}>
           <div className={styles.name}>{user?.username}</div>
           <div className={styles.imagesContainer}>
-            {images.map((image, index) => (
-              <img key={image + index} src={image} alt='place image' className={styles.image} />
+            {images.slice(0, 2).map((image, index) => (
+              <div key={image + index} style={{ position: 'relative' }}>
+                <img
+                  src={image}
+                  alt='place image'
+                  className={`${styles.image} ${images.length > 2 && index === 1 && styles.lastImage}`}
+                />
+                {images.length > 2 && index === 1 && styles.lastImage && (
+                  <p className={styles.lastImageIndicator}>+{images.length - 2}</p>
+                )}
+              </div>
             ))}
           </div>
         </div>
@@ -100,33 +109,32 @@ export const PlaceTripReview: FC<Props> = ({ trip }) => {
             <p>{`${months[Number(trip.endDate.split('/')[1])]} ${trip.endDate.split('/')[2]}`}</p>
           </div>
         </div>
-        <div>
-          {/* {isExtended ? (
-            <>
-              <p className={styles.description}>{trip.text}</p>
-              <button className={styles.seeMoreButton} onClick={() => setIsExtended(false)}>
-                see less
-              </button>
-            </>
-          ) : ( */}
+        {isExtended ? (
+          <>
+            <p className={styles.description}>{trip.text}</p>
+            <button className={styles.seeMoreButton} onClick={() => setIsExtended(false)}>
+              see less
+            </button>
+          </>
+        ) : (
           <>
             <p className={styles.description}>
               {trip.text.slice(0, MAX_LENGTH)} {/* {trip.text.length > MAX_LENGTH && ( */}
-              <button
-                className={styles.seeMoreButton}
-                onClick={() => {
-                  // setIsExtended(true);
-                  navigate(`/trip/${trip.id}`);
-                }}
-              >
-                see more
-              </button>
+              {trip.text.length > MAX_LENGTH && (
+                <button
+                  className={styles.seeMoreButton}
+                  onClick={() => {
+                    setIsExtended(true);
+                  }}
+                >
+                  see more
+                </button>
+              )}
               {/* )} */}
             </p>
           </>
-          {/* )} */}
-          {/* <div dangerouslySetInnerHTML={{ __html: trip.text }} /> */}
-        </div>
+        )}
+        {/* <div dangerouslySetInnerHTML={{ __html: trip.text }} /> */}
       </div>
     </div>
   );

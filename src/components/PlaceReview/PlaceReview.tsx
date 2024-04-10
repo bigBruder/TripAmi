@@ -95,30 +95,23 @@ export const PlaceReview: FC<Props> = ({ review }) => {
           </div>
         </div>
         <div>
-          {/* {isExtended ? (
+          {isExtended ? (
             <>
-              <p className={styles.description}>{trip.text}</p>
+              <p className={styles.description}>{review.text}</p>
               <button className={styles.seeMoreButton} onClick={() => setIsExtended(false)}>
                 see less
               </button>
             </>
-          ) : ( */}
-          <>
-            <p className={styles.description}>
-              {review.text.slice(0, MAX_LENGTH)} {/* {trip.text.length > MAX_LENGTH && ( */}
-              <button
-                className={styles.seeMoreButton}
-                // onClick={() => {
-                //   // setIsExtended(true);
-                //   navigate(`/trip/${trip.id}`);
-                // }}
-              >
-                see more
-              </button>
-              {/* )} */}
-            </p>
-          </>
-          {/* )} */}
+          ) : (
+            <>
+              <p className={styles.description}>
+                {review.text.slice(0, MAX_LENGTH)} {/* {trip.text.length > MAX_LENGTH && ( */}
+                {review.text.length > MAX_LENGTH && (
+                  <button className={styles.seeMoreButton}>see more</button>
+                )}
+              </p>
+            </>
+          )}
           {/* <div dangerouslySetInnerHTML={{ __html: trip.text }} /> */}
         </div>
       </div>
