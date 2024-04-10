@@ -223,12 +223,16 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
               await addDoc(subcollectionCities, {
                 address: city.address,
                 placeID: city.placeID,
+                lat: city.lat,
+                lng: city.lng,
               });
             });
             selectedGeoTags.forEach(async (city) => {
               await addDoc(subcollectionPlaces, {
                 address: city.address,
                 placeID: city.placeID,
+                lat: city.lat,
+                lng: city.lng,
               });
             });
             if (firestoreUser?.friends) {
