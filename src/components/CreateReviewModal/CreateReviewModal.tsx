@@ -14,7 +14,7 @@ import { AuthContext } from '~/providers/authContext';
 import CustomTabs from '../CustomTabs';
 import { LoadingScreen } from '../LoadingScreen';
 import Rating from '../Rating';
-import styles from './CreateReviewModal.module.css';
+import styles from './createReviewModal.module.css';
 
 const fileTypes = ['JPEG', 'PNG', 'JPG'];
 
