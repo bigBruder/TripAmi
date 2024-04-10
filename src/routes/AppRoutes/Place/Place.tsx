@@ -277,7 +277,7 @@ const Place = () => {
               </div>
             ) : null}
 
-            {myReview ? (
+            {myReview && myReview?.id ? (
               <div>
                 <h2 className={styles.categoryTitle}>My review</h2>
                 <div key={myReview.id} className={styles.review}>
@@ -311,11 +311,12 @@ const Place = () => {
             <>
               <h3 className={styles.categoryTitle}>Some users already reviewed this place</h3>
               <div className={styles.reviewsContainer}>
-                {reviews.map((review) => (
-                  <div key={myReview.id} className={styles.review}>
-                    <PlaceReview review={review} />
-                  </div>
-                ))}
+                {reviews &&
+                  reviews.map((review) => (
+                    <div key={myReview?.id} className={styles.review}>
+                      <PlaceReview review={review} />
+                    </div>
+                  ))}
               </div>
             </>
           )}
