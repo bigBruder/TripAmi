@@ -22,6 +22,12 @@ h3, h2 {
     overflow: auto;
 }
 
+@media (max-width: 500px) {
+    .main {
+        padding: 30px 15px 15px 15px;
+    }
+}
+
 .post {
     display: flex;
     flex-direction: column;
