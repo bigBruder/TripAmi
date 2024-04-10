@@ -79,18 +79,20 @@ const Map: FC<Props> = ({ userId }) => {
             place_id: city.placeID,
             color: trip.pinColor,
             name: city.address,
+            lat: city.lat,
+            lng: city.lng,
           })) || []
       );
       const citiesGeoCode: IPin[] = [];
       await Promise.all(
         citiesPlacesId.map(async (city) => {
           if (!city) return;
-          const geocode = await geocodeByPlaceId(city.place_id);
+          // const geocode = await geocodeByPlaceId(city.place_id);
           const randomOffset = Math.random() * 0.0001 - 0.00005;
           citiesGeoCode.push({
             name: city.name,
-            lng: geocode[0].geometry.location.lng() + randomOffset,
-            lat: geocode[0].geometry.location.lat() + randomOffset + 0.2,
+            lng: city.lng + randomOffset,
+            lat: city.lat + randomOffset + 0.2,
             place_id: city.place_id,
             color: city.color,
           });
