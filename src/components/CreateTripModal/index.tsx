@@ -2,6 +2,7 @@ import React, { ChangeEvent, useCallback, useContext, useEffect, useState } from
 import 'react-datepicker/dist/react-datepicker.css';
 // @ts-ignore
 import { FileUploader } from 'react-drag-drop-files';
+import { geocodeByPlaceId } from 'react-places-autocomplete';
 import ReactPlayer from 'react-player';
 import { ToastContainer, toast } from 'react-toastify';
 
@@ -130,6 +131,8 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
     });
   };
 
+  console.log(selectedCities);
+
   const handleOnSave = useCallback(async () => {
     try {
       if (file || downloadedImages) {
@@ -183,6 +186,8 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
             await addDoc(subcollectionCities, {
               address: city.address,
               placeID: city.placeID,
+              lat: city.lat,
+              lng: city.lng,
             });
           });
 
@@ -193,6 +198,8 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
             await addDoc(subcollectionPlaces, {
               address: city.address,
               placeID: city.placeID,
+              lat: city.lat,
+              lng: city.lng,
             });
           });
         } else {
@@ -284,13 +291,24 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
 
   const onSelectGeoTag = useCallback(
     (address: string, placeID: string) => {
-      if (!selectedGeoTags.map((tag) => tag.address).includes(address)) {
-        setSelectedGeoTags((prevState) => [...prevState, { address, placeID }]);
-        setGeoTags('');
-        setIsAddingPlace(false);
-      } else {
-        notify('You have already added this tag');
-      }
+      (async () => {
+        if (!selectedGeoTags.map((tag) => tag.address).includes(address)) {
+          const coordinates = await geocodeByPlaceId(placeID);
+          setSelectedGeoTags((prevState) => [
+            ...prevState,
+            {
+              address,
+              placeID,
+              lat: coordinates[0].geometry.location.lat(),
+              lng: coordinates[0].geometry.location.lng(),
+            },
+          ]);
+          setGeoTags('');
+          setIsAddingPlace(false);
+        } else {
+          notify('You have already added this tag');
+        }
+      })();
 
       // setIsAddingPlace(false);
     },
@@ -393,17 +411,26 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
 
   const onSelectCity = useCallback(
     (address: string, placeID: string) => {
-      if (!selectedCities.map((city) => city.address.toString()).includes(address)) {
-        setSelectedCities((prevState) => [
-          ...prevState,
-          { address: address.split(',')[0], placeID },
-        ]);
-        setCity('');
-      } else {
-        notify('You have already added this city');
-      }
+      (async () => {
+        if (!selectedCities.map((city) => city.address.toString()).includes(address)) {
+          const coordinates = await geocodeByPlaceId(placeID);
+          console.log('coordinates', coordinates[0].geometry.location.lat());
+          setSelectedCities((prevState) => [
+            ...prevState,
+            {
+              address: address.split(',')[0],
+              placeID,
+              lat: coordinates[0].geometry.location.lat(),
+              lng: coordinates[0].geometry.location.lng(),
+            },
+          ]);
+          setCity('');
+        } else {
+          notify('You have already added this city');
+        }
 
-      setIsAddCityOpen(false);
+        setIsAddCityOpen(false);
+      })();
     },
     [selectedCities]
   );
