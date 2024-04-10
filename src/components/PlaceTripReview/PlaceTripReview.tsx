@@ -1,19 +1,20 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Timestamp } from 'firebase/firestore';
+import { documentId, getDoc, getDocs, query, where } from 'firebase/firestore';
 import { getDownloadURL, ref } from 'firebase/storage';
-import { storage } from '~/firebase';
-import { PlaceReviewType } from '~/types/placeReviews';
-import { getDateToDisplay } from '~/utils/getDateToDisplay';
+import { db, storage } from '~/firebase';
+import { usersCollection } from '~/types/firestoreCollections';
+import { ITravel } from '~/types/travel';
+import { IUser } from '~/types/user';
 
 import Avatar from '@assets/icons/defaultUserIcon.svg';
 
 import Rating from '../Rating';
-import styles from './placeReview.module.css';
+import styles from './placeTripReview.module.css';
 
 interface Props {
-  review: PlaceReviewType;
+  trip: ITravel;
 }
 const months = [
   'January',
@@ -32,54 +33,60 @@ const months = [
 
 const MAX_LENGTH = 200;
 
-const getDate = (timestamp) => {
-  const options = {
-    year: 'numeric',
-    month: 'long',
-    // day: 'numeric',
-  };
-  const date = new Date(timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000);
-  return date.toLocaleString('en-US', options);
-};
-
-export const PlaceReview: FC<Props> = ({ review }) => {
+export const PlaceTripReview: FC<Props> = ({ trip }) => {
+  const [user, setUser] = useState<IUser | null>(null);
   const [images, setImages] = useState<string[]>([]);
-  const [userAvatar, setUserAvatar] = useState<string>('');
   const [isExtended, setIsExtended] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    (async () => {
-      const userAvatarRef = await getDownloadURL(ref(storage, review.authorAvatar));
-      setUserAvatar(userAvatarRef);
-    })();
-  }, [review.authorAvatar]);
+    try {
+      (async () => {
+        const q = query(usersCollection, where(documentId(), '==', trip.userId));
+        const querySnapshot = await getDocs(q);
+        const fetchedUser = querySnapshot.docs[0].data();
+        const avatarUrl = await getDownloadURL(ref(storage, fetchedUser.avatarUrl));
+
+        setUser({ ...fetchedUser, avatarUrl: avatarUrl } as IUser);
+      })();
+    } catch (error) {
+      console.error(error);
+    }
+  }, [trip.userId]);
 
   useEffect(() => {
-    (async () => {
-      const images = await Promise.all(
-        review.images.map(async (image) => await getDownloadURL(ref(storage, image)))
-      );
-      setImages(images);
-    })();
-  }, [review.images.join(',')]);
+    try {
+      (async () => {
+        const imagesUrls = await Promise.all(
+          trip.imageUrl.slice(0, 2).map(async (image) => {
+            const url = await getDownloadURL(ref(storage, image.url));
+            return url;
+          })
+        );
+
+        setImages(imagesUrls);
+      })();
+    } catch (error) {
+      console.error(error);
+    }
+  }, [trip.id]);
 
   return (
     <div className={styles.container}>
       <div className={styles.leftContainer}>
-        <Rating selectedStars={review.rate} />
+        {/* <Rating selectedStars={trip.rate} /> */}
         <div>
           <img
             className={styles.avatar}
-            src={userAvatar || Avatar}
+            src={user?.avatarUrl || Avatar}
             alt='user avatar'
             onClick={() => {
-              navigate(`/user/${review.authorId}`);
+              navigate(`/user/${user?.id}`);
             }}
           />
         </div>
         <div className={styles.secondContainer}>
-          <div className={styles.name}>{review.authorName}</div>
+          <div className={styles.name}>{user?.username}</div>
           <div className={styles.imagesContainer}>
             {images.map((image, index) => (
               <img key={image + index} src={image} alt='place image' className={styles.image} />
@@ -90,8 +97,7 @@ export const PlaceReview: FC<Props> = ({ review }) => {
       <div className={styles.rightContainer}>
         <div className={styles.dateContainer}>
           <div>
-            {/* <p>{`${months[Number(trip.endDate.split('/')[1])]} ${trip.endDate.split('/')[2]}`}</p> */}
-            <p>{getDate(review.createdAt)}</p>
+            <p>{`${months[Number(trip.endDate.split('/')[1])]} ${trip.endDate.split('/')[2]}`}</p>
           </div>
         </div>
         <div>
@@ -105,13 +111,13 @@ export const PlaceReview: FC<Props> = ({ review }) => {
           ) : ( */}
           <>
             <p className={styles.description}>
-              {review.text.slice(0, MAX_LENGTH)} {/* {trip.text.length > MAX_LENGTH && ( */}
+              {trip.text.slice(0, MAX_LENGTH)} {/* {trip.text.length > MAX_LENGTH && ( */}
               <button
                 className={styles.seeMoreButton}
-                // onClick={() => {
-                //   // setIsExtended(true);
-                //   navigate(`/trip/${trip.id}`);
-                // }}
+                onClick={() => {
+                  // setIsExtended(true);
+                  navigate(`/trip/${trip.id}`);
+                }}
               >
                 see more
               </button>

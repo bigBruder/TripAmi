@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import { geocodeByPlaceId } from 'react-places-autocomplete';
 import { useParams } from 'react-router-dom';
@@ -6,19 +6,20 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { collectionGroup, documentId, getDocs } from 'firebase/firestore';
 import Lottie from 'lottie-react';
-import { Comment } from '~/components/Comment';
+import { CreateReviewModal } from '~/components/CreateReviewModal/CreateReviewModal';
+import CustomModal from '~/components/CustomModal';
 import { PageTitle } from '~/components/PageTitle';
 import { PlaceReview } from '~/components/PlaceReview/PlaceReview';
+import { PlaceTripReview } from '~/components/PlaceTripReview/PlaceTripReview';
 import Header from '~/components/profile/Header';
 import { db } from '~/firebase';
-import { PlaceCommentField } from '~/routes/AppRoutes/Place/components/PlaceCommentField';
+import { AuthContext } from '~/providers/authContext';
 import { IPlace } from '~/routes/AppRoutes/Posts/types';
-import { IPlaceComment } from '~/types/comments';
-import { placesCommentsCollection, tripsCollection } from '~/types/firestoreCollections';
+import { reviewsCollection, tripsCollection } from '~/types/firestoreCollections';
 import { ITravel } from '~/types/travel';
 
 import AnimationData from '@assets/animations/loader.json';
-import { onSnapshot, orderBy, query, where } from '@firebase/firestore';
+import { query, where } from '@firebase/firestore';
 import { APIProvider, Map } from '@vis.gl/react-google-maps';
 
 import styles from './place.module.css';
@@ -34,25 +35,70 @@ const mapOptions = {
   streetViewControl: false,
   gestureHandling: 'none',
   keyboardShortcuts: false,
-  // styles: [
-  //   {
-  //     featureType: 'poi',
-  //     stylers: [{ visibility: 'off' }],
-  //   },
-  // ],
   clickableIcons: false,
 };
 
 const Place = () => {
   const { id } = useParams();
+  const { firestoreUser } = useContext(AuthContext);
+
   const [placeData, setPlaceData] = useState<IPlace | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [relatedTrips, setRelatedTrips] = useState<ITravel[]>([]);
+  const [geocode, setGeocode] = useState<any>(null);
+  const [isAddReviewOpen, setIsAddReviewOpen] = useState(false);
+  const [myReview, setMyReview] = useState<any>();
+  const [reviews, setReviews] = useState<any[]>([]);
+
   const truncatedText = useRef('');
   const remainingText = useRef('');
-  const [comments, setComments] = useState<IPlaceComment[] | null>(null);
-  const [reviews, setReviews] = useState<ITravel[]>([]);
-  const [geocode, setGeocode] = useState<any>(null);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        if (firestoreUser?.id) {
+          const q = query(
+            reviewsCollection,
+            where('placeId', '==', id),
+            where('authorId', '==', firestoreUser?.id)
+          );
+          const querySnapshot = await getDocs(q);
+          const fetchedDocs = querySnapshot.docs.map((doc) => ({
+            ...doc.data(),
+            id: doc.id,
+          }));
+
+          setMyReview(fetchedDocs[0]);
+        }
+      } catch (err) {
+        console.log('[ERROR getting geocode data] => ', err);
+      }
+    })();
+  }, [firestoreUser?.id, id]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        if (firestoreUser?.id) {
+          const q = query(
+            reviewsCollection,
+            where('placeId', '==', id),
+            where('authorId', '!=', firestoreUser?.id)
+          );
+          const querySnapshot = await getDocs(q);
+          const fetchedDocs = querySnapshot.docs.map((doc) => ({
+            ...doc.data(),
+            id: doc.id,
+          }));
+
+          setReviews(fetchedDocs);
+        }
+      } catch (err) {
+        console.log('[ERROR getting geocode data] => ', err);
+      }
+    })();
+  }, [firestoreUser?.id, id]);
 
   useEffect(() => {
     if (id) {
@@ -128,36 +174,45 @@ const Place = () => {
   }, [id]);
 
   useEffect(() => {
-    const queryCities = query(collectionGroup(db, 'cities'), where('placeID', '==', id));
-    const queryPlaces = query(collectionGroup(db, 'places'), where('placeID', '==', id));
-    try {
-      (async () => {
-        const queryCitiesSnapshot = await getDocs(queryCities);
-        const queryPlacesSnapshot = await getDocs(queryPlaces);
-        const tripsId: string[] = [];
-        queryPlacesSnapshot.docs.map((document) => {
-          if (document.ref.parent && document.ref.parent.parent) {
-            tripsId.push(document.ref?.parent?.parent?.id);
-          }
-        });
-        queryCitiesSnapshot.docs.map((document) => {
-          if (document.ref.parent && document.ref.parent.parent) {
-            tripsId.push(document.ref?.parent?.parent?.id);
-          }
-        });
-        const tripQuery = query(tripsCollection, where(documentId(), 'in', tripsId));
-        const tripQuerySnapshot = await getDocs(tripQuery);
-        const trips = tripQuerySnapshot.docs.map((document) => ({
-          ...document.data(),
-          id: document.id,
-        }));
+    if (firestoreUser?.id) {
+      const queryCities = query(collectionGroup(db, 'cities'), where('placeID', '==', id));
+      const queryPlaces = query(collectionGroup(db, 'places'), where('placeID', '==', id));
+      try {
+        (async () => {
+          const queryCitiesSnapshot = await getDocs(queryCities);
+          const queryPlacesSnapshot = await getDocs(queryPlaces);
+          const tripsId: string[] = [];
+          queryPlacesSnapshot.docs.map((document) => {
+            if (document.ref.parent && document.ref.parent.parent) {
+              tripsId.push(document.ref?.parent?.parent?.id);
+            }
+          });
+          queryCitiesSnapshot.docs.map((document) => {
+            if (document.ref.parent && document.ref.parent.parent) {
+              tripsId.push(document.ref?.parent?.parent?.id);
+            }
+          });
 
-        trips.length > 0 ? setReviews(trips as ITravel[]) : setReviews([]);
-      })();
-    } catch (err) {
-      console.log('[ERROR getting data about place] => ', err);
+          if (tripsId.length > 0) {
+            const tripQuery = query(tripsCollection, where(documentId(), 'in', tripsId));
+            const tripQuerySnapshot = await getDocs(tripQuery);
+            const trips = tripQuerySnapshot.docs.map((document) => ({
+              ...document.data(),
+              id: document.id,
+            }));
+            trips.length > 0
+              ? setRelatedTrips(
+                  // @ts-ignore
+                  trips as ITravel[]
+                )
+              : setRelatedTrips([]);
+          }
+        })();
+      } catch (err) {
+        console.log('[ERROR getting data about place] => ', err);
+      }
     }
-  }, [id]);
+  }, [id, firestoreUser?.id]);
 
   return (
     <div className={styles.mainContainer}>
@@ -187,7 +242,7 @@ const Place = () => {
                   )}
                   {id && geocode?.types && (
                     <APIProvider apiKey='AIzaSyCwDkMaHWXRpO7hY6z62_Gu8eLxMMItjT8'>
-                      <div style={{ height: '200px', width: '300px' }}>
+                      <div className={styles.mapContainer}>
                         <Map
                           center={geocode}
                           {...mapOptions}
@@ -205,7 +260,10 @@ const Place = () => {
               <div className={styles.textContainer}>
                 {isExpanded ? (
                   <div>
-                    <div dangerouslySetInnerHTML={{ __html: placeData.articleText }} />
+                    <div
+                      className={styles.description}
+                      dangerouslySetInnerHTML={{ __html: placeData.articleText }}
+                    />
                     <button onClick={handleSeeMoreClick}>See less</button>
                   </div>
                 ) : (
@@ -218,26 +276,71 @@ const Place = () => {
                 )}
               </div>
             ) : null}
+
+            {myReview ? (
+              <div>
+                <h2 className={styles.categoryTitle}>My review</h2>
+                <div key={myReview.id} className={styles.review}>
+                  <PlaceReview review={myReview} />
+                </div>
+              </div>
+            ) : (
+              <div className={styles.addReviewContainer}>
+                <h3>Been here? Please, leave a your review</h3>
+                <button className={styles.button} onClick={() => setIsAddReviewOpen(true)}>
+                  Add review
+                </button>
+              </div>
+            )}
+
+            {relatedTrips.filter((trip) => trip.userId === firestoreUser?.id)?.length > 0 && (
+              <>
+                <h2 className={styles.categoryTitle}>My trips related with this place</h2>
+                {relatedTrips
+                  .filter((trip) => trip.userId === firestoreUser?.id)
+                  .map((review) => (
+                    <div key={review.id} className={styles.review}>
+                      <PlaceTripReview trip={review} />
+                    </div>
+                  ))}
+              </>
+            )}
           </div>
 
-          {reviews && reviews?.length > 0 ? (
-            reviews.map((review) => (
-              <div key={review.id} className={styles.review}>
-                <PlaceReview trip={review} />
+          {reviews.length > 0 && (
+            <>
+              <h3 className={styles.categoryTitle}>Some users already reviewed this place</h3>
+              <div className={styles.reviewsContainer}>
+                {reviews.map((review) => (
+                  <div key={myReview.id} className={styles.review}>
+                    <PlaceReview review={review} />
+                  </div>
+                ))}
               </div>
-            ))
-          ) : (
-            <h2 className={styles.empty}>There are no reviews for this place</h2>
+            </>
           )}
 
-          {/* {isLoading ? null : (
+          {relatedTrips.filter((trip) => trip.userId !== firestoreUser?.id)?.length > 0 && (
             <>
-              {id && <PlaceCommentField placeId={id} />}
-              {comments?.map((comment) => <Comment key={comment.id} comment={comment} />)}
+              <h3 className={styles.categoryTitle}>Check user`s trips related with this place</h3>
+              <div className={styles.reviewsContainer}>
+                {relatedTrips
+                  .filter((trip) => trip.userId !== firestoreUser?.id)
+                  .map((review) => (
+                    <div key={review.id} className={styles.review}>
+                      <PlaceTripReview trip={review} />
+                    </div>
+                  ))}
+              </div>
             </>
-          )} */}
+          )}
         </div>
       </div>
+      {id && (
+        <CustomModal isOpen={isAddReviewOpen} onCloseModal={() => setIsAddReviewOpen(false)}>
+          <CreateReviewModal closeModal={() => setIsAddReviewOpen(false)} placeId={id} />
+        </CustomModal>
+      )}
     </div>
   );
 };
