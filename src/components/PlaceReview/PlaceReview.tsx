@@ -119,7 +119,7 @@ export const PlaceReview: FC<Props> = ({ review }) => {
           <div className={styles.descriptionContainer}>
             {isExtended ? (
               <>
-                <p className={styles.description}>{review.text}</p>
+                <p className={styles.description}>{review.text.replaceAll('<br />', '\n')}</p>
                 <button className={styles.seeMoreButton} onClick={() => setIsExtended(false)}>
                   see less
                 </button>
@@ -127,7 +127,8 @@ export const PlaceReview: FC<Props> = ({ review }) => {
             ) : (
               <>
                 <p className={styles.description}>
-                  {review.text.slice(0, MAX_LENGTH)}... {/* {trip.text.length > MAX_LENGTH && ( */}
+                  {review.text.slice(0, MAX_LENGTH).replaceAll('<br />', '\n')}...{' '}
+                  {/* {trip.text.length > MAX_LENGTH && ( */}
                   {review.text.length > MAX_LENGTH && (
                     <button className={styles.seeMoreButton} onClick={() => setIsExtended(true)}>
                       see more

@@ -171,7 +171,7 @@ export const PlaceTripReview: FC<Props> = ({ trip }) => {
         </div>
         {isExtended ? (
           <>
-            <p className={styles.description}>{trip.text}</p>
+            <p className={styles.description}>{trip.text.replaceAll('<br />', '\n')}</p>
             <button className={styles.seeMoreButton} onClick={() => setIsExtended(false)}>
               see less
             </button>
@@ -179,7 +179,8 @@ export const PlaceTripReview: FC<Props> = ({ trip }) => {
         ) : (
           <>
             <p className={styles.description}>
-              {trip.text.slice(0, MAX_LENGTH)}... {/* {trip.text.length > MAX_LENGTH && ( */}
+              {trip.text.slice(0, MAX_LENGTH).replaceAll('<br />', '\n')}...{' '}
+              {/* {trip.text.length > MAX_LENGTH && ( */}
               {trip.text.length > MAX_LENGTH && (
                 <button
                   className={styles.seeMoreButton}
