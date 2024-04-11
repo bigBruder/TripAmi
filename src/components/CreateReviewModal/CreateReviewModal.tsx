@@ -118,6 +118,7 @@ export const CreateReviewModal: FC<Props> = ({ closeModal, placeId }) => {
     filesList,
     // startPost,
     placeId,
+    selectedStars,
     closeModal,
     postText,
     firestoreUser?.id,

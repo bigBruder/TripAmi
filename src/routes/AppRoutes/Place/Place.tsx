@@ -4,7 +4,7 @@ import { geocodeByPlaceId } from 'react-places-autocomplete';
 import { useParams } from 'react-router-dom';
 
 import axios from 'axios';
-import { collectionGroup, documentId, getDocs } from 'firebase/firestore';
+import { collectionGroup, documentId, getDocs, onSnapshot } from 'firebase/firestore';
 import Lottie from 'lottie-react';
 import { CreateReviewModal } from '~/components/CreateReviewModal/CreateReviewModal';
 import CustomModal from '~/components/CustomModal';
@@ -63,13 +63,22 @@ const Place = () => {
             where('placeId', '==', id),
             where('authorId', '==', firestoreUser?.id)
           );
-          const querySnapshot = await getDocs(q);
-          const fetchedDocs = querySnapshot.docs.map((doc) => ({
-            ...doc.data(),
-            id: doc.id,
-          }));
+          // const querySnapshot = await getDocs(q);
+          // const fetchedDocs = querySnapshot.docs.map((doc) => ({
+          //   ...doc.data(),
+          //   id: doc.id,
+          // }));
+          const unsubscribe = onSnapshot(q, (querySnapshot) => {
+            const fetchedDocs = querySnapshot.docs.map((doc) => ({
+              ...doc.data(),
+              id: doc.id,
+            }));
+            setMyReview(fetchedDocs[0]);
+          });
 
-          setMyReview(fetchedDocs[0]);
+          return () => {
+            unsubscribe();
+          };
         }
       } catch (err) {
         console.log('[ERROR getting geocode data] => ', err);
