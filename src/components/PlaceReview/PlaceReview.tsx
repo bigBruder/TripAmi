@@ -69,53 +69,64 @@ export const PlaceReview: FC<Props> = ({ review }) => {
   return (
     <div className={styles.container}>
       <div className={styles.leftContainer}>
-        <Rating selectedStars={review.rate} />
-        <div>
-          <img
-            className={styles.avatar}
-            src={userAvatar || Avatar}
-            alt='user avatar'
-            onClick={() => {
-              if (review.authorId !== firestoreUser?.id) navigate(`/user/${review.authorId}`);
-            }}
-            style={{ cursor: review.authorId === firestoreUser?.id ? 'default' : 'pointer' }}
-          />
+        <div className={styles.rate}>
+          <Rating selectedStars={review.rate} />
         </div>
-        <div className={styles.secondContainer}>
+        <div className={styles.reviewInfoContainer}>
+          <div className={styles.avatarContainer}>
+            <img
+              className={styles.avatar}
+              src={userAvatar || Avatar}
+              alt='user avatar'
+              onClick={() => {
+                if (review.authorId !== firestoreUser?.id) navigate(`/user/${review.authorId}`);
+              }}
+              style={{ cursor: review.authorId === firestoreUser?.id ? 'default' : 'pointer' }}
+            />
+            <div className={`${styles.name} ${styles.activeOnMobile}`}>{review.authorName}</div>
+          </div>
+          <div className={`${styles.upperRightContainer} ${styles.activeOnMobile}`}>
+            <p>{getDate(review.createdAt)}</p>
+          </div>
+        </div>
+
+        <div className={styles.secondContainer}></div>
+      </div>
+      <div className={styles.rightContainer}>
+        <div className={`${styles.upperRightContainer} ${styles.inActiveOnMobile}`}>
           <div className={styles.name}>{review.authorName}</div>
+          <div className={styles.dateContainer}>
+            <p>{getDate(review.createdAt)}</p>
+          </div>
+        </div>
+        <div className={styles.lowerRightContainer}>
           <div className={styles.imagesContainer}>
             {images.map((image, index) => (
               <img key={image + index} src={image} alt='place image' className={styles.image} />
             ))}
           </div>
-        </div>
-      </div>
-      <div className={styles.rightContainer}>
-        <div className={styles.dateContainer}>
-          <div>
-            {/* <p>{`${months[Number(trip.endDate.split('/')[1])]} ${trip.endDate.split('/')[2]}`}</p> */}
-            <p>{getDate(review.createdAt)}</p>
+          <div className={styles.descriptionContainer}>
+            {isExtended ? (
+              <>
+                <p className={styles.description}>{review.text}</p>
+                <button className={styles.seeMoreButton} onClick={() => setIsExtended(false)}>
+                  see less
+                </button>
+              </>
+            ) : (
+              <>
+                <p className={styles.description}>
+                  {review.text.slice(0, MAX_LENGTH)} {/* {trip.text.length > MAX_LENGTH && ( */}
+                  {review.text.length > MAX_LENGTH && (
+                    <button className={styles.seeMoreButton} onClick={() => setIsExtended(true)}>
+                      see more
+                    </button>
+                  )}
+                </p>
+              </>
+            )}
+            {/* <div dangerouslySetInnerHTML={{ __html: trip.text }} /> */}
           </div>
-        </div>
-        <div>
-          {isExtended ? (
-            <>
-              <p className={styles.description}>{review.text}</p>
-              <button className={styles.seeMoreButton} onClick={() => setIsExtended(false)}>
-                see less
-              </button>
-            </>
-          ) : (
-            <>
-              <p className={styles.description}>
-                {review.text.slice(0, MAX_LENGTH)} {/* {trip.text.length > MAX_LENGTH && ( */}
-                {review.text.length > MAX_LENGTH && (
-                  <button className={styles.seeMoreButton}>see more</button>
-                )}
-              </p>
-            </>
-          )}
-          {/* <div dangerouslySetInnerHTML={{ __html: trip.text }} /> */}
         </div>
       </div>
     </div>

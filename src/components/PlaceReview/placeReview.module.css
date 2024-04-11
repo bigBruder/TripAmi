@@ -1,8 +1,7 @@
 .container {
     display: flex;
-    justify-content: space-between;
     align-items: flex-start;
-    gap: 20px;
+    gap: 5px;
     box-sizing: border-box;
 
     padding: 10px 16px;
@@ -12,12 +11,6 @@
     background-color: white;
     border-radius: 8px;
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
-}
-
-@media (max-width: 500) {
-    .container {
-        flex-direction: column;
-    }
 }
 
 .avatar {
@@ -31,11 +24,19 @@
     cursor: pointer;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
-
+.rate {
+    align-self: center;
+}
 .leftContainer {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 10px;
+}
+
+@media (min-width: 1200px) {
+    .leftContainer {
+        height: 140px;
+    }
 }
 
 .secondContainer {
@@ -59,15 +60,28 @@
     flex-direction: column;
     gap: 10px;
     justify-self:flex-end;
-    max-width: 50%;
+    width: 100%;
+}
 
-    flex-grow: 1;
+.upperRightContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.lowerRightContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
 }
 
 .dateContainer {
     display: flex;
     justify-content: flex-end;
     gap: 20px;
+}
+
+.descriptionContainer {
+    width: 500px;
 }
 
 .description {
@@ -85,10 +99,67 @@
     line-height: 12px;
 }
 
+.avatarContainer {
+    display: flex;
+    gap: 10px;
+}
+
+.activeOnMobile {
+    display: none;
+}
+@media (max-width: 1200px) {
+    .container {
+        width: 100%;
+        flex-direction: column;
+        gap: 5px;
+    }
+    .leftContainer {
+        width: 100%;
+        flex-direction: column;
+    }
+    .rightContainer {
+        max-width: 100%;
+    }
+    .secondContainer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .description {
+        display: inline-block;
+        width: 100%;
+        max-width: 100%;
+    }
+    .descriptionContainer {
+        width: 100%;
+    }
+    .upperRightContainer {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;  
+    }
+    .lowerRightContainer {
+        flex-direction: column;
+    }
+    .reviewInfoContainer {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        width: 100%;
+    }
+    .activeOnMobile {
+        display: block;
+    }
+    .inActiveOnMobile {
+        display: none;
+    }
+}
+
 @media (max-width: 500px) {
     .container {
         width: 100%;
         flex-direction: column;
+        gap: 5px;
     }
     .leftContainer {
         width: 100%;
@@ -107,6 +178,24 @@
         display: inline-block;
         width: 100%;
         flex-grow: 1;
+    }
+    .descriptionContainer {
+        width: 100%;
+    }
+    .lowerRightContainer {
+        flex-direction: column;
+    }
+    .reviewInfoContainer {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        width: 100%;
+    }
+    .activeOnMobile {
+        display: block;
+    }
+    .inActiveOnMobile {
+        display: none;
     }
 }
 

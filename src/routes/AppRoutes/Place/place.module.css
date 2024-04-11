@@ -156,11 +156,12 @@ h3, h2 {
     background-color: #FF5C00;
     color: white;
     cursor: pointer;
-    transition: border-color 0.3s;
+    transition: border-color 0.3s box-shadow 0.3s;
 }
 
 .button:hover {
     border-color: #646cff;
+    box-shadow: 0 0 10px 0 rgba(100, 108, 255, 0.3);
 }
 
 .reviewsContainer {
