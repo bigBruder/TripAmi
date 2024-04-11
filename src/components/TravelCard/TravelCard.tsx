@@ -229,8 +229,8 @@ const TravelCard: FC<Props> = ({ travel }) => {
             {text}
           </p> */}
           {/* <div dangerouslySetInnerHTML={{ __html: text }} /> */}
-          <div className={styles.tripText} style={{ textIndent: '1em' }}>
-            {text}
+          <div className={styles.tripText} style={{ textIndent: '1em', whiteSpace: 'pre-line' }}>
+            {text.replaceAll('<br />', '\n')}
           </div>
           {dayDescription && dayDescription.length > 0 && (
             <div>
