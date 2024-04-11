@@ -96,7 +96,7 @@ export const CreateReviewModal: FC<Props> = ({ closeModal, placeId, startReview 
     try {
       setIsLoading(true);
 
-      const imageUrls: string[] = [];
+      const imageUrls: { url: string; type: string }[] = [];
 
       if (filesList) {
         for (let i = 0; i < filesList?.length; i++) {
@@ -104,7 +104,7 @@ export const CreateReviewModal: FC<Props> = ({ closeModal, placeId, startReview 
 
           if (filesList[i]) {
             const uploadResult = await uploadBytes(storageRef, filesList[i]);
-            imageUrls.push(uploadResult.ref.fullPath);
+            imageUrls.push({ url: uploadResult.ref.fullPath, type: filesList[i].type });
           }
         }
       }

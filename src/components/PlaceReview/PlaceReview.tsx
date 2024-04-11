@@ -1,13 +1,10 @@
 import { FC, useContext, useEffect, useState } from 'react';
-import Modal from 'react-modal';
 import { useNavigate } from 'react-router-dom';
 
-import { Timestamp } from 'firebase/firestore';
 import { getDownloadURL, ref } from 'firebase/storage';
 import { storage } from '~/firebase';
 import { AuthContext } from '~/providers/authContext';
 import { PlaceReviewType } from '~/types/placeReviews';
-import { getDateToDisplay } from '~/utils/getDateToDisplay';
 
 import Avatar from '@assets/icons/defaultUserIcon.svg';
 
@@ -34,10 +31,11 @@ const months = [
 
 const MAX_LENGTH = 200;
 
+//@ts-ignore
 const getDate = (timestamp) => {
   const options = {
-    year: 'numeric',
-    month: 'long',
+    year: 'numeric' as const,
+    month: 'long' as const,
     // day: 'numeric',
   };
   const date = new Date(timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000);
@@ -46,7 +44,7 @@ const getDate = (timestamp) => {
 
 export const PlaceReview: FC<Props> = ({ review }) => {
   const { firestoreUser } = useContext(AuthContext);
-  const [images, setImages] = useState<string[]>([]);
+  const [images, setImages] = useState<{ type: string; url: string }[]>([]);
   const [userAvatar, setUserAvatar] = useState<string>('');
   const [isExtended, setIsExtended] = useState(false);
   const navigate = useNavigate();
@@ -60,8 +58,11 @@ export const PlaceReview: FC<Props> = ({ review }) => {
 
   useEffect(() => {
     (async () => {
-      const images = await Promise.all(
-        review.images.map(async (image) => await getDownloadURL(ref(storage, image)))
+      const images: { type: string; url: string }[] = await Promise.all(
+        review.images.map(async (image) => {
+          const url = await getDownloadURL(ref(storage, image.url));
+          return { url, type: image.type };
+        })
       );
       setImages(images);
     })();
@@ -102,9 +103,18 @@ export const PlaceReview: FC<Props> = ({ review }) => {
         </div>
         <div className={styles.lowerRightContainer}>
           <div className={styles.imagesContainer}>
-            {images.map((image, index) => (
-              <img key={image + index} src={image} alt='place image' className={styles.image} />
-            ))}
+            {images.map((image, index) =>
+              image.type.includes('image') ? (
+                <img
+                  key={image.url + index}
+                  src={image.url}
+                  alt='place image'
+                  className={styles.image}
+                />
+              ) : (
+                <video key={image.url + index} src={image.url} className={styles.image} />
+              )
+            )}
           </div>
           <div className={styles.descriptionContainer}>
             {isExtended ? (

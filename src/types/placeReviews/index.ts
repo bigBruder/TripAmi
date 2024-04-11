@@ -4,7 +4,7 @@ export interface PlaceReviewType {
   authorId: string;
   authorName: string;
   createdAt: string;
-  images: string[];
+  images: { url: string; type: string }[];
   placeId: string;
   rate: number;
   text: string;
