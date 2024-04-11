@@ -4,7 +4,14 @@ import { geocodeByPlaceId } from 'react-places-autocomplete';
 import { useParams } from 'react-router-dom';
 
 import axios from 'axios';
-import { collectionGroup, deleteDoc, documentId, getDocs, onSnapshot } from 'firebase/firestore';
+import {
+  collectionGroup,
+  deleteDoc,
+  documentId,
+  getDoc,
+  getDocs,
+  onSnapshot,
+} from 'firebase/firestore';
 import Lottie from 'lottie-react';
 import { CreateReviewModal } from '~/components/CreateReviewModal/CreateReviewModal';
 import CustomModal from '~/components/CustomModal';
@@ -15,7 +22,7 @@ import Header from '~/components/profile/Header';
 import { db } from '~/firebase';
 import { AuthContext } from '~/providers/authContext';
 import { IPlace } from '~/routes/AppRoutes/Posts/types';
-import { reviewsCollection, tripsCollection } from '~/types/firestoreCollections';
+import { placesCollection, reviewsCollection, tripsCollection } from '~/types/firestoreCollections';
 import { ITravel } from '~/types/travel';
 
 import AnimationData from '@assets/animations/loader.json';
@@ -113,15 +120,14 @@ const Place = () => {
     if (id) {
       (async () => {
         try {
-          // eslint-disable-next-line no-undef
-          const geocode: google.maps.GeocoderResult[] = await geocodeByPlaceId(id);
-          const position = {
-            lat: geocode[0].geometry.location.lat(),
-            lng: geocode[0].geometry.location.lng(),
-            types: geocode[0].types,
-            name: geocode[0].formatted_address,
-          };
-          setGeocode(position);
+          const q = query(placesCollection, where('placeId', '==', id));
+          const querySnapshot = await getDocs(q);
+          const fetchedDocs = querySnapshot.docs.map((doc) => ({
+            ...doc.data(),
+            id: doc.id,
+          }));
+
+          setGeocode(fetchedDocs[0]);
         } catch (err) {
           console.log('[ERROR getting geocode data] => ', err);
         }
