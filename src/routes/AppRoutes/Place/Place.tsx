@@ -4,7 +4,7 @@ import { geocodeByPlaceId } from 'react-places-autocomplete';
 import { useParams } from 'react-router-dom';
 
 import axios from 'axios';
-import { collectionGroup, documentId, getDocs, onSnapshot } from 'firebase/firestore';
+import { collectionGroup, deleteDoc, documentId, getDocs, onSnapshot } from 'firebase/firestore';
 import Lottie from 'lottie-react';
 import { CreateReviewModal } from '~/components/CreateReviewModal/CreateReviewModal';
 import CustomModal from '~/components/CustomModal';
@@ -223,6 +223,21 @@ const Place = () => {
     }
   }, [id, firestoreUser?.id]);
 
+  const handleDeleteReview = async () => {
+    try {
+      const q = query(
+        reviewsCollection,
+        where('authorId', '==', firestoreUser?.id),
+        where('placeId', '==', id)
+      );
+
+      const querySnapshot = await getDocs(q);
+      await deleteDoc(querySnapshot.docs[0].ref);
+    } catch (err) {
+      console.log('[ERROR deleting review] => ', err);
+    }
+  };
+
   return (
     <div className={styles.mainContainer}>
       <Header />
@@ -291,6 +306,14 @@ const Place = () => {
                 <h2 className={styles.categoryTitle}>My review</h2>
                 <div key={myReview.id} className={styles.review}>
                   <PlaceReview review={myReview} />
+                </div>
+                <div className={styles.reviewControl}>
+                  <button className={styles.button} onClick={() => setIsAddReviewOpen(true)}>
+                    Edit
+                  </button>
+                  <button className={styles.button} onClick={() => handleDeleteReview()}>
+                    Delete
+                  </button>
                 </div>
               </div>
             ) : (
