@@ -2,14 +2,15 @@ import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react
 import { FileUploader } from 'react-drag-drop-files';
 import { ToastContainer, toast } from 'react-toastify';
 
-import { addDoc, collection } from 'firebase/firestore';
-import { ref, uploadBytes } from 'firebase/storage';
+import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
+import { getBlob, ref, uploadBytes } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
 import { ImageIcon } from '~/assets/icons/imageIcon';
 import { TextIcon } from '~/assets/icons/textIcon';
 import { firebaseErrors } from '~/constants/firebaseErrors';
 import { db, storage } from '~/firebase';
 import { AuthContext } from '~/providers/authContext';
+import { PlaceReviewType } from '~/types/placeReviews';
 
 import CustomTabs from '../CustomTabs';
 import { LoadingScreen } from '../LoadingScreen';
@@ -21,15 +22,16 @@ const fileTypes = ['JPEG', 'PNG', 'JPG'];
 interface Props {
   closeModal: () => void;
   placeId: string;
+  startReview?: PlaceReviewType;
 }
 
-export const CreateReviewModal: FC<Props> = ({ closeModal, placeId }) => {
+export const CreateReviewModal: FC<Props> = ({ closeModal, placeId, startReview }) => {
   const { firestoreUser, updateFirestoreUser } = useContext(AuthContext);
   const [activeTab, setActiveTab] = useState(0);
   const [filesList, setFilesList] = useState<null | File[]>(null);
   const [isDragging, setIsDragging] = useState(false);
-  const [postText, setPostText] = useState('');
-  const [selectedStars, setSelectedStars] = useState(0);
+  const [postText, setPostText] = useState(startReview?.text || '');
+  const [selectedStars, setSelectedStars] = useState(startReview?.rate || 0);
   const [isLoading, setIsLoading] = useState(false);
   const [isMaxError, setIsMaxError] = useState(false);
   //   const [images, setImages] = useState<string[]>([]);
@@ -43,6 +45,21 @@ export const CreateReviewModal: FC<Props> = ({ closeModal, placeId }) => {
   }, [isMaxError]);
 
   const notify = (text: string) => toast.error(text);
+
+  useEffect(() => {
+    (async () => {
+      const files = [];
+      if (startReview?.images) {
+        for (let i = 0; i < startReview.images.length; i++) {
+          // const url = await getDownloadURL(ref(storage, startReview.images[i]));
+          const blob = await getBlob(ref(storage, startReview.images[i]));
+          const file = new File([blob], startReview.images[i]);
+          files.push(file);
+        }
+        setFilesList(files);
+      }
+    })();
+  }, [startReview]);
 
   const handleChange = useCallback(
     (file: FileList) => {
@@ -95,16 +112,24 @@ export const CreateReviewModal: FC<Props> = ({ closeModal, placeId }) => {
       }
 
       (async () => {
-        await addDoc(collection(db, 'reviews'), {
-          authorId: firestoreUser?.id,
-          authorName: firestoreUser?.username,
-          authorAvatar: firestoreUser?.avatarUrl,
-          text: postText,
-          rate: selectedStars,
-          images: imageUrls,
-          createdAt: new Date(),
-          placeId: placeId,
-        });
+        if (startReview) {
+          await updateDoc(doc(db, 'reviews', startReview.id), {
+            text: postText,
+            rate: selectedStars,
+            images: imageUrls,
+          });
+        } else {
+          await addDoc(collection(db, 'reviews'), {
+            authorId: firestoreUser?.id,
+            authorName: firestoreUser?.username,
+            authorAvatar: firestoreUser?.avatarUrl,
+            text: postText,
+            rate: selectedStars,
+            images: imageUrls,
+            createdAt: new Date(),
+            placeId: placeId,
+          });
+        }
       })();
 
       closeModal();

@@ -371,7 +371,11 @@ const Place = () => {
       </div>
       {id && (
         <CustomModal isOpen={isAddReviewOpen} onCloseModal={() => setIsAddReviewOpen(false)}>
-          <CreateReviewModal closeModal={() => setIsAddReviewOpen(false)} placeId={id} />
+          <CreateReviewModal
+            closeModal={() => setIsAddReviewOpen(false)}
+            placeId={id}
+            startReview={myReview}
+          />
         </CustomModal>
       )}
     </div>

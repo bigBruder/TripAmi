@@ -1,4 +1,5 @@
 export interface PlaceReviewType {
+  id: string;
   authorAvatar: string;
   authorId: string;
   authorName: string;
