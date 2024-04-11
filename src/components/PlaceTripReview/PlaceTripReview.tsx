@@ -74,9 +74,17 @@ export const PlaceTripReview: FC<Props> = ({ trip }) => {
 
   return (
     <div className={styles.container}>
+      <div className={`${styles.dateContainer} ${styles.activeOnMobile}`}>
+        <div>
+          <h3>{trip.tripName || ''}</h3>
+        </div>
+        <div>
+          <p>{`${months[Number(trip.endDate.split('/')[1])]} ${trip.endDate.split('/')[2]}`}</p>
+        </div>
+      </div>
       <div className={styles.leftContainer}>
         {/* <Rating selectedStars={trip.rate} /> */}
-        <div>
+        <div className={styles.topLeftContainer}>
           <img
             className={styles.avatar}
             src={user?.avatarUrl || Avatar}
@@ -86,27 +94,51 @@ export const PlaceTripReview: FC<Props> = ({ trip }) => {
             }}
             style={{ cursor: user?.id !== firestoreUser?.id ? 'pointer' : 'default' }}
           />
-        </div>
-        <div className={styles.secondContainer}>
-          <div className={styles.name}>{user?.username}</div>
-          <div className={styles.imagesContainer}>
-            {images.slice(0, 2).map((image, index) => (
-              <div key={image + index} style={{ position: 'relative' }}>
-                <img
-                  src={image}
-                  alt='place image'
-                  className={`${styles.image} ${images.length > 2 && index === 1 && styles.lastImage}`}
-                />
-                {images.length > 2 && index === 1 && styles.lastImage && (
-                  <p className={styles.lastImageIndicator}>+{images.length - 2}</p>
-                )}
-              </div>
-            ))}
+
+          <div className={styles.secondContainer}>
+            <div className={styles.name}>{user?.username}</div>
+            <div className={styles.imagesContainer}>
+              {images.slice(0, 2).map((image, index) => (
+                <div key={image + index} style={{ position: 'relative' }}>
+                  <img
+                    src={image}
+                    alt='place image'
+                    className={`${styles.image} ${images.length > 2 && index === 1 && styles.lastImage}`}
+                  />
+                  {images.length > 2 && index === 1 && styles.lastImage && (
+                    <p className={styles.lastImageIndicator}>+{images.length - 2}</p>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
+        </div>
+        <div className={styles.geoTagsContainer}>
+          {trip?.cities?.map((tag) => (
+            <p
+              onClick={() => navigate('/place/' + tag.placeID)}
+              key={tag.placeID}
+              className={styles.tag}
+            >
+              {tag.address.split(',')[0]}
+            </p>
+          ))}
+          {trip?.geoTags?.map((tag) => (
+            <p
+              onClick={() => navigate('/place/' + tag.placeID)}
+              key={tag.placeID}
+              className={styles.tag}
+            >
+              {tag.address.split(',')[0]}
+            </p>
+          ))}
         </div>
       </div>
       <div className={styles.rightContainer}>
-        <div className={styles.dateContainer}>
+        <div className={`${styles.dateContainer} ${styles.inActiveOnMobile}`}>
+          <div>
+            <h3>{trip.tripName}</h3>
+          </div>
           <div>
             <p>{`${months[Number(trip.endDate.split('/')[1])]} ${trip.endDate.split('/')[2]}`}</p>
           </div>

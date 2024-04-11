@@ -36,6 +36,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
+    width: 100%;
 }
 
 .secondContainer {
@@ -54,6 +55,33 @@
     height: 50px;
 }
 
+.topLeftContainer {
+    display: flex;
+    gap: 5px;
+}
+
+.leftContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.geoTagsContainer {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+.tag {
+    font-size: 10px;
+    cursor: pointer;
+    background-color:  rgb(218, 224, 225);
+    padding: 4px;
+    padding-left: 5px;
+    border-radius: 10px;
+    color: grey;
+}
+
 .rightContainer {
     display: flex;
     flex-direction: column;
@@ -66,7 +94,7 @@
 
 .dateContainer {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     gap: 20px;
 }
 
@@ -83,6 +111,46 @@
     padding: 2px 5px;
     font-size: 14px;
     line-height: 12px;
+}
+.activeOnMobile {
+    display: none;
+}
+
+@media (max-width: 1200px) {
+    .container {
+        width: 100%;
+        flex-direction: column;
+    }
+    .leftContainer {
+        width: 100%;
+        flex-direction: column;
+    }
+    .rightContainer {
+        max-width: 100%;
+        width: 100%;
+    }
+    .secondContainer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .description {
+        display: inline-block;
+        width: 100%;
+        flex-grow: 1;
+    }
+    .name {
+        align-self: flex-start;
+    }
+    .inActiveOnMobile {
+        display: none;
+    }
+    .activeOnMobile {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        align-items: center;
+    }
 }
 
 @media (max-width: 500px) {
