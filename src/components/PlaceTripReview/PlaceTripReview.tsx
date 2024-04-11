@@ -1,16 +1,16 @@
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { documentId, getDoc, getDocs, query, where } from 'firebase/firestore';
+import { documentId, getDocs, query, where } from 'firebase/firestore';
 import { getDownloadURL, ref } from 'firebase/storage';
-import { db, storage } from '~/firebase';
+import { storage } from '~/firebase';
+import { AuthContext } from '~/providers/authContext';
 import { usersCollection } from '~/types/firestoreCollections';
 import { ITravel } from '~/types/travel';
 import { IUser } from '~/types/user';
 
 import Avatar from '@assets/icons/defaultUserIcon.svg';
 
-import Rating from '../Rating';
 import styles from './placeTripReview.module.css';
 
 interface Props {
@@ -34,6 +34,7 @@ const months = [
 const MAX_LENGTH = 200;
 
 export const PlaceTripReview: FC<Props> = ({ trip }) => {
+  const { firestoreUser } = useContext(AuthContext);
   const [user, setUser] = useState<IUser | null>(null);
   const [images, setImages] = useState<string[]>([]);
   const [isExtended, setIsExtended] = useState(false);
@@ -81,8 +82,9 @@ export const PlaceTripReview: FC<Props> = ({ trip }) => {
             src={user?.avatarUrl || Avatar}
             alt='user avatar'
             onClick={() => {
-              navigate(`/user/${user?.id}`);
+              if (user?.id !== firestoreUser?.id) navigate(`/user/${user?.id}`);
             }}
+            style={{ cursor: user?.id !== firestoreUser?.id ? 'pointer' : 'default' }}
           />
         </div>
         <div className={styles.secondContainer}>

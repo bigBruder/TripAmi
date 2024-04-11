@@ -1,9 +1,10 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Timestamp } from 'firebase/firestore';
 import { getDownloadURL, ref } from 'firebase/storage';
 import { storage } from '~/firebase';
+import { AuthContext } from '~/providers/authContext';
 import { PlaceReviewType } from '~/types/placeReviews';
 import { getDateToDisplay } from '~/utils/getDateToDisplay';
 
@@ -43,6 +44,7 @@ const getDate = (timestamp) => {
 };
 
 export const PlaceReview: FC<Props> = ({ review }) => {
+  const { firestoreUser } = useContext(AuthContext);
   const [images, setImages] = useState<string[]>([]);
   const [userAvatar, setUserAvatar] = useState<string>('');
   const [isExtended, setIsExtended] = useState(false);
@@ -74,8 +76,9 @@ export const PlaceReview: FC<Props> = ({ review }) => {
             src={userAvatar || Avatar}
             alt='user avatar'
             onClick={() => {
-              navigate(`/user/${review.authorId}`);
+              if (review.authorId !== firestoreUser?.id) navigate(`/user/${review.authorId}`);
             }}
+            style={{ cursor: review.authorId === firestoreUser?.id ? 'default' : 'pointer' }}
           />
         </div>
         <div className={styles.secondContainer}>
