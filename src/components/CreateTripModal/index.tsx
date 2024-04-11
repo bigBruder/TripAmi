@@ -26,7 +26,12 @@ import { LoadingScreen } from '~/components/LoadingScreen';
 import Rating from '~/components/Rating';
 import { db, storage } from '~/firebase';
 import { AuthContext } from '~/providers/authContext';
-import { notificationsCollection, tripsCollection } from '~/types/firestoreCollections';
+import {
+  commentsCollection,
+  notificationsCollection,
+  placesCollection,
+  tripsCollection,
+} from '~/types/firestoreCollections';
 import { NotificationType } from '~/types/notifications/notifications';
 import { getDateToDisplay } from '~/utils/getDateToDisplay';
 import getNeutralColor from '~/utils/getNeutralColor';
@@ -131,8 +136,6 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
     });
   };
 
-  console.log(selectedCities);
-
   const handleOnSave = useCallback(async () => {
     try {
       if (file || downloadedImages) {
@@ -188,7 +191,22 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
               placeID: city.placeID,
               lat: city.lat,
               lng: city.lng,
+              types: city.types,
+              name: city.name,
             });
+
+            const q = query(placesCollection, where('placeId', '==', city.placeID));
+            const querySnapshot = await getDocs(q);
+            if (querySnapshot.docs.length === 0) {
+              await addDoc(placesCollection, {
+                address: city.address,
+                placeId: city.placeID,
+                lat: city.lat,
+                lng: city.lng,
+                types: city.types,
+                name: city.name,
+              });
+            }
           });
 
           querySnapshotPlaces.docs.forEach(async (doc) => {
@@ -200,7 +218,22 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
               placeID: city.placeID,
               lat: city.lat,
               lng: city.lng,
+              types: city.types,
+              name: city.name,
             });
+
+            const q = query(placesCollection, where('placeId', '==', city.placeID));
+            const querySnapshot = await getDocs(q);
+            if (querySnapshot.docs.length === 0) {
+              await addDoc(placesCollection, {
+                address: city.address,
+                placeId: city.placeID,
+                lat: city.lat,
+                lng: city.lng,
+                types: city.types,
+                name: city.name,
+              });
+            }
           });
         } else {
           await addDoc(tripsCollection, {
@@ -225,7 +258,22 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
                 placeID: city.placeID,
                 lat: city.lat,
                 lng: city.lng,
+                types: city.types,
+                name: city.name,
               });
+
+              const q = query(placesCollection, where('placeId', '==', city.placeID));
+              const querySnapshot = await getDocs(q);
+              if (querySnapshot.docs.length === 0) {
+                await addDoc(placesCollection, {
+                  address: city.address,
+                  placeId: city.placeID,
+                  lat: city.lat,
+                  lng: city.lng,
+                  types: city.types,
+                  name: city.name,
+                });
+              }
             });
             selectedGeoTags.forEach(async (city) => {
               await addDoc(subcollectionPlaces, {
@@ -233,7 +281,22 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
                 placeID: city.placeID,
                 lat: city.lat,
                 lng: city.lng,
+                types: city.types,
+                name: city.name,
               });
+
+              const q = query(placesCollection, where('placeId', '==', city.placeID));
+              const querySnapshot = await getDocs(q);
+              if (querySnapshot.docs.length === 0) {
+                await addDoc(placesCollection, {
+                  address: city.address,
+                  placeId: city.placeID,
+                  lat: city.lat,
+                  lng: city.lng,
+                  types: city.types,
+                  name: city.name,
+                });
+              }
             });
             if (firestoreUser?.friends) {
               const q = query(
@@ -298,6 +361,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
       (async () => {
         if (!selectedGeoTags.map((tag) => tag.address).includes(address)) {
           const coordinates = await geocodeByPlaceId(placeID);
+          console.log(coordinates);
           setSelectedGeoTags((prevState) => [
             ...prevState,
             {
@@ -305,6 +369,8 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
               placeID,
               lat: coordinates[0].geometry.location.lat(),
               lng: coordinates[0].geometry.location.lng(),
+              types: coordinates[0].types,
+              name: coordinates[0].formatted_address,
             },
           ]);
           setGeoTags('');
@@ -418,7 +484,6 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
       (async () => {
         if (!selectedCities.map((city) => city.address.toString()).includes(address)) {
           const coordinates = await geocodeByPlaceId(placeID);
-          console.log('coordinates', coordinates[0].geometry.location.lat());
           setSelectedCities((prevState) => [
             ...prevState,
             {
@@ -426,6 +491,8 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
               placeID,
               lat: coordinates[0].geometry.location.lat(),
               lng: coordinates[0].geometry.location.lng(),
+              types: coordinates[0].types,
+              name: coordinates[0].formatted_address,
             },
           ]);
           setCity('');

@@ -103,8 +103,6 @@ const Map: FC<Props> = ({ userId }) => {
     fetchCitiesToDisplay();
   }, [trips, userId, usersTrips]);
 
-  console.log('citiesToDisplay', citiesToDisplay);
-
   useEffect(() => {
     const fetchPlacesToDisplay = async () => {
       const tripsToDisplay = userId ? usersTrips : trips;
@@ -136,8 +134,6 @@ const Map: FC<Props> = ({ userId }) => {
     };
     fetchPlacesToDisplay();
   }, [trips, userId, usersTrips]);
-
-  console.log('random: ', Math.random() * 0.00001 - 0.00005);
 
   const handleSelectMarker = useCallback((address: string, placeId: string) => {
     setSelectedMarkerAddress({ address, placeId });
