@@ -57,10 +57,8 @@ export const LightBox: React.FC<Props> = ({
             )}
           </div>
           <div className={styles.descriptionContainer}>
-            {selectedImage?.description ? (
+            {selectedImage?.description && (
               <p className={styles.description}>{selectedImage?.description}</p>
-            ) : (
-              <p className={styles.description}>No description</p>
             )}
           </div>
 

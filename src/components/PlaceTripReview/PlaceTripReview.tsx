@@ -1,4 +1,5 @@
 import { FC, useContext, useEffect, useState } from 'react';
+import Modal from 'react-modal';
 import { useNavigate } from 'react-router-dom';
 
 import { documentId, getDocs, query, where } from 'firebase/firestore';
@@ -11,6 +12,7 @@ import { IUser } from '~/types/user';
 
 import Avatar from '@assets/icons/defaultUserIcon.svg';
 
+import { LightBox } from '../Lightbox/LightBox';
 import styles from './placeTripReview.module.css';
 
 interface Props {
@@ -36,8 +38,13 @@ const MAX_LENGTH = 200;
 export const PlaceTripReview: FC<Props> = ({ trip }) => {
   const { firestoreUser } = useContext(AuthContext);
   const [user, setUser] = useState<IUser | null>(null);
-  const [images, setImages] = useState<string[]>([]);
+  const [images, setImages] = useState<{ url: string; type: string; description: string }[]>([]);
   const [isExtended, setIsExtended] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<{
+    description?: string;
+    type: string;
+    url: string;
+  } | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -58,11 +65,17 @@ export const PlaceTripReview: FC<Props> = ({ trip }) => {
   useEffect(() => {
     try {
       (async () => {
+        console.log('trip.imageUrl', trip.imageUrl);
         const imagesUrls = await Promise.all(
           trip.imageUrl.map(async (image) => {
             const url = await getDownloadURL(ref(storage, image.url));
-            return url;
+            return { url: url, description: image.description, type: image.type };
           })
+        );
+
+        console.log(
+          'imagesUrls',
+          imagesUrls.map((image, index) => image.url)
         );
 
         setImages(imagesUrls);
@@ -100,11 +113,24 @@ export const PlaceTripReview: FC<Props> = ({ trip }) => {
             <div className={styles.imagesContainer}>
               {images.slice(0, 2).map((image, index) => (
                 <div key={image + index} style={{ position: 'relative' }}>
-                  <img
-                    src={image}
-                    alt='place image'
-                    className={`${styles.image} ${images.length > 2 && index === 1 && styles.lastImage}`}
-                  />
+                  {image.type.includes('image') ? (
+                    <img
+                      src={image.url}
+                      alt='place image'
+                      className={`${styles.image} ${images.length > 2 && index === 1 && styles.lastImage}`}
+                      onClick={() => {
+                        setSelectedImage(image);
+                      }}
+                    />
+                  ) : (
+                    <video
+                      src={image.url}
+                      className={`${styles.image} ${images.length > 2 && index === 1 && styles.lastImage}`}
+                      onClick={() => {
+                        setSelectedImage(image);
+                      }}
+                    />
+                  )}
                   {images.length > 2 && index === 1 && styles.lastImage && (
                     <p className={styles.lastImageIndicator}>+{images.length - 2}</p>
                   )}
@@ -153,7 +179,7 @@ export const PlaceTripReview: FC<Props> = ({ trip }) => {
         ) : (
           <>
             <p className={styles.description}>
-              {trip.text.slice(0, MAX_LENGTH)} {/* {trip.text.length > MAX_LENGTH && ( */}
+              {trip.text.slice(0, MAX_LENGTH)}... {/* {trip.text.length > MAX_LENGTH && ( */}
               {trip.text.length > MAX_LENGTH && (
                 <button
                   className={styles.seeMoreButton}
@@ -170,6 +196,16 @@ export const PlaceTripReview: FC<Props> = ({ trip }) => {
         )}
         {/* <div dangerouslySetInnerHTML={{ __html: trip.text }} /> */}
       </div>
+      <LightBox
+        isOpen={!!selectedImage}
+        onCloseModal={() => {
+          setSelectedImage(null);
+          document.body.style.overflow = 'auto';
+        }}
+        selectedImage={selectedImage}
+        onChangeSelectedPhoto={setSelectedImage}
+        images={images}
+      />
     </div>
   );
 };

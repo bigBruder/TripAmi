@@ -1,17 +1,10 @@
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
-import { geocodeByPlaceId } from 'react-places-autocomplete';
+import Modal from 'react-modal';
 import { useParams } from 'react-router-dom';
 
 import axios from 'axios';
-import {
-  collectionGroup,
-  deleteDoc,
-  documentId,
-  getDoc,
-  getDocs,
-  onSnapshot,
-} from 'firebase/firestore';
+import { collectionGroup, deleteDoc, documentId, getDocs, onSnapshot } from 'firebase/firestore';
 import Lottie from 'lottie-react';
 import { CreateReviewModal } from '~/components/CreateReviewModal/CreateReviewModal';
 import CustomModal from '~/components/CustomModal';

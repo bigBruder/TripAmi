@@ -346,6 +346,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
     updateFirestoreUser,
     daysDescription,
     selectedCities,
+    imagesDescription,
   ]);
 
   // const onSelectPlace = useCallback(async (address: string, placeID: string) => {

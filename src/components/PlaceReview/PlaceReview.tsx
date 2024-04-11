@@ -1,4 +1,5 @@
 import { FC, useContext, useEffect, useState } from 'react';
+import Modal from 'react-modal';
 import { useNavigate } from 'react-router-dom';
 
 import { Timestamp } from 'firebase/firestore';
@@ -116,7 +117,7 @@ export const PlaceReview: FC<Props> = ({ review }) => {
             ) : (
               <>
                 <p className={styles.description}>
-                  {review.text.slice(0, MAX_LENGTH)} {/* {trip.text.length > MAX_LENGTH && ( */}
+                  {review.text.slice(0, MAX_LENGTH)}... {/* {trip.text.length > MAX_LENGTH && ( */}
                   {review.text.length > MAX_LENGTH && (
                     <button className={styles.seeMoreButton} onClick={() => setIsExtended(true)}>
                       see more

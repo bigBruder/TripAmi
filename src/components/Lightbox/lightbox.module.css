@@ -123,7 +123,7 @@
 
 .descriptionContainer {
     display: block;
-    min-height: 40vh;
+    /* min-height: 40vh; */
     max-height: 40vh;
     overflow-y: scroll;
 }
@@ -230,6 +230,8 @@
         width: 90%;
         margin: 100px auto;
         background-color: white;
+        height: max-content;
+        margin: 100px auto;
     }
 
     /* .selectedImageContainer {
