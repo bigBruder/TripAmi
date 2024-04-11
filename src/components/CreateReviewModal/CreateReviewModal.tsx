@@ -34,7 +34,6 @@ export const CreateReviewModal: FC<Props> = ({ closeModal, placeId, startReview 
   const [selectedStars, setSelectedStars] = useState(startReview?.rate || 0);
   const [isLoading, setIsLoading] = useState(false);
   const [isMaxError, setIsMaxError] = useState(false);
-  //   const [images, setImages] = useState<string[]>([]);
 
   useEffect(() => {
     if (isMaxError) {
@@ -51,7 +50,6 @@ export const CreateReviewModal: FC<Props> = ({ closeModal, placeId, startReview 
       const files = [];
       if (startReview?.images) {
         for (let i = 0; i < startReview.images.length; i++) {
-          // const url = await getDownloadURL(ref(storage, startReview.images[i]));
           const blob = await getBlob(ref(storage, startReview.images[i]));
           const file = new File([blob], startReview.images[i]);
           files.push(file);

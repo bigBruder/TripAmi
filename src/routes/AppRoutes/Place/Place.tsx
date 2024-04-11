@@ -129,26 +129,6 @@ const Place = () => {
     }
   }, [id]);
 
-  // useEffect(() => {
-  //   const q = query(
-  //     placesCommentsCollection,
-  //     where('placeId', '==', id),
-  //     orderBy('createdAt', 'desc')
-  //   );
-  //   const unsubscribe = onSnapshot(q, (querySnapshot) => {
-  //     const fetchedDocs = querySnapshot.docs.map((doc) => ({
-  //       ...doc.data(),
-  //       id: doc.id,
-  //     }));
-
-  //     setComments(fetchedDocs as IPlaceComment[]);
-  //   });
-
-  //   return () => {
-  //     unsubscribe();
-  //   };
-  // }, [id]);
-
   const handleSeeMoreClick = () => {
     setIsExpanded(!isExpanded);
   };
