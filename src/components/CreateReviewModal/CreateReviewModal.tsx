@@ -23,9 +23,10 @@ interface Props {
   closeModal: () => void;
   placeId: string;
   startReview?: PlaceReviewType;
+  placeName: string;
 }
 
-export const CreateReviewModal: FC<Props> = ({ closeModal, placeId, startReview }) => {
+export const CreateReviewModal: FC<Props> = ({ closeModal, placeId, startReview, placeName }) => {
   const { firestoreUser, updateFirestoreUser } = useContext(AuthContext);
   const [activeTab, setActiveTab] = useState(0);
   const [filesList, setFilesList] = useState<null | File[]>(null);
@@ -126,6 +127,7 @@ export const CreateReviewModal: FC<Props> = ({ closeModal, placeId, startReview 
             images: imageUrls,
             createdAt: new Date(),
             placeId: placeId,
+            placeName: placeName,
           });
         }
       })();

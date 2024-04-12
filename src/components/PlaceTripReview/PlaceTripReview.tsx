@@ -65,17 +65,11 @@ export const PlaceTripReview: FC<Props> = ({ trip }) => {
   useEffect(() => {
     try {
       (async () => {
-        console.log('trip.imageUrl', trip.imageUrl);
         const imagesUrls = await Promise.all(
           trip.imageUrl.map(async (image) => {
             const url = await getDownloadURL(ref(storage, image.url));
             return { url: url, description: image.description, type: image.type };
           })
-        );
-
-        console.log(
-          'imagesUrls',
-          imagesUrls.map((image, index) => image.url)
         );
 
         setImages(imagesUrls);

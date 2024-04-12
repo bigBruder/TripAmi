@@ -49,7 +49,7 @@ import styles from './header.module.css';
 import './styles.css';
 
 const client = algoliasearch('W8J2M4GNE3', '18fbb3c4cc4108ead5479d90911f3507');
-const index = client.initIndex('trips');
+const index = client.initIndex('review');
 
 enum CONTENT_TYPE {
   POST = 'post',
@@ -151,45 +151,17 @@ const Header = () => {
       setSearchIsLoading(true);
 
       if (searchTerm.length) {
-        const index = client.initIndex('trips');
+        const index = client.initIndex('review');
         const result = await index.search(searchTerm, {
-          attributesToRetrieve: [
-            'userId',
-            'cities',
-            'location',
-            'rate',
-            'text',
-            'objectID',
-            'geoTags',
-          ],
           hitsPerPage: 5,
         });
-        const matchedCities = result.hits.map((hit) => {
-          for (let i = 0; i < hit._highlightResult.cities.length; i++) {
-            if (hit._highlightResult.cities[i].address.matchLevel === 'full') {
-              return hit._highlightResult.cities[i].address.value
-                .replace('<em>', '')
-                .replace('</em>', '')
-                .split(',')[0];
-            }
-          }
-          for (let i = 0; i < hit._highlightResult.geoTags.length; i++) {
-            if (hit._highlightResult.geoTags[i].address.matchLevel === 'full') {
-              return hit._highlightResult.geoTags[i].address.value
-                .replace('<em>', '')
-                .replace('</em>', '')
-                .split(',')[0];
-            }
-          }
-        });
+
+        console.log('search results: ', result.hits);
 
         const imageUrls = await Promise.all(
           result.hits.map(async (hit) => {
-            const q = query(usersCollection, where('id', '==', hit.userId));
-            const querySnapshot = await getDocs(q);
-            const user = querySnapshot.docs[0].data();
-            if (user.avatarUrl) {
-              return await getDownloadURL(ref(storage, user.avatarUrl));
+            if (hit.authorAvatar) {
+              return await getDownloadURL(ref(storage, hit.authorAvatar));
             } else {
               return DefaultAvatar;
             }
@@ -198,15 +170,14 @@ const Header = () => {
 
         setSearchResult(
           result.hits.map((hit, i) => ({
-            geoTag: hit.geoTag,
             rate: hit.rate,
             text: hit.text,
             userId: hit.userId,
-            type: CONTENT_TYPE.TRAVEL,
             id: hit.objectID,
             avatar: imageUrls[i],
-            matchedCity: matchedCities[i],
-            createdAt: hit.createdAt,
+            authorName: hit.authorName,
+            placeName: hit.placeName,
+            placeId: hit.placeId,
           }))
         );
       }
@@ -252,7 +223,7 @@ const Header = () => {
   const handleSelectAutocomplete = (searchResult: any) => {
     (async () => {
       if (firestoreUser?.id && searchResult.id) {
-        navigate('/trip' + `/${searchResult.id}`, {
+        navigate('/place' + `/${searchResult.placeId}`, {
           state: {
             // ...fetchedPost,
             postId: searchResult.id,
@@ -294,10 +265,12 @@ const Header = () => {
                         {/* <p>{resultOption.location.name.split(',')[0]}</p> */}
                         <div className={styles.autocomplete_description_container}>
                           <p className={styles.autocomplete_description}>
-                            {resultOption.matchedCity?.length > 20
+                            {/* {resultOption.matchedCity?.length > 20
                               ? resultOption.matchedCity?.slice(0, 20) + '...'
-                              : resultOption.matchedCity}
+                              : resultOption.matchedCity} */}
+                            {resultOption.authorName}: {resultOption?.placeName.split(',')[0]}
                           </p>
+
                           <p
                             className={`${styles.tripDescription} ${styles.autocomplete_description}`}
                           >

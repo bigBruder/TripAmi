@@ -219,7 +219,9 @@ const Place = () => {
 
   return (
     <div className={styles.mainContainer}>
-      <Header />
+      <div className={styles.header}>
+        <Header />
+      </div>
 
       <div className={styles.main}>
         <PageTitle title={'Place'} />
@@ -353,6 +355,7 @@ const Place = () => {
           <CreateReviewModal
             closeModal={() => setIsAddReviewOpen(false)}
             placeId={id}
+            placeName={geocode?.name}
             startReview={myReview}
           />
         </CustomModal>

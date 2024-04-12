@@ -24,6 +24,7 @@ const PlaceAutocomplete: FC<PlaceAutocompleteProps> = ({
       value={location}
       onChange={(value) => setLocation(value)}
       onSelect={onSelectPlace}
+      language='en'
     >
       {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => {
         return (
