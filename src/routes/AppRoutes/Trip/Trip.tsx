@@ -223,22 +223,23 @@ export const Trip = () => {
               )}
             </div>
           </div>
-        </div>
 
-        {id && (
-          <CommentField
-            postId={id}
-            commentsCount={trip?.comments_count || 0}
-            contentType='trip'
-            postOwnerId={trip?.userId || ''}
-          />
-        )}
+          {id && (
+            <CommentField
+              postId={id}
+              commentsCount={trip?.comments_count || 0}
+              contentType='trip'
+              postOwnerId={trip?.userId || ''}
+            />
+          )}
+        </div>
 
         {comments &&
           comments?.map((comment) => (
             <Comment key={comment.id} comment={comment} contentType={'trip'} />
           ))}
       </div>
+
       <LightBox
         isOpen={isLightBoxOpen}
         onCloseModal={() => setIsLightBoxOpen(false)}
