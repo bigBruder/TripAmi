@@ -2,16 +2,32 @@
     margin: 0 0 20px 0;
 }
 
+body {
+    background-image: url('../../../assets/images/boat.jpeg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: fill;
+}
+
+@media (max-width: 768px) {
+    body {
+        background-size: cover;
+    }
+}
+
+@media (max-width: 500px) {
+    body {
+        background-size: cover;
+    }
+}
+
 .mainContainer {
-    height: 100%;
+    height: 100vh;
     width: 100%;
     display: flex;
     flex-direction: column;
 
-    background-image: url('../../../assets/images/boat.jpeg');
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
+    overflow-y: auto;
 }
 
 .main {
