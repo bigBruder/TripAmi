@@ -1,10 +1,16 @@
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
-import Modal from 'react-modal';
 import { useParams } from 'react-router-dom';
 
 import axios from 'axios';
-import { collectionGroup, deleteDoc, documentId, getDocs, onSnapshot } from 'firebase/firestore';
+import {
+  collectionGroup,
+  deleteDoc,
+  documentId,
+  getDocs,
+  onSnapshot,
+  updateDoc,
+} from 'firebase/firestore';
 import Lottie from 'lottie-react';
 import { CreateReviewModal } from '~/components/CreateReviewModal/CreateReviewModal';
 import CustomModal from '~/components/CustomModal';
@@ -145,13 +151,35 @@ const Place = () => {
     (async () => {
       if (id) {
         try {
-          setIsLoading(true);
-          const { data }: { data?: { data: IPlace } } = await axios.get(
-            'https://getgooglemapsdetails-dp6fh5oj2q-uc.a.run.app/helloWorld?placeId=' + id
-          );
-          if (data?.data) {
-            setPlaceData(data.data);
+          const q = query(placesCollection, where('placeId', '==', id));
+          const querySnapshot = await getDocs(q);
+          // @ts-ignore
+          const fetchedDocs: { articleText: string; imageUrl: string; id: string }[] =
+            querySnapshot.docs.map((doc) => ({
+              ...doc.data(),
+              id: doc.id,
+            }));
+          if (!fetchedDocs[0].articleText && !fetchedDocs[0].imageUrl) {
+            console.log('working with request to the server');
+            const { data }: { data?: { data: IPlace } } = await axios.get(
+              'https://getgooglemapsdetails-dp6fh5oj2q-uc.a.run.app/helloWorld?placeId=' + id
+            );
+            if (data?.data) {
+              setPlaceData(data.data);
+            }
+            await updateDoc(querySnapshot.docs[0].ref, {
+              ...fetchedDocs[0],
+              articleText: data?.data?.articleText,
+              imageUrl: data?.data?.imageUrl,
+            });
+          } else {
+            console.log('working without request to the server');
+            setPlaceData({
+              imageUrl: fetchedDocs[0].imageUrl,
+              articleText: fetchedDocs[0].articleText,
+            });
           }
+          setIsLoading(true);
         } catch (err) {
           console.log('[ERROR getting data about place] => ', err);
         } finally {
