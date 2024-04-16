@@ -113,9 +113,6 @@ const Header = () => {
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [searchMode, setSearchMode] = useState('reviews');
 
-  console.log('searchResult => ', searchResult);
-  console.log('searchResultTrips => ', searchResultTrips);
-
   const handleChange = useCallback((e: { target: { value: React.SetStateAction<string> } }) => {
     setSearchTerm(e.target.value);
   }, []);
@@ -306,8 +303,6 @@ const Header = () => {
       setIsNotificationsOpen(false);
     }
   }, []);
-
-  console.log(searchResultPlaces, 'searchResultPlaces');
 
   return (
     <>

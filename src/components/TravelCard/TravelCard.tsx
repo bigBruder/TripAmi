@@ -26,6 +26,8 @@ import { DropdownProvider } from '../DropdownProvider/DropdownProvider';
 import { LightBox } from '../Lightbox/LightBox';
 import ShareModal from '../ShareModal/ShareModal';
 import styles from './travelCard.module.css';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Pagination } from 'swiper/modules';
 
 interface Props {
   travel: ITravel;
@@ -185,7 +187,7 @@ const TravelCard: FC<Props> = ({ travel }) => {
       </div>
 
       <div className={styles.mainContainer}>
-        <div className={styles.gallery}>
+        <div className={`${styles.gallery} ${styles.hideOnMobile}`}>
           {/* {setting.photos.length > 0 && getLayout.length && getHeight.length ? (
             <ReactPhotoCollage {...setting}/>
           ) : null} */}
@@ -222,6 +224,51 @@ const TravelCard: FC<Props> = ({ travel }) => {
             }
           })}
         </div>
+
+        <div className={`${styles.gallery} ${styles.showOnMobile}`}>
+          <Swiper
+            spaceBetween={0}
+            slidesPerView={1}
+            style={{ width: '100%', height: '100%' }}
+            pagination={{ clickable: true }}
+            modules={[Pagination]}
+          >
+            {imageDownloadUrls.map((image, index) => {
+              if (image.type.includes('image')) {
+                return (
+                  <SwiperSlide key={index}>
+                    <img
+                      key={index}
+                      src={image.url}
+                      alt='travel'
+                      className={styles.image}
+                      onClick={() => {
+                        setSelectedImage(image);
+                        setIsPhotosModalOpen(true);
+                        document.body.style.overflow = 'hidden';
+                      }}
+                    />
+                  </SwiperSlide>
+                );
+              } else if (image.type.includes('video')) {
+                return (
+                  <SwiperSlide key={index}>
+                    <video
+                      src={image.url}
+                      className={styles.image}
+                      controls
+                      onClick={() => {
+                        setSelectedImage(image);
+                        setIsPhotosModalOpen(true);
+                      }}
+                    />
+                  </SwiperSlide>
+                );
+              }
+            })}
+          </Swiper>
+        </div>
+
 
         <div className={styles.textContainer}>
           <h3 className={styles.tripName}>{tripName}</h3>

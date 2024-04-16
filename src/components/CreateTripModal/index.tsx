@@ -362,7 +362,6 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
       (async () => {
         if (!selectedGeoTags.map((tag) => tag.address).includes(address)) {
           const coordinates = await geocodeByPlaceId(placeID);
-          console.log(coordinates);
           setSelectedGeoTags((prevState) => [
             ...prevState,
             {

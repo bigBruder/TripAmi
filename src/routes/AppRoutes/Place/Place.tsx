@@ -4,9 +4,11 @@ import { useParams } from 'react-router-dom';
 
 import axios from 'axios';
 import {
+  average,
   collectionGroup,
   deleteDoc,
   documentId,
+  getAggregateFromServer,
   getDocs,
   onSnapshot,
   updateDoc,
@@ -137,6 +139,14 @@ const Place = () => {
   const handleSeeMoreClick = () => {
     setIsExpanded(!isExpanded);
   };
+
+  useEffect(() => {
+    (async () => {
+      const q = query(reviewsCollection, where('placeId', '==', id));
+      const snapshot = await getAggregateFromServer(q, { averageRating: average('rate') });
+      console.log(snapshot);
+    })();
+  }, [id]);
 
   useMemo(() => {
     if (placeData?.articleText) {

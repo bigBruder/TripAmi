@@ -297,7 +297,6 @@ export const UserCard: FC<Props> = ({
   }, [firestoreUser?.firebaseUid, navigate, user.id]);
 
   const handleCancelInvite = useCallback(async () => {
-    console.log('delete invite');
     if (firestoreUser?.id && user?.id) {
       try {
         const q = query(
