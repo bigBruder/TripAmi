@@ -15,6 +15,7 @@ import {
 } from 'firebase/firestore';
 import { getDownloadURL } from 'firebase/storage';
 import debounce from 'lodash.debounce';
+import Lottie from 'lottie-react';
 import { NotificationsIcon } from '~/assets/icons/NotificationsIcon';
 import CreatePostModal from '~/components/CreatePostModal';
 import CreateTripModal from '~/components/CreateTripModal';
@@ -28,6 +29,7 @@ import { AuthContext } from '~/providers/authContext';
 import { notificationsCollection, usersCollection } from '~/types/firestoreCollections';
 import { Notification } from '~/types/notifications/notifications';
 
+import Animation from '@assets/animations/loader.json';
 import addUser from '@assets/icons/addUser.svg';
 import arrow from '@assets/icons/arrowDown.svg';
 import addFile from '@assets/icons/create.svg';
@@ -43,13 +45,13 @@ import icon from '@assets/icons/ph_user-light.svg';
 import plus from '@assets/icons/plus.svg';
 import { ref } from '@firebase/storage';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+import * as RadixSwitch from '@radix-ui/react-switch';
 
 import Logo from '../../../assets/icons/headerLogo.svg';
 import styles from './header.module.css';
 import './styles.css';
 
 const client = algoliasearch('W8J2M4GNE3', '18fbb3c4cc4108ead5479d90911f3507');
-const index = client.initIndex('review');
 
 enum CONTENT_TYPE {
   POST = 'post',
@@ -57,13 +59,37 @@ enum CONTENT_TYPE {
   USER = 'user',
 }
 
-interface SearchResult {
-  type: CONTENT_TYPE;
+type SearchResultReview = {
+  rate: number;
   text: string;
+  userId: string;
   id: string;
-  imageUrl?: string;
+  avatar: string;
+  authorName: string;
+  placeName: string;
+  placeId: string;
+};
+
+type SearchResultTrip = {
+  geoTags: GeoTag[];
+  rate: number;
+  text: string;
+  userId: string;
+  type: CONTENT_TYPE.TRAVEL;
+  id: string;
+  avatar: string;
+  // matchedCity: matchedCities[i],
   createdAt: string;
-}
+};
+
+type GeoTag = {
+  address: string;
+  lat: number;
+  lng: number;
+  placeId: string;
+  types: string[];
+  name: string;
+};
 
 const Header = () => {
   const { signOutUser, firestoreUser } = useContext(AuthContext);
@@ -72,13 +98,18 @@ const Header = () => {
   const [avatar, setAvatar] = useState<string>(icon);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchIsLoading, setSearchIsLoading] = useState(false);
-  const [searchResult, setSearchResult] = useState<SearchResult[]>([]);
+  const [searchResult, setSearchResult] = useState<SearchResultReview[]>([]);
+  const [searchResultTrips, setSearchResultTrips] = useState<SearchResultTrip[]>([]);
   const [tripModalIsOpen, setTripModalIsOpen] = useState(false);
   const { inputProps: searchProps, isFocused: isSearchFocused } = useInputFocus();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const [searchMode, setSearchMode] = useState('reviews');
 
-  const handleChange = useCallback((e) => {
+  console.log('searchResult => ', searchResult);
+  console.log('searchResultTrips => ', searchResultTrips);
+
+  const handleChange = useCallback((e: { target: { value: React.SetStateAction<string> } }) => {
     setSearchTerm(e.target.value);
   }, []);
 
@@ -133,12 +164,6 @@ const Header = () => {
     }
   };
 
-  // const notifyInfo = (text: string) => {
-  //   if (!toast.isActive('info')) {
-  //     toast.info(text, { toastId: 'info' });
-  //   }
-  // };
-
   useEffect(() => {
     if (!isSearchFocused) {
       setSearchResult([]);
@@ -150,13 +175,12 @@ const Header = () => {
     try {
       setSearchIsLoading(true);
 
-      if (searchTerm.length) {
+      if (searchTerm.length && searchMode === 'reviews') {
+        searchMode === 'reviews';
         const index = client.initIndex('review');
         const result = await index.search(searchTerm, {
           hitsPerPage: 5,
         });
-
-        console.log('search results: ', result.hits);
 
         const imageUrls = await Promise.all(
           result.hits.map(async (hit) => {
@@ -181,12 +205,45 @@ const Header = () => {
           }))
         );
       }
+
+      if (searchTerm.length && searchMode === 'trips') {
+        const indexTrips = client.initIndex('trips');
+        const resultedTrips = await indexTrips.search(searchTerm, {
+          hitsPerPage: 5,
+        });
+
+        const imageUrlsTrips = await Promise.all(
+          resultedTrips.hits.map(async (hit) => {
+            const q = query(usersCollection, where('id', '==', hit.userId));
+            const querySnapshot = await getDocs(q);
+            const user = querySnapshot.docs[0].data();
+            if (user.avatarUrl) {
+              return await getDownloadURL(ref(storage, user.avatarUrl));
+            } else {
+              return DefaultAvatar;
+            }
+          })
+        );
+
+        setSearchResultTrips(
+          resultedTrips.hits.map((hit, i) => ({
+            geoTags: hit.geoTag,
+            rate: hit.rate,
+            text: hit.text,
+            userId: hit.userId,
+            type: CONTENT_TYPE.TRAVEL,
+            id: hit.objectID,
+            avatar: imageUrlsTrips[i],
+            createdAt: hit.createdAt,
+          }))
+        );
+      }
     } catch (e) {
       console.log('[ERROR searching] => ', e);
     } finally {
       setSearchIsLoading(false);
     }
-  }, [searchTerm]);
+  }, [searchTerm, searchMode]);
 
   useEffect(() => {
     handleSearch();
@@ -220,15 +277,19 @@ const Header = () => {
   }, []);
 
   // eslint-disable-next-line @typescript-eslint/no-shadow
-  const handleSelectAutocomplete = (searchResult: any) => {
+  const handleSelectAutocomplete = (searchResult: any, type: string) => {
     (async () => {
-      if (firestoreUser?.id && searchResult.id) {
-        navigate('/place' + `/${searchResult.placeId}`, {
-          state: {
-            // ...fetchedPost,
-            postId: searchResult.id,
-          },
-        });
+      if (type === 'trip') {
+        navigate('/trip' + `/${searchResult.id}`);
+      } else {
+        if (firestoreUser?.id && searchResult.id) {
+          navigate('/place' + `/${searchResult.placeId}`, {
+            state: {
+              // ...fetchedPost,
+              postId: searchResult.id,
+            },
+          });
+        }
       }
     })();
   };
@@ -248,44 +309,109 @@ const Header = () => {
           <div style={{ width: '100%' }} onFocus={searchProps.onFocus} onBlur={searchProps.onBlur}>
             <input
               className={styles.input}
-              placeholder='Search reviews'
+              placeholder={`Search ${searchMode}`}
               onChange={debouncedResults}
             />
-            {searchTerm.length > 0 && searchResult.length > 0 && isSearchFocused ? (
+            <div className={styles.switchContainer}>
+              <button
+                className={`${styles.switchButton} ${styles.switchLeft} ${searchMode === 'reviews' ? styles.switchActive : ''}`}
+                onClick={() => {
+                  if (searchMode === 'reviews') return;
+                  setSearchMode('reviews');
+                  handleSearch();
+                }}
+              >
+                Reviews
+              </button>
+              <button
+                className={`${styles.switchButton} ${styles.switchRight} ${searchMode === 'trips' ? styles.switchActive : ''}`}
+                onClick={() => {
+                  if (searchMode === 'trips') return;
+                  setSearchMode('trips');
+                  handleSearch();
+                }}
+              >
+                Trips
+              </button>
+            </div>
+            {searchIsLoading ? (
               <div className={styles.searchResultsContainer}>
-                {searchResult?.map((resultOption) => {
-                  return (
-                    <div
-                      className={styles.autocompleteOption}
-                      key={resultOption.id}
-                      onClick={() => handleSelectAutocomplete(resultOption)}
-                    >
-                      <div className={styles.autocompleteLeftBox}>
-                        <img src={resultOption.avatar} alt='avatar' className={styles.avatar} />
-                        {/* <p>{resultOption.location.name.split(',')[0]}</p> */}
-                        <div className={styles.autocomplete_description_container}>
-                          <p className={styles.autocomplete_description}>
-                            {/* {resultOption.matchedCity?.length > 20
-                              ? resultOption.matchedCity?.slice(0, 20) + '...'
-                              : resultOption.matchedCity} */}
-                            {resultOption.authorName}: {resultOption?.placeName.split(',')[0]}
-                          </p>
-
-                          <p
-                            className={`${styles.tripDescription} ${styles.autocomplete_description}`}
-                          >
-                            {resultOption.text.length > 50
-                              ? resultOption.text.slice(0, 40) + '...'
-                              : resultOption.text}
-                          </p>
-                        </div>
-                      </div>
-                      <Rating selectedStars={resultOption.rate} />
-                    </div>
-                  );
-                })}
+                <Lottie animationData={Animation} loop={true} className={styles.animation} />
               </div>
-            ) : null}
+            ) : searchTerm.length > 0 && searchResult.length > 0 && isSearchFocused ? (
+              <div className={styles.searchResultsContainer}>
+                {searchMode === 'reviews' &&
+                  searchResult?.map((resultOption) => {
+                    return (
+                      <div
+                        className={styles.autocompleteOption}
+                        key={resultOption.id}
+                        onClick={() => handleSelectAutocomplete(resultOption, 'review')}
+                      >
+                        <div className={styles.autocompleteLeftBox}>
+                          <img src={resultOption.avatar} alt='avatar' className={styles.avatar} />
+                          {/* <p>{resultOption.location.name.split(',')[0]}</p> */}
+                          <div className={styles.autocomplete_description_container}>
+                            <p className={styles.autocomplete_description}>
+                              {/* {resultOption.matchedCity?.length > 20
+                                  ? resultOption.matchedCity?.slice(0, 20) + '...'
+                                  : resultOption.matchedCity} */}
+                              {resultOption.authorName}: {resultOption?.placeName.split(',')[0]}
+                            </p>
+
+                            <p
+                              className={`${styles.tripDescription} ${styles.autocomplete_description}`}
+                            >
+                              {resultOption.text.length > 50
+                                ? resultOption.text.slice(0, 40) + '...'
+                                : resultOption.text}
+                            </p>
+                          </div>
+                        </div>
+                        <Rating selectedStars={resultOption.rate} />
+                      </div>
+                    );
+                  })}
+                {searchMode === 'trips' &&
+                  searchResultTrips?.map((resultOption) => {
+                    return (
+                      <div
+                        className={styles.autocompleteOption}
+                        key={resultOption.id}
+                        onClick={() => handleSelectAutocomplete(resultOption, 'trip')}
+                      >
+                        <div className={styles.autocompleteLeftBox}>
+                          <img src={resultOption.avatar} alt='avatar' className={styles.avatar} />
+                          {/* <p>{resultOption.location.name.split(',')[0]}</p> */}
+                          <div className={styles.autocomplete_description_container}>
+                            <p className={styles.autocomplete_description}>
+                              {/* {resultOption.matchedCity?.length > 20
+                                  ? resultOption.matchedCity?.slice(0, 20) + '...'
+                                  : resultOption.matchedCity} */}
+                              {/* {resultOption.authorName}: {resultOption?.placeName.split(',')[0]} */}
+                            </p>
+
+                            <p
+                              className={`${styles.tripDescription} ${styles.autocomplete_description}`}
+                            >
+                              {resultOption.text.length > 50
+                                ? resultOption.text.slice(0, 40) + '...'
+                                : resultOption.text}
+                            </p>
+                          </div>
+                        </div>
+                        <Rating selectedStars={resultOption.rate} />
+                      </div>
+                    );
+                  })}
+              </div>
+            ) : (
+              <div className={styles.searchResultsContainer}>
+                <div className={styles.autocompleteOption}>
+                  <p>No results found</p>
+                </div>
+              </div>
+            )}
           </div>
         </div>
         <div className={styles.icons}>
