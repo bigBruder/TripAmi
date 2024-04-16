@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 
 import algoliasearch from 'algoliasearch';
 import {
@@ -26,7 +26,11 @@ import Rating from '~/components/Rating';
 import { storage } from '~/firebase';
 import { useInputFocus } from '~/hooks/useInputRef';
 import { AuthContext } from '~/providers/authContext';
-import { notificationsCollection, usersCollection } from '~/types/firestoreCollections';
+import {
+  notificationsCollection,
+  placesCollection,
+  usersCollection,
+} from '~/types/firestoreCollections';
 import { Notification } from '~/types/notifications/notifications';
 
 import Animation from '@assets/animations/loader.json';
@@ -45,13 +49,15 @@ import icon from '@assets/icons/ph_user-light.svg';
 import plus from '@assets/icons/plus.svg';
 import { ref } from '@firebase/storage';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
-import * as RadixSwitch from '@radix-ui/react-switch';
 
 import Logo from '../../../assets/icons/headerLogo.svg';
 import styles from './header.module.css';
 import './styles.css';
 
 const client = algoliasearch('W8J2M4GNE3', '18fbb3c4cc4108ead5479d90911f3507');
+const indexReviews = client.initIndex('review');
+const indexTrips = client.initIndex('trips');
+const indexPlaces = client.initIndex('places');
 
 enum CONTENT_TYPE {
   POST = 'post',
@@ -100,6 +106,7 @@ const Header = () => {
   const [searchIsLoading, setSearchIsLoading] = useState(false);
   const [searchResult, setSearchResult] = useState<SearchResultReview[]>([]);
   const [searchResultTrips, setSearchResultTrips] = useState<SearchResultTrip[]>([]);
+  const [searchResultPlaces, setSearchResultPlaces] = useState<any[]>([]);
   const [tripModalIsOpen, setTripModalIsOpen] = useState(false);
   const { inputProps: searchProps, isFocused: isSearchFocused } = useInputFocus();
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -176,8 +183,7 @@ const Header = () => {
       setSearchIsLoading(true);
       if (searchTerm.length && searchMode === 'reviews') {
         searchMode === 'reviews';
-        const index = client.initIndex('review');
-        const result = await index.search(searchTerm, {
+        const result = await indexReviews.search(searchTerm, {
           hitsPerPage: 5,
         });
         const imageUrls = await Promise.all(
@@ -203,7 +209,6 @@ const Header = () => {
         );
       }
       if (searchTerm.length && searchMode === 'trips') {
-        const indexTrips = client.initIndex('trips');
         const resultedTrips = await indexTrips.search(searchTerm, {
           hitsPerPage: 5,
         });
@@ -231,6 +236,13 @@ const Header = () => {
             createdAt: hit.createdAt,
           }))
         );
+      }
+
+      if (searchResult.length === 0 && searchResultTrips.length === 0) {
+        const places = await indexPlaces.search(searchTerm, {
+          hitsPerPage: 5,
+        });
+        setSearchResultPlaces(places.hits);
       }
     } catch (e) {
       console.log('[ERROR searching] => ', e);
@@ -273,17 +285,18 @@ const Header = () => {
   // eslint-disable-next-line @typescript-eslint/no-shadow
   const handleSelectAutocomplete = (searchResult: any, type: string) => {
     (async () => {
-      if (type === 'trip') {
-        navigate('/trip' + `/${searchResult.id}`);
-      } else {
-        if (firestoreUser?.id && searchResult.id) {
-          navigate('/place' + `/${searchResult.placeId}`, {
-            state: {
-              // ...fetchedPost,
-              postId: searchResult.id,
-            },
-          });
-        }
+      switch (type) {
+        case 'trip':
+          navigate('/trip' + `/${searchResult.id}`);
+          break;
+        case 'place':
+          navigate('/place' + `/${searchResult.placeId}`);
+          break;
+        case 'review':
+          navigate('/place' + `/${searchResult.placeId}`);
+          break;
+        default:
+          break;
       }
     })();
   };
@@ -294,7 +307,7 @@ const Header = () => {
     }
   }, []);
 
-  console.log(isSearchFocused, 'isSearchFocused');
+  console.log(searchResultPlaces, 'searchResultPlaces');
 
   return (
     <>
@@ -408,7 +421,31 @@ const Header = () => {
                 </div>
               ) : (
                 <div className={styles.searchResultsContainer}>
-                  <p className={styles.noResults}>No results found</p>
+                  <h3 className={styles.noResults}>No {searchMode} found</h3>
+                  {searchResultPlaces.length > 0 && (
+                    <>
+                      <p>You also can be interested in</p>
+                      {searchResultPlaces?.map((resultOption) => (
+                        <div
+                          className={styles.autocompleteOption}
+                          key={resultOption.id}
+                          onClick={() => handleSelectAutocomplete(resultOption, 'place')}
+                        >
+                          <div className={styles.autocompleteLeftBox}>
+                            <div className={styles.autocomplete_description_container}>
+                              <p className={styles.autocomplete_description}>{resultOption.name}</p>
+
+                              <p
+                                className={`${styles.tripDescription} ${styles.autocomplete_description}`}
+                              >
+                                {resultOption.address}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </>
+                  )}
                 </div>
               ))
             )}
