@@ -37,7 +37,7 @@ import './styles.css';
 
 import 'swiper/css';
 
-const TABS = ['Home', 'My friends', 'Google Maps', 'My trips'];
+const TABS = ['Home', 'My friends', 'Dream Trips', 'My trips'];
 
 const MyAccount = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
