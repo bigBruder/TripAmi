@@ -381,6 +381,14 @@ h5 {
   }
 }
 
+.autocomplete_description {
+  font-size: 14px;
+}
+
+.matchedPlace {
+  font-weight: 600;
+}
+
 @media (max-width: 500px) {
 
   .searchResultsContainer {

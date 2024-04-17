@@ -226,6 +226,27 @@ const Header = () => {
             }
           })
         );
+
+        const matchedCities = resultedTrips.hits.map((hit) => {
+          for (let i = 0; i < hit._highlightResult.cities.length; i++) {
+            if (hit._highlightResult.cities[i].address.matchLevel === 'full') {
+              return hit._highlightResult.cities[i].address.value
+                .replaceAll('<em>', '')
+                .replaceAll('</em>', '')
+                .split(',')[0];
+            }
+          }
+          for (let i = 0; i < hit._highlightResult.geoTags.length; i++) {
+            if (hit._highlightResult.geoTags[i].address.matchLevel === 'full') {
+              return hit._highlightResult.geoTags[i].address.value
+                .replaceAll('<em>', '')
+                .replaceAll('</em>', '')
+                .split(',')[0];
+            }
+          }
+        });
+
+        console.log('matchedCity', matchedCities );
         setSearchResultTrips(
           resultedTrips.hits.map((hit, i) => ({
             geoTags: hit.geoTag,
@@ -237,6 +258,7 @@ const Header = () => {
             avatar: imageUrlsTrips[i],
             createdAt: hit.createdAt,
             tripName: hit.tripName,
+            matchedCity: matchedCities ? matchedCities[0] : null,
           }))
         );
       }
@@ -409,12 +431,12 @@ const Header = () => {
                             <img src={resultOption.avatar} alt='avatar' className={styles.avatar} />
                             {/* <p>{resultOption.location.name.split(',')[0]}</p> */}
                             <div className={styles.autocomplete_description_container}>
-                              {/* <p className={styles.autocomplete_description}> */}
-                              {/* {resultOption.matchedCity?.length > 20
+                              <p className={`${styles.autocomplete_description} ${styles.matchedPlace}`}>
+                                {resultOption.matchedCity?.length > 20
                                   ? resultOption.matchedCity?.slice(0, 20) + '...'
-                                  : resultOption.matchedCity} */}
-                              {/* {resultOption.authorName}: {resultOption?.placeName.split(',')[0]} */}
-                              {/* </p> */}
+                                  : resultOption.matchedCity}
+                                {/* {resultOption.authorName}: {resultOption?.placeName.split(',')[0]} */}
+                              </p>
                               <h5 className={`${styles.tripDescription}`}>
                                 {resultOption.tripName.length > 50
                                   ? resultOption.tripName.slice(0, 40) + '...'
