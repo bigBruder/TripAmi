@@ -91,6 +91,7 @@ type SearchResultTrip = {
   tripName: string;
   // matchedCity: matchedCities[i],
   createdAt: string;
+  matchedCity: string;
 };
 
 type GeoTag = {
@@ -181,6 +182,7 @@ const Header = () => {
   }, [isSearchFocused]);
 
   const handleSearch = useCallback(async () => {
+    if (!searchTerm) return;
     try {
       setSearchIsLoading(true);
       if (searchTerm.length && searchMode === SearchMode.REVIEWS) {
@@ -246,7 +248,6 @@ const Header = () => {
           }
         });
 
-        console.log('matchedCity', matchedCities );
         setSearchResultTrips(
           resultedTrips.hits.map((hit, i) => ({
             geoTags: hit.geoTag,
@@ -431,7 +432,9 @@ const Header = () => {
                             <img src={resultOption.avatar} alt='avatar' className={styles.avatar} />
                             {/* <p>{resultOption.location.name.split(',')[0]}</p> */}
                             <div className={styles.autocomplete_description_container}>
-                              <p className={`${styles.autocomplete_description} ${styles.matchedPlace}`}>
+                              <p
+                                className={`${styles.autocomplete_description} ${styles.matchedPlace}`}
+                              >
                                 {resultOption.matchedCity?.length > 20
                                   ? resultOption.matchedCity?.slice(0, 20) + '...'
                                   : resultOption.matchedCity}
