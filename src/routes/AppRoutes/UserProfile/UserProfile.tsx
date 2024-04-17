@@ -208,7 +208,7 @@ const UserProfile = () => {
                       key={tab}
                     >
                       {tab}{' '}
-                      {userData?.friends && firestoreUser?.id && index === 1 && (
+                      {userData?.friends && firestoreUser?.id && index === 0 && (
                         <div className={styles.friendsCount}>
                           {userData?.friends?.length}
                           {/* {friends.length || 0} */}
@@ -217,7 +217,7 @@ const UserProfile = () => {
                             : userData?.friends?.length} */}
                         </div>
                       )}
-                      {index === 2 && (
+                      {index === 1 && (
                         <div className={styles.friendsCount}>{userData?.tripCount || 0}</div>
                       )}
                     </span>
