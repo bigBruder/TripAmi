@@ -4,14 +4,17 @@ import Modal from 'react-modal';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { collection, getDocs, query, updateDoc, where } from 'firebase/firestore';
 import { getDownloadURL } from 'firebase/storage';
+import { Pagination } from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Favourite } from '~/assets/icons/favourite';
 import CreateTripModal from '~/components/CreateTripModal';
 import CustomModal from '~/components/CustomModal';
 import Rating from '~/components/Rating';
 import { db, storage } from '~/firebase';
 import { AuthContext } from '~/providers/authContext';
-import { commentsCollection } from '~/types/firestoreCollections';
+import { commentsCollection, tripsCollection } from '~/types/firestoreCollections';
 import { ITravel } from '~/types/travel';
 
 import BinIcon from '@assets/icons/BinIcon.svg';
@@ -26,8 +29,6 @@ import { DropdownProvider } from '../DropdownProvider/DropdownProvider';
 import { LightBox } from '../Lightbox/LightBox';
 import ShareModal from '../ShareModal/ShareModal';
 import styles from './travelCard.module.css';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Pagination } from 'swiper/modules';
 
 interface Props {
   travel: ITravel;
@@ -57,6 +58,7 @@ const TravelCard: FC<Props> = ({ travel }) => {
     dayDescription,
     cities,
     id,
+    usersSaved,
   } = travel;
   const navigate = useNavigate();
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
@@ -125,53 +127,23 @@ const TravelCard: FC<Props> = ({ travel }) => {
     })();
   }, [imageUrl]);
 
-  // const getLayout = useMemo(() => {
-  //   switch (imageDownloadUrls?.length) {
-  //     case 1:
-  //       return [1];
-  //     case 2:
-  //       return [1, 1];
-  //     case 3:
-  //       return [1, 2];
-  //     case 4:
-  //       return [2, 2];
-  //     case 5:
-  //       return [1, 4];
-  //     default:
-  //       return [];
-  //   }
-  // }, [imageDownloadUrls?.length]);
-
-  // const getHeight = useMemo(() => {
-  //   switch (imageDownloadUrls?.length) {
-  //     case 1:
-  //       return ['250px'];
-  //     case 2:
-  //       return ['150px', '100px'];
-  //     case 3:
-  //       return ['150px', '100px'];
-  //     case 4:
-  //       return ['125px', '125px'];
-  //     case 5:
-  //       return ['150px', '100px'];
-  //     default:
-  //       return [];
-  //   }
-  // }, [imageDownloadUrls?.length]);
-
-  // const setting = useMemo(() => {
-  //   return {
-  //     width: '400px',
-  //     height: getHeight,
-  //     layout: getLayout,
-  //     photos: imageDownloadUrls.map((item) => ({ source: item.url })),
-  //     showNumOfRemainingPhotos: true,
-  //   };
-  // }, [getHeight, getLayout, imageDownloadUrls]);
-
   const handleCloseEditModal = useCallback(() => {
     setEditModalIsOpen(false);
   }, []);
+
+  const handleFavouriteClick = useCallback(async () => {
+    const docRef = doc(db, 'trips', travel.id);
+    if (usersSaved?.includes(firestoreUser?.firebaseUid)) {
+      await updateDoc(docRef, {
+        usersSaved: usersSaved.filter((user) => user !== firestoreUser?.firebaseUid),
+      });
+    } else {
+      await updateDoc(docRef, {
+        usersSaved: [...usersSaved, firestoreUser?.firebaseUid] || [firestoreUser?.firebaseUid],
+      });
+    }
+  }, [firestoreUser?.firebaseUid, travel.id, usersSaved]);
+
   return (
     <div className={styles.container}>
       <div className={styles.topContainer}>
@@ -183,6 +155,13 @@ const TravelCard: FC<Props> = ({ travel }) => {
             {endDate.split('/')[1]}/{endDate.split('/')[0]}/{endDate.split('/')[2]}
             {/* {startDate} - {endDate} */}
           </p>
+          <div
+            onClick={() => {
+              handleFavouriteClick(travel.id);
+            }}
+          >
+            <Favourite isActive={travel.usersSaved?.includes(firestoreUser?.firebaseUid)} />
+          </div>
         </div>
       </div>
 
@@ -268,7 +247,6 @@ const TravelCard: FC<Props> = ({ travel }) => {
             })}
           </Swiper>
         </div>
-
 
         <div className={styles.textContainer}>
           <h3 className={styles.tripName}>{tripName}</h3>

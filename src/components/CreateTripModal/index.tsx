@@ -248,6 +248,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
             pinColor: getNeutralColor(),
             dayDescription: filteredDescriptions,
             text,
+            usersSaved: [],
           }).then(async (docRef) => {
             const subcollectionCities = collection(db, `trips/${docRef.id}/cities`);
             const subcollectionPlaces = collection(db, `trips/${docRef.id}/places`);
