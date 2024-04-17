@@ -64,6 +64,10 @@ enum CONTENT_TYPE {
   TRAVEL = 'travel',
   USER = 'user',
 }
+enum SearchMode {
+  REVIEWS = 'reviews',
+  TRIPS = 'trips',
+}
 
 type SearchResultReview = {
   rate: number;
@@ -112,7 +116,7 @@ const Header = () => {
   const { inputProps: searchProps, isFocused: isSearchFocused } = useInputFocus();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
-  const [searchMode, setSearchMode] = useState('reviews');
+  const [searchMode, setSearchMode] = useState(SearchMode.REVIEWS);
 
   const handleChange = useCallback((e: { target: { value: React.SetStateAction<string> } }) => {
     setSearchTerm(e.target.value);
@@ -179,7 +183,7 @@ const Header = () => {
   const handleSearch = useCallback(async () => {
     try {
       setSearchIsLoading(true);
-      if (searchTerm.length && searchMode === 'reviews') {
+      if (searchTerm.length && searchMode === SearchMode.REVIEWS) {
         searchMode === 'reviews';
         const result = await indexReviews.search(searchTerm, {
           hitsPerPage: 5,
@@ -206,7 +210,7 @@ const Header = () => {
           }))
         );
       }
-      if (searchTerm.length && searchMode === 'trips') {
+      if (searchTerm.length && searchMode === SearchMode.TRIPS) {
         const resultedTrips = await indexTrips.search(searchTerm, {
           hitsPerPage: 5,
         });
@@ -332,20 +336,20 @@ const Header = () => {
               className={`${styles.switchContainer} ${!isSearchFocused ? styles.hideOnMobileInFocus : ''}`}
             >
               <button
-                className={`${styles.switchButton} ${styles.switchLeft} ${searchMode === 'reviews' ? styles.switchActive : ''}`}
+                className={`${styles.switchButton} ${styles.switchLeft} ${searchMode === SearchMode.REVIEWS ? styles.switchActive : ''}`}
                 onClick={() => {
-                  if (searchMode === 'reviews') return;
-                  setSearchMode('reviews');
+                  if (searchMode === SearchMode.REVIEWS) return;
+                  setSearchMode(SearchMode.REVIEWS);
                   handleSearch();
                 }}
               >
                 Reviews
               </button>
               <button
-                className={`${styles.switchButton} ${styles.switchRight} ${searchMode === 'trips' ? styles.switchActive : ''}`}
+                className={`${styles.switchButton} ${styles.switchRight} ${searchMode === SearchMode.TRIPS ? styles.switchActive : ''}`}
                 onClick={() => {
-                  if (searchMode === 'trips') return;
-                  setSearchMode('trips');
+                  if (searchMode === SearchMode.TRIPS) return;
+                  setSearchMode(SearchMode.TRIPS);
                   handleSearch();
                 }}
               >
@@ -361,7 +365,7 @@ const Header = () => {
               isSearchFocused &&
               (searchResult.length > 0 || searchResultTrips.length > 0 ? (
                 <div className={styles.searchResultsContainer}>
-                  {searchMode === 'reviews' &&
+                  {searchMode === SearchMode.REVIEWS &&
                     searchResult?.map((resultOption) => {
                       return (
                         <div
@@ -393,7 +397,7 @@ const Header = () => {
                         </div>
                       );
                     })}
-                  {searchMode === 'trips' &&
+                  {searchMode === SearchMode.TRIPS &&
                     searchResultTrips?.map((resultOption) => {
                       return (
                         <div
