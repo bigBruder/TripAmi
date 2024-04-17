@@ -157,7 +157,24 @@ const Map: FC<Props> = ({ userId }) => {
         </div>
       )}
 
-      <ComposableMap>
+      <ComposableMap
+        // onMouseEnter={() => {
+        //   console.log('mouse enter');
+        // }}
+        // onMouseLeave={() => {
+        //   console.log('mouse leave');
+        // }}
+        // onTouchStart={() => {
+        //   console.log('touch start');
+        // }}
+        onTouchMoveCapture={(e) => {
+          if (e.touches.length < 2) {
+            e.stopPropagation();
+            console.log(e);
+            console.log('touch move');
+          }
+        }}
+      >
         <ZoomableGroup
           translateExtent={[
             [0, 0],
