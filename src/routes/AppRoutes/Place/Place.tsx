@@ -19,6 +19,7 @@ import CustomModal from '~/components/CustomModal';
 import { PageTitle } from '~/components/PageTitle';
 import { PlaceReview } from '~/components/PlaceReview/PlaceReview';
 import { PlaceTripReview } from '~/components/PlaceTripReview/PlaceTripReview';
+import Rating from '~/components/Rating';
 import Header from '~/components/profile/Header';
 import { db } from '~/firebase';
 import { AuthContext } from '~/providers/authContext';
@@ -50,6 +51,7 @@ const Place = () => {
   const { id } = useParams();
   const { firestoreUser } = useContext(AuthContext);
 
+  const [averageRating, setAverageRating] = useState<number | null>(null);
   const [placeData, setPlaceData] = useState<IPlace | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -143,8 +145,13 @@ const Place = () => {
   useEffect(() => {
     (async () => {
       const q = query(reviewsCollection, where('placeId', '==', id));
+      const reviews = await getDocs(q);
+      console.log(
+        'reviews => ',
+        reviews.docs.map((doc) => doc.data())
+      );
       const snapshot = await getAggregateFromServer(q, { averageRating: average('rate') });
-      console.log(snapshot);
+      setAverageRating(Math.round(snapshot.data().averageRating));
     })();
   }, [id]);
 
@@ -170,7 +177,6 @@ const Place = () => {
               id: doc.id,
             }));
           if (!fetchedDocs[0].articleText && !fetchedDocs[0].imageUrl) {
-            console.log('working with request to the server');
             const { data }: { data?: { data: IPlace } } = await axios.get(
               'https://getgooglemapsdetails-dp6fh5oj2q-uc.a.run.app/helloWorld?placeId=' + id
             );
@@ -183,7 +189,6 @@ const Place = () => {
               imageUrl: data?.data?.imageUrl,
             });
           } else {
-            console.log('working without request to the server');
             setPlaceData({
               imageUrl: fetchedDocs[0].imageUrl,
               articleText: fetchedDocs[0].articleText,
@@ -269,7 +274,10 @@ const Place = () => {
             {geocode?.name === undefined ? (
               <Skeleton height={50} />
             ) : (
-              <h1 className={styles.title}>{geocode?.name}</h1>
+              <div className={styles.titleContainer}>
+                <h1 className={styles.title}>{geocode?.name}</h1>
+                {averageRating && <Rating selectedStars={averageRating} />}
+              </div>
             )}
             <div className={styles.postContainer}>
               {isLoading ? (
