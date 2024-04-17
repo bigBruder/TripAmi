@@ -170,8 +170,6 @@ const Map: FC<Props> = ({ userId }) => {
         onTouchMoveCapture={(e) => {
           if (e.touches.length < 2) {
             e.stopPropagation();
-            console.log(e);
-            console.log('touch move');
           }
         }}
       >
