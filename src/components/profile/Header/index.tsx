@@ -84,6 +84,7 @@ type SearchResultTrip = {
   type: CONTENT_TYPE.TRAVEL;
   id: string;
   avatar: string;
+  tripName: string;
   // matchedCity: matchedCities[i],
   createdAt: string;
 };
@@ -231,6 +232,7 @@ const Header = () => {
             id: hit.objectID,
             avatar: imageUrlsTrips[i],
             createdAt: hit.createdAt,
+            tripName: hit.tripName,
           }))
         );
       }
@@ -403,12 +405,17 @@ const Header = () => {
                             <img src={resultOption.avatar} alt='avatar' className={styles.avatar} />
                             {/* <p>{resultOption.location.name.split(',')[0]}</p> */}
                             <div className={styles.autocomplete_description_container}>
-                              <p className={styles.autocomplete_description}>
-                                {/* {resultOption.matchedCity?.length > 20
+                              {/* <p className={styles.autocomplete_description}> */}
+                              {/* {resultOption.matchedCity?.length > 20
                                   ? resultOption.matchedCity?.slice(0, 20) + '...'
                                   : resultOption.matchedCity} */}
-                                {/* {resultOption.authorName}: {resultOption?.placeName.split(',')[0]} */}
-                              </p>
+                              {/* {resultOption.authorName}: {resultOption?.placeName.split(',')[0]} */}
+                              {/* </p> */}
+                              <h5 className={`${styles.tripDescription}`}>
+                                {resultOption.tripName.length > 50
+                                  ? resultOption.tripName.slice(0, 40) + '...'
+                                  : resultOption.tripName}
+                              </h5>
 
                               <p
                                 className={`${styles.tripDescription} ${styles.autocomplete_description}`}
