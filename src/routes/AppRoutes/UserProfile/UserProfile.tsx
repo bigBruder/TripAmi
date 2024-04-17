@@ -225,9 +225,7 @@ const UserProfile = () => {
                 </div>
               </div>
               <div className={styles.mapContainer}>
-                <div className={styles.mapContainer}>
-                  <Map userId={id} />
-                </div>
+                <Map userId={id} />
               </div>
             </div>
           </div>

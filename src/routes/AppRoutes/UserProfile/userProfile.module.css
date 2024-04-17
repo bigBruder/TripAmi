@@ -126,6 +126,8 @@
     padding: 10px 30px 10px 30px;
     display: flex;
     justify-content: space-between;
+    max-width: 500px;
+    gap: 20px;
     font-size: 20px;
     font-style: normal;
     font-weight: 400;
@@ -204,7 +206,6 @@
 }
 
 .mapContainer {
-    margin: 20px;
     flex-grow: 1;
 }
 
@@ -369,19 +370,6 @@ span {
     position: absolute;
     top: 0;
     left: 0;
-}
-
-.features {
-    padding: 10px 30px 10px 30px;
-    display: flex;
-    justify-content: space-between;
-    font-size: 20px;
-    font-style: normal;
-    font-weight: 400;
-  
-    box-sizing: border-box;
-  
-    width: 100%;
 }
 
 .feature {
