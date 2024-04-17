@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { FC, useContext, useEffect, useState } from 'react';
 
 import TravelCard from '~/components/TravelCard/TravelCard';
 import useTravelsContext from '~/components/TravelItinerary/store';
@@ -45,7 +45,7 @@ interface Props {
   isFavourites?: boolean;
 }
 
-export const TravelItinerary = ({ isFavourites = false }) => {
+export const TravelItinerary: FC<Props> = ({ isFavourites = false }) => {
   const { firestoreUser } = useContext(AuthContext);
   const { travels, setTravels } = useTravelsContext();
   const [suggestedPosts, setSuggestedPosts] = useState<IPost[] | null>(null);

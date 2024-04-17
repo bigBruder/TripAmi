@@ -8,7 +8,7 @@ import { collection, getDocs, query, updateDoc, where } from 'firebase/firestore
 import { getDownloadURL } from 'firebase/storage';
 import { Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Favourite } from '~/assets/icons/favourite';
+import { Favourite } from '~/assets/icons/Favourite';
 import CreateTripModal from '~/components/CreateTripModal';
 import CustomModal from '~/components/CustomModal';
 import Rating from '~/components/Rating';
