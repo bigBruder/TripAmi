@@ -131,6 +131,7 @@ const TravelCard: FC<Props> = ({ travel }) => {
     setEditModalIsOpen(false);
   }, []);
 
+  
   const handleFavouriteClick = useCallback(async () => {
     const docRef = doc(db, 'trips', travel.id);
     if (usersSaved?.includes(firestoreUser?.id)) {
