@@ -133,16 +133,18 @@ const TravelCard: FC<Props> = ({ travel }) => {
 
   const handleFavouriteClick = useCallback(async () => {
     const docRef = doc(db, 'trips', travel.id);
-    if (usersSaved?.includes(firestoreUser?.firebaseUid)) {
+    if (usersSaved?.includes(firestoreUser?.id)) {
       await updateDoc(docRef, {
-        usersSaved: usersSaved.filter((user) => user !== firestoreUser?.firebaseUid),
+        usersSaved: usersSaved.filter((user) => user !== firestoreUser?.id),
       });
     } else {
       await updateDoc(docRef, {
-        usersSaved: [...usersSaved, firestoreUser?.firebaseUid] || [firestoreUser?.firebaseUid],
+        usersSaved: [...usersSaved, firestoreUser?.id] || [firestoreUser?.id],
       });
     }
   }, [firestoreUser?.firebaseUid, travel.id, usersSaved]);
+
+  console.log(firestoreUser?.id);
 
   return (
     <div className={styles.container}>
@@ -160,7 +162,7 @@ const TravelCard: FC<Props> = ({ travel }) => {
               handleFavouriteClick(travel.id);
             }}
           >
-            <Favourite isActive={travel.usersSaved?.includes(firestoreUser?.firebaseUid)} />
+            <Favourite isActive={travel.usersSaved?.includes(firestoreUser?.id)} />
           </div>
         </div>
       </div>

@@ -41,7 +41,11 @@ const getQuery = (sortBy: SortBy, isReverse: boolean, firestoreUser: IUser) => {
   }
 };
 
-export const TravelItinerary = () => {
+interface Props {
+  isFavourites?: boolean;
+}
+
+export const TravelItinerary = ({ isFavourites = false }) => {
   const { firestoreUser } = useContext(AuthContext);
   const { travels, setTravels } = useTravelsContext();
   const [suggestedPosts, setSuggestedPosts] = useState<IPost[] | null>(null);
@@ -51,46 +55,58 @@ export const TravelItinerary = () => {
 
   useEffect(() => {
     if (firestoreUser?.id) {
-      const q = getQuery(sortBy, isReverse, firestoreUser);
+      let unsub, q;
+      if (!isFavourites) {
+        q = getQuery(sortBy, isReverse, firestoreUser);
 
-      const unsub = onSnapshot(q, (querySnapshot: { docs: any[] }) => {
-        const fetchedTravel = querySnapshot.docs.map((doc) => ({
-          ...doc.data(),
-          id: doc.id,
-        }));
-        setTravels(fetchedTravel as ITravel[]);
-      });
-
-      (async () => {
-        try {
-          setIsSuggestedPostsLoading(true);
-          const q = query(
-            postsCollection,
-            orderBy('userId'),
-            where('userId', '!=', firestoreUser?.id),
-            orderBy('createAt', 'desc')
-          );
-          const querySnapshot = await getDocs(q);
-          const fetchedPosts = querySnapshot.docs.map((doc) => ({
+        unsub = onSnapshot(q, (querySnapshot: { docs: any[] }) => {
+          const fetchedTravel = querySnapshot.docs.map((doc) => ({
             ...doc.data(),
             id: doc.id,
           }));
+          setTravels(fetchedTravel as ITravel[]);
+        });
+      } else {
+        q = query(tripsCollection, where('usersSaved', 'array-contains', firestoreUser?.id));
+        unsub = onSnapshot(q, (querySnapshot: { docs: any[] }) => {
+          const fetchedTravel = querySnapshot.docs.map((doc) => ({
+            ...doc.data(),
+            id: doc.id,
+          }));
+          setTravels(fetchedTravel as ITravel[]);
+        });
+      }
 
-          setSuggestedPosts(fetchedPosts as IPost[]);
-        } catch (err) {
-          console.log(err);
-          // @ts-ignore
-          alert(firebaseErrors[err.code]);
-        } finally {
-          setIsSuggestedPostsLoading(false);
-        }
-      })();
+      // (async () => {
+      //   try {
+      //     setIsSuggestedPostsLoading(true);
+      //     const q = query(
+      //       postsCollection,
+      //       orderBy('userId'),
+      //       where('userId', '!=', firestoreUser?.id),
+      //       orderBy('createAt', 'desc')
+      //     );
+      //     const querySnapshot = await getDocs(q);
+      //     const fetchedPosts = querySnapshot.docs.map((doc) => ({
+      //       ...doc.data(),
+      //       id: doc.id,
+      //     }));
+
+      //     setSuggestedPosts(fetchedPosts as IPost[]);
+      //   } catch (err) {
+      //     console.log(err);
+      //     // @ts-ignore
+      //     alert(firebaseErrors[err.code]);
+      //   } finally {
+      //     setIsSuggestedPostsLoading(false);
+      //   }
+      // })();
 
       return () => {
         unsub();
       };
     }
-  }, [firestoreUser?.id, isReverse, setTravels, sortBy]);
+  }, [firestoreUser?.id, isReverse, setTravels, sortBy, isFavourites]);
 
   return (
     <div className={styles.container}>

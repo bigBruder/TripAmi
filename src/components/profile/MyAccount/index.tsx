@@ -1,5 +1,6 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
+import { useLocation, useParams } from 'react-router-dom';
 
 import { doc, updateDoc } from 'firebase/firestore';
 import { getDownloadURL } from 'firebase/storage';
@@ -36,9 +37,8 @@ import styles from './myaccount.module.css';
 import './styles.css';
 
 import 'swiper/css';
-import { useLocation, useParams } from 'react-router-dom';
 
-const TABS = ['Home', 'My friends', 'Dream Trips', 'My trips'];
+const TABS = ['Home', 'My friends', 'Dream Trips', 'My trips', 'Wishlist'];
 
 const MyAccount = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -53,7 +53,7 @@ const MyAccount = () => {
   const { setTips } = useMapContext();
   const [whereToNext, setWhereToNext] = useState<string>('');
   const [isEditWhereToNext, setIsEditWhereToNext] = useState(false);
-  const {state} = useLocation();
+  const { state } = useLocation();
 
   const { firestoreUser, loading } = useContext(AuthContext);
   const { width } = useWindowDimensions();
@@ -311,11 +311,11 @@ const MyAccount = () => {
               ))}
             </div>
           </div>
-          {activeTab !== 4 && (
-            <div className={styles.mapContainer}>
-              <Map />
-            </div>
-          )}
+          {/* {activeTab !== 4 && ( */}
+          <div className={styles.mapContainer}>
+            <Map />
+          </div>
+          {/* )} */}
         </div>
         {activeTab === 0 ? (
           <div className={styles.main_content}>
@@ -411,6 +411,8 @@ const MyAccount = () => {
         ) : activeTab === 3 ? (
           <TravelItinerary />
         ) : activeTab === 4 ? (
+          <TravelItinerary isFavourites={true} />
+        ) : activeTab === 5 ? (
           <EditMap />
         ) : (
           <MyFriends />
