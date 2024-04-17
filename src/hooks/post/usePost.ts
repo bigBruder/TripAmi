@@ -3,7 +3,7 @@ import {deleteObject, ref} from "firebase/storage";
 import {db, storage} from "~/firebase";
 import {deleteDoc, doc, getDocs, query, updateDoc, where} from "@firebase/firestore";
 import {AuthContext} from "~/providers/authContext";
-import {commentsCollection} from "~/types/firestoreCollections";
+import {commentsCollection, notificationsCollection} from "~/types/firestoreCollections";
 
 export const usePost = (postId: string) => {
   const {updateFirestoreUser, firestoreUser} = useContext(AuthContext);
@@ -31,6 +31,13 @@ export const usePost = (postId: string) => {
       }
 
       await deleteDoc(doc(db, "posts", postId));
+      const queryToNotifications = query(notificationsCollection, where('postId', '==', postId));
+      const querySnapshotNotifications = await getDocs(queryToNotifications);
+
+      querySnapshotNotifications.forEach(async (doc) => {
+        await deleteDoc(doc.ref);
+      });
+
       updateFirestoreUser({
         postsCount: firestoreUser?.postsCount ? firestoreUser?.postsCount - 1 : 0,
       })

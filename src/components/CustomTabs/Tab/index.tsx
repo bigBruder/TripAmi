@@ -1,4 +1,5 @@
-import React, {ReactNode} from 'react';
+import React, { ReactNode } from 'react';
+
 import styles from './tab.module.css';
 
 export interface ITab {
@@ -12,9 +13,12 @@ interface ITabInternal {
   onClick?: (tabIndex: number) => void;
 }
 
-const Tab:React.FC<ITab & ITabInternal> = ({ label, Icon, isActive, onClick, index }) => {
+const Tab: React.FC<ITab & ITabInternal> = ({ label, Icon, isActive, onClick, index }) => {
   return (
-    <div className={`${styles.container} ${isActive && styles['container--active']}`} onClick={() => onClick?.(index)}>
+    <div
+      className={`${styles.container} ${isActive && styles['container--active']}`}
+      onClick={() => onClick?.(index)}
+    >
       {Icon}
       <p className={`${styles.label} ${isActive && styles['label--active']}`}>{label}</p>
     </div>

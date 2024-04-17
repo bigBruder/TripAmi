@@ -61,3 +61,11 @@
 .bm-overlay {
     background: rgba(0, 0, 0, 0.3);
 }
+
+button:has(.radix_trigger):focus-visible {
+    outline: none;
+}
+
+button:has(.radix_trigger):hover {
+    border: 1px solid #646cff;
+}

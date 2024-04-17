@@ -38,6 +38,10 @@
     border-bottom: 1px solid rgba(172, 172, 172, 0.22);
     width: 100%;
     padding: 6px 2px;
+    display: inline-block;
+
+    font-family: Gilroy, sans-serif;
+    font-size: 17px;
 }
 
 .input::placeholder {
@@ -71,4 +75,17 @@
     .sendButton {
         width: 10%;
     }
+}
+
+.previewTop {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 400px;
+}
+
+.previewContainer {
+    display: flex;
+    flex-direction: column;
+    background-color: #DAE0E1;
 }

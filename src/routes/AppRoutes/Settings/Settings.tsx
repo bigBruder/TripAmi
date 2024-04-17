@@ -1,34 +1,37 @@
-import styles from './settings.module.css';
-import {Footer} from "~/components/Footer";
-import {PageTitle} from "~/components/PageTitle";
-import DefaultAvatar from "@assets/icons/defaultUserIcon.svg";
-import CameraIcon from "@assets/icons/CameraIcon.svg";
-import React, {useCallback, useContext, useEffect, useState} from "react";
-import {AuthContext} from "~/providers/authContext";
-import Header from "~/components/profile/Header";
-import FatPencil from '@assets/icons/FatPencil.svg';
-import {CustomInput} from "~/components/CustomInput";
-import Switch from "react-switch";
-import {updatePassword} from "@firebase/auth";
-import Dropdown, {Option} from 'react-dropdown';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import Dropdown, { Option } from 'react-dropdown';
 import 'react-dropdown/style.css';
-import axios from "axios";
-import {Country} from "~/types/countries";
-import './styles.css';
-import {firebaseErrors} from "~/constants/firebaseErrors";
-import {doc, updateDoc} from "@firebase/firestore";
-import {db, storage} from "~/firebase";
-import {LoadingScreen} from "~/components/LoadingScreen";
+import Switch from 'react-switch';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {urlBase64ToUint8Array} from "@utils/urlBase64ToUint8Array";
-import CustomModal from "~/components/CustomModal";
-import {ImageUploaderModal} from "~/components/ImageUploaderModal";
-import {getDownloadURL} from "firebase/storage";
-import {ref} from "@firebase/storage";
+
+import axios from 'axios';
+import { getDownloadURL } from 'firebase/storage';
+import { CustomInput } from '~/components/CustomInput';
+import CustomModal from '~/components/CustomModal';
+import { Footer } from '~/components/Footer';
+import { ImageUploaderModal } from '~/components/ImageUploaderModal';
+import { LoadingScreen } from '~/components/LoadingScreen';
+import { PageTitle } from '~/components/PageTitle';
+import Header from '~/components/profile/Header';
+import { firebaseErrors } from '~/constants/firebaseErrors';
+import { db, storage } from '~/firebase';
+import { AuthContext } from '~/providers/authContext';
+import { Country } from '~/types/countries';
+
+import CameraIcon from '@assets/icons/CameraIcon.svg';
+import FatPencil from '@assets/icons/FatPencil.svg';
+import DefaultAvatar from '@assets/icons/defaultUserIcon.svg';
+import { updatePassword } from '@firebase/auth';
+import { doc, updateDoc } from '@firebase/firestore';
+import { ref } from '@firebase/storage';
+import { urlBase64ToUint8Array } from '@utils/urlBase64ToUint8Array';
+
+import styles from './settings.module.css';
+import './styles.css';
 
 const Settings = () => {
-  const {firestoreUser, currentUser, signIn} = useContext(AuthContext);
+  const { firestoreUser, currentUser, signIn } = useContext(AuthContext);
   const [userName, setUserName] = useState('');
   const [isChecked, setIsChecked] = useState(false);
   const [oldPassword, setOldPassword] = useState('');
@@ -45,7 +48,7 @@ const Settings = () => {
 
   useEffect(() => {
     if (firestoreUser?.username) {
-      setUserName(firestoreUser.username)
+      setUserName(firestoreUser.username);
     }
 
     if (firestoreUser?.primaryLocation?.city) {
@@ -55,7 +58,11 @@ const Settings = () => {
     if (firestoreUser?.primaryLocation?.country) {
       setSelectedCountry(firestoreUser?.primaryLocation?.country);
     }
-  }, [firestoreUser?.username, firestoreUser?.primaryLocation?.city, firestoreUser?.primaryLocation?.country]);
+  }, [
+    firestoreUser?.username,
+    firestoreUser?.primaryLocation?.city,
+    firestoreUser?.primaryLocation?.country,
+  ]);
 
   const validateNewPassword = useCallback((password: string) => {
     const hasUppercase = /[A-Z]/.test(password);
@@ -71,7 +78,6 @@ const Settings = () => {
     if (!firestoreUser?.id || !firestoreUser?.email) {
       return;
     }
-
 
     if (newPassword.length && oldPassword.length && currentUser) {
       const validationResult = validateNewPassword(newPassword);
@@ -109,11 +115,13 @@ const Settings = () => {
       }
     }
 
-    if ((selectedCity && selectedCountry) &&
-      ((selectedCountry && selectedCountry !== firestoreUser?.primaryLocation?.country)
-      || (selectedCountry === firestoreUser?.primaryLocation?.country && selectedCity !== firestoreUser.primaryLocation?.city))
-    ){
-
+    if (
+      selectedCity &&
+      selectedCountry &&
+      ((selectedCountry && selectedCountry !== firestoreUser?.primaryLocation?.country) ||
+        (selectedCountry === firestoreUser?.primaryLocation?.country &&
+          selectedCity !== firestoreUser.primaryLocation?.city))
+    ) {
       try {
         setIsLoading(true);
         await updateDoc(doc(db, 'users', firestoreUser.id), {
@@ -136,7 +144,7 @@ const Settings = () => {
   useEffect(() => {
     (async () => {
       try {
-        const {data} = await axios.get('https://countriesnow.space/api/v0.1/countries/iso');
+        const { data } = await axios.get('https://countriesnow.space/api/v0.1/countries/iso');
         setCountries(data.data.map((country: Country) => country.name));
       } catch (err) {
         console.log('[ERROR getting countries] => ', err);
@@ -148,7 +156,7 @@ const Settings = () => {
     (async () => {
       try {
         setCityIsLoading(true);
-        const {data} = await axios.post('https://countriesnow.space/api/v0.1/countries/cities', {
+        const { data } = await axios.post('https://countriesnow.space/api/v0.1/countries/cities', {
           country: selectedCountry,
         });
 
@@ -161,12 +169,15 @@ const Settings = () => {
     })();
   }, [selectedCountry]);
 
-  const handleOnChangeCountry = useCallback(async (value: Option) => {
-    if (value.value !== selectedCountry) {
-      setSelectedCity(null);
-    }
-    setSelectedCountry(value.value);
-  }, [selectedCountry]);
+  const handleOnChangeCountry = useCallback(
+    async (value: Option) => {
+      if (value.value !== selectedCountry) {
+        setSelectedCity(null);
+      }
+      setSelectedCountry(value.value);
+    },
+    [selectedCountry]
+  );
 
   const subscribeUserToPush = async () => {
     try {
@@ -175,27 +186,23 @@ const Settings = () => {
       const subscribeOptions = {
         userVisibleOnly: true,
         applicationServerKey: urlBase64ToUint8Array(
-          'BEnIhPDSlw2LWtAUi2XOPITN2ZlfGzDdUuDawvuDXUK_iK_AbVZdQD-6IJKzdR5zcX_uUEtyFLmNNg8OcYZBmxg',
+          'BEnIhPDSlw2LWtAUi2XOPITN2ZlfGzDdUuDawvuDXUK_iK_AbVZdQD-6IJKzdR5zcX_uUEtyFLmNNg8OcYZBmxg'
         ),
       };
 
       const pushSubscription = await registration.pushManager.subscribe(subscribeOptions);
 
-
-      console.log(
-        'Received PushSubscription: ',
-        JSON.stringify(pushSubscription),
-      );
+      console.log('Received PushSubscription: ', JSON.stringify(pushSubscription));
       return pushSubscription;
     } catch (err) {
       console.log('[ERROR subscribe on push] => ', err);
     }
-  }
+  };
 
   useEffect(() => {
     (async () => {
       if (firestoreUser?.avatarUrl) {
-        const url = await getDownloadURL(ref(storage, firestoreUser.avatarUrl))
+        const url = await getDownloadURL(ref(storage, firestoreUser.avatarUrl));
         setAvatar(url);
       }
     })();
@@ -205,7 +212,7 @@ const Settings = () => {
     <div className={styles.main}>
       <Header />
       <div className={styles.container}>
-        <div className={styles.line}/>
+        <div className={styles.line} />
         <div className={styles.titleContainer}>
           <PageTitle title={'User settings'} />
         </div>
@@ -213,14 +220,14 @@ const Settings = () => {
           <div className={styles.avatarContainer}>
             <img src={avatar} className={styles.avatar} />
             <div className={styles.cameraContainer} onClick={() => setIsCropperModalOpen(true)}>
-              <img src={CameraIcon} className={styles.camera}/>
+              <img src={CameraIcon} className={styles.camera} />
             </div>
           </div>
           <div className={styles.inputContainer}>
             <input
-              type="text"
+              type='text'
               value={userName}
-              onChange={e => setUserName(e.target.value)}
+              onChange={(e) => setUserName(e.target.value)}
               className={styles.userNameInput}
             />
             <img src={FatPencil} className={styles.fatPencil} />
@@ -230,13 +237,22 @@ const Settings = () => {
         <p className={styles.changePassword}>Change password</p>
 
         <div className={styles.inputsContainer}>
-          <CustomInput label={'Old password'} type={'password'} onChange={setOldPassword} value={oldPassword} />
+          <CustomInput
+            label={'Old password'}
+            type={'password'}
+            onChange={setOldPassword}
+            value={oldPassword}
+          />
           <CustomInput
             label={'New  password'}
             type={'password'}
             onChange={setNewPassword}
             value={newPassword}
-            error={passwordError ? 'Password must contain at least one uppercase latin letter and one lowercase' : undefined}
+            error={
+              passwordError
+                ? 'Password must contain at least one uppercase latin letter and one lowercase'
+                : undefined
+            }
           />
         </div>
         <div className={styles.sepatarorContainer}>
@@ -263,21 +279,23 @@ const Settings = () => {
             options={countries}
             value={selectedCountry || undefined}
             onChange={handleOnChangeCountry}
-            placeholder="Select country"
+            placeholder='Select country'
             className={styles.dropdown}
           />
           <Dropdown
             disabled={!selectedCountry || cityIsLoading}
             options={cities}
-            value={!cityIsLoading ? (selectedCity || undefined) : undefined}
+            value={!cityIsLoading ? selectedCity || undefined : undefined}
             onChange={(value) => setSelectedCity(value.value)}
-            placeholder="Select city"
+            placeholder='Select city'
             className={styles.dropdown}
           />
         </div>
 
         <div className={styles.buttonsContainer}>
-          <button className={styles.save} onClick={handleSaveSettings}>Save changes</button>
+          <button className={styles.save} onClick={handleSaveSettings}>
+            Save changes
+          </button>
           <button className={`${styles.save} ${styles.cancel}`}>Cancel</button>
         </div>
       </div>

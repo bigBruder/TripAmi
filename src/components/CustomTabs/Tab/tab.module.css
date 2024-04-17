@@ -25,6 +25,12 @@
     line-height: normal;
 }
 
+@media (max-width: 768px) {
+    .label {
+        font-size: 16px;
+    }
+}
+
 .label--active {
     color: #FF4D00;
 }

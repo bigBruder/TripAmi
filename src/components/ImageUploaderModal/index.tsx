@@ -1,29 +1,33 @@
-import styles from "./imageUploaderModal.module.css";
-import {FileUploader} from "react-drag-drop-files";
-import React, {FC, useContext, useState} from "react";
-import Cropper from "react-cropper";
-import "cropperjs/dist/cropper.css";
-import './styles.css';
-import {doc, updateDoc} from "@firebase/firestore";
-import {db, storage} from "~/firebase";
-import {AuthContext} from "~/providers/authContext";
-import {ref, uploadBytes} from "@firebase/storage";
-import {v4 as uuidv4} from "uuid";
-import {getDownloadURL} from "firebase/storage";
-import {LoadingScreen} from "~/components/LoadingScreen";
+import React, { FC, useContext, useState } from 'react';
+import Cropper from 'react-cropper';
+import { FileUploader } from 'react-drag-drop-files';
 
-const fileTypes = ["JPEG", "PNG", "GIF", "JPG"];
+import { getDownloadURL } from 'firebase/storage';
+import { v4 as uuidv4 } from 'uuid';
+import { LoadingScreen } from '~/components/LoadingScreen';
+import { db, storage } from '~/firebase';
+import { AuthContext } from '~/providers/authContext';
+
+import { doc, updateDoc } from '@firebase/firestore';
+import { ref, uploadBytes } from '@firebase/storage';
+
+import styles from './imageUploaderModal.module.css';
+import './styles.css';
+
+import 'cropperjs/dist/cropper.css';
+
+const fileTypes = ['JPEG', 'PNG', 'GIF', 'JPG'];
 
 interface Props {
   closeModal: () => void;
 }
 
-export const ImageUploaderModal: FC<Props> = ({closeModal}) => {
+export const ImageUploaderModal: FC<Props> = ({ closeModal }) => {
   const [file, setFile] = useState<null | File>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [cropper, setCropper] = useState<Cropper | null>(null);
-  const {firestoreUser} = useContext(AuthContext);
+  const { firestoreUser } = useContext(AuthContext);
 
   const handleChange = (file: File) => {
     setFile(file);
@@ -38,10 +42,10 @@ export const ImageUploaderModal: FC<Props> = ({closeModal}) => {
         const croppedImage = await fetch(cropper.getCroppedCanvas().toDataURL())
           .then((res) => res.blob())
           .then((blob) => {
-            return new File([blob], "newAvatar.png", { type: "image/png" });
+            return new File([blob], 'newAvatar.png', { type: 'image/png' });
           });
 
-        if (croppedImage &&  firestoreUser?.id) {
+        if (croppedImage && firestoreUser?.id) {
           const uploadResult = await uploadBytes(storageRef, croppedImage);
 
           await updateDoc(doc(db, 'users', firestoreUser?.id), {
@@ -52,14 +56,12 @@ export const ImageUploaderModal: FC<Props> = ({closeModal}) => {
         }
       } catch (e) {
         // @ts-ignore
-        console.log(firestoreUser[e.code]);
+        console.error(firestoreUser[e.code]);
       } finally {
         setIsLoading(false);
       }
     }
   };
-
-
 
   return (
     <>
@@ -81,15 +83,19 @@ export const ImageUploaderModal: FC<Props> = ({closeModal}) => {
             }}
           />
           <div className={styles.buttonsContainer}>
-            <button className={`${styles.saveButton} ${styles.cancel}`} onClick={closeModal}>Cancel</button>
-            <button className={styles.saveButton} onClick={getCropData}>Save</button>
+            <button className={`${styles.saveButton} ${styles.cancel}`} onClick={closeModal}>
+              Cancel
+            </button>
+            <button className={styles.saveButton} onClick={getCropData}>
+              Save
+            </button>
           </div>
         </>
       ) : (
         <FileUploader
           multiple={false}
           handleChange={handleChange}
-          name="file"
+          name='file'
           types={fileTypes}
           classes={`${styles.uploadOuterContainer}`}
           hoverTitle={' '}

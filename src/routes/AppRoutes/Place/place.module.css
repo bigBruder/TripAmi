@@ -1,3 +1,7 @@
+h3, h2 {
+    margin: 0;
+}
+
 .mainContainer {
     height: 100vh;
     width: 100vw;
@@ -9,19 +13,31 @@
     display: flex;
     flex-direction: column;
     flex-grow: 1;
-    padding: 60px 60px 0 60px;
+    padding: 60px 60px 30px 60px;
 
     background-image: url('../../../assets/images/LoginBackground.png');
     background-repeat: no-repeat;
     background-size: cover;
 
-    overflow: scroll;
+    overflow: auto;
+}
+
+@media (max-width: 500px) {
+    .main {
+        padding: 30px 15px 15px 15px;
+    }
 }
 
 .post {
     display: flex;
     flex-direction: column;
     gap: 20px;
+    max-width: 1200px;
+}
+
+@media (min-width: 768px) and (max-width: 1200px){
+    .post {
+    }
 }
 
 .container {
@@ -39,6 +55,7 @@
 .postContainer {
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     gap: 25px;
 }
 
@@ -107,4 +124,82 @@
     .postIMage {
         max-width: 40%;
     }
+}
+
+.categoryTitle { 
+    width: fit-content;
+    padding: 5px 10px;
+    border-radius: 20px;
+
+    font-family: Gilroy sans-serif;
+    font-weight: 500;
+    color: black;
+
+    background-color: white;
+}
+
+.addReviewContainer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    gap: 10px;
+    padding: 5px 10px;
+    border-radius: 20px;
+    border: 2px solid transparent;
+    background-color: #FF5C00;
+    color: white;
+    cursor: pointer;
+    transition: border-color 0.3s box-shadow 0.3s;
+}
+
+.button:hover {
+    border-color: #646cff;
+    box-shadow: 0 0 10px 0 rgba(100, 108, 255, 0.3);
+}
+
+.reviewsContainer {
+    width: 95%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-self: flex-end;
+}
+
+.mapContainer {
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+    .mapContainer {
+        height: 200px;
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .title {
+        font-size: 16px;
+    }
+    .categoryTitle {
+        font-size: 16px;
+    }
+    .description {
+        font-size: 16px;
+    }
+}
+
+.reviewControl {
+    margin-top: 10px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
 }

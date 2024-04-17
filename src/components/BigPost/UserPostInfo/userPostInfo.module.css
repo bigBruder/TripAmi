@@ -2,14 +2,14 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-
-    cursor: pointer;
 }
 
 .leftContainer {
     display: flex;
     align-items: center;
     gap: 12px;
+
+    cursor: pointer;
 }
 
 .location {

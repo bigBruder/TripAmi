@@ -1,4 +1,5 @@
-import React, {FC, useState} from 'react';
+import React, { FC, useState } from 'react';
+
 import Star from '../RatingStar';
 import styles from './rating.module.css';
 

@@ -1,6 +1,6 @@
 import {useContext, useEffect} from "react";
 import {AuthContext} from "~/providers/authContext";
-import {createBrowserRouter, RouterProvider} from "react-router-dom";
+import {createBrowserRouter, createHashRouter, RouterProvider} from "react-router-dom";
 import {Intro} from "~/routes/Auth/Intro";
 import {Profile} from "~/routes/AppRoutes/Profile";
 import {PostsPage} from "~/routes/AppRoutes/Posts";
@@ -9,8 +9,9 @@ import {InvitePeople} from "~/routes/AppRoutes/InvitePeople";
 import {Settings} from "~/routes/AppRoutes/Settings";
 import {Place} from "~/routes/AppRoutes/Place";
 import {UserProfile} from "~/routes/AppRoutes/UserProfile";
+import { Trip } from "./AppRoutes/Trip/Trip";
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     path: "/",
     element: <Intro />,
@@ -20,7 +21,7 @@ const router = createBrowserRouter([
     element: <Profile />,
   },
   {
-    path: '/posts',
+    path: '/posts/:id',
     element: <PostsPage />,
   },
   {
@@ -38,6 +39,10 @@ const router = createBrowserRouter([
   {
     path: '/place/:id',
     element: <Place />,
+  },
+  {
+    path: '/trip/:id',
+    element: <Trip />,
   },
   {
     path: '/user/:id',

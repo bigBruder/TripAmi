@@ -3,6 +3,7 @@ import {ICustomMarker} from "~/components/EditMap/types";
 export interface IUser {
   id?: string;
   email?: string;
+  whereToNext?: string;
   username?: string;
   createdAt?: string;
   friends_count?: number;

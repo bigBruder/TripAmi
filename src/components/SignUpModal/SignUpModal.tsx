@@ -119,6 +119,10 @@ export const SignUpModal: FC<Props> = ({onClose, isOpen, isLogin = false}) => {
               value={password}
             />
           </div>
+          <div className={`${styles.facebook} ${styles.google}`}onClick={handleLoginWithGoogle}>
+            <img className={styles.icon} src={GoogleIcon} alt="google icon" />
+            <span className={styles.name}>Continue with Google</span>
+          </div>
         </>
       );
     } else {
