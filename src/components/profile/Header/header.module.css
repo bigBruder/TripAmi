@@ -367,7 +367,6 @@ h5 {
   padding: 10px;
 
   background-color: #FFF;
-  border-bottom: 20px;
 }
 
 @media (max-width: 768px) {
@@ -390,8 +389,10 @@ h5 {
 }
 
 @media (max-width: 500px) {
-
   .searchResultsContainer {
+    width: calc(100vw - 20px);
+    position: absolute;
+    left: -70px;
     top: 40px;
     padding: 5px 10px;
   }
