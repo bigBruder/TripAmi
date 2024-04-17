@@ -36,6 +36,7 @@ import styles from './myaccount.module.css';
 import './styles.css';
 
 import 'swiper/css';
+import { useLocation, useParams } from 'react-router-dom';
 
 const TABS = ['Home', 'My friends', 'Dream Trips', 'My trips'];
 
@@ -52,9 +53,16 @@ const MyAccount = () => {
   const { setTips } = useMapContext();
   const [whereToNext, setWhereToNext] = useState<string>('');
   const [isEditWhereToNext, setIsEditWhereToNext] = useState(false);
+  const {state} = useLocation();
 
   const { firestoreUser, loading } = useContext(AuthContext);
   const { width } = useWindowDimensions();
+
+  useEffect(() => {
+    if (state && state.activeTab !== undefined && activeTab !== state.activeTab) {
+      setActiveTab(state.activeTab);
+    }
+  }, [state]);
 
   useEffect(() => {
     if (firestoreUser?.id) {
@@ -241,7 +249,6 @@ const MyAccount = () => {
                     {!isEditWhereToNext && firestoreUser?.tripCount !== undefined && (
                       <p className={styles.text}>Where to next? </p>
                     )}
-                    {/* { ? <p className={styles.text}>Where to next?:</p> : ''} */}
 
                     {isEditWhereToNext ? (
                       <div className={styles.autocomplete}>
@@ -287,17 +294,17 @@ const MyAccount = () => {
             </div>
             <div className={styles.divider}></div>
             <div className={styles.features}>
-              {TABS.map((tab, index) => (
+              {TABS.slice(1).map((tab, index) => (
                 <span
-                  className={`${styles.feature} ${index === activeTab && styles.activeFeature}`}
-                  onClick={() => setActiveTab(index)}
+                  className={`${styles.feature} ${index === activeTab - 1 && styles.activeFeature}`}
+                  onClick={() => setActiveTab(index + 1)}
                   key={tab}
                 >
                   {tab}{' '}
-                  {index === 1 && (
+                  {index === 0 && (
                     <div className={styles.friendsCount}>{firestoreUser?.friends_count || 0}</div>
                   )}
-                  {index == 3 && (
+                  {index == 2 && (
                     <div className={styles.friendsCount}>{firestoreUser?.tripCount || 0}</div>
                   )}
                 </span>
@@ -355,9 +362,6 @@ const MyAccount = () => {
                 </div>
               )}
             </div>
-            {/* {suggestedPosts?.length ? (
-              <span className={styles.postsTitle}>You may also like</span>
-            ) : null} */}
             <div className={styles.bottomSliderContainer}>
               {suggestedPosts?.length ? (
                 <span className={styles.postsTitle}>You may also like</span>

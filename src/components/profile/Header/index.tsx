@@ -307,7 +307,17 @@ const Header = () => {
   return (
     <>
       <div className={styles.header}>
-        <img className={styles.title} src={Logo} onClick={() => navigate('/profile')} />
+        <img
+          className={styles.title}
+          src={Logo}
+          onClick={() =>
+            navigate('/profile', {
+              state: {
+                activeTab: 0,
+              },
+            })
+          }
+        />
         <div className={styles.inputWrapper}>
           <img className={styles.search} src={search} alt='search' />
           <div style={{ width: '100%' }} onFocus={searchProps.onFocus} onBlur={searchProps.onBlur}>

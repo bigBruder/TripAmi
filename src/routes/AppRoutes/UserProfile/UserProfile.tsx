@@ -24,7 +24,7 @@ import AddNewFriends, { UserCard } from '../AddNewFriends/AddNewFriends';
 import styles from './userProfile.module.css';
 
 type SortBy = 'endDate' | 'rate' | 'alphabetically';
-const TABS = ['Home', 'Friends', 'Trips'];
+const TABS = ['Friends', 'Trips'];
 
 const getQuery = (sortBy: SortBy, isReverse: boolean, id: string) => {
   switch (sortBy) {
@@ -234,8 +234,7 @@ const UserProfile = () => {
 
           <div className={styles.container}>
             <div className={styles.userContent}>
-              {activeTab === 0 && <p>There is no data</p>}
-              {activeTab === 1 && userData && (
+              {activeTab === 0 && userData && (
                 <>
                   <div>
                     {userData &&
@@ -248,7 +247,7 @@ const UserProfile = () => {
                   </div>
                 </>
               )}
-              {activeTab === 2 &&
+              {activeTab === 1 &&
                 (userTravels.length === 0 ? (
                   <p className={styles.title}>{userData?.username} has not any travels</p>
                 ) : (
