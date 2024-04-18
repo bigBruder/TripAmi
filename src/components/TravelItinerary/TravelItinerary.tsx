@@ -98,6 +98,8 @@ export const TravelItinerary: FC<Props> = ({ isFavourites = false }) => {
             ))}
           </div>
         </>
+      ) : isFavourites ? (
+        <p className={styles.title}>You have no saved travels</p>
       ) : (
         <p className={styles.text}>
           Hmm... {firestoreUser?.username} hasn&apos;t posted anything yet. Start sharing your
