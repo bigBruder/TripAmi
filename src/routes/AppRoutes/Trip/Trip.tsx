@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-// import ReactQuill from 'react-quill';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { documentId, getDocs, onSnapshot, orderBy, query, where } from 'firebase/firestore';

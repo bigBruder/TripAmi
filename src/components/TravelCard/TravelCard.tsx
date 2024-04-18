@@ -1,6 +1,5 @@
 import { FC, useCallback, useContext, useEffect, useState } from 'react';
 import Modal from 'react-modal';
-// import ReactQuill from 'react-quill';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 
@@ -14,7 +13,7 @@ import CustomModal from '~/components/CustomModal';
 import Rating from '~/components/Rating';
 import { db, storage } from '~/firebase';
 import { AuthContext } from '~/providers/authContext';
-import { commentsCollection, tripsCollection } from '~/types/firestoreCollections';
+import { commentsCollection } from '~/types/firestoreCollections';
 import { ITravel } from '~/types/travel';
 
 import BinIcon from '@assets/icons/BinIcon.svg';
@@ -131,7 +130,6 @@ const TravelCard: FC<Props> = ({ travel }) => {
     setEditModalIsOpen(false);
   }, []);
 
-  
   const handleFavouriteClick = useCallback(async () => {
     const docRef = doc(db, 'trips', travel.id);
     if (usersSaved?.includes(firestoreUser?.id)) {
@@ -150,21 +148,16 @@ const TravelCard: FC<Props> = ({ travel }) => {
   return (
     <div className={styles.container}>
       <div className={styles.topContainer}>
-        {/* <p className={styles.location} onClick={() => navigate('/trip/' + id)}>{location.name.toString()}</p> */}
         <Rating disabled selectedStars={rate} />
         <div className={styles.dateContainer}>
           <p className={styles.date}>
             {startDate.split('/')[1]}/{startDate.split('/')[0]}/{startDate.split('/')[2]} -{' '}
             {endDate.split('/')[1]}/{endDate.split('/')[0]}/{endDate.split('/')[2]}
-            {/* {startDate} - {endDate} */}
           </p>
-          <div
-            onClick={() => {
-              handleFavouriteClick(travel.id);
-            }}
-          >
-            <Favourite isActive={travel.usersSaved?.includes(firestoreUser?.id)} />
-          </div>
+          <Favourite
+            isActive={travel.usersSaved?.includes(firestoreUser?.id)}
+            onAction={() => handleFavouriteClick()}
+          />
         </div>
       </div>
 

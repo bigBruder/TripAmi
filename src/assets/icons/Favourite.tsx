@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 
-export const Favourite = ({ isActive }: { isActive: boolean }) => {
+export const Favourite = ({ isActive, onAction }: { isActive: boolean; onAction: () => {} }) => {
   const [isHovers, setIsHover] = useState(false);
   return (
     <svg
+      onClick={onAction}
       fill={isActive || isHovers ? '#ff4d00' : 'grey'}
       width='20px'
       height='20px'

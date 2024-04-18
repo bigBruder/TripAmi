@@ -49,7 +49,8 @@
 .dateContainer {
     display: flex;
     align-items: center;
-    gap: 27px;
+    justify-content: flex-end;
+    gap: 10px;
     min-width: max-content;
 }
 
@@ -458,3 +459,10 @@
         display: none;
     }
 }
+
+/* .favouriteContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 20px;
+} */
