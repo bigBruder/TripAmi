@@ -510,9 +510,7 @@ const Header = () => {
                 onClick={() => navigate('/add-friends')}
               />
             </div>
-            <div
-              className={`${styles.icon_container} ${isSearchFocused ? styles.hideOnMobileInFocus : ''}`}
-            >
+            <div className={`${styles.icon_container} ${styles.hideOnMobile}`}>
               <img src={plus} alt='plus' onClick={() => setModalIsOpen(true)} />
             </div>
             {notifications && (
