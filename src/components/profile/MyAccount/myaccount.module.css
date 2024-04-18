@@ -438,7 +438,7 @@ span {
 }
 
 .imageContainer {
-  margin-top: auto;
+  margin-top: 0;
   position: relative;
 }
 
