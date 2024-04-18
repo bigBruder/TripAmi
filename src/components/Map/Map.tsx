@@ -44,6 +44,7 @@ const Map: FC<Props> = ({ userId }) => {
     address: string;
     placeId: string;
   } | null>(null);
+  const [interactiveMessage, setInteractiveMessage] = useState<string>('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -149,6 +150,13 @@ const Map: FC<Props> = ({ userId }) => {
     }, 3000);
     return () => clearTimeout(timerId);
   }, [selectedMarkerAddress]);
+
+  useEffect(() => {
+    const timerId = setTimeout(() => {
+      setInteractiveMessage('');
+    }, 2000);
+    return () => clearTimeout(timerId);
+  }, [interactiveMessage]);
   return (
     <div style={{ position: 'relative' }}>
       {selectedMarkerAddress && (
@@ -157,9 +165,11 @@ const Map: FC<Props> = ({ userId }) => {
         </div>
       )}
 
+      {interactiveMessage && <div className={styles.interactiveMessage}>{interactiveMessage}</div>}
+
       <ComposableMap
-        // onMouseEnter={() => {
-        //   console.log('mouse enter');
+        // onMouseEnter={(e) => {
+        //   console.log('mouse enter => ', e);
         // }}
         // onMouseLeave={() => {
         //   console.log('mouse leave');
@@ -169,6 +179,7 @@ const Map: FC<Props> = ({ userId }) => {
         // }}
         onTouchMoveCapture={(e) => {
           if (e.touches.length < 2) {
+            setInteractiveMessage('Move the map with two fingers to zoom');
             e.stopPropagation();
           }
         }}
