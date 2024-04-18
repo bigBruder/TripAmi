@@ -75,7 +75,7 @@ export const TravelItinerary: FC<Props> = ({ isFavourites = false }) => {
     };
 
     fetchData();
-  }, [firestoreUser?.id, isReverse, setTravels, sortBy, isFavourites]);
+  }, [firestoreUser?.id, isReverse, sortBy, isFavourites]);
 
   return (
     <div className={styles.container}>

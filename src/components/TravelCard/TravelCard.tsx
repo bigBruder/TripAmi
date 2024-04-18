@@ -143,8 +143,6 @@ const TravelCard: FC<Props> = ({ travel }) => {
     }
   }, [firestoreUser?.firebaseUid, travel.id, usersSaved]);
 
-  console.log(firestoreUser?.id);
-
   return (
     <div className={styles.container}>
       <div className={styles.topContainer}>
