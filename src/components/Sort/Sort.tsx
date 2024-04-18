@@ -1,11 +1,12 @@
-import { FC, useMemo } from 'react';
+import { Dispatch, FC, SetStateAction, useMemo } from 'react';
 
 import { SortDirection } from '@assets/icons/SortDirection';
 
+import { SortBy } from '../TravelItinerary/TravelItinerary';
 import styles from './sort.module.css';
 
 interface Props {
-  onSelect: (value: string) => void;
+  onSelect: Dispatch<SetStateAction<SortBy>>;
   isReverse: boolean;
   setReverse: () => void;
 }
@@ -17,7 +18,7 @@ export const Sort: FC<Props> = ({ onSelect, isReverse, setReverse }) =>
         <select
           name='order'
           className={styles.sortby_select}
-          onChange={(e) => onSelect(e.target.value)}
+          onChange={(e) => onSelect(e.target.value as SortBy)}
         >
           {/* <option value='startDate'>Start date</option> */}
           <option value='endDate'>Date</option>
