@@ -96,7 +96,7 @@ const PostItem: FC<Props> = ({ postData }) => {
   const isPostMy = useMemo(() => firestoreUser?.id === userId, [firestoreUser?.id, userId]);
 
   return (
-    <div className={styles.cardContainer}>
+    <div className={`${styles.cardContainer} ${isPostMy ? styles.ownPost : ''}`}>
       {!isPostMy ? (
         <UserPostInfo
           userData={{

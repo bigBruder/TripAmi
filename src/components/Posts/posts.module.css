@@ -20,11 +20,20 @@
   margin: 0 auto;
 }
 
+.ownPost {
+  height: 350px;
+}
+
 @media (max-width: 500px) {
   .cardContainer {
     margin: 0 auto;
     width: 90%;
-    padding: 25px 25px 0 25px;
+    height: 350px;
+    padding: 10px 10px 10px
+  }
+
+  .ownPost {
+    height: 300px;
   }
 }
 
