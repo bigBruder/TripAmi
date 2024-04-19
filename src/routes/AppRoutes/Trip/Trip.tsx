@@ -187,7 +187,7 @@ export const Trip = () => {
               )}
 
               {trip?.cities && trip.cities.length > 0 && (
-                <div>
+                <div className={styles.locationsContainer}>
                   <p className={styles.text}>Locations: </p>
                   <div className={styles.tagsContainer}>
                     {trip?.cities?.map((tag) => (

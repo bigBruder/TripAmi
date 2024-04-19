@@ -287,3 +287,7 @@
         margin: 0 auto;
     }
 }
+
+.locationsContainer {
+    width: fit-content;
+}
