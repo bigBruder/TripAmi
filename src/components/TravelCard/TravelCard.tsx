@@ -268,7 +268,7 @@ const TravelCard: FC<Props> = ({ travel }) => {
                 <div className={styles.info_container}>
                   <p className={styles.mark}>Locations: </p>
                   <div className={styles.info_button}>
-                    <DropdownProvider
+                    {/* <DropdownProvider
                       side='top'
                       trigger={<img className={styles.info} src={TouchIcon} alt='info' />}
                       content={
@@ -276,7 +276,7 @@ const TravelCard: FC<Props> = ({ travel }) => {
                           <p>click tag</p>
                         </div>
                       }
-                    />
+                    /> */}
                   </div>
                 </div>
                 <div className={styles.tagsContainer}>
@@ -299,7 +299,7 @@ const TravelCard: FC<Props> = ({ travel }) => {
                   <div className={styles.info_container}>
                     <p className={styles.mark}>Spots: </p>
                     <div className={styles.info_button}>
-                      <DropdownProvider
+                      {/* <DropdownProvider
                         side='top'
                         trigger={<img className={styles.info} src={TouchIcon} alt='info' />}
                         content={
@@ -307,7 +307,7 @@ const TravelCard: FC<Props> = ({ travel }) => {
                             <p>Click tag</p>
                           </div>
                         }
-                      />
+                      /> */}
                     </div>
                   </div>
                   <div className={styles.tagsContainer}>
