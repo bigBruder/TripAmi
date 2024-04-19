@@ -17,7 +17,8 @@
 
 @media (max-width: 500px) {
     .mainContainer {
-        background-size: cover;
+        background-image: none;
+        background-color: rgb(218, 224, 225);
     }
 }
 
@@ -92,8 +93,9 @@
 
 @media (max-width: 500px) {
     .main {
-        margin: 59px 12px;
+        margin: 25px 12px;
         margin-bottom: 57px;
+        gap: 10px;
     }
     .container {
         padding: 12px;
