@@ -92,8 +92,7 @@
     /* max-width: 100%; */
     width: 30%;
     /* min-height: 200px; */
-    min-height: 300px;
-    max-height: 300px;
+    height: 300px;
     object-fit: cover;
     flex-grow: 1;
     border-radius: 5px;
@@ -104,6 +103,12 @@
         height: 200px;
         width: 100%;
         object-position: center;
+    }
+}
+
+@media (max-width: 500px) {
+    .image {
+        height: 200px;
     }
 }
 
