@@ -234,7 +234,7 @@ const MyAccount = () => {
               <div className={styles.description}>
                 <div>
                   {!firestoreUser?.username && <Skeleton style={{ width: 100, height: 20 }} />}
-                  <p className={styles.text} style={{ margin: 0 }}>
+                  <p className={`${styles.text} ${styles.primaryText}`} style={{ margin: 0 }}>
                     {firestoreUser?.username}
                   </p>
                   <p className={styles.text}>

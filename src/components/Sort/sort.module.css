@@ -1,9 +1,16 @@
 .sortContainer {
     display: flex;
     justify-content: flex-start;
-    gap: 20px;
     align-items: center;
+    gap: 20px;
     margin-bottom: 20px;
+}
+
+@media (max-width: 500px) {
+    .sortContainer {
+        margin: 0;
+        justify-content: space-between;
+    }
 }
 
 .sort_title {
