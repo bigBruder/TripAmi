@@ -53,7 +53,10 @@ export const TravelItinerary: FC<Props> = ({ isFavourites = false }) => {
   const [sortBy, setSortBy] = useState<SortBy>('endDate');
   const [isReverse, setIsReverse] = useState(false);
 
+  console.log(isFavourites);
+
   useEffect(() => {
+    if (travels.length === 0) return;
     const fetchData = async () => {
       if (firestoreUser?.id) {
         const q = isFavourites
@@ -75,7 +78,7 @@ export const TravelItinerary: FC<Props> = ({ isFavourites = false }) => {
     };
 
     fetchData();
-  }, [firestoreUser?.id, isReverse, sortBy, isFavourites]);
+  }, []);
 
   return (
     <div className={styles.container}>

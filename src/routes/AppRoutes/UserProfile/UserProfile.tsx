@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import { useParams } from 'react-router-dom';
 
-import { collectionGroup, documentId, orderBy } from 'firebase/firestore';
+import { collectionGroup, documentId, onSnapshot, orderBy } from 'firebase/firestore';
 import { getDownloadURL } from 'firebase/storage';
 import { Footer } from '~/components/Footer';
 import Map from '~/components/Map/Map';
@@ -108,14 +108,21 @@ const UserProfile = () => {
       try {
         if (!id) return;
         let q = getQuery(sortBy, isReverse, id);
+        const unsub = onSnapshot(q, (querySnapshot: { docs: any[] }) => {
+          const fetchedTravel = querySnapshot.docs.map((doc) => ({
+            ...doc.data(),
+            id: doc.id,
+          }));
+          setUserTravels(fetchedTravel as ITravel[]);
+        });
 
-        const querySnapshot = await getDocs(q);
-        const fetchedUserTravels = querySnapshot.docs.map((doc) => ({
-          ...doc.data(),
-          id: doc.id,
-        }));
+        // const querySnapshot = await getDocs(q);
+        // const fetchedUserTravels = querySnapshot.docs.map((doc) => ({
+        //   ...doc.data(),
+        //   id: doc.id,
+        // }));
 
-        setUserTravels(fetchedUserTravels as ITravel[]);
+        // setUserTravels(fetchedUserTravels as ITravel[]);
       } catch (err) {
         // @ts-ignore
         console.error('Error getting documents: ', err);
