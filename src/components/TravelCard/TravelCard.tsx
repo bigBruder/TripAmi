@@ -65,6 +65,7 @@ const TravelCard: FC<Props> = ({ travel }) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [isModalDeleteOpen, setIsModalDeleteOpen] = useState(false);
   const [isModalShareOpen, setIsModalShareOpen] = useState(false);
+  const [inFavourites, setInFavourites] = useState(travel.usersSaved?.includes(firestoreUser?.id));
 
   const handleDeleteTrip = useCallback(async () => {
     try {
@@ -136,12 +137,16 @@ const TravelCard: FC<Props> = ({ travel }) => {
       await updateDoc(docRef, {
         usersSaved: usersSaved.filter((user) => user !== firestoreUser?.id),
       });
+      setInFavourites(false);
     } else {
       await updateDoc(docRef, {
         usersSaved: [...usersSaved, firestoreUser?.id] || [firestoreUser?.id],
       });
+      setInFavourites(true);
     }
   }, [firestoreUser?.firebaseUid, travel.id, usersSaved]);
+
+  console.log(travel.usersSaved);
 
   return (
     <div className={styles.container}>
@@ -152,10 +157,7 @@ const TravelCard: FC<Props> = ({ travel }) => {
             {startDate.split('/')[1]}/{startDate.split('/')[0]}/{startDate.split('/')[2]} -{' '}
             {endDate.split('/')[1]}/{endDate.split('/')[0]}/{endDate.split('/')[2]}
           </p>
-          <Favourite
-            isActive={travel.usersSaved?.includes(firestoreUser?.id)}
-            onAction={() => handleFavouriteClick()}
-          />
+          <Favourite isActive={inFavourites} onAction={() => handleFavouriteClick()} />
         </div>
       </div>
 
