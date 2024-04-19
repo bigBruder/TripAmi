@@ -29,6 +29,10 @@
         width: 100%;
         align-items: center;
     }
+    .title {
+        text-align: center;
+        align-self: center;
+    }
 }
 
 .bottomSliderContainer {
@@ -44,4 +48,12 @@
     .travelsContainer {
         gap: 60px;
     }
+}
+
+.emptyContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
 }

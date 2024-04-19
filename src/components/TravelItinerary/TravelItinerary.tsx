@@ -14,7 +14,7 @@ import styles from './travelItinerary.module.css';
 
 import 'swiper/css';
 
-export type SortBy = 'endDate' | 'rate' | 'alphabetically';
+export type SortBy = 'endDate' | 'rate' | 'tripName';
 
 interface Props {
   isFavourites?: boolean;
@@ -30,7 +30,7 @@ const buildQuery = (
   let additionalQuery;
 
   switch (sortBy) {
-    case 'alphabetically':
+    case 'tripName':
       additionalQuery = orderBy('tripName', !isReverse ? 'desc' : 'asc');
       break;
     case 'rate':
@@ -56,7 +56,11 @@ export const TravelItinerary: FC<Props> = ({ isFavourites = false }) => {
   const [isReverse, setIsReverse] = useState(false);
 
   useEffect(() => {
-    const q = query(tripsCollection, where('usersSaved', 'array-contains', firestoreUser?.id));
+    const q = query(
+      tripsCollection,
+      where('usersSaved', 'array-contains', firestoreUser?.id),
+      orderBy(sortBy, !isReverse ? 'desc' : 'asc')
+    );
     const unsub = onSnapshot(q, (querySnapshot: { docs: any[] }) => {
       const fetchedTravel = querySnapshot.docs.map((doc) => ({
         ...doc.data(),
@@ -67,9 +71,14 @@ export const TravelItinerary: FC<Props> = ({ isFavourites = false }) => {
   }, [firestoreUser?.id]);
 
   useEffect(() => {
+    if (isFavourites) return;
     const fetchData = async () => {
       if (firestoreUser?.id) {
-        const q = query(tripsCollection, where('userId', '==', firestoreUser?.id));
+        const q = query(
+          tripsCollection,
+          where('userId', '==', firestoreUser?.id),
+          orderBy(sortBy, !isReverse ? 'desc' : 'asc')
+        );
 
         const unsub = onSnapshot(q, (querySnapshot: { docs: any[] }) => {
           const fetchedTravel = querySnapshot.docs.map((doc) => ({
@@ -88,61 +97,61 @@ export const TravelItinerary: FC<Props> = ({ isFavourites = false }) => {
     fetchData();
   }, [isFavourites, sortBy, isReverse, firestoreUser?.id]);
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     if (firestoreUser?.id) {
-  //       const q = isFavourites
-  //         ? buildQuery(sortBy, isReverse, firestoreUser, 'usersSaved', isFavourites)
-  //         : buildQuery(sortBy, isReverse, firestoreUser, 'userId', isFavourites);
-
-  //       const unsub = onSnapshot(q, (querySnapshot: { docs: any[] }) => {
-  //         const fetchedTravel = querySnapshot.docs.map((doc) => ({
-  //           ...doc.data(),
-  //           id: doc.id,
-  //         }));
-  //         setTravels(fetchedTravel as ITravel[]);
-  //       });
-
-  //       return () => {
-  //         unsub();
-  //       };
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, []);
-
-  console.log('wishlist', wishlist);
-
-  return (
-    <div className={styles.container}>
-      {travels && travels.length > 0 ? (
-        <>
-          <p className={styles.title}>
-            {isFavourites ? 'Travels you saved' : `${firestoreUser?.username}'s travels`}
-          </p>
-
-          <div className={styles.travelsContainer}>
-            <div style={{ alignSelf: 'flex-start' }}>
-              <Sort
-                onSelect={setSortBy}
-                isReverse={isReverse}
-                setReverse={() => setIsReverse((prevState) => !prevState)}
-              />
+  if (isFavourites) {
+    return (
+      <div className={styles.container}>
+        {wishlist && wishlist.length > 0 ? (
+          <>
+            <p className={styles.title}>Travels you saved</p>
+            <div className={styles.travelsContainer}>
+              <div style={{ alignSelf: 'flex-start' }}>
+                <Sort
+                  onSelect={setSortBy}
+                  isReverse={isReverse}
+                  setReverse={() => setIsReverse((prevState) => !prevState)}
+                />
+              </div>
+              {wishlist.map((travel) => (
+                <TravelCard key={travel.id} travel={travel} />
+              ))}
             </div>
-            {isFavourites
-              ? wishlist.map((travel) => <TravelCard key={travel.id} travel={travel} />)
-              : travels.map((travel) => <TravelCard key={travel.id} travel={travel} />)}
+          </>
+        ) : (
+          <p className={styles.title}>You have no saved travels</p>
+        )}
+      </div>
+    );
+  }
+
+  if (!isFavourites) {
+    return (
+      <div className={styles.container}>
+        {travels && travels.length > 0 ? (
+          <>
+            <p className={styles.title}>{firestoreUser?.username}'s travels</p>
+            <div className={styles.travelsContainer}>
+              <div style={{ alignSelf: 'flex-start' }}>
+                <Sort
+                  onSelect={setSortBy}
+                  isReverse={isReverse}
+                  setReverse={() => setIsReverse((prevState) => !prevState)}
+                />
+              </div>
+              {travels.map((travel) => (
+                <TravelCard key={travel.id} travel={travel} />
+              ))}
+            </div>
+          </>
+        ) : (
+          <div className={styles.emptyContainer}>
+            <p className={styles.title}>No travels yet</p>
+            <p className={styles.text}>
+              Hmm... {firestoreUser?.username} hasn&apos;t posted anything yet. Start sharing your
+              experience with other participants!
+            </p>
           </div>
-        </>
-      ) : isFavourites ? (
-        <p className={styles.title}>You have no saved travels</p>
-      ) : (
-        <p className={styles.text}>
-          Hmm... {firestoreUser?.username} hasn&apos;t posted anything yet. Start sharing your
-          experience with other participants!
-        </p>
-      )}
-    </div>
-  );
+        )}
+      </div>
+    );
+  }
 };
