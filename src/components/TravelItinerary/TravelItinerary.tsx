@@ -49,19 +49,27 @@ const buildQuery = (
 
 export const TravelItinerary: FC<Props> = ({ isFavourites = false }) => {
   const { firestoreUser } = useContext(AuthContext);
-  const { travels, setTravels } = useTravelsContext();
+  // const { travels, setTravels } = useTravelsContext();
+  const [travels, setTravels] = useState<ITravel[]>([]);
+  const [wishlist, setWishlist] = useState<ITravel[]>([]);
   const [sortBy, setSortBy] = useState<SortBy>('endDate');
   const [isReverse, setIsReverse] = useState(false);
 
-  console.log(isFavourites);
+  useEffect(() => {
+    const q = query(tripsCollection, where('usersSaved', 'array-contains', firestoreUser?.id));
+    const unsub = onSnapshot(q, (querySnapshot: { docs: any[] }) => {
+      const fetchedTravel = querySnapshot.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+      setWishlist(fetchedTravel as ITravel[]);
+    });
+  }, [firestoreUser?.id]);
 
   useEffect(() => {
-    if (travels.length === 0) return;
     const fetchData = async () => {
       if (firestoreUser?.id) {
-        const q = isFavourites
-          ? buildQuery(sortBy, isReverse, firestoreUser, 'usersSaved', isFavourites)
-          : buildQuery(sortBy, isReverse, firestoreUser, 'userId', isFavourites);
+        const q = query(tripsCollection, where('userId', '==', firestoreUser?.id));
 
         const unsub = onSnapshot(q, (querySnapshot: { docs: any[] }) => {
           const fetchedTravel = querySnapshot.docs.map((doc) => ({
@@ -78,7 +86,33 @@ export const TravelItinerary: FC<Props> = ({ isFavourites = false }) => {
     };
 
     fetchData();
-  }, []);
+  }, [isFavourites, sortBy, isReverse, firestoreUser?.id]);
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     if (firestoreUser?.id) {
+  //       const q = isFavourites
+  //         ? buildQuery(sortBy, isReverse, firestoreUser, 'usersSaved', isFavourites)
+  //         : buildQuery(sortBy, isReverse, firestoreUser, 'userId', isFavourites);
+
+  //       const unsub = onSnapshot(q, (querySnapshot: { docs: any[] }) => {
+  //         const fetchedTravel = querySnapshot.docs.map((doc) => ({
+  //           ...doc.data(),
+  //           id: doc.id,
+  //         }));
+  //         setTravels(fetchedTravel as ITravel[]);
+  //       });
+
+  //       return () => {
+  //         unsub();
+  //       };
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, []);
+
+  console.log('wishlist', wishlist);
 
   return (
     <div className={styles.container}>
@@ -96,9 +130,9 @@ export const TravelItinerary: FC<Props> = ({ isFavourites = false }) => {
                 setReverse={() => setIsReverse((prevState) => !prevState)}
               />
             </div>
-            {travels.map((travel) => (
-              <TravelCard key={travel.id} travel={travel} />
-            ))}
+            {isFavourites
+              ? wishlist.map((travel) => <TravelCard key={travel.id} travel={travel} />)
+              : travels.map((travel) => <TravelCard key={travel.id} travel={travel} />)}
           </div>
         </>
       ) : isFavourites ? (

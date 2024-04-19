@@ -139,13 +139,11 @@ const TravelCard: FC<Props> = ({ travel }) => {
       setInFavourites(false);
     } else {
       await updateDoc(docRef, {
-        usersSaved: [...usersSaved, firestoreUser?.id] || [firestoreUser?.id],
+        usersSaved: [...usersSaved, firestoreUser?.id],
       });
       setInFavourites(true);
     }
   }, [firestoreUser?.firebaseUid, travel.id, usersSaved]);
-
-  console.log(travel.usersSaved);
 
   return (
     <div className={styles.container}>
