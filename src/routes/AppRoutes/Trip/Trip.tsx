@@ -8,7 +8,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { UserPostInfo } from '~/components/BigPost/UserPostInfo';
 import { Comment } from '~/components/Comment';
 import { CommentField } from '~/components/CommentField';
-import { LightBox } from '~/components/Lightbox/LightBox';
+import { Gallery } from '~/components/Gallery/Gallery';
 import { PageTitle } from '~/components/PageTitle';
 import Rating from '~/components/Rating';
 import Header from '~/components/profile/Header';
@@ -33,12 +33,8 @@ export const Trip = () => {
     }[]
   >([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isLightBoxOpen, setIsLightBoxOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<{
-    url: string;
-    type: string;
-    description: string | undefined;
-  } | null>(null);
+  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+
   const [comments, setComments] = useState<IComment[] | null>(null);
   const navigate = useNavigate();
 
@@ -90,16 +86,6 @@ export const Trip = () => {
   }, [trip]);
 
   useEffect(() => {
-    if (selectedImage) {
-      setIsLightBoxOpen(true);
-    }
-  }, [selectedImage]);
-
-  const handleSelectImage = (index: number) => {
-    setSelectedImage(imageUrls[index]);
-  };
-
-  useEffect(() => {
     const q = query(commentsCollection, where('postId', '==', id), orderBy('createdAt', 'desc'));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const fetchedDocs = querySnapshot.docs.map((doc) => ({
@@ -143,11 +129,11 @@ export const Trip = () => {
                     pagination={true}
                     modules={[Pagination]}
                   >
-                    {imageUrls?.map((image, idx) => (
+                    {imageUrls?.map((image) => (
                       <SwiperSlide
                         key={image.url}
                         style={{ display: 'flex', justifyContent: 'center' }}
-                        onClick={() => handleSelectImage(idx)}
+                        onClick={() => setIsGalleryOpen(true)}
                       >
                         {image.type.includes('video') ? (
                           <video src={image.url} className={styles.postIMage} />
@@ -155,7 +141,7 @@ export const Trip = () => {
                           <img
                             src={image.url}
                             className={styles.postIMage}
-                            onClick={() => setSelectedImage(imageUrls[idx])}
+                            onClick={() => setIsGalleryOpen(true)}
                           />
                         )}
                       </SwiperSlide>
@@ -168,11 +154,7 @@ export const Trip = () => {
                     <Rating selectedStars={trip?.rate || 1} />
                   </div>
                   <div className={styles.textContainer}>
-                    {/* <ReactQuill value={trip?.text} readOnly={true} theme={'bubble'} /> */}
                     <p className={styles.postText}>{trip?.text}</p>
-                    {/* <div className={styles.postActionsWrapper}>
-                    <PostActions postData={post} />
-                  </div> */}
                   </div>
                 </div>
               </div>
@@ -239,12 +221,10 @@ export const Trip = () => {
           ))}
       </div>
 
-      <LightBox
-        isOpen={isLightBoxOpen}
-        onCloseModal={() => setIsLightBoxOpen(false)}
-        selectedImage={selectedImage}
-        onChangeSelectedPhoto={setSelectedImage}
-        images={imageUrls}
+      <Gallery
+        images={imageUrls.map((image) => ({ ...image, description: image.description || '' }))}
+        isOpen={isGalleryOpen}
+        onClose={() => setIsGalleryOpen(false)}
       />
     </div>
   );

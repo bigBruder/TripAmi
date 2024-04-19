@@ -25,7 +25,7 @@ import { deleteDoc, doc } from '@firebase/firestore';
 import { ref } from '@firebase/storage';
 
 import { DropdownProvider } from '../DropdownProvider/DropdownProvider';
-import { LightBox } from '../Lightbox/LightBox';
+import { Gallery } from '../Gallery/Gallery';
 import ShareModal from '../ShareModal/ShareModal';
 import styles from './travelCard.module.css';
 
@@ -61,8 +61,7 @@ const TravelCard: FC<Props> = ({ travel }) => {
   } = travel;
   const navigate = useNavigate();
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
-  const [isPhotosModalOpen, setIsPhotosModalOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [isModalDeleteOpen, setIsModalDeleteOpen] = useState(false);
   const [isModalShareOpen, setIsModalShareOpen] = useState(false);
   const [inFavourites, setInFavourites] = useState(travel.usersSaved?.includes(firestoreUser?.id));
@@ -176,9 +175,7 @@ const TravelCard: FC<Props> = ({ travel }) => {
                   alt='travel'
                   className={styles.image}
                   onClick={() => {
-                    setSelectedImage(image);
-                    setIsPhotosModalOpen(true);
-                    document.body.style.overflow = 'hidden';
+                    setIsGalleryOpen(true);
                   }}
                 />
               );
@@ -190,8 +187,7 @@ const TravelCard: FC<Props> = ({ travel }) => {
                   className={styles.image}
                   controls
                   onClick={() => {
-                    setSelectedImage(image);
-                    setIsPhotosModalOpen(true);
+                    setIsGalleryOpen(true);
                   }}
                   // onClick={() => setIsPhotosModalOpen(true)}
                 />
@@ -218,9 +214,7 @@ const TravelCard: FC<Props> = ({ travel }) => {
                       alt='travel'
                       className={styles.image}
                       onClick={() => {
-                        setSelectedImage(image);
-                        setIsPhotosModalOpen(true);
-                        document.body.style.overflow = 'hidden';
+                        setIsGalleryOpen(true);
                       }}
                     />
                   </SwiperSlide>
@@ -231,10 +225,9 @@ const TravelCard: FC<Props> = ({ travel }) => {
                     <video
                       src={image.url}
                       className={styles.image}
-                      controls
+                      // controls
                       onClick={() => {
-                        setSelectedImage(image);
-                        setIsPhotosModalOpen(true);
+                        setIsGalleryOpen(true);
                       }}
                     />
                   </SwiperSlide>
@@ -424,18 +417,14 @@ const TravelCard: FC<Props> = ({ travel }) => {
           </div>
         </div>
       </Modal>
-
-      <LightBox
-        isOpen={isPhotosModalOpen}
-        onCloseModal={() => {
-          setIsPhotosModalOpen(false);
-          document.body.style.overflow = 'auto';
-        }}
-        selectedImage={selectedImage}
-        onChangeSelectedPhoto={setSelectedImage}
-        images={imageDownloadUrls}
-      />
       <ToastContainer closeOnClick autoClose={2000} limit={1} pauseOnHover={false} />
+      {imageUrl.length > 0 && (
+        <Gallery
+          images={imageDownloadUrls}
+          isOpen={isGalleryOpen}
+          onClose={() => setIsGalleryOpen(false)}
+        />
+      )}
     </div>
   );
 };
