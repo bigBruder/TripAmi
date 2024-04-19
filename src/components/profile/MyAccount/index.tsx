@@ -10,6 +10,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import CreatePostModal from '~/components/CreatePostModal';
 import CreateTripModal from '~/components/CreateTripModal';
 import CustomModal from '~/components/CustomModal';
+import { Dialog } from '~/components/Dialog/Dialog';
 import EditMap from '~/components/EditMap';
 import useMapContext from '~/components/EditMap/store';
 import { Footer } from '~/components/Footer';
@@ -246,26 +247,31 @@ const MyAccount = () => {
                     <Skeleton style={{ width: 100, height: 20 }} />
                   )}
                   <div className={styles.whereToNextContainer}>
-                    {!isEditWhereToNext && firestoreUser?.tripCount !== undefined && (
+                    {firestoreUser?.tripCount !== undefined && (
                       <p className={styles.text}>Where to next? </p>
                     )}
 
-                    {isEditWhereToNext ? (
-                      <div className={styles.autocomplete}>
-                        <PlaceAutocomplete
-                          searchOptions={{ types: ['locality'] }}
-                          location={whereToNext || ''}
-                          setLocation={setWhereToNext}
-                          onSelectPlace={(e) => onSelectWhereToNext(e)}
-                        />
+                    <Dialog
+                      isOpen={isEditWhereToNext}
+                      onClose={() => setIsEditWhereToNext(false)}
+                      title='Edit a "Where to next?"'
+                    >
+                      <div className={styles.whereToNextModal}>
+                        <div className={styles.autocomplete}>
+                          <PlaceAutocomplete
+                            searchOptions={{ types: ['locality'] }}
+                            location={whereToNext || ''}
+                            setLocation={setWhereToNext}
+                            onSelectPlace={(e) => onSelectWhereToNext(e)}
+                          />
+                        </div>
                       </div>
-                    ) : (
-                      <p className={`${styles.value} ${styles.text}`}>
-                        {firestoreUser?.whereToNext && firestoreUser?.whereToNext?.length > 10
-                          ? firestoreUser?.whereToNext?.slice(0, 10) + '...'
-                          : firestoreUser?.whereToNext}
-                      </p>
-                    )}
+                    </Dialog>
+                    <p className={`${styles.value} ${styles.text}`}>
+                      {firestoreUser?.whereToNext && firestoreUser?.whereToNext?.length > 10
+                        ? firestoreUser?.whereToNext?.slice(0, 10) + '...'
+                        : firestoreUser?.whereToNext}
+                    </p>
 
                     <img
                       className={`${styles.editButton}`}
