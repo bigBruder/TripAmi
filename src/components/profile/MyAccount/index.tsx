@@ -5,8 +5,6 @@ import { useLocation, useParams } from 'react-router-dom';
 import { doc, updateDoc } from 'firebase/firestore';
 import { getDownloadURL } from 'firebase/storage';
 import 'swiper/css/navigation';
-import { Navigation } from 'swiper/modules';
-import { Swiper, SwiperSlide } from 'swiper/react';
 import CreatePostModal from '~/components/CreatePostModal';
 import CreateTripModal from '~/components/CreateTripModal';
 import CustomModal from '~/components/CustomModal';
@@ -18,20 +16,19 @@ import GoogleMaps from '~/components/GoogleMaps/GoogleMaps';
 import Map from '~/components/Map/Map';
 import { MyFriends } from '~/components/MyFriends';
 import PlaceAutocomplete from '~/components/PlaceAutocomplete/PlaceAutocomplete';
-import PostItem from '~/components/Posts';
 import { TravelItinerary } from '~/components/TravelItinerary/TravelItinerary';
 import useMyPosts from '~/components/profile/store';
 import { firebaseErrors } from '~/constants/firebaseErrors';
 import { db, storage } from '~/firebase';
 import { useWindowDimensions } from '~/hooks/useWindowDimensions';
 import { AuthContext } from '~/providers/authContext';
-import { postsCollection, tripsCollection } from '~/types/firestoreCollections';
+import { tripsCollection } from '~/types/firestoreCollections';
 import { IPost } from '~/types/post';
 import { ITravel } from '~/types/travel';
 
 import defaultUserIcon from '@assets/icons/defaultUserIcon.svg';
 import editText from '@assets/icons/editText.svg';
-import { getDocs, limit, onSnapshot, orderBy, query, where } from '@firebase/firestore';
+import { onSnapshot, query, where } from '@firebase/firestore';
 import { ref } from '@firebase/storage';
 
 import styles from './myaccount.module.css';
@@ -39,15 +36,15 @@ import './styles.css';
 
 import 'swiper/css';
 
-const TABS = ['Home', 'My friends', 'Dream Trips', 'My trips', 'Wishlist'];
+const TABS = ['My trips', 'Wishlist', 'Dream Trips', 'My friends'];
 
 const MyAccount = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [tripModalIsOpen, setTripModalIsOpen] = useState(false);
-  const { posts, setPosts } = useMyPosts();
-  const [suggestedPosts, setSuggestedPosts] = useState<IPost[] | null>(null);
-  const [isPostsLoading, setIsPostsLoading] = useState(false);
-  const [isSuggestedPostsLoading, setIsSuggestedPostsLoading] = useState(false);
+  // const { posts, setPosts } = useMyPosts();
+  // const [suggestedPosts, setSuggestedPosts] = useState<IPost[] | null>(null);
+  // const [isPostsLoading, setIsPostsLoading] = useState(false);
+  // const [isSuggestedPostsLoading, setIsSuggestedPostsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
   const [avatar, setAvatar] = useState<string>(defaultUserIcon);
   const [avatarIsLoading, setAvatarIsLoading] = useState(true);
@@ -57,13 +54,31 @@ const MyAccount = () => {
   const { state } = useLocation();
 
   const { firestoreUser, loading } = useContext(AuthContext);
-  const { width } = useWindowDimensions();
+  // const { width } = useWindowDimensions();
+
+  // useEffect(() => {
+  //   if (state && state.activeTab !== undefined && activeTab !== state.activeTab) {
+  //     setActiveTab(state.activeTab);
+  //   }
+  // }, [state]);
 
   useEffect(() => {
     if (state && state.activeTab !== undefined && activeTab !== state.activeTab) {
       setActiveTab(state.activeTab);
     }
   }, [state]);
+
+  useEffect(() => {
+    if (firestoreUser?.avatarUrl) {
+      try {
+        getDownloadURL(ref(storage, firestoreUser.avatarUrl)).then((url) => {
+          setAvatar(url);
+          setAvatarIsLoading(false);
+        });
+      } catch (err) {
+        console.log(err);
+      }
+  }}, [firestoreUser?.id]);
 
   useEffect(() => {
     if (firestoreUser?.id) {
@@ -90,121 +105,111 @@ const MyAccount = () => {
     setTripModalIsOpen(false);
   }, []);
 
-  useEffect(() => {
-    (async () => {
-      if (firestoreUser?.id) {
-        try {
-          setIsPostsLoading(true);
-          const q = query(
-            postsCollection,
-            where('userId', '==', firestoreUser?.id),
-            orderBy('createAt', 'desc')
-          );
-          const querySnapshot = await getDocs(q);
-          const fetchedPosts = querySnapshot.docs.map((doc) => ({
-            ...doc.data(),
-            id: doc.id,
-          }));
+  // useEffect(() => {
+  //   (async () => {
+  //     if (firestoreUser?.id) {
+  //       try {
+  //         setIsPostsLoading(true);
+  //         const q = query(
+  //           postsCollection,
+  //           where('userId', '==', firestoreUser?.id),
+  //           orderBy('createAt', 'desc')
+  //         );
+  //         const querySnapshot = await getDocs(q);
+  //         const fetchedPosts = querySnapshot.docs.map((doc) => ({
+  //           ...doc.data(),
+  //           id: doc.id,
+  //         }));
 
-          setPosts(fetchedPosts as IPost[]);
-        } catch (err) {
-          // @ts-ignore
-          alert(firebaseErrors[err.code]);
-        } finally {
-          setIsPostsLoading(false);
-        }
-      }
-    })();
+  //         setPosts(fetchedPosts as IPost[]);
+  //       } catch (err) {
+  //         // @ts-ignore
+  //         alert(firebaseErrors[err.code]);
+  //       } finally {
+  //         setIsPostsLoading(false);
+  //       }
+  //     }
+  //   })();
 
-    (async () => {
-      if (firestoreUser?.id) {
-        try {
-          setIsSuggestedPostsLoading(true);
-          const q = query(
-            postsCollection,
-            orderBy('userId'),
-            where('userId', '!=', firestoreUser?.id),
-            orderBy('createAt', 'desc')
-          );
-          const querySnapshot = await getDocs(q);
-          const fetchedPosts = querySnapshot.docs.map((doc) => ({
-            ...doc.data(),
-            id: doc.id,
-          }));
+  //   (async () => {
+  //     if (firestoreUser?.id) {
+  //       try {
+  //         setIsSuggestedPostsLoading(true);
+  //         const q = query(
+  //           postsCollection,
+  //           orderBy('userId'),
+  //           where('userId', '!=', firestoreUser?.id),
+  //           orderBy('createAt', 'desc')
+  //         );
+  //         const querySnapshot = await getDocs(q);
+  //         const fetchedPosts = querySnapshot.docs.map((doc) => ({
+  //           ...doc.data(),
+  //           id: doc.id,
+  //         }));
 
-          setSuggestedPosts(fetchedPosts as IPost[]);
+  //         setSuggestedPosts(fetchedPosts as IPost[]);
 
-          if (firestoreUser.avatarUrl) {
-            const url = await getDownloadURL(ref(storage, firestoreUser.avatarUrl));
-            setAvatar(url);
-          }
-        } catch (err) {
-          console.log(err);
-          // @ts-ignore
-          alert(firebaseErrors[err.code]);
-        } finally {
-          setIsSuggestedPostsLoading(false);
-          setAvatarIsLoading(false);
-        }
-      }
-    })();
+  //         if (firestoreUser.avatarUrl) {
+  //           const url = await getDownloadURL(ref(storage, firestoreUser.avatarUrl));
+  //           setAvatar(url);
+  //         }
+  //       } catch (err) {
+  //         console.log(err);
+  //         // @ts-ignore
+  //         alert(firebaseErrors[err.code]);
+  //       } finally {
+  //         setIsSuggestedPostsLoading(false);
+  //         setAvatarIsLoading(false);
+  //       }
+  //     }
+  //   })();
 
-    if (firestoreUser?.id) {
-      const q = query(
-        postsCollection,
-        where('userId', '==', firestoreUser?.id),
-        orderBy('createAt', 'desc')
-      );
-      const unsubscribe = onSnapshot(q, (querySnapshot) => {
-        const fetchedPosts = querySnapshot.docs.map((doc) => ({
-          ...doc.data(),
-          id: doc.id,
-        }));
-        setPosts(fetchedPosts as IPost[]);
-      });
+  //   if (firestoreUser?.id) {
+  //     const q = query(
+  //       postsCollection,
+  //       where('userId', '==', firestoreUser?.id),
+  //       orderBy('createAt', 'desc')
+  //     );
+  //     const unsubscribe = onSnapshot(q, (querySnapshot) => {
+  //       const fetchedPosts = querySnapshot.docs.map((doc) => ({
+  //         ...doc.data(),
+  //         id: doc.id,
+  //       }));
+  //       setPosts(fetchedPosts as IPost[]);
+  //     });
 
-      return () => {
-        unsubscribe();
-      };
-    }
-  }, [firestoreUser?.id]);
+  //     return () => {
+  //       unsubscribe();
+  //     };
+  //   }
+  // }, [firestoreUser?.id]);
 
-  useEffect(() => {
-    if (suggestedPosts?.length && firestoreUser?.id) {
-      const arrayOfDates = suggestedPosts.map((post) => post.createAt);
+  // useEffect(() => {
+  //   if (suggestedPosts?.length && firestoreUser?.id) {
+  //     const arrayOfDates = suggestedPosts.map((post) => post.createAt);
 
-      const qu = query(
-        postsCollection,
-        orderBy('userId', 'desc'),
-        where('userId', '!=', firestoreUser.id),
-        where('createAt', 'in', arrayOfDates),
-        orderBy('createAt', 'desc'),
-        limit(10)
-      );
+  //     const qu = query(
+  //       postsCollection,
+  //       orderBy('userId', 'desc'),
+  //       where('userId', '!=', firestoreUser.id),
+  //       where('createAt', 'in', arrayOfDates),
+  //       orderBy('createAt', 'desc'),
+  //       limit(10)
+  //     );
 
-      const unsubscribeFromSuggestedPosts = onSnapshot(qu, (querySnapshot) => {
-        const fetchedPosts = querySnapshot.docs.map((doc) => ({
-          ...doc.data(),
-          id: doc.id,
-        }));
-        setSuggestedPosts(fetchedPosts as IPost[]);
-      });
+  //     const unsubscribeFromSuggestedPosts = onSnapshot(qu, (querySnapshot) => {
+  //       const fetchedPosts = querySnapshot.docs.map((doc) => ({
+  //         ...doc.data(),
+  //         id: doc.id,
+  //       }));
+  //       setSuggestedPosts(fetchedPosts as IPost[]);
+  //     });
 
-      return () => {
-        unsubscribeFromSuggestedPosts();
-      };
-    }
-  }, [firestoreUser?.id]);
-
-  const getSlidesPerPage = useMemo(() => {
-    if (width < 768) {
-      return 1;
-    } else if (width < 1142) {
-      return 2;
-    } else {
-      return 3;
-    }
-  }, [width]);
+  //     return () => {
+  //       unsubscribeFromSuggestedPosts();
+  //     };
+  //   }
+  // }, [firestoreUser?.id]);
 
   const onSelectWhereToNext = async (place: string) => {
     if (firestoreUser?.id) {
@@ -300,10 +305,10 @@ const MyAccount = () => {
             </div>
             <div className={styles.divider}></div>
             <div className={styles.features}>
-              {TABS.slice(1).map((tab, index) => (
+              {TABS.map((tab, index) => (
                 <span
-                  className={`${styles.feature} ${index === activeTab - 1 && styles.activeFeature}`}
-                  onClick={() => setActiveTab(index + 1)}
+                  className={`${styles.feature} ${index === activeTab && styles.activeFeature}`}
+                  onClick={() => setActiveTab(index)}
                   key={tab}
                 >
                   {tab}{' '}
@@ -323,7 +328,7 @@ const MyAccount = () => {
           </div>
           {/* )} */}
         </div>
-        {activeTab === 0 ? (
+        {/* {activeTab === 0 ? (
           <div className={styles.main_content}>
             <div className={styles.travelContainer}>
               {!posts?.length && !isPostsLoading ? (
@@ -410,15 +415,17 @@ const MyAccount = () => {
               </Swiper>
             </div>
           </div>
+        ) :  */}
+        {activeTab === 0 ? (
+          <TravelItinerary />
         ) : activeTab === 1 ? (
-          <MyFriends />
+          <TravelItinerary isFavourites={true} />
         ) : activeTab === 2 ? (
           <GoogleMaps />
+
         ) : activeTab === 3 ? (
-          <TravelItinerary />
+          <MyFriends />
         ) : activeTab === 4 ? (
-          <TravelItinerary isFavourites={true} />
-        ) : activeTab === 5 ? (
           <EditMap />
         ) : (
           <MyFriends />

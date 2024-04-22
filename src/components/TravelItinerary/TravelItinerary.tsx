@@ -56,6 +56,7 @@ export const TravelItinerary: FC<Props> = ({ isFavourites = false }) => {
   const [isReverse, setIsReverse] = useState(false);
 
   useEffect(() => {
+    if (!firestoreUser?.id) return;
     const q = query(
       tripsCollection,
       where('usersSaved', 'array-contains', firestoreUser?.id),
