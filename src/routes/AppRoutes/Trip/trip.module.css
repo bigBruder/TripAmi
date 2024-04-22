@@ -267,7 +267,7 @@
 .visitedContainer {
     display: flex;
     justify-content: flex-start;
-    align-items: center;
+    align-items: flex-start;
     width: 100%;
     gap: 10px;
 }

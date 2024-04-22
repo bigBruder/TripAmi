@@ -286,7 +286,7 @@ const TravelCard: FC<Props> = ({ travel }) => {
                       key={tag.placeID}
                       className={styles.tag}
                     >
-                      {tag.address}
+                      {tag.address.length > 20 ? tag.address.slice(0, 20) + '...' : tag.address}
                     </p>
                   ))}
                 </div>
@@ -317,7 +317,9 @@ const TravelCard: FC<Props> = ({ travel }) => {
                         key={tag.placeID}
                         className={styles.tag}
                       >
-                        {tag.address.split(',')[0]}
+                        {tag.address.split(',')[0].length > 20
+                          ? tag.address.split(',')[0].slice(0, 20) + '...'
+                          : tag.address.split(',')[0]}
                       </p>
                     ))}
                   </div>
