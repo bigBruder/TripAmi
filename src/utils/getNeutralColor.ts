@@ -25,7 +25,7 @@ const getNeutralColor = () => {
     // yellow,
   ];
   const randomIndex = Math.floor(Math.random() * colors.length);
-  const randomShade = Math.floor(Math.random() * 4) + 2;
+  const randomShade = Math.floor(Math.random() * 2);
   return colors[randomIndex][randomShade];
 };
 
