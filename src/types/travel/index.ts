@@ -12,6 +12,8 @@ export interface ITravel {
   cities?: {
     placeID: string;
     address: string;
+    lat: number;
+    lng: number;
   }[];
   pinColor: string;
   text: string;

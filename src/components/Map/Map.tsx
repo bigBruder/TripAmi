@@ -178,7 +178,7 @@ const Map: FC<Props> = ({ userId }) => {
         //   console.log('touch start');
         // }}
         onTouchMoveCapture={(e) => {
-          if (e.touches.length < 2) {
+          if (e.touches.length < 2 && !selectedMarkerAddress) {
             setInteractiveMessage('Move the map with two fingers to zoom');
             e.stopPropagation();
           }
