@@ -253,7 +253,7 @@ const Map: FC<Props> = ({ userId }) => {
               cursor={'pointer'}
             >
               <g
-                transform={`translate(${-10 / scaleFactor}, ${-34 / scaleFactor})`}
+                transform={`translate(${-10 / scaleFactor}, ${-30 / scaleFactor})`}
                 className={styles.marker}
               >
                 <svg
