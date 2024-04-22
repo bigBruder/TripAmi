@@ -247,7 +247,6 @@ const UserProfile = () => {
                       userData?.friends?.includes(firestoreUser?.id) && (
                         <h3>You and {userData.username?.split(' ')[0]} are friends</h3>
                       )}
-                    <h3>Friends</h3>
                     <AddNewFriends user={userData} />
                   </div>
                 </>
