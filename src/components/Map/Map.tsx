@@ -226,8 +226,8 @@ const Map: FC<Props> = ({ userId }) => {
                 className={styles.marker}
               >
                 <svg
-                  width={window.innerWidth > 500 ? 30 / scaleFactor : 40 / scaleFactor}
-                  height={window.innerWidth > 500 ? 40 / scaleFactor : 60 / scaleFactor}
+                  width={window.innerWidth > 500 ? 30 / scaleFactor : 30 / scaleFactor}
+                  height={window.innerWidth > 500 ? 40 / scaleFactor : 40 / scaleFactor}
                   viewBox='0 0 48 48'
                   xmlns='http://www.w3.org/2000/svg'
                 >
@@ -257,8 +257,8 @@ const Map: FC<Props> = ({ userId }) => {
                 className={styles.marker}
               >
                 <svg
-                  width={window.innerWidth > 500 ? 30 / scaleFactor : 40 / scaleFactor}
-                  height={window.innerWidth > 500 ? 40 / scaleFactor : 60 / scaleFactor}
+                  width={window.innerWidth > 500 ? 30 / scaleFactor : 30 / scaleFactor}
+                  height={window.innerWidth > 500 ? 40 / scaleFactor : 40 / scaleFactor}
                   viewBox='0 0 48 48'
                   xmlns='http://www.w3.org/2000/svg'
                 >
