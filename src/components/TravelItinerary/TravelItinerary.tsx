@@ -49,8 +49,8 @@ const buildQuery = (
 
 export const TravelItinerary: FC<Props> = ({ isFavourites = false }) => {
   const { firestoreUser } = useContext(AuthContext);
-  // const { travels, setTravels } = useTravelsContext();
-  const [travels, setTravels] = useState<ITravel[]>([]);
+  const { travels, setTravels } = useTravelsContext();
+  // const [travels, setTravels] = useState<ITravel[]>([]);
   const [wishlist, setWishlist] = useState<ITravel[]>([]);
   const [sortBy, setSortBy] = useState<SortBy>('endDate');
   const [isReverse, setIsReverse] = useState(false);
@@ -105,7 +105,7 @@ export const TravelItinerary: FC<Props> = ({ isFavourites = false }) => {
           <>
             <p className={styles.title}>Travels you saved</p>
             <div className={styles.travelsContainer}>
-              <div style={{ alignSelf: 'flex-start' }}>
+              <div style={{ alignSelf: 'flex-start', }}>
                 <Sort
                   onSelect={setSortBy}
                   isReverse={isReverse}
