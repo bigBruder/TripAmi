@@ -254,7 +254,7 @@ const MyAccount = () => {
                     <Dialog
                       isOpen={isEditWhereToNext}
                       onClose={() => setIsEditWhereToNext(false)}
-                      title='Edit a "Where to next?"'
+                      title='Where to next?'
                     >
                       <div className={styles.whereToNextModal}>
                         <div className={styles.autocomplete}>
