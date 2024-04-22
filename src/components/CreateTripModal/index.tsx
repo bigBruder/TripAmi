@@ -1,5 +1,4 @@
 import React, { ChangeEvent, useCallback, useContext, useEffect, useState } from 'react';
-import 'react-datepicker/dist/react-datepicker.css';
 // @ts-ignore
 import { FileUploader } from 'react-drag-drop-files';
 import { geocodeByPlaceId } from 'react-places-autocomplete';
@@ -14,7 +13,6 @@ import {
   getDocs,
   limit,
   query,
-  setDoc,
   updateDoc,
   where,
 } from 'firebase/firestore';
@@ -27,12 +25,12 @@ import Rating from '~/components/Rating';
 import { db, storage } from '~/firebase';
 import { AuthContext } from '~/providers/authContext';
 import {
-  commentsCollection,
   notificationsCollection,
   placesCollection,
   tripsCollection,
 } from '~/types/firestoreCollections';
 import { NotificationType } from '~/types/notifications/notifications';
+import { GeoTags } from '~/types/places';
 import { getDateToDisplay } from '~/utils/getDateToDisplay';
 import getNeutralColor from '~/utils/getNeutralColor';
 
@@ -41,7 +39,6 @@ import { ref, uploadBytes } from '@firebase/storage';
 
 import PlaceAutocomplete from '../PlaceAutocomplete/PlaceAutocomplete';
 import styles from './createTripModal.module.css';
-import './styles.css';
 
 const fileTypes = ['JPEG', 'PNG', 'JPG', 'MP4'];
 
@@ -53,13 +50,13 @@ interface Props {
     rate: number;
     startDate: string;
     endDate: string;
-    cities: { placeID: string; address: string }[];
+    cities: { placeID: string; address: string; lat: number; lng: number; types: string[] }[];
     tripName: string;
     locationName: string;
     text: string;
     dayDescription: { date: string; description: string }[];
     location: { name: string; longitude: number; latitude: number; color: string };
-    geoTags: { address: string; placeID: string }[];
+    geoTags: GeoTags;
     imageUrl: { url: string; type: string; description: string }[];
   };
 }
@@ -79,17 +76,10 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
   );
   const [isLoading, setIsLoading] = useState(false);
   const [text, setText] = useState(data?.text || '');
-  const [selectedLocation, setSelectedLocation] = useState<string | null>(
-    data?.locationName || null
-  );
   const [isMaxError, setIsMaxError] = useState(false);
   const [geoTags, setGeoTags] = useState('');
-  const [selectedGeoTags, setSelectedGeoTags] = useState<{ address: string; placeID: string }[]>(
-    data?.geoTags || []
-  );
-  const [selectedCities, setSelectedCities] = useState<{ address: string; placeID: string }[]>(
-    data?.cities || []
-  );
+  const [selectedGeoTags, setSelectedGeoTags] = useState<GeoTags[]>(data?.geoTags || []);
+  const [selectedCities, setSelectedCities] = useState<GeoTags[]>(data?.cities || []);
   const [isAddingPlace, setIsAddingPlace] = useState(true);
   const [tripName, setTripName] = useState(data?.tripName || '');
   const [daysDescription, setDaysDescription] = useState(
@@ -139,8 +129,6 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
   const handleOnSave = useCallback(async () => {
     try {
       if (file || downloadedImages) {
-        // const geocode = await geocodeByPlaceId(selectedLocation);
-
         setIsLoading(true);
 
         const uploadedImages: { url: string; type: string; description: string }[] = [];
@@ -181,7 +169,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
           const queryCities = query(subcollectionCities);
           const queryPlaces = query(subcollectionPlaces);
           const querySnapshotCities = await getDocs(queryCities);
-          const querySnapshotPlaces = await getDocs(queryCities);
+          const querySnapshotPlaces = await getDocs(queryPlaces);
           querySnapshotCities.docs.forEach(async (doc) => {
             await deleteDoc(doc.ref);
           });
@@ -349,14 +337,6 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
     selectedCities,
     imagesDescription,
   ]);
-
-  // const onSelectPlace = useCallback(async (address: string, placeID: string) => {
-  //   const geocode = await geocodeByPlaceId(placeID);
-
-  //   setLocation({name: address, longitude: geocode[0].geometry.location.lng(), latitude: geocode[0].geometry.location.lat(), color: randomColor()});
-  //   setWhereToGo(address);
-  //   setSelectedLocation(placeID);
-  // }, []);
 
   const onSelectGeoTag = useCallback(
     (address: string, placeID: string) => {
@@ -604,46 +584,6 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
                   placeholder='ex. Bondi Beach'
                 />
               </div>
-              {/* <PlacesAutocomplete
-                searchOptions={{ types: ['establishment'] }}
-                value={geoTags}
-                onChange={(value) => setGeoTags(value)}
-                onSelect={onSelectGeoTag}
-              >
-                {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => {
-                  return (
-                    <div className={suggestions.length ? styles.inputContainer : undefined}>
-                      <input
-                        id={'213'}
-                        {...getInputProps({
-                          placeholder:
-                            'Museum of Dreamers, Viale Angelico, Rome, Metropolitan City of Rome Capital, Italy',
-                          className: styles.input,
-                        })}
-                      />
-                      <div className={suggestions.length ? styles.dropdown : undefined}>
-                        {loading && <div>Loading...</div>}
-                        {suggestions.map((suggestion) => {
-                          const style = suggestion.active
-                            ? { backgroundColor: '#fafafa', cursor: 'pointer' }
-                            : { backgroundColor: '#ffffff', cursor: 'pointer' };
-                          return (
-                            <div
-                              {...getSuggestionItemProps(suggestion, {
-                                className: styles.dropdownItem,
-                                style,
-                              })}
-                              key={suggestion.id}
-                            >
-                              <p>{suggestion.description}</p>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  );
-                }}
-              </PlacesAutocomplete> */}
             </div>
           )}
 
@@ -665,19 +605,8 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
           ) : null}
 
           <div className={styles.datesContainer}>
-            {/* <div className={styles.dateDescriptionsContainer}>
-          </div> */}
-
             <div className={styles.dateContainer}>
               <p className={`${styles.text} ${styles.dateDescription}`}>Start Date:</p>
-              {/* <DatePicker
-                selected={startDate}
-                onChange={(date) => {
-                  setStartDate(date);
-                }}
-                locale='en-US'
-                className='datePicker'
-              /> */}
               <input
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
@@ -687,12 +616,6 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
             </div>
             <div className={styles.dateContainer}>
               <p className={`${styles.text} ${styles.dateDescription}`}>End Date:</p>
-              {/* <DatePicker
-                selected={endDate}
-                onChange={(date) => setEndDate(date)}
-                locale='en-US'
-                className='datePicker'
-              /> */}
               <input
                 id='end_date'
                 value={endDate}
@@ -708,12 +631,6 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
 
         <div className={styles.storyContainer}>
           <label htmlFor='tripStory'>Tell us about your trip:</label>
-          {/* <TextEditor
-            value={text}
-            onChange={setText}
-            className={`${styles.input} ${styles.textArea}`}
-          /> */}
-          {/* <ReactQuill value={text} onChange={setText} className={styles.textEditor} /> */}
           <textarea
             id='tripStory'
             className={`${styles.input} ${styles.textArea}`}
@@ -730,24 +647,11 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
           </button>
         </div>
 
-        <div className={styles.section}>
-          {/* <p className={styles.text}>Tell us about your trip!</p> */}
-        </div>
-
         {daysDescription &&
           Array.from(Array(daysDescription.length).keys()).map((day, idx) => (
             <div className={styles.dayDescriptionContainer} key={day}>
-              {/* <DatePicker
-                selected={daysDescription[idx].date}
-                onChange={(
-                  date: React.ChangeEvent<HTMLTextAreaElement> | React.ChangeEvent<HTMLInputElement>
-                ) => handleDayDateDescriptionChange(date, idx, 'date')}
-                locale='en-US'
-                className='datePicker'
-                popperPlacement='right'
-              /> */}
               <input
-                value={daysDescription[idx].date}
+                value={daysDescription[idx].date.toString()}
                 onChange={(e) => handleDayDateDescriptionChange(e, idx, 'date')}
                 type='date'
                 className={styles.input}
@@ -788,7 +692,6 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
             hoverTitle={' '}
           >
             <div className={styles.uploadContainer}>
-              {/* <p>Image and Video </p> */}
               <p className={styles.text}>Drag and drop image/video or click on </p>
               <button className={styles.buttonUpload}>Upload</button>
             </div>
@@ -869,7 +772,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
                       name={item.url}
                     />
                     <button
-                      onClick={(e) => handleRemoveDownloadedPhoto(id)}
+                      onClick={() => handleRemoveDownloadedPhoto(id)}
                       className={styles.removePhotoButton}
                     >
                       X
@@ -889,10 +792,9 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
                       placeholder='Describe the photo'
                       value={imagesDescription.find((image) => image.id === id)?.value || ''}
                       className={styles.input}
-                      onChange={(e) => handleRemoveDownloadedPhoto(id)}
+                      onChange={() => handleRemoveDownloadedPhoto(id)}
                       name={item.url}
                     />
-                    {/* <button onClick={(e) => handleRemovePhoto(e, item.name)} className={styles.removePhotoButton}>X</button> */}
                   </div>
                 )}
               </div>

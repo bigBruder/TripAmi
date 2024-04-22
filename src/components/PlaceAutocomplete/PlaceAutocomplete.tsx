@@ -4,9 +4,10 @@ import PlacesAutocomplete from 'react-places-autocomplete';
 import styles from './PlaceAutocomplete.module.css';
 
 interface PlaceAutocompleteProps {
+  // eslint-disable-next-line no-undef
   searchOptions: google.maps.places.AutocompleteOptions;
   location: string | null;
-  setLocation: Dispatch<SetStateAction<string | null>>;
+  setLocation: Dispatch<SetStateAction<string>>;
   onSelectPlace: (address: string, placeId: string) => void;
   placeholder?: string;
 }
