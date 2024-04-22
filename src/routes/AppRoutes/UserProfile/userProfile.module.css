@@ -310,6 +310,12 @@ span {
     margin-bottom: 30px;
 }
 
+@media (max-width: 500px) {
+    .title {
+        text-align: center;
+    }
+}
+
 .paragraph {
     margin: 30px 0;
     font-weight: 500;
