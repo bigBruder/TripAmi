@@ -65,9 +65,9 @@ export const SignUpModal: FC<Props> = ({ onClose, isOpen, isLogin = false }) => 
 
   const handleLoginFacebook = async () => {
     const result = await signInWithFacebook();
-    // if (result) {
-    //   navigate('/profile');
-    // }
+    if (result) {
+      navigate('/profile');
+    }
   };
 
   const registerFormOrOAuth = useMemo(() => {
