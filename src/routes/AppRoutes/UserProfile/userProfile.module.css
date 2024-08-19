@@ -1,0 +1,437 @@
+.main {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    height: 100%;
+    position: relative;
+    z-index: 1;
+    padding: 40px;
+    padding-top: 0;
+    background-color: #F8F7F1;
+}
+
+.main::before {
+  position: absolute;
+  content: '';
+  background-image: url('/defaultTripBackground.jpeg');
+  background-size: cover;
+  background-position: center;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100%;
+  z-index: -1;
+}
+
+.container {
+    padding: 20px;
+}
+
+
+.myAccount {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  max-width: 1440px;
+  width: 100%;
+  margin-top: 0;
+  margin-bottom: 69px;
+}
+
+.genaralInfo {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+    .genaralInfo {
+        width: 60vw;
+    }
+}
+
+@media (min-width: 990px) {
+    .genaralInfo {
+        width: 60vw;
+    }
+}
+
+.tabContent {
+  display: flex;
+  flex-direction: column;
+  align-self: flex-end !important;
+  box-sizing: border-box;
+
+  width: 70%;
+  margin-top: 40px;
+  padding-block: 40px;
+  padding-inline: 24px;
+  border-radius: 40px;
+
+  border: 1px solid #EEEEEA;
+  background-color: rgba(254, 254, 254, 0.7);
+  box-shadow: rgba(222, 222, 215, 0.5);
+  backdrop-filter: blur(10px);
+}
+
+@media (max-width: 850px) {
+  .tabContent {
+    width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .tabContent {
+    padding-inline: 16px;
+  }  
+}
+
+.userInfo {
+  box-sizing: border-box;
+  padding: 20px;
+  width: 300px;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  border: 1px solid #EEEEEA;
+  background-color: rgba(254, 254, 254, 0.7);
+  box-shadow: rgba(222, 222, 215, 0.5);
+  backdrop-filter: blur(10px);
+  border-radius: 40px;
+}
+
+@media (min-width: 768px) {
+    .userInfo {
+        padding: 30px;
+    }
+}
+
+@media (min-width: 992px) {
+    .userInfo {
+        padding: 60px;
+    }
+}
+
+.defaultUserIcon {
+    width: 138px;
+    height: 138px;
+    border-radius: 50%;
+}
+
+.description {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+  width: 100%;
+  font-weight: 500;
+  flex-grow: 1;
+  gap: 24px;
+}
+
+.edit {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 5%;
+}
+
+.editMap {
+    color: #545454;
+    font-family: Gilroy, sans-serif;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+
+    cursor: pointer;
+}
+
+.inputWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.icon {
+    position: absolute;
+    right: 10px;
+    color: #aaa;
+    pointer-events: none;
+}
+
+.divider {
+    margin: 0 0 10px 0;
+    height: 1px;
+    width: 100%;
+    background: rgba(183, 183, 183, 0.31);
+
+    box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+    .divider {
+        margin: 0 0 10px 5px;
+    }
+}
+
+.friendsCount {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    background-color: #FF4D00;
+
+    border-radius: 50%;
+
+    color: #FFF;
+    font-family: Gilroy, sans-serif;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}
+
+.mapContainer {
+  position: relative;
+  box-sizing: border-box;
+  width: 70%;
+}
+
+.editMapBox {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    cursor: pointer;
+}
+
+.editIcon {
+    margin-left: 15px;
+}
+
+.map {
+    width: 100%;
+    height: auto;
+}
+
+.fileInputWrapper {
+    margin: 0 0 20px 60px;
+    padding: 0 20px 0 20px;
+    width: 85%;
+    height: 54px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    flex-grow: 1;
+    background-color: #fff;
+    border-radius: 8px;
+}
+
+.addImg {
+    /* display: flex; */
+    margin: auto 15px 5px 0;
+}
+
+.customFileInputLabel {
+    display: flex;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.fileInput {
+    display: none;
+}
+
+.customFileInputLabel i {
+    margin-right: 5px;
+}
+
+.travelsContainer {
+  flex-wrap: wrap;
+  flex: 1;
+  justify-content: space-between;
+  display: flex;
+  width: 100%;
+  gap: 20px;
+  margin-top: 40px;
+}
+
+.travelsContainerMain {
+  display: flex;
+  flex-direction: column;
+}
+
+.travelContainer {
+    padding: 0 0 70px 60px;
+    gap: 70px;
+    width: 90vw;
+}
+
+.sliderContainer {
+    margin-bottom: 30px;
+    margin-left: -60px;
+}
+
+.bottomSliderContainer {
+    margin-bottom: 30px;
+}
+
+.title {
+    display: block;
+    font-size: 17px;
+    font-weight: 600;
+
+    margin-bottom: 30px;
+}
+
+.paragraph {
+    margin: 30px 0;
+    font-weight: 500;
+}
+
+.button {
+    width: 27%;
+    border-radius: 25px;
+    background: #ff4d00;
+    color: #fff;
+    border: none;
+    font-size: 1.5vw;
+    font-weight: 500;
+    height: 49px;
+    cursor: pointer;
+}
+
+.trip-button {
+    border-radius: 25px;
+    background: #ff4d00;
+    color: #fff;
+    border: none;
+    font-size: 12px;
+    font-weight: 500;
+    height: 31px;
+    cursor: pointer;
+}
+
+.postsTitle {
+    display: block;
+    font-size: 17px;
+    font-weight: 600;
+
+    margin-bottom: 30px;
+    margin-left: 60px;
+}
+
+.imageContainer {
+    position: relative;
+}
+
+.editImage {
+    cursor: pointer;
+}
+
+.loader {
+    width: 138px;
+    height: 138px;
+    border-radius: 50%;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+  .feature {
+    display: flex;
+    gap: 7px;
+    align-items: center;
+    width: 50%;
+    justify-content: center;
+  
+    color: #262626;
+    font-family: Gilroy, sans-serif;
+    font-size: 24px;
+  
+    transition: border-color 0.3s;
+    cursor: pointer;
+  }
+  
+  @media (max-width: 600px) {
+    .feature {
+      font-size: 18px;
+    }
+  }
+
+  .features {
+    display: flex;
+    justify-content: space-between;
+    font-size: 24px;
+    font-weight: 400;
+  
+    box-sizing: border-box;
+  }
+
+  .activeFeature {
+    font-weight: 600;
+    border-bottom: 1px solid #D55E04;
+  }
+
+  @media (max-width: 768px) {
+    .main {
+      padding: 20px;
+    }
+    .myAccount {
+      flex-direction: column;
+    }
+  
+    .userInfo {
+      width: 100%;
+    }
+
+    .mapContainer {
+      width: 100%;
+    }
+
+    .travelsContainer {
+      gap: 10px;
+    }
+  }
+
+  .text {
+    margin: 0;
+    margin-top: 8px;
+    margin-bottom: 24px;
+  
+    color: #262626;
+    font-family: 'Gilroy-Bold', sans-serif;
+    font-size: 24px;
+    font-weight: 600;
+  }
+
+  .addToFriendButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding-block: 13px;
+    border-radius: 24px;
+    background-color: #CFB317;
+    color: #fff;
+    font-size: 18px;
+    line-height: 21.6px;
+    font-weight: 500;
+    cursor: pointer;
+  }

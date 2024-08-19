@@ -1,0 +1,75 @@
+.modalBackground {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(1px);
+  z-index: 2;
+  padding-inline: 16px;
+  box-sizing: border-box;
+  padding-inline: 16px;
+}
+
+.modalContent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  flex-direction: column;
+  background-color: white;
+  padding: 80px;
+  border-radius: 24px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  background: #F8F7F1;
+  border: 1px solid #DEDED7;
+  max-width: 628px;
+  width: 100%;
+}
+
+.sugestContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.saveEditButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 38px;
+  box-sizing: border-box;
+  padding: 0 10px;
+  background-color: #629015;
+  border-radius: 24px;
+  cursor: pointer;
+
+  font-family: 'Gilroy-Regular';
+  font-size: 18px;
+  color: #FEFEFE;
+  font-weight: 400;
+}
+
+.cancelEditButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 38px;
+  box-sizing: border-box;
+  padding: 0 10px;
+  background-color: #D53604;
+  border-radius: 24px;
+  cursor: pointer;
+
+  font-family: 'Gilroy-Regular';
+  font-size: 18px;
+  color: #FEFEFE;
+  font-weight: 400;
+}

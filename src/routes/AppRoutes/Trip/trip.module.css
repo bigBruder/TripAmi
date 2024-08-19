@@ -1,0 +1,745 @@
+:root {
+  font-family: 'Gilroy-Regular', sans-serif;
+  font-size: 16px;
+  color: #1F1F20;
+}
+
+html {
+  background-color: #F8F7F1 !important;
+}
+
+.geoTagContainerWithImage {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 24px;
+  max-width: 350px;
+  width: 100%;
+  max-height: 600px;
+  gap: 10px;
+}
+
+@media (max-width: 600px) {
+  .geoTagContainerWithImage {
+      max-width: 200px;
+  }
+}
+
+.tooltipContainer {
+  position: relative;
+  display: inline-block;
+}
+
+.geoPhotoContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  border-radius: 24px;
+  position: relative;
+}
+
+.geoPhoto {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 24px;
+}
+
+.geoTagImage {
+  height: 20px;
+  width: 20px;
+  align-self: center;
+  cursor: pointer;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 500;
+  color: #262626;
+  font-family: 'Gilroy-Bold', sans-serif;
+  line-height: 38.4px;
+  text-align: center;
+  text-wrap: wrap;
+}
+
+.geoTagSwiperContainer {
+  position: relative;
+  min-height: 200px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.selectedTagsContainer {
+  align-items: center;
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  gap: 5px;
+  margin-bottom: 16px;
+}
+
+.commentsMap  {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.commentsMap > *:not(:last-child) {
+  border-bottom: 1px solid #DEDED7;
+}
+
+.buttonCustom.selected {
+  border-color: #a67c52;
+  border: 2px solid #a67c52;
+  background-color: #fff;
+  color: #a67c52;
+}
+
+.dateButtonsContainer {
+  position: relative;
+  justify-content: center;
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.dayContainer {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  gap: 24px;
+}
+
+@media (max-width: 768px) {
+  .dayContainer {
+    flex-direction: column;
+  }
+}
+
+.dayInfoContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+@media (min-width: 768px) {
+  .dayInfoContainer {
+    width: 50%;
+  }
+}
+
+.buttonCustom {
+  padding: 10px 20px;
+  border: 1px solid #ccc;
+  border-radius: 24px;
+  min-width: 160px;
+  background-color: white;
+  cursor: pointer;
+  font-size: 16px;
+  color: #1a1a1a;
+  transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+}
+
+.post {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.timeContainer {
+  margin-top: 8px;
+  margin-bottom: 48px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@media (max-width: 800px) {
+  .timeContainer {
+    margin-bottom: 0;
+  }
+}
+
+.mainContainer {
+  padding: 0, 20px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  flex-direction: column;
+}
+
+.headerTrip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@media (max-width: 800px) {
+  .headerTrip {
+    margin-bottom: 40px;
+  }
+}
+
+.followButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+
+  line-height: 40px;
+  font-size: 18px;
+  font-weight: 500;
+
+  color: #FFFFFF;
+  border: 1px solid rgba(98, 144, 21, 0.6);
+  background: rgba(98, 144, 21, 0.6);
+  border-radius: 24px;
+
+  min-width: 190px;
+  width: 100%;
+  transition: 0.3s;
+}
+
+.followButton:hover {
+  background: rgba(98, 144, 21, 0.4);
+}
+
+.social {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  min-width: 172px;
+  justify-content: flex-end;
+}
+
+.socialIcon {
+  cursor: pointer;
+}
+
+.socialIconSave path {
+  fill: red;
+}
+
+.main {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+.trip {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.tagsContainer {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.places {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  overflow: hidden;
+  box-sizing: border-box;
+  max-width: 1440px;
+  width: 100%;
+  padding: 40px 40px 48px 40px;
+  margin: 0, 40px, 69px;
+  margin-top: 0;
+  margin-bottom: 69px;
+  border-radius: 96px;
+  background-color: rgba(254, 254, 254, 0.7);
+  backdrop-filter: blur(10px);
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 16px;
+    border-radius: 40px;
+  }
+}
+
+.containerComments {
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  max-width: 1440px;
+  width: 100%;
+  padding: 40px 40px 48px 40px;
+  margin: 0, 40px, 69px;
+  margin-top: 0;
+  margin-bottom: 69px;
+  border-radius: 96px;
+  background-color: rgba(254, 254, 254, 0.7);
+  backdrop-filter: blur(10px);
+  box-sizing: border-box;
+}
+
+.commentsTitle {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1F1F20;
+  font-family: 'Gilroy-Bold', sans-serif;
+  line-height: 36px;
+  align-self: center;
+}
+
+.tripContainer {
+  width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.topContainer {
+    display: flex;
+    /* justify-content: flex-start; */
+    /* align-items: flex-start; */
+    align-items: center;
+    gap: 20px;
+}
+
+@media (max-width: 768px) {
+    /* .postContainer {
+        flex-direction: row;
+    } */
+
+    .topContainer {
+       flex-wrap: wrap;
+    }
+}
+
+.tripOverview {
+    text-wrap: nowrap;
+    line-height: 28.8px;
+    font-size: 24px;
+    font-weight: 600;
+    font-family: 'Gilroy-Bold', sans-serif;
+
+    color: #1F1F20;
+    margin-bottom: 16px;
+}
+
+.journey {
+  color: #1F1F20;
+  order: 0;
+  grid-column: 1 / -1;
+  text-wrap: nowrap;
+  align-self: center;
+}
+
+@media (min-width: 834px) {
+  .journey {
+    justify-content: flex-start;
+    order: 0;
+    grid-column: 1 / 3;
+  } 
+}
+
+@media (min-width: 1024px) {
+  .journey {
+    justify-content: flex-start;
+    order: 0;
+    grid-column: 1 / 2;
+  } 
+}
+
+.topRightContainer {
+  display: grid;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+  gap: 8px;
+  --columns: 2;
+  --gap: 8px;
+
+  display: grid;
+
+  column-gap: var(--gap);
+  grid-template-columns: repeat(var(--columns), minmax(0, 1fr));
+}
+
+@media (min-width: 834px) {
+  .topRightContainer {
+    --columns: 12;
+    --gap: 24px;
+    margin-bottom: 16px;
+  }  
+}
+
+.rateContainer {
+  order: 5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  grid-column: 1 / -1;
+}
+
+@media (min-width: 834px) {
+  .rateContainer {
+    justify-content: flex-end;
+    grid-column: 7 / -1;
+  }  
+}
+
+@media (min-width: 1024px) {
+  .rateContainer {
+    justify-content: flex-end;
+    grid-column: 10 / -1;
+  }
+}
+
+.postIMage {
+    width: 400px;
+    height: auto;
+}
+
+@media (max-width: 500px) {
+    .postIMage {
+        width: 300px;
+    }
+
+}
+
+.postText {
+    color: #262626;
+    font-family: 'Gilroy-Regular', sans-serif;
+    font-size: 17px;
+    text-align: justify;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+/* 
+@media (max-width: 768px) {
+    .postText {
+        font-size: 12px;
+    }
+} */
+
+@media (max-width: 500) {
+  .postText {
+      font-size: 15px;
+  }
+}
+
+.textContainer {
+  width: 100%;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.date {
+  font-size: 14px;
+  color: #1F1F20;
+}
+
+.dayDescription {
+  font-size: 14px;
+  color: #262626;
+  font-family: Gilroy, sans-serif;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .dayDescription {
+      font-size: 12px;
+  }
+}
+
+.dayDescriptionJournal {
+  font-size: 18px;
+  color: #262626;
+  font-family: 'Gilroy-Regular', sans-serif;
+  font-weight: 400;
+  line-height: 27px;
+}
+
+@media (max-width: 768px) {
+  .selectedTagsContainer {
+      flex-wrap: wrap;
+      width: 100%;
+  }  
+}
+
+.geotagTitle {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
+}
+
+.geoTagContainer {
+  display: flex;
+  justify-content: center;
+  box-sizing: border-box;
+  background-color: #FEFEFE;
+  border: 1px solid #DEDED7;
+  border-radius: 24px;
+  line-height: 48px;
+  max-width: 350px;
+  width: 49%;
+  gap: 15px;
+  padding-inline: 10px;
+}
+
+.geoTagContainerSwipe {
+  width: 100%;
+}
+
+.postActionsWrapper {
+  align-items: flex-start;
+}
+
+.tagsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  overflow-y: hidden;
+}
+
+.dateContainerDate {
+  order: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  grid-column: 1;
+}
+
+@media (min-width: 834px) {
+  .dateContainerDate {
+    justify-content: flex-end;
+    grid-column: -4 / -1;
+  }
+}
+
+@media (min-width: 1024px) {
+  .dateContainerDate {
+    justify-content: flex-end;
+    grid-column: 3 / 5;
+  }
+}
+
+.dateContainerBudget {
+  order: 2;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  grid-column: 2;
+}
+
+@media (min-width: 834px) {
+  .dateContainerBudget {
+    justify-content: flex-start;
+    grid-column: 4 / 6;
+    order: 3;
+  }
+}
+
+@media (min-width: 1024px) {
+  .dateContainerBudget {
+    justify-content: flex-start;
+    grid-column: 8 / 10;
+    order: 3;
+  }
+}
+
+.dateContainerPeople {
+  order: 3;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  grid-column: 1 / -1;
+}
+
+@media (min-width: 834px) {
+  .dateContainerPeople {
+    grid-column: 1 / 3;
+    order: 2;
+  }
+}
+
+@media (min-width: 1024px) {
+  .dateContainerPeople {
+    grid-column: 5 / 7;
+    justify-content: center;
+    order: 2;
+  }
+}
+
+.hashtags {
+  display: flex;
+  gap: 10px;
+  height: 100%;
+  flex-wrap: wrap;
+}
+
+.hashtagIcon {
+  position: absolute;
+  left: 26px;
+  width: 22px;
+  height: 22px;
+  align-self: center;
+  background-color: #FEFEFE;
+}
+
+.hashtagsContainer {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  min-width: 50px;
+  border-radius: 24px;
+  border: 1px solid #DEDED7;
+  background-color: #FEFEFE;
+  line-height: 48px;
+
+  gap: 10px;
+  padding-inline: 10px;
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.tag {
+    font-size: 10px;
+    cursor: pointer;
+    background-color:  rgb(218, 224, 225);
+    padding: 2px;
+    padding-left: 5px;
+    border-radius: 10px;
+    color: grey;
+}
+
+.visitedContainer {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    gap: 10px;
+}
+
+.commentContainer {
+    box-sizing: border-box;
+    margin-top: 10px;
+    border-radius: 8px;
+}
+
+
+
+
+@media (max-width: 1280px) {
+    .commentContainer {
+        width: 726px;
+        margin: 0 auto;
+    }
+}
+
+.suggestedTripContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  overflow: hidden;
+
+  background-color: rgba(254, 254, 254, 0.7);
+  border-radius: 96px;
+  padding: 40px;
+  margin-top: 40px;
+}
+
+.tripWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  /* overflow: hidden; */
+}
+
+
+.arrowButtonsContainerGeo {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  position: absolute;
+  pointer-events: none;
+}
+
+.arrowButtonGeo {
+  background-color: rgba(254, 254, 254, 0.5);
+  color: white;
+  padding: 10px;
+  cursor: pointer;
+  pointer-events: all;
+  user-select: none;
+  transition: background-color 0.3s;
+  border: 1px solid #CDBAAA;
+  border-radius: 26px;
+  color: #CDBAAA;
+}
+
+.arrowButtonGeo:hover {
+  background-color: rgba(254, 254, 254, 1);
+}
+
+.arrowButtonGeo:first-of-type {
+  margin-left: 10px;
+}
+
+.arrowButtonGeo:last-of-type {
+  margin-right: 10px;
+}
+
+.arrowButtonsContainer {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  position: absolute;
+  pointer-events: none;
+}
+
+.arrowButton {
+  background-color: rgba(254, 254, 254, 0.5);
+  color: white;
+  padding: 10px;
+  cursor: pointer;
+  pointer-events: all;
+  user-select: none;
+  transition: background-color 0.3s;
+  border: 1px solid #CDBAAA;
+  border-radius: 26px;
+  color: #CDBAAA;
+}
+
+.arrowButton:hover {
+  background-color: rgba(254, 254, 254, 1);
+}
+
+.arrowButton:first-of-type {
+  margin-left: 10px;
+}
+
+.arrowButton:last-of-type {
+  margin-right: 10px;
+}

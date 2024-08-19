@@ -1,0 +1,80 @@
+.marker {
+    animation: __bounceInDown 500ms linear;
+    animation-fill-mode: both;
+}
+
+.mapContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  max-height: 540px;
+  border-radius: 40px;
+  overflow: hidden;
+  border: 1px solid #EEEEEA;
+  background-color: rgba(254, 254, 254, 0.7);
+  box-shadow: rgba(222, 222, 215, 0.5);
+  backdrop-filter: blur(10px);
+}
+
+@keyframes __bounceInDown {
+    0% {}
+
+    50% {
+        scale: 1.2;
+        /*transform: translateY(-10%);*/
+    }
+
+    100% {
+        scale: 1.2;
+        /*transform: translateY(0);*/
+    }
+}
+
+.buttonsContainer {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    right: 0;
+    bottom: 50px;
+    gap: 5px;
+}
+
+.button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 20px;
+    width: 20px;
+    box-sizing: border-box;
+    border-radius: 50%;
+    background-color: #ff4d00;
+    cursor: pointer;
+    border: 2px solid transparent;
+}
+
+.button:hover {
+    border: 2px solid #646cff;
+}
+
+.selectedMarkerAddress {
+    text-align: center;
+    font-size: 12px;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 90%;
+    height: 10%;
+    bottom: 10px;
+    left: 5%;
+    background-color: rgba(35, 34, 34, 0.5);
+    font-weight: 600;
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    z-index: 1000;
+    cursor: pointer;
+}

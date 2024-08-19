@@ -1,0 +1,87 @@
+.dropdown {
+  position: relative;
+  flex: 1;
+  box-sizing: border-box;
+  user-select: none;
+}
+
+.dropdownButton {
+  position: relative;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 100%;
+  background-color: white;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  text-align: center;
+  font-size: 16px;
+  line-height: 46px;
+  color: #1a1a1a;
+  border-radius: 24px;
+  transition: border-color 0.3s;
+}
+
+.dropdownButton:hover {
+  border-color: #deded7;
+}
+
+.dropdownButtonOpen {
+  border-color: #bbb;
+}
+
+.dropdownContent {
+  position: absolute;
+  top: 50px;
+  background-color: #fefefe;
+  min-width: 100%;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  border-radius: 24px;
+  z-index: 2;
+  box-sizing: border-box;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-in-out;
+}
+
+.dropdownContentOpen {
+  max-height: 200px;
+}
+
+.option {
+  padding: 10px;
+  cursor: pointer;
+  border-bottom: 1px solid #ccc;
+}
+
+.option:hover {
+  background-color: #f1f1f1;
+}
+
+.firstOption {
+  border-top-left-radius: 24px;
+  border-top-right-radius: 24px;
+}
+
+.lastOption {
+  border-bottom-left-radius: 24px;
+  border-bottom-right-radius: 24px;
+  border-bottom: none;
+}
+
+.people {
+  position: absolute;
+  left: 22px;
+  width: 22px;
+  height: 22px;
+}
+
+.dropdownArrow {
+  position: absolute;
+  right: 22px;
+  transition: transform 0.3s;
+}
+
+.dropdownArrowOpen {
+  transform: rotate(180deg);
+}

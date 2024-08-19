@@ -1,0 +1,526 @@
+
+.functionsContainer {
+  display: grid;
+
+  align-items: center;
+  --columns: 8;
+  --gap: 8px;
+  margin-top: 40px;
+
+  gap: var(--gap);
+
+  display: grid;
+
+  column-gap: var(--gap);
+  grid-template-columns: repeat(var(--columns), minmax(0, 1fr));
+}
+
+.searchContainer {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 8px 24px;
+  border-radius: 24px;
+  border: 1px solid #DEDED7;
+
+  background-color: #FEFEFE;
+  grid-column: span 4;
+}
+
+@media (max-width: 600px) {
+  .searchContainer {
+    grid-column: 1 / -1;
+  }
+  
+}
+
+.iconPlace {
+  height: 20px;
+}
+
+.inputSearch, .inputSearch:focus {
+  outline: none;
+  border: none;
+  padding: 0;
+  width: 100%;
+  background-color: inherit;
+  vertical-align: middle;
+  line-height: 20px;
+}
+
+.dropdownContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 8px 15px 8px 24px;
+  border-radius: 24px;
+  border: 1px solid #DEDED7;
+
+  background-color: #FEFEFE;
+  grid-column: span 3;
+  transition: all 0.3s;
+}
+
+@media (max-width: 600px) {
+  .dropdownContainer {
+    grid-column: 1 / 8;
+  }
+  
+}
+
+.dropdownHeader {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  line-height: 19.5px;
+  box-sizing: border-box;
+}
+
+.dropdownList {
+  position: absolute;
+  top: 110%;
+  left: 0;
+  background-color: #fff;
+  border-radius: 24px;
+  border: 1px solid #DEDED7;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  z-index: 1;
+  
+  box-sizing: border-box;
+  padding: 6px 18px;
+}
+
+.dropdownItem {
+  padding: 14.5px 0;
+  cursor: pointer;
+}
+
+.dropdownItem:not(:last-child) {
+  border-bottom: 1px solid #DEDED7;
+}
+
+.chosenItem {
+  font-family: 'Gilroy-Bold';
+  font-size: 16px;
+  font-weight: 700;
+  color: #444445;
+}
+.arrowUp {
+  transition: all 0.3s;
+  transform: rotate(0deg);
+}
+
+.arrowDown {
+  transition: all 0.3s;
+  transform: rotate(180deg);
+}
+
+.addFolderIcon {
+  align-self: center;
+  height: 40px;
+  width: 40px;
+  cursor: pointer;
+}
+
+.addFolder {
+  grid-column: span 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.folderInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  gap: 5px;
+  margin-top: 16px;
+  line-height: 28.8px;
+}
+
+.folderName {
+  font-family: 'Gilroy-Bold';
+  font-size: 24px;
+  color: #444445;
+  font-weight: 600;
+}
+
+.folderFuncContainer {
+  max-width: 100px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+
+  position: relative;
+}
+
+@media (max-width: 600px) {
+  .folderFuncContainer {
+    max-width: 50px;
+  }
+}
+
+.dotsFunc {
+  padding: 10px;
+}
+
+.geoPhotoContainer {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  border-radius: 24px;
+  overflow: hidden;
+}
+
+.geoPhoto {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 24px;
+}
+
+.removePhotoButtonGeo {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  height: 40px;
+  width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 24px;
+  background: rgba(254, 254, 254, 0.6);
+  border: 1px solid #D53604;
+  color: #fff;
+  cursor: pointer;
+}
+
+.geoTagContainer {
+  display: flex;
+  box-sizing: border-box;
+  justify-content: center;
+  background-color: #FEFEFE;
+  border: 1px solid #DEDED7;
+  padding-inline: 10px;
+  border-radius: 24px;
+  line-height: 48px;
+  width: 100%;
+  gap: 15px;
+}
+
+.iconGeoFilled {
+  width: 14px;
+  height: 20px;
+  align-self: center;
+  text-align: left;
+}
+
+.geotagTitle {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
+}
+
+.itineraryContent {
+  flex-wrap: wrap;
+  justify-content: space-between;
+  display: flex;
+  gap: 20px;
+  margin-top: 40px;
+}
+
+.geoTagContainerWithImage {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 24px;
+  max-width: calc(50% - 24px);
+  width: 100%;
+  max-height: 600px;
+  gap: 8px;
+
+  cursor: pointer;
+}
+
+@media (max-width: 600px) {
+  .geoTagContainerWithImage {
+    max-width: 100%;
+  }  
+}
+
+.addPhotoButtonGeo {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  height: 40px;
+  width: 40px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: rgba(254, 254, 254, 0.6);
+  border: 1px solid #DEDED7;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.addedPhotoButtonGeo {
+  background: rgba(254, 254, 254, 0.95);
+}
+
+.addPlaceButtonGeo {
+  display: none;
+}
+
+.addedPlaceButtonGeo {
+  display: block;
+}
+
+.geotagTitleNav {
+  font-family: 'Gilroy-Bold';
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.selectAllConttainer  {
+  display: flex;
+  justify-content: flex-start;
+  gap: 15px;
+  align-items: center;
+  margin-top: 40px;
+}
+
+.selectAllTitle {
+  font-family: 'Gilroy-Bold';
+  font-size: 20px;
+  font-weight: 700;
+  color: #444445;
+}
+
+.addPhotoButtonGeoSelect {
+  height: 40px;
+  width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: rgba(254, 254, 254, 0.6);
+  border: 1px solid #DEDED7;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.mainButtonsContainer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  align-items: center;
+  margin-top: 16px;
+  box-sizing: border-box;
+}
+
+.copyLinkButtonTitle {
+  text-wrap: nowrap;
+}
+
+.deleteSelectedButton {
+  padding: 8px 16px;
+  background-color: rgb(213, 17, 4);
+  color: #FEFEFE;
+  border-radius: 24px;
+
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  align-items: center;
+  min-width: 200px;
+}
+
+.deleteSelectedButton:disabled {
+  background-color: #DEDED7;
+}
+
+@media (max-width: 600px) {
+  .deleteSelectedButton {
+    min-width: 100px;
+  }
+}
+
+.makeTripButton {
+  background-color: #629015;
+  color: #FEFEFE;
+  border-radius: 24px;
+  padding: 8px 16px;
+
+  box-sizing: border-box;
+}
+
+.makeTripButton:disabled {
+  background-color: #DEDED7;
+}
+
+.deleteSelectedButtonText {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.deleteSelectedButtonCount {
+  min-width: 20px;
+  text-align: center;
+}
+
+.dropdownDots {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  top: 100%;
+  left: -30%;
+  transform: translateX(-50%);
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 24px;
+  padding: 8px 16px;
+  z-index: 10;
+  text-align: center;
+  width: 163px;
+  box-sizing: border-box;
+}
+
+.dropdownItemDots {
+  padding-block: 14.5px;
+  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.dropdownItemDots:not(:last-child) {
+  border-bottom: 1px solid #DEDED7;
+}
+
+.deleteDots {
+  color: red;
+  cursor: pointer;
+}
+
+.editingFolder {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  height: 38px;
+  box-sizing: border-box;
+
+  font-family: 'Gilroy-Bold';
+  font-size: 24px;
+  color: #444445;
+  font-weight: 600;
+
+  background-color: inherit;
+}
+
+.editingFolderInput {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 38px;
+  box-sizing: border-box;
+  width: 100%;
+
+  font-family: 'Gilroy-Bold';
+  font-size: 24px;
+  color: #444445;
+  font-weight: 600;
+  border: none;
+  outline: none;
+  text-align: center;
+  background-color: inherit;
+}
+
+.editingFolderInput:focus {
+  border: none;
+  outline: none;
+}
+
+.saveEditButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 38px;
+  box-sizing: border-box;
+  padding: 0 10px;
+  background-color: #629015;
+  border-radius: 24px;
+  cursor: pointer;
+
+  font-family: 'Gilroy-Regular';
+  font-size: 18px;
+  color: #FEFEFE;
+  font-weight: 400;
+}
+
+.cancelEditButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 38px;
+  box-sizing: border-box;
+  padding: 0 10px;
+  background-color: #D53604;
+  border-radius: 24px;
+  cursor: pointer;
+
+  font-family: 'Gilroy-Regular';
+  font-size: 18px;
+  color: #FEFEFE;
+  font-weight: 400;
+}
+
+.emptyItineraryContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 40px;
+  width: 100%;
+}
+
+.emptyItineraryImage {
+  width: 100%;
+  max-width: 500px;
+}
+
+.emptyItineraryTitle {
+  font-family: 'Gilroy-Regular';
+  font-size: 24px;
+  color: #6B6B6E;
+  font-weight: 600;
+  line-height: 28.8px;
+  text-align: center;
+}
+
+.smallEditing {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+}

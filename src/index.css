@@ -1,0 +1,78 @@
+/* @import url('https://fonts.googleapis.com/css2?family=Beau+Rivage&display=swap'); */
+
+@font-face {
+  font-family: 'Gilroy-Regular';
+  src: url('./assets/fonts/Gilroy-Regular.ttf') format('truetype');
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'Gilroy-Bold';
+  src: url('./assets/fonts/Gilroy-Bold.ttf') format('truetype');
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: 'Gilroy-semibold';
+  src: url('./assets/fonts/Gilroy-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+}
+
+:root {
+  font-family: 'Gilroy-Regular';
+  line-height: 1.5;
+  font-weight: 400;
+
+  color: #1F1F20;
+  background-color: #F8F7F1;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+
+  box-sizing: border-box;
+}
+
+* {
+  font-family: 'Gilroy-Regular';
+}
+
+h1 {
+  font-family: 'Gilroy-semibold';
+}
+
+h2 {
+  font-family: 'Gilroy-Bold';
+  font-size: 32px;
+}
+
+img {
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+:root {
+  color: #1F1F20;
+  background-color: #ffffff;
+}
+
+button {
+  background-color: #f9f9f9;
+}
+
+input:focus{
+  outline: none;
+  border-color: #CDBAAA;
+  outline: 1px solid #CDBAAA;
+}

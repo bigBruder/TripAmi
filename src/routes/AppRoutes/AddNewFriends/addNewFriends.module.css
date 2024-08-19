@@ -1,0 +1,372 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 0 40px 0 40px;
+  box-sizing: border-box;
+  z-index: 1;
+  position: relative;
+  background-color: #F8F7F1;
+}
+
+@media (max-width: 721px) {
+  .main {
+    padding-inline: 16px;
+  }
+}
+
+.main::before {
+  content: "";
+  background-image: url('/friends_background.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: -1;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  
+  flex-grow: 1;
+  overflow: hidden;
+  
+  padding: 80px;
+  box-sizing: border-box;
+  margin-top: 24px;
+  margin-bottom: 80px;
+  background-color: rgba(254, 254, 254, 0.7);
+  backdrop-filter: blur(10px);
+  border-radius: 96px;
+}
+
+@media (max-width: 1400px) {
+  .container {
+    padding: 40px;
+  }
+}
+
+@media (max-width: 721px) {
+  .container {
+    padding: 24px 8px;
+    border-radius: 40px;
+    margin-bottom: 46px;
+  }
+}
+
+.subTitle {
+  color: #717171;
+  font-family: Gilroy, sans-serif;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+
+  margin: 20px 0;
+}
+
+.usersContainer {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: 162px;
+  row-gap: 24px;
+  position: relative;
+}
+
+.usersContainer::after {
+  content: "";
+  position: absolute;
+  height: 50%;
+  top: 50%;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  background-color: #FEFEFE;
+  transform: translate(-50%, -50%);
+}
+
+@media (max-width: 1400px) {
+  .usersContainer::after {
+      display: none;    
+  }
+}
+
+.usersContainer:last-child {
+    margin-bottom: 24px;
+}
+
+@media (max-width: 1400px) {
+  .usersContainer {
+    column-gap: 0;
+    grid-template-columns: 1fr;
+  }
+}
+
+
+.cardMain {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 5px
+}
+
+.userCard {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    cursor: pointer;
+    align-items: center;
+}
+
+.avatar {
+    width: 72px;
+    height: 72px;
+    flex-shrink: 0;
+
+    border-radius: 50%;
+    border: 0.5px solid #FFFFFF;
+}
+
+@media (max-width: 1400px) {
+    .avatar {
+        width: 64px;
+        height: 64px;
+    }
+}
+
+.userInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+}
+
+@media (max-width: 721px) {
+    .userInfo {
+        gap: 0;
+    }
+  
+}
+
+.userName {
+    color: #1F1F20;
+    font-family: 'Gilroy-Bold', sans-serif;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+@media (max-width: 721px) {
+    .userName {
+        font-size: 16px;
+    }
+}
+
+.whereTo {
+    display: flex;
+    gap: 10px;
+    color: #717171;
+    font-family: Gilroy, sans-serif;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+}
+
+.orangeText {
+    color: #FF4D00;
+}
+
+.addToFriendButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-block: 10.5px;
+    max-width: 193px;
+    width: 100%;
+    line-height: 27px;
+    box-sizing: border-box;
+    border-radius: 24px;
+
+    background: #629015;
+    font-family: 'Gilroy-Bold', sans-serif;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 600;
+    color: #FFFFFF;
+    cursor: pointer;
+}
+
+@media (max-width: 1400px) {
+    .addToFriendButton {
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 721px) {
+    .addToFriendButton {
+        max-width: fit-content;
+        padding: 6.5px 16px;
+    }
+}
+
+.removeFriend {
+    background-color: #FF4D00;
+    color: #FFFFFF;
+}
+
+.invited {
+    cursor: default;
+    background-color: #9EC87B;
+}
+
+.copyLink {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 80px;
+  width: 100%;
+  box-sizing: border-box;
+  font-family: 'Gilroy-Regular', sans-serif;
+  font-size: 24px;
+  font-weight: 400;
+
+  background-color: rgba(254, 254, 254, 0.7);
+  backdrop-filter: blur(10px);
+  border-radius: 96px;
+}
+
+@media (max-width: 1400px) {
+  .copyLink {
+      padding: 16px 40px;
+  }
+}
+
+@media (max-width: 721px) {
+  .copyLink {
+      flex-direction: column;
+      gap: 8px;
+      border-radius: 40px;
+  }
+}
+
+.shareButton {
+  display: flex;
+  align-items: center;
+  padding: 13px 42px;
+  max-width: 193px;
+  width: 100%;
+  gap: 8px;
+  border-radius: 24px;
+  background: #CFB317;
+  font-size: 18px;
+  color: #FFFFFF;
+  cursor: pointer;
+}
+
+.shareButtonCopied {
+  background: #ecd659;
+}
+
+@media (max-width: 1400px) {
+  .shareButton {
+      padding: 8px 42px;
+  }
+}
+
+@media (max-width: 721px) {
+  .shareButton {
+      padding: 0;
+      padding-block: 8px;
+      max-width: none;
+      width: 100%;
+      justify-content: center;
+  }
+}
+
+.copyLinkTitle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-size: 24px;
+  text-wrap: nowrap;
+}
+
+@media (max-width: 1400px) {
+  .copyLinkTitle {
+      font-size: 18px;
+  }  
+}
+
+@media (max-width: 721px) {
+  .copyLinkTitle {
+      text-wrap: wrap;
+  }  
+}
+
+.friendsTitle {
+  font-family: 'Gilroy-Bold', sans-serif;
+  font-size: 32px;
+  line-height: 38.4px;
+  font-weight: 700;
+  color: #1F1F20;
+  margin-bottom: 8px;
+}
+
+.friendsTitleSecond {
+  font-size: 16px;
+  line-height: 19.2px;
+  font-weight: 400;
+  margin-bottom: 50px;
+}
+
+@media (max-width: 1400px) {
+  .friendsTitleSecond {
+      margin-bottom: 32px;
+  }
+}
+
+@media (max-width: 721px) {
+  .friendsTitleSecond {
+      margin-bottom: 26px;
+  }
+}
+
+.lastTripInfo {
+  display: flex;
+  gap: 8px;
+  font-family: 'Gilroy-Regular', sans-serif;
+  font-size: 16px;
+  line-height: 19.2px;
+  font-weight: 400;
+}
+
+@media (max-width: 721px) {
+  .lastTripInfo {
+      flex-direction: column;
+      gap: 0;
+  }  
+}
+
+.lastTripTitle {
+  color: #444445;
+  font-size: 16px;
+  line-height: 19.2px;
+}
+
+.lastTripName {
+  color: #1F1F20;
+  font-size: 16px;
+  line-height: 19.2px;
+  font-family: 'Gilroy-Semibold', sans-serif;
+  font-weight: 400;
+}
