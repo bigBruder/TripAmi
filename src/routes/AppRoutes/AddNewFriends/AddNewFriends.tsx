@@ -54,9 +54,22 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user }) => {
   const { firestoreUser } = useContext(AuthContext);
   const [avatar, setAvatar] = useState<string | null>(null);
   const [copyLink, setCopyLink] = useState(false);
+  const [facebookFriendsId, setFacebookFriendsId] = useState([]);
   const [facebookFriends, setFacebookFriends] = useState([]);
+  const [closeFacebook, setCloseFacebook] = useState(false);
+  const [facebookContainerQuery, setFacebookContainerQuery] = useState(false);
 
-  console.log(facebookFriends);
+  useEffect(() => {
+    if (!firestoreUser?.accessToken && !firestoreUser?.userFromFacebook) {
+      setFacebookContainerQuery(true);
+    } else if (firestoreUser?.accessToken && !closeFacebook) {
+      setFacebookContainerQuery(false);
+    } else if (firestoreUser?.accessToken && closeFacebook) {
+      setFacebookContainerQuery(true);
+    }
+  }, [firestoreUser?.accessToken, firestoreUser?.userFromFacebook, closeFacebook]);
+
+  console.log(facebookFriends, 'facebookFriends');
   console.log(firestoreUser, 'firestoreUser');
 
   useEffect(() => {
@@ -64,10 +77,30 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user }) => {
       fetch('https://graph.facebook.com/v12.0/me/friends?access_token=' + firestoreUser.accessToken)
         .then((response) => response.json())
         .then((data) => {
-          setFacebookFriends(data.data);
+          console.log(data, 'data');
+
+          setFacebookFriendsId(data.data.map((friend: any) => friend.id));
         });
     }
-  });
+  }, [firestoreUser?.id, firestoreUser?.accessToken, firestoreUser?.userFromFacebook]);
+
+  useEffect(() => {
+    const fetchFriendsFromFacebook = async () => {
+      if (firestoreUser?.id && facebookFriendsId.length > 0) {
+        const q = query(usersCollection, where('facebookId', 'in', facebookFriendsId), limit(40));
+
+        const querySnapshot = await getDocs(q);
+
+        const fetchedUsers = querySnapshot.docs.map((doc) => ({
+          ...doc.data(),
+          id: doc.id,
+        }));
+
+        setFacebookFriends(fetchedUsers);
+      }
+    };
+    fetchFriendsFromFacebook();
+  }, [firestoreUser?.id, facebookFriendsId]);
 
   useEffect(() => {
     const fetchAvatar = async () => {
@@ -211,25 +244,57 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user }) => {
             <span className={styles.copyLinkButtonTitle}>{copyLink ? 'Copied' : 'Copy link'}</span>
           </button>
         </div>
-        <div className={styles.container}>
-          <h1 className={styles.friendsTitle}>Find new friends</h1>
-          <p className={styles.friendsTitleSecond}>Here you can see all users of the platform</p>
-          <div className={styles.usersContainer} style={{ columnGap: '10%' }}>
-            {users.map((user) => (
-              <UserCard
-                user={user}
-                key={user.firebaseUid}
-                invited={user.id ? invitedUsers.includes(user.id) : false}
-                isFriend={
-                  firestoreUser?.friends && user.id
-                    ? firestoreUser?.friends.includes(user.id)
-                    : false
-                }
-                gotInvite={user.id ? invitationsFromUsers.includes(user.id) : false}
-                invitation={invitations.find((invitation) => invitation.fromUser === user.id)}
-              />
-            ))}
+        <div className={styles.allPeopleContainer}>
+
+          <div className={cn([styles.container], [styles.containerSecond], { [styles.containerFacebook]: facebookContainerQuery })}>
+            <h1 className={styles.friendsTitle}>Find new friends</h1>
+            <p className={styles.friendsTitleSecond}>Here you can see all users of the platform</p>
+            <div className={cn([styles.usersContainer], { [styles.userContainerFacebook]: firestoreUser?.accessToken && firestoreUser?.userFromFacebook })} style={{ columnGap: '10%' }}>
+              {users.map((user) => (
+                <UserCard
+                  user={user}
+                  key={user.firebaseUid}
+                  invited={user.id ? invitedUsers.includes(user.id) : false}
+                  isFriend={
+                    firestoreUser?.friends && user.id
+                      ? firestoreUser?.friends.includes(user.id)
+                      : false
+                  }
+                  gotInvite={user.id ? invitationsFromUsers.includes(user.id) : false}
+                  invitation={invitations.find((invitation) => invitation.fromUser === user.id)}
+                />
+              ))}
+            </div>
           </div>
+          {firestoreUser?.accessToken && firestoreUser?.userFromFacebook && !closeFacebook ? (
+            <div className={`${styles.container} ${styles.containerFirst}`}>
+              <h1 className={styles.friendsTitle}>
+                People you might know
+              <div
+                className={styles.closeFacebook}
+                onClick={() => setCloseFacebook(true)}
+              >
+                <img src='/closeFacebook.svg' alt="closeFacebook" />
+              </div>
+              </h1>
+              <p className={styles.friendsTitleSecond}>Here you can see contacts from Facebook, which are also on Tripami</p>
+              <div className={cn([styles.usersContainer], { [styles.userContainerFacebook]: firestoreUser?.accessToken && firestoreUser?.userFromFacebook })} style={{ columnGap: '10%' }}>
+                {facebookFriends.map((user) => (
+                  <UserCard
+                    user={user}
+                    key={user.firebaseUid}
+                    invited={user.id ? invitedUsers.includes(user.id) : false}
+                    isFriend={
+                      firestoreUser?.friends && user.id
+                        ? firestoreUser?.friends.includes(user.id)
+                        : false
+                    }
+                    gotInvite={user.id ? invitationsFromUsers.includes(user.id) : false}
+                    invitation={invitations.find((invitation) => invitation.fromUser === user.id)}
+                  />
+                ))}
+              </div>
+            </div>) : null}
         </div>
       </div>
       <Footer />

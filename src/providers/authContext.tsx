@@ -112,8 +112,31 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const provider = new FacebookAuthProvider();
       provider.addScope('user_friends');
       const result = await signInWithPopup(auth, provider);
+      console.log(result, 'result');      
 
+      const credential = FacebookAuthProvider.credentialFromResult(result);
+      const accessToken = credential?.accessToken;
 
+      const qe = query(usersCollection, where('firebaseUid', '==', result.user.uid));
+      const querySnapshotR = await getDocs(qe);
+      if (accessToken && querySnapshotR.docs.length > 0) {
+        await updateDoc(doc(db, 'users', querySnapshotR.docs[0].id), {
+          accessToken,
+        });
+      }
+
+      const friends = await fetch(
+        `https://graph.facebook.com/v12.0/me/friends?access_token=${accessToken}`
+      ).then((res) => res.json());
+
+      console.log(friends, 'friends');
+
+      const response = await fetch(
+        `https://graph.facebook.com/v12.0/me/permissions?access_token=${accessToken}`
+      );
+
+      const permissions = await response.json();
+      console.log(permissions, 'permissions');
 
       setCurrentUser(result.user);
 
@@ -136,6 +159,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           itinerary: [],
           accessToken: accessToken,
           userFromFacebook: true,
+          facebookId: result.user.providerData[0].uid,
         });
       }
 
