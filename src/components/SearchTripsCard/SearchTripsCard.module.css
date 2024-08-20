@@ -1,0 +1,12 @@
+.searchTripsContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.searchPhotoContainer {
+  display: flex;
+  height: 60px;
+  width: 60px;
+}

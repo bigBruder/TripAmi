@@ -25,13 +25,34 @@ import pic2 from '/pic2.png';
 import pic3 from '/pic3.png';
 
 import 'swiper/css';
+import SearchTripsCard from '~/components/SearchTripsCard';
 
 const LoginPage = () => {
   const { firestoreUser } = useContext(AuthContext);
   const [suggestedTrips, setSuggestedTrips] = useState<ITravel[]>([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [avatar, setAvatar] = useState<string | null>(null);
+  const [allTrips, setAllTrips] = useState<ITravel[]>([]);
+  const [searchValue, setSearchValue] = useState('');
   const userRef = window.localStorage.getItem('ref');
+
+  useEffect(() => {
+    const fetchAllTrips = async () => {
+      const qu = query(tripsCollection, orderBy('createdAt', 'desc'));
+
+      const unsubscribe = onSnapshot(qu, (querySnapshot) => {
+        const fetchedTrips = querySnapshot.docs.map((doc) => ({
+          ...doc.data(),
+          id: doc.id,
+        }));
+
+        setAllTrips(fetchedTrips as ITravel[]);
+      });
+
+      return () => unsubscribe();
+    };
+    fetchAllTrips();
+  }, []);
 
   useEffect(() => {
     const setLocalStorage = async () => {
@@ -136,6 +157,30 @@ const LoginPage = () => {
     { text: 'Share your experience', image: pic3 },
   ];
 
+  const handleInputFocus = () => {
+    if (!isFirestoreUser) {
+      setModalIsOpen(true);
+    }
+  };
+
+  const handleSearchClick = () => {
+    if (!isFirestoreUser) {
+      setModalIsOpen(true);
+    }
+  };
+
+  const findPhoto = async (trip: ITravel) => {
+    try {
+      if (trip.imageUrl.length > 0) {
+        const url = await getDownloadURL(ref(storage, trip.imageUrl[0].url));      
+        return url;
+      }
+    } catch {
+      return '/photoNotFound.jpg';
+    }
+  }
+
+
   return (
     <>
       <div className={styles.main}>
@@ -149,18 +194,32 @@ const LoginPage = () => {
             <input
               type='text'
               placeholder='Search city, country or place'
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
               className={styles.searchInput}
-              disabled={!isFirestoreUser}
+              onFocus={() => handleInputFocus()}
             />
-            <button className={styles.searchButton} disabled={!isFirestoreUser}>
+            <button className={styles.searchButton} onClick={() => handleSearchClick()}>
               <img src={searchButton} alt='searchButton' />
               Find out
             </button>
+            {searchValue.length > 0 && (
+              <div className={styles.searchResults}>
+                {allTrips
+                  .filter((trip) => trip.tripName.toLowerCase().includes(searchValue.toLowerCase()))
+                  .slice(0, 5)
+                  .map((trip) => (
+                    <SearchTripsCard
+                      trip={trip}
+                      key={trip.id}
+                      />
+                  ))
+                }
+              </div>
+            )}
           </div>
         </div>
         <div className={styles.mainSection}>
-          {/* <Intro /> */}
-          {/* <h5 className={styles.title}>Trending today</h5> */}
           <h1 className={styles.mainTitleSec}>Top posts</h1>
 
           <div className={styles.sliderContainer}>
