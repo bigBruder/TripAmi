@@ -15,6 +15,16 @@
   grid-template-columns: repeat(var(--columns), minmax(0, 1fr));
 }
 
+.placeAutocomplete {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  border-radius: 24px;
+  height: 37px;
+  box-sizing: border-box;
+  grid-column: span 4;
+}
+
 .searchContainer {
   display: flex;
   align-items: center;

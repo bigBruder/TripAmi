@@ -34,7 +34,6 @@ const PlaceAutocomplete: FC<PlaceAutocompleteProps> = ({
         const suggestionsFiltered = suggestions.filter(
           (suggestion) => !tags.includes(suggestion.placeId)
         );
-        console.log(suggestionsFiltered);
 
         return (
           <div

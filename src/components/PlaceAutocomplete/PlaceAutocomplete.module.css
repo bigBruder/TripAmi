@@ -76,7 +76,7 @@ img {
 .inputContainer {
     position: relative;
     width: 100%;
-    display: flexww;
+    display: flex;
     box-sizing: border-box;
     line-height: 46px;
     background: #F6F6F6;

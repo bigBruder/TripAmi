@@ -1041,7 +1041,7 @@ const CreateTrip: React.FC<Props> = () => {
                             [styles.dateFilled]: isDateFilled,
                           })}
                         >
-                          {isValid(parsedDate) ? format(parsedDate, 'MM/dd') : 'Invalid Date'}
+                          {isValid(parsedDate) ? format(parsedDate, 'EEEE MMM. do') : 'Invalid Date'}
                         </button>
                       </SwiperSlide>
                     );

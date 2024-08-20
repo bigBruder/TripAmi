@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
@@ -18,6 +18,9 @@ import DeleteFolderModal from '../DeleteFolderModal';
 import styles from './ItineraryTab.module.css';
 import addFolder from '/addFolder.svg';
 import empty_itinerary from '/empty_itinerary.svg';
+import PlaceAutocomplete from '../PlaceAutocomplete/PlaceAutocomplete';
+import { geocodeByPlaceId } from 'react-places-autocomplete';
+import axios from 'axios';
 
 enum WindowWidth {
   Small = 'Small',
@@ -42,14 +45,12 @@ const ItineraryTab = () => {
   const [isDeleteFolderOpen, setIsDeleteFolderOpen] = useState(false);
   const [windowWidth, setWindowWidth] = useState(WindowWidth.Large);
   const [loadItinerary, setLoadItinerary] = useState(false);
+  const [geoTags, setGeoTags] = useState('');
 
   const [isOpen, setIsOpen] = useState(false);
   const [isAddFolderOpen, setIsAddFolderOpen] = useState(false);
   const dropdownRef = useRef(null);
   const dropdownDotsRef = useRef(null);
-
-  console.log(folder, 'folder');
-  
 
   useEffect(() => {
     const fetchItinerary = async () => {
@@ -277,6 +278,60 @@ const ItineraryTab = () => {
     window.scrollTo(0, 0);
   };
 
+  const onSelectGeoTag = useCallback(
+    (address: string, placeID: string) => {
+      (async () => {
+        if (!folder.places.map((tag) => tag.address).includes(address)) {
+          const coordinates = await geocodeByPlaceId(placeID);
+          const photoRes = await axios.get(
+            `https://us-central1-tripami-3e954.cloudfunctions.net/getPhoto?id=${placeID}`
+          );
+          const photo = await photoRes.data.photoUrl;
+
+          const newItinerary = firestoreUser?.itinerary.map((item) => {
+            if (item.id === folder.id) {
+              return {
+                ...item, places: [...item.places, {
+                  address,
+                  placeID,
+                  lat: coordinates[0].geometry.location.lat(),
+                  lng: coordinates[0].geometry.location.lng(),
+                  types: coordinates[0].types,
+                  name: coordinates[0].formatted_address,
+                  photo: photo,
+                }]
+              };
+            }
+            return item;
+          });
+          try {
+            await updateDoc(doc(db, 'users', firestoreUser?.id), {
+              itinerary: newItinerary,
+            });
+            setFolder({
+              ...folder, places: [...folder.places, {
+                address,
+                placeID,
+                lat: coordinates[0].geometry.location.lat(),
+                lng: coordinates[0].geometry.location.lng(),
+                types: coordinates[0].types,
+                name: coordinates[0].formatted_address,
+                photo: photo,
+              }]
+            });
+            console.log('Document successfully updated');
+          } catch {
+            console.error('Error updating document: ', e);
+          }
+          setGeoTags('');
+        } else {
+          toast('You have already added this tag');
+        }
+      })();
+    },
+    [folder, firestoreUser?.itinerary]
+  );
+
   return (
     <div className={styles.container}>
       <div className={styles.functionsContainer}>
@@ -330,6 +385,15 @@ const ItineraryTab = () => {
             onClick={() => setIsAddFolderOpen(true)}
           />
         </div>
+      </div>
+      <div className={styles.placeAutocomplete}>
+        <PlaceAutocomplete
+          location={geoTags}
+          setLocation={setGeoTags}
+          onSelectPlace={onSelectGeoTag}
+          placeholder='Ex. Beaches,Cities,Restaurants'
+          selectedGeoTags={folder.places}
+        />
       </div>
       <div className={styles.folderInfo}>
         {folder?.name === 'Add itinerary first' &&
@@ -501,7 +565,7 @@ const ItineraryTab = () => {
                 onClick={() => navigate('/place/' + geoTag.placeID)}
               >
                 <img src={geo_filled} alt='geotagFilled' className={styles.iconGeoFilled} />
-                <p className={styles.geotagTitle}>{geoTag.address.split(',')[0]}</p>
+                <p className={styles.geotagTitle}>{geoTag?.address?.split(',')[0]}</p>
               </div>
               <div
                 className={cn(styles.geoTagContainer, styles.geoTagContainerImagePlus)}
