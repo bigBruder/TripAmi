@@ -691,10 +691,15 @@ export const Trip = () => {
                   </div>
                 </div>
                 <div className={styles.dayContainer}>
-                  {selectedDayImages.length > 0 && <SwiperDialyTrip file={selectedDayImages} />}
+                  {selectedDayImages.length > 0 &&
+                    <SwiperDialyTrip
+                      file={selectedDayImages}
+                      setIsPhotoOpen={setIsPhotoOpen}
+                      setPhotoForModal={setPhotoForModal}
+                    />}
                   <div className={styles.dayInfoContainer}>
                     {(!!selectedDayTrip?.description.length || !!selectedDayTrip?.place.length) && (
-                      <h2 className={styles.tripOverview}>Day Overview</h2>
+                      <h2 className={styles.tripOverview} style={{ marginTop: '0'}}>Day Overview</h2>
                     )}
                     {selectedDayTrip?.description.length ? (
                       <>
@@ -816,7 +821,7 @@ export const Trip = () => {
       <ShareModal
         isOpen={isModalShareOpen}
         onRequestClose={() => setIsModalShareOpen(false)}
-        linkTo={'https://tripamimain.netlify.app/#/trip/' + id}
+        linkTo={window.location.origin + '/#/trip/' + id}
       />
 
       <LightBox

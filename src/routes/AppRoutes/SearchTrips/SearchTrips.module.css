@@ -1,0 +1,152 @@
+.main {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  position: relative;
+  z-index: 1;
+
+  padding-inline: 55px;
+  box-sizing: border-box;
+}
+
+.main::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('/search_background.jpg');
+  background-size: cover;
+  background-position: center;
+  z-index: -1;
+}
+
+.mainContainer {
+  max-width: 1500px;
+  width: 100%;
+
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  column-gap: 24px;
+}
+
+.filtersCintainer {
+  grid-column: span 4;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 16px;
+  box-sizing: border-box;
+
+  border: 1px solid #EEEEEA;
+  background-color: rgba(254, 254, 254, 0.7);
+  box-shadow: rgba(222, 222, 215, 0.5);
+  backdrop-filter: blur(10px);
+
+  border-radius: 40px;
+}
+
+.resultsContainer {
+  grid-column: span 8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 16px;
+  box-sizing: border-box;
+
+  border: 1px solid #EEEEEA;
+  background-color: rgba(254, 254, 254, 0.7);
+  box-shadow: rgba(222, 222, 215, 0.5);
+  backdrop-filter: blur(10px);
+
+  border-radius: 40px;
+}
+
+.footer {
+  z-index: 1;
+  position: relative;
+}
+
+.filterOptions {
+  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  column-gap: 20px;
+}
+
+.dates {
+  grid-column: span 2;
+}
+
+.rating {
+  grid-column: span 2;
+}
+
+.rangeContainer {
+  width: 100%;
+  max-width: 400px;
+  margin: 20px auto;
+  text-align: center;
+}
+
+.budgetDisplay {
+  margin-bottom: 10px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.sliderContainer {
+  position: relative;
+  height: 20px;
+}
+
+.rangeSlider {
+  -webkit-appearance: none;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  pointer-events: none;
+  background: none;
+  z-index: 2;
+}
+
+.rangeSlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  background: green;
+  border-radius: 50%;
+  cursor: pointer;
+  pointer-events: auto;
+  position: relative;
+  z-index: 3;
+}
+
+.rangeSlider::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  background: green;
+  border-radius: 50%;
+  cursor: pointer;
+  pointer-events: auto;
+  position: relative;
+  z-index: 3;
+}
+
+.rangeTrack {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 5px;
+  background: green;
+  z-index: 1;
+}
+

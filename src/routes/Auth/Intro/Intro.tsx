@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 
 import { doc, onSnapshot, updateDoc, where } from 'firebase/firestore';
@@ -26,15 +26,39 @@ import pic3 from '/pic3.png';
 
 import 'swiper/css';
 import SearchTripsCard from '~/components/SearchTripsCard';
+import { IPlace } from '~/routes/AppRoutes/Posts/types';
 
 const LoginPage = () => {
   const { firestoreUser } = useContext(AuthContext);
   const [suggestedTrips, setSuggestedTrips] = useState<ITravel[]>([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [avatar, setAvatar] = useState<string | null>(null);
-  const [allTrips, setAllTrips] = useState<ITravel[]>([]);
+  const [allGeoTagsMap, setAllGeoTagsMap] = useState<IPlace[]>([]);
   const [searchValue, setSearchValue] = useState('');
+  const [currentGeoTag, setCurrentGeoTag] = useState<IPlace | null>(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [allTrips, setAllTrips] = useState<ITravel[]>([]);
   const userRef = window.localStorage.getItem('ref');
+  const searchBarRef = useRef(null);
+
+  useEffect(() => {
+    if (searchValue.trim().length > 0 && !currentGeoTag) {
+      setIsDropdownOpen(true);
+    } else {
+      setIsDropdownOpen(false);
+    }
+  }, [searchValue, searchBarRef.current, currentGeoTag]);
+
+  const handleClickOutside = (event) => {
+    if (searchBarRef.current && !searchBarRef.current.contains(event.target)) {
+      setIsDropdownOpen(false);
+    } 
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   useEffect(() => {
     const fetchAllTrips = async () => {
@@ -47,6 +71,17 @@ const LoginPage = () => {
         }));
 
         setAllTrips(fetchedTrips as ITravel[]);
+
+        const allGeoTags = fetchedTrips.flatMap(trip => trip.geoTags || []);
+
+        const uniqueGeoTagsMap = new Map();
+        allGeoTags.forEach(tag => {
+          uniqueGeoTagsMap.set(tag.placeID, tag);
+        });
+
+        const uniqueGeoTags = Array.from(uniqueGeoTagsMap.values());
+
+        setAllGeoTagsMap(uniqueGeoTags as IPlace[]);
       });
 
       return () => unsubscribe();
@@ -161,6 +196,10 @@ const LoginPage = () => {
     if (!isFirestoreUser) {
       setModalIsOpen(true);
     }
+
+    if (searchValue.trim().length > 0) {
+      setIsDropdownOpen(true);
+    }
   };
 
   const handleSearchClick = () => {
@@ -168,18 +207,6 @@ const LoginPage = () => {
       setModalIsOpen(true);
     }
   };
-
-  const findPhoto = async (trip: ITravel) => {
-    try {
-      if (trip.imageUrl.length > 0) {
-        const url = await getDownloadURL(ref(storage, trip.imageUrl[0].url));      
-        return url;
-      }
-    } catch {
-      return '/photoNotFound.jpg';
-    }
-  }
-
 
   return (
     <>
@@ -190,12 +217,15 @@ const LoginPage = () => {
           <p className={styles.secondTitle}>
             Join the platform and find out what people are saying about their travels!
           </p>
-          <div className={styles.searchBarContainer}>
+          <div className={styles.searchBarContainer} ref={searchBarRef}>
             <input
               type='text'
               placeholder='Search city, country or place'
               value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
+              onChange={(e) => {
+                setSearchValue(e.target.value);
+                setCurrentGeoTag(null);
+              }}
               className={styles.searchInput}
               onFocus={() => handleInputFocus()}
             />
@@ -203,16 +233,19 @@ const LoginPage = () => {
               <img src={searchButton} alt='searchButton' />
               Find out
             </button>
-            {searchValue.length > 0 && (
+            {isDropdownOpen && (
               <div className={styles.searchResults}>
-                {allTrips
-                  .filter((trip) => trip.tripName.toLowerCase().includes(searchValue.toLowerCase()))
+                {allGeoTagsMap
+                  .filter((geotag) => geotag.address.toLowerCase().includes(searchValue.toLowerCase()))
                   .slice(0, 5)
-                  .map((trip) => (
+                  .map((geotag) => (
                     <SearchTripsCard
-                      trip={trip}
-                      key={trip.id}
-                      />
+                      geotag={geotag}
+                      setCurrentGeoTag={setCurrentGeoTag}
+                      setSearchValue={setSearchValue}
+                      setIsDropdownOpen={setIsDropdownOpen}
+                      key={geotag.placeID}
+                    />
                   ))
                 }
               </div>

@@ -14,6 +14,7 @@ import { Intro } from '~/routes/Auth/Intro';
 
 import CreateTrip from './AppRoutes/CreateTrip/CreateTrip';
 import { Trip } from './AppRoutes/Trip/Trip';
+import SearchTrips from './AppRoutes/SearchTrips';
 
 const router = createHashRouter([
   {
@@ -56,6 +57,10 @@ const router = createHashRouter([
     path: '/trip/create',
     element: <CreateTrip />,
   },
+  {
+    path: '/search',
+    element: <SearchTrips />,
+  }
 ]);
 
 const Navigator = () => {

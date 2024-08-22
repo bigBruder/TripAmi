@@ -181,6 +181,7 @@
 .text {
   margin-top: 8px;
   margin-bottom: 24px;
+  text-align: center;
 
   color: #262626;
   font-family: 'Gilroy-Bold', sans-serif;

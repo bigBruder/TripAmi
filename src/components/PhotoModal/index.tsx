@@ -16,13 +16,14 @@ const PhotoModal: React.FC<PhotoModalProps> = ({ photoForModal, setIsPhotoOpen, 
       isOpen={isPhotoOpen}
       style={{
         content: {
-          padding: 0,
-          height: 'fit-content',
+          padding: '0',
+          height: '90%',
           width: 'fit-content',
           margin: 'auto',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
+          overflow: 'hidden',
         },
       }}
       contentLabel='Example Modal'

@@ -108,11 +108,11 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signInWithFacebook = async () => {
     setLoading(true);
+
     try {
-      const provider = new FacebookAuthProvider();
-      provider.addScope('user_friends');
+      const provider = new FacebookAuthProvider(); 
+      
       const result = await signInWithPopup(auth, provider);
-      console.log(result, 'result');      
 
       const credential = FacebookAuthProvider.credentialFromResult(result);
       const accessToken = credential?.accessToken;
@@ -124,19 +124,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           accessToken,
         });
       }
-
-      const friends = await fetch(
-        `https://graph.facebook.com/v12.0/me/friends?access_token=${accessToken}`
-      ).then((res) => res.json());
-
-      console.log(friends, 'friends');
-
-      const response = await fetch(
-        `https://graph.facebook.com/v12.0/me/permissions?access_token=${accessToken}`
-      );
-
-      const permissions = await response.json();
-      console.log(permissions, 'permissions');
 
       setCurrentUser(result.user);
 
@@ -166,7 +153,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       return true;
     } catch (err) {
       // @ts-ignore
-      alert(firebaseErrors[err.code]);
+      console.error(err);
       return false;
     } finally {
       setLoading(false);

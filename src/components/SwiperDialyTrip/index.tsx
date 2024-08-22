@@ -10,9 +10,11 @@ import styles from './SwiperDialyTrip.module.css';
 
 interface Props {
   file: { url: string; type: string; description: string | undefined; id: string }[];
+  setIsPhotoOpen: (isOpen: boolean) => void;
+  setPhotoForModal: (photo: string) => void;
 }
 
-const SwiperDialyTrip: React.FC<Props> = ({ file }) => {
+const SwiperDialyTrip: React.FC<Props> = ({ file, setPhotoForModal, setIsPhotoOpen }) => {
   const sliderRef = useRef<SwiperRef>(null);
   const [currentSlide, setCurrentSlide] = useState(0);
 
@@ -52,7 +54,19 @@ const SwiperDialyTrip: React.FC<Props> = ({ file }) => {
     <>
       {file.length === 1 ? (
         <div className={styles.singleImageContainer}>
-          <img src={file[0].url} alt='Uploaded' className={styles.singleImage} />
+          {file[0].type.includes('image') ? (
+            <img
+              src={file[0].url}
+              alt='Uploaded'
+              className={styles.singleImage}
+              onClick={() => {
+                setPhotoForModal(file[0].url);
+                setIsPhotoOpen(true);
+              }}
+            />
+          ) : (
+            <video src={file[0].url} controls className={styles.singleImage} />
+          )}
         </div>
       ) : (
         <div className={styles.singleImageContainer}>
@@ -66,7 +80,19 @@ const SwiperDialyTrip: React.FC<Props> = ({ file }) => {
               {file.map((file) => {
                 return (
                   <SwiperSlide key={file.id} className={styles.swiperSlide}>
-                    <img src={file.url} alt='Uploaded' className={styles.singleImage} />
+                    {file.type.includes('image') ? (
+                      <img
+                        src={file.url}
+                        alt='Uploaded'
+                        className={styles.image}
+                        onClick={() => {
+                          setPhotoForModal(file.url);
+                          setIsPhotoOpen(true);
+                        }}
+                      />
+                    ) : (
+                      <video src={file.url} controls className={styles.video} />
+                    )}
                   </SwiperSlide>
                 );
               })}
