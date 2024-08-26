@@ -52,7 +52,7 @@ import geotagFilled from '@assets/icons/geo_filled.svg';
 import { addDoc } from '@firebase/firestore';
 import { ref, uploadBytes } from '@firebase/storage';
 
-import { getPhoto } from '../../../../tripcodebase/src/index';
+import arrow_back from '../../../assets/icons/arrow_back.svg';
 import budget_icon from '../../../assets/icons/budget-icon.svg';
 import deleteButton from '../../../assets/icons/deleteButton.svg';
 import geo_filled from '../../../assets/icons/geo_filled.svg';
@@ -578,6 +578,19 @@ const CreateTrip: React.FC<Props> = () => {
     }
   };
 
+  const handleAddHashtag = () => {
+    if (hashtagsResult.includes(hashtag)) {
+      if (!toast.isActive('hashtag')) {
+        toast('You have already added this hashtag', { toastId: 'hashtag' });
+      }
+      return;
+    }
+    if (hashtag.trim().length > 0) {
+      setHashtagsResult((prevState) => [...prevState, hashtag]);
+      setHashtag('');
+    }
+  };
+
   const removeHashtag = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, tag: string) => {
     setHashtagsResult((prevState) => prevState.filter((item) => item !== tag));
   };
@@ -830,6 +843,14 @@ const CreateTrip: React.FC<Props> = () => {
                 onKeyDown={(e) => addHashtag(e)}
               />
               <img src={hashtag_icon} alt='hashtagIcon' className={styles.hashtagIcon} />
+              {hashtag.trim().length > 0 && (
+                <img
+                  src={arrow_back}
+                  alt='arrow_back'
+                  className={styles.arrowBack}
+                  onClick={() => handleAddHashtag()}
+                />
+              )}
             </div>
             <div className={styles.peopleContainer}>
               <CustomDropdownEditor
