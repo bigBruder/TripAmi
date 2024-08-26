@@ -58,6 +58,7 @@ import tripSaved from '@assets/icons/tripSaved.svg';
 
 import sa from '../../../assets/images/LoginBackground.png';
 import styles from './trip.module.css';
+import { enUS } from 'date-fns/locale';
 
 export const Trip = () => {
   const { id } = useParams();
@@ -102,7 +103,6 @@ export const Trip = () => {
   const [suggestedTrips, setSuggestedTrips] = useState<ITravel[]>([]);
 
   const navigate = useNavigate();
-
 
   useEffect(() => {
     if (trip) {
@@ -153,7 +153,6 @@ export const Trip = () => {
 
   useEffect(() => {
     if (trip && trip.imageUrl && trip.imageUrl.length > 0) {
-
       let imageForBackground;
       if (trip.imageUrl[0].type.includes('video')) {
         const findImage = trip.imageUrl.find((image) => image.type.includes('image'));
@@ -675,7 +674,9 @@ export const Trip = () => {
                               [styles.dateFilled]: isDateFilled,
                             })}
                           >
-                            {isValid(parsedDate) ? format(parsedDate, 'dd/MM') : 'Invalid Date'}
+                            {isValid(parsedDate)
+                              ? format(parsedDate, 'EEEE, MMM. do', { locale: enUS })
+                              : 'Invalid Date'}
                           </button>
                         </SwiperSlide>
                       );
@@ -691,15 +692,18 @@ export const Trip = () => {
                   </div>
                 </div>
                 <div className={styles.dayContainer}>
-                  {selectedDayImages.length > 0 &&
+                  {selectedDayImages.length > 0 && (
                     <SwiperDialyTrip
                       file={selectedDayImages}
                       setIsPhotoOpen={setIsPhotoOpen}
                       setPhotoForModal={setPhotoForModal}
-                    />}
+                    />
+                  )}
                   <div className={styles.dayInfoContainer}>
                     {(!!selectedDayTrip?.description.length || !!selectedDayTrip?.place.length) && (
-                      <h2 className={styles.tripOverview} style={{ marginTop: '0'}}>Day Overview</h2>
+                      <h2 className={styles.tripOverview} style={{ marginTop: '0' }}>
+                        Day Overview
+                      </h2>
                     )}
                     {selectedDayTrip?.description.length ? (
                       <>

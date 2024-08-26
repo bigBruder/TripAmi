@@ -269,40 +269,42 @@ const CreateTrip: React.FC<Props> = () => {
       if (file || downloadedImages) {
         setIsLoading(true);
 
-        const uploadedImages: { url: string; type: string }[] = [];
-
-        for (let i = 0; i < file.length; i++) {
-          const storageRef = ref(storage, `trips/${firestoreUser?.id}/${location + uuidv4()}`);
-          const uploadResult = await uploadBytes(storageRef, file[i]);
-
-          uploadedImages.push({
-            url: uploadResult.ref.fullPath,
-            type: file[i].type,
-          });
-        }
-
-        const updatedDaysInfo: UpdatedDateJournal[] = [];
-
-        for (let i = 0; i < dailyInfo.length; i++) {
-          const uploadedPhotos: { url: string; type: string }[] = [];
-
-          for (let j = 0; j < dailyInfo[i].photos.length; j++) {
+        const uploadedImages: { url: string; type: string }[] = await Promise.all(
+          file.map(async (image) => {
             const storageRef = ref(storage, `trips/${firestoreUser?.id}/${location + uuidv4()}`);
-            const uploadResult = await uploadBytes(storageRef, dailyInfo[i].photos[j]);
+            const uploadResult = await uploadBytes(storageRef, image);
 
-            uploadedPhotos.push({
+            return {
               url: uploadResult.ref.fullPath,
-              type: dailyInfo[i].photos[j].type,
-            });
-          }
+              type: image.type,
+            };
+          })
+        );
 
-          updatedDaysInfo.push({
-            place: dailyInfo[i].place,
-            date: dailyInfo[i].date,
-            description: dailyInfo[i].description.replace(/(?:\r\n|\r|\n)/g, '<br />'),
-            photos: uploadedPhotos,
-          });
-        }
+        const updatedDaysInfo: UpdatedDateJournal[] = await Promise.all(
+          dailyInfo.map(async (day) => {
+            const uploadedPhotos = await Promise.all(
+              day.photos.map(async (photo) => {
+                const storageRef = ref(
+                  storage,
+                  `trips/${firestoreUser?.id}/${location + uuidv4()}`
+                );
+                const uploadResult = await uploadBytes(storageRef, photo);
+                return {
+                  url: uploadResult.ref.fullPath,
+                  type: photo.type,
+                };
+              })
+            );
+
+            return {
+              place: day.place,
+              date: day.date,
+              description: day.description.replace(/(?:\r\n|\r|\n)/g, '<br />'),
+              photos: uploadedPhotos,
+            };
+          })
+        );
         if (isEdit && data) {
           const docRef = doc(db, 'trips', data.id);
           await updateDoc(docRef, {
@@ -1040,7 +1042,9 @@ const CreateTrip: React.FC<Props> = () => {
                             [styles.dateFilled]: isDateFilled,
                           })}
                         >
-                          {isValid(parsedDate) ? format(parsedDate, 'EEEE MMM. do') : 'Invalid Date'}
+                          {isValid(parsedDate)
+                            ? format(parsedDate, 'EEEE MMM. do')
+                            : 'Invalid Date'}
                         </button>
                       </SwiperSlide>
                     );

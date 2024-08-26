@@ -17,7 +17,7 @@ interface Props {
 }
 
 const DailyUploadImagesEditor: React.FC<Props> = ({ dailyInfo, handleChange, handleRemove }) => {
-  const fileTypes = ['JPEG', 'PNG', 'JPG', 'MP4'];
+  const fileTypes = ['JPEG', 'PNG', 'JPG', 'MP4', 'HEIC'];
 
   const sliderRef = useRef<SwiperRef | null>(null);
   const [currentSlide, setCurrentSlide] = useState(0);

@@ -13,11 +13,15 @@ import styles from './UploadImagesEditor.module.css';
 interface Props {
   file: File[];
   handleChange: (files: FileList) => void;
-  handleRemove: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, photoName: string, index: number) => void;
+  handleRemove: (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    photoName: string,
+    index: number
+  ) => void;
 }
 
 const UploadImagesEditor: React.FC<Props> = ({ file, handleChange, handleRemove }) => {
-  const fileTypes = ['JPEG', 'PNG', 'JPG', 'MP4'];
+  const fileTypes = ['JPEG', 'PNG', 'JPG', 'MP4', 'HEIC'];
 
   const sliderRef = useRef<SwiperRef>(null);
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -62,12 +66,12 @@ const UploadImagesEditor: React.FC<Props> = ({ file, handleChange, handleRemove 
     }
 
     return Math.min(slidesToShow, fileLength);
-  }
+  };
 
   const shouldShowArrows = (fileLength: number): boolean => {
     const slidesToShow = countSlides(fileLength);
     return fileLength > slidesToShow;
-  }
+  };
 
   const showArrows = shouldShowArrows(file.length);
   const slidesToShow = countSlides(file.length);
