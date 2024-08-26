@@ -1,9 +1,18 @@
 .container {
+    display: flex;
+    flex-direction: column;
     background-color: white;
     border-radius: 32px;
     padding: 8px;
     height: fit-content;
     width: 40%;
+    box-sizing: border-box;
+}
+
+.containerSearch {
+  width: 100%;
+  flex-direction: row;
+  gap: 16px;
 }
 
 @media screen and (max-width: 768px) {
@@ -178,6 +187,10 @@
     color: #aeaeae;
     padding: 12.5px 0;
     align-self: stretch;
+}
+
+.mainFooterContainer {
+  width: 100%;
 }
 
 .commentsContainer {
@@ -509,4 +522,8 @@
   color: white;
   background-color: rgba(0, 0, 0, 0.5);
   line-height: 21px;
+}
+
+.mainPhotoContainer {
+  width: 100%;
 }

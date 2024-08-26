@@ -318,7 +318,6 @@ const CreateTrip: React.FC<Props> = () => {
             tripName: tripName,
             dayDescription: updatedDaysInfo,
             text: text.replace(/(?:\r\n|\r|\n)/g, '<br />'),
-            createdAt: new Date(),
             stage: finished ? 'Finished' : activeTab,
             isPrivatJournal,
           });

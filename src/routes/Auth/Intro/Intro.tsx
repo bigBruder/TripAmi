@@ -27,6 +27,7 @@ import pic3 from '/pic3.png';
 import 'swiper/css';
 import SearchTripsCard from '~/components/SearchTripsCard';
 import { IPlace } from '~/routes/AppRoutes/Posts/types';
+import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
   const { firestoreUser } = useContext(AuthContext);
@@ -40,6 +41,8 @@ const LoginPage = () => {
   const [allTrips, setAllTrips] = useState<ITravel[]>([]);
   const userRef = window.localStorage.getItem('ref');
   const searchBarRef = useRef(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (searchValue.trim().length > 0 && !currentGeoTag) {
@@ -205,6 +208,8 @@ const LoginPage = () => {
   const handleSearchClick = () => {
     if (!isFirestoreUser) {
       setModalIsOpen(true);
+    } else {
+      navigate('/search', { state: { searchValue, allTrips} });
     }
   };
 
@@ -241,9 +246,10 @@ const LoginPage = () => {
                   .map((geotag) => (
                     <SearchTripsCard
                       geotag={geotag}
-                      setCurrentGeoTag={setCurrentGeoTag}
-                      setSearchValue={setSearchValue}
-                      setIsDropdownOpen={setIsDropdownOpen}
+                      handleSearchPush={() => {
+                        setCurrentGeoTag(geotag); 
+                        navigate('/search', { state: { allTrips, currentGeoTag: geotag } })
+                      }}
                       key={geotag.placeID}
                     />
                   ))

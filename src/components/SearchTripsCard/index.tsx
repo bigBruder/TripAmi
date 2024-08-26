@@ -1,29 +1,26 @@
 import styles from './SearchTripsCard.module.css';
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { IPlace } from '~/routes/AppRoutes/Posts/types';
+import { ITravel } from '~/types/travel';
 
 interface CardProps {
   geotag: IPlace;
-  setCurrentGeoTag: (geoTag: IPlace) => void;
-  setSearchValue: (value: string) => void;
-  setIsDropdownOpen: (value: boolean) => void;
+  handleSearchPush: () => void;
 }
 
-const SearchTripsCard: React.FC<CardProps> = ({ geotag, setCurrentGeoTag, setSearchValue, setIsDropdownOpen }) => {
+const SearchTripsCard: React.FC<CardProps> = ({ geotag, handleSearchPush }) => {
   const [photo, setPhoto] = useState<string>('/photoNotFound.jpg');
-
+  const navigate = useNavigate();
   useEffect(() => {
     if (geotag.photo) {
       setPhoto(geotag.photo);
     }
   }, [geotag.photo]);
+
   return (
     <div className={styles.searchTripsContainer}
-      onClick={() => {
-        setSearchValue(geotag.address.split(',')[0]);
-        setCurrentGeoTag(geotag)
-        setIsDropdownOpen(false);
-      }}>
+      onClick={() => handleSearchPush()}>
       <div className={styles.searchPhotoContainer}>
         <img src={photo} alt="tripPhoto" className={styles.searchPhoto} />
       </div>

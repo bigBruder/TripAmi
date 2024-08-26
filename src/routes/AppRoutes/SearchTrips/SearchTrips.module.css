@@ -34,9 +34,10 @@
   column-gap: 24px;
 }
 
-.filtersCintainer {
+.filtersContainer {
   grid-column: span 4;
   display: flex;
+  height: fit-content;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -55,8 +56,8 @@
 .resultsContainer {
   grid-column: span 8;
   display: flex;
+  flex-direction: column;
   justify-content: center;
-  align-items: center;
   gap: 16px;
   padding: 24px 16px;
   box-sizing: border-box;
@@ -79,42 +80,74 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   column-gap: 20px;
+  row-gap: 16px;
 }
 
 .dates {
   grid-column: span 2;
 }
 
+.dates div {
+  width: 100%;
+  border-radius: 12px;
+}
+
+.dates div input {
+  border-radius: 12px;
+}
+
+.dates div:hover {
+  border-color: transparent;
+  outline: none;
+}
+
 .rating {
   grid-column: span 2;
 }
 
+.price {
+  grid-column: span 2;
+}
+
 .rangeContainer {
-  width: 100%;
-  max-width: 400px;
-  margin: 20px auto;
-  text-align: center;
-}
-
-.budgetDisplay {
-  margin-bottom: 10px;
-  font-size: 18px;
-  font-weight: bold;
-}
-
-.sliderContainer {
+  grid-column: span 4;
   position: relative;
-  height: 20px;
+  width: 100%;
+  height: 24px;
+}
+
+.sliderTrack {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100%;
+  height: 8px;
+  background-color: #ddd;
+  border-radius: 4px;
+}
+
+.rangeSelected {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 8px;
+  background-color: #4CAF50;
+  border-radius: 4px;
 }
 
 .rangeSlider {
-  -webkit-appearance: none;
-  width: 100%;
   position: absolute;
   top: 0;
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
   pointer-events: none;
-  background: none;
-  z-index: 2;
+}
+
+.rangeSlider:focus {
+  outline: none;
+  border: none;
 }
 
 .rangeSlider::-webkit-slider-thumb {
@@ -122,31 +155,129 @@
   appearance: none;
   width: 24px;
   height: 24px;
-  background: green;
+  background-color: #4CAF50;
   border-radius: 50%;
   cursor: pointer;
-  pointer-events: auto;
-  position: relative;
-  z-index: 3;
+  pointer-events: all;
 }
 
 .rangeSlider::-moz-range-thumb {
   width: 24px;
   height: 24px;
-  background: green;
+  background-color: #4CAF50;
   border-radius: 50%;
   cursor: pointer;
-  pointer-events: auto;
-  position: relative;
-  z-index: 3;
+  pointer-events: all;
 }
 
-.rangeTrack {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  height: 5px;
-  background: green;
+.rangeMin {
+  z-index: 2;
+}
+
+.rangeMax {
   z-index: 1;
 }
 
+.inputsContainer {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-bottom: 10px;
+
+  background-color: #FEFEFE;
+  border-radius: 12px;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.inputGroup input {
+  width: 70%;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  border: none;
+  outline: none;
+  border-radius: 12px;
+}
+
+.inputGroup input:focus {
+  border: none;
+  outline: none;
+}
+
+.inputGroup input::-webkit-inner-spin-button,
+.inputGroup input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.budgetIcon {
+  margin-left: 16px;
+}
+
+.statusContainer {
+  grid-column: span 2;
+}
+
+.statuses {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 6.5px 8px;
+  border-radius: 12px;
+  background-color: #EEEEEA;
+  border: 1px solid #EEEEEA;
+  box-sizing: border-box;
+}
+
+.isStatusActive {
+  background: #FEFEFE;
+  border-color: #4CAF50;
+}
+
+.travelersContainer {
+  grid-column: -1 / 1;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.pagination button {
+  margin: 0 5px;
+  padding: 10px 15px;
+  background-color: #f1f1f1;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  border: 1px solid #f1f1f1;
+}
+
+.pagination button.active {
+  border-color: #4CAF50;
+  font-weight: bold;
+}
+
+.tripsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.ellipsis {
+  margin: 0 5px;
+  padding: 10px 15px;
+  color: #888;
+}

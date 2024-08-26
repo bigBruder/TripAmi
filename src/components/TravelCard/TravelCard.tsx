@@ -37,6 +37,7 @@ import styles from './travelCard.module.css';
 interface Props {
   travel: ITravel;
   isSwiper?: boolean;
+  isSearch?: boolean;
 }
 
 const notifyInfo = (message: string) => {
@@ -46,7 +47,7 @@ const notifyInfo = (message: string) => {
 };
 const notifyError = (message: string) => toast.error(message);
 
-const TravelCard: FC<Props> = ({ travel, isSwiper = false }) => {
+const TravelCard: FC<Props> = ({ travel, isSwiper = false, isSearch = false }) => {
   const { firestoreUser, updateFirestoreUser } = useContext(AuthContext);
   const [imageDownloadUrls, setImageDownloadUrls] = useState<
     { url: string; type: string; description: string }[]
@@ -175,77 +176,47 @@ const TravelCard: FC<Props> = ({ travel, isSwiper = false }) => {
 
   return (
     <div
-      className={cn(styles.container, { [styles.containerSwiper]: isSwiper })}
+      className={cn(styles.container, { [styles.containerSwiper]: isSwiper , [styles.containerSearch]: isSearch })}
       onClick={(e) => {
         handleOpenTrip(e);
       }}
     >
       <div className={styles.mainContainer}>
-        {imageDownloadUrls.length === 0 ? (
-          <div className={styles.imageContainer}>
-            <img
-              src={'/photoNotFound.jpg'}
-              alt='travel'
-              className={styles.image}
-              onClick={() => {
-                navigate('/trip/' + id, { state: { id: id } });
-                window.scrollTo(0, 0);
-              }}
-            />
-            <div
-              className={`${styles.stage} ${stage === 'Finished' ? styles.finishedTrip : styles.currentTrip}`}
-            >
-              {stage === 'Finished' ? 'Finished' : 'Current'}
-            </div>
-          </div>
-        ) : imageDownloadUrls[0] && imageDownloadUrls[0].type.includes('image') ? (
-          <div className={styles.imageContainer}>
-            {/* {!isSwiper && (
-                <div className={styles.userTrip}>
-                  <UserPostInfo userData={userData} />
-                </div>
-              )} */}
-
-            <img
-              src={
-                imageDownloadUrls && imageDownloadUrls.length
-                  ? imageDownloadUrls[0].url
-                  : '/photoNotFound.jpg'
-              }
-              alt='travel'
-              className={styles.image}
-              onClick={() => {
-                navigate('/trip/' + id, { state: { id: id } });
-                window.scrollTo(0, 0);
-              }}
-            />
-
-            {imageDownloadUrls.length > 2 && (
-              <div className={styles.photoCount}>
-                <img src={plus} alt='plus' />
-                {`${imageDownloadUrls.length - 1} photos`}
-              </div>
-            )}
-            <div
-              className={`${styles.stage} ${stage === 'Finished' ? styles.finishedTrip : styles.currentTrip}`}
-            >
-              {stage === 'Finished' ? 'Finished' : 'Current'}
-            </div>
-          </div>
-        ) : (
-          imageDownloadUrls &&
-          imageDownloadUrls[0] && (
+        <div className={styles.mainPhotoContainer}>
+          {imageDownloadUrls.length === 0 ? (
             <div className={styles.imageContainer}>
-              <video
-                src={imageDownloadUrls[0].url}
+              <img
+                src={'/photoNotFound.jpg'}
+                alt='travel'
                 className={styles.image}
-                controls
                 onClick={() => {
-                  navigate('/trip/' + id);
+                  navigate('/trip/' + id, { state: { id: id } });
                   window.scrollTo(0, 0);
                 }}
               />
-              {imageDownloadUrls.length > 1 && (
+              <div
+                className={`${styles.stage} ${stage === 'Finished' ? styles.finishedTrip : styles.currentTrip}`}
+              >
+                {stage === 'Finished' ? 'Finished' : 'Current'}
+              </div>
+            </div>
+          ) : imageDownloadUrls[0] && imageDownloadUrls[0].type.includes('image') ? (
+            <div className={styles.imageContainer}>
+              <img
+                src={
+                  imageDownloadUrls && imageDownloadUrls.length
+                    ? imageDownloadUrls[0].url
+                    : '/photoNotFound.jpg'
+                }
+                alt='travel'
+                className={styles.image}
+                onClick={() => {
+                  navigate('/trip/' + id, { state: { id: id } });
+                  window.scrollTo(0, 0);
+                }}
+              />
+
+              {imageDownloadUrls.length > 2 && (
                 <div className={styles.photoCount}>
                   <img src={plus} alt='plus' />
                   {`${imageDownloadUrls.length - 1} photos`}
@@ -257,9 +228,36 @@ const TravelCard: FC<Props> = ({ travel, isSwiper = false }) => {
                 {stage === 'Finished' ? 'Finished' : 'Current'}
               </div>
             </div>
-          )
-        )}
-
+          ) : (
+            imageDownloadUrls &&
+            imageDownloadUrls[0] && (
+              <div className={styles.imageContainer}>
+                <video
+                  src={imageDownloadUrls[0].url}
+                  className={styles.image}
+                  controls
+                  onClick={() => {
+                    navigate('/trip/' + id);
+                    window.scrollTo(0, 0);
+                  }}
+                />
+                {imageDownloadUrls.length > 1 && (
+                  <div className={styles.photoCount}>
+                    <img src={plus} alt='plus' />
+                    {`${imageDownloadUrls.length - 1} photos`}
+                  </div>
+                )}
+                <div
+                  className={`${styles.stage} ${stage === 'Finished' ? styles.finishedTrip : styles.currentTrip}`}
+                >
+                  {stage === 'Finished' ? 'Finished' : 'Current'}
+                </div>
+              </div>
+            )
+          )}
+        </div>
+      </div>
+      <div className={styles.mainFooterContainer}>
         <div className={styles.textContainer}>
           <h3 className={styles.tripName}>{tripName}</h3>
           <div className={styles.topContainer}>
@@ -267,54 +265,53 @@ const TravelCard: FC<Props> = ({ travel, isSwiper = false }) => {
           </div>
           <div className={styles.tripText}>{text.replaceAll('<br />', '\n')}</div>
         </div>
-      </div>
-
-      <div className={styles.footer}>
-        <p className={styles.postedTimeTitle}>{`Posted: ${timeAgo(createdAt)}`}</p>
-        <div className={styles.actionsButtons}>
-          <div className={styles.shareContainer}>
-            <img
-              className={styles.commentsIcon}
-              src={commentsIcon}
-              alt='comments'
-              onClick={() => {
-                navigate('/trip/' + id);
+        <div className={styles.footer}>
+          <p className={styles.postedTimeTitle}>{`Posted: ${timeAgo(createdAt)}`}</p>
+          <div className={styles.actionsButtons}>
+            <div className={styles.shareContainer}>
+              <img
+                className={styles.commentsIcon}
+                src={commentsIcon}
+                alt='comments'
+                onClick={() => {
+                  navigate('/trip/' + id);
+                }}
+              />
+            </div>
+            <div
+              className={styles.shareContainer}
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsModalShareOpen(true);
               }}
-            />
+            >
+              <img className={styles.shareIcon} src={shareIcon} alt='share' />
+            </div>
+            {firestoreUser?.id === userId ? (
+              <>
+                <div
+                  className={styles.shareContainer}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsModalDeleteOpen(true);
+                  }}
+                >
+                  <img className={styles.dotsIcon} src={BinIcon} alt='dots' />
+                </div>
+                <div
+                  className={styles.shareContainer}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate('/trip/create', { state: { data: travel, isEdit: true } });
+                    window.scrollTo(0, 0);
+                  }}
+                >
+                  {' '}
+                  <img className={styles.dotsIcon} src={Dots} alt='dots' />
+                </div>
+              </>
+            ) : null}
           </div>
-          <div
-            className={styles.shareContainer}
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsModalShareOpen(true);
-            }}
-          >
-            <img className={styles.shareIcon} src={shareIcon} alt='share' />
-          </div>
-          {firestoreUser?.id === userId ? (
-            <>
-              <div
-                className={styles.shareContainer}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsModalDeleteOpen(true);
-                }}
-              >
-                <img className={styles.dotsIcon} src={BinIcon} alt='dots' />
-              </div>
-              <div
-                className={styles.shareContainer}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  navigate('/trip/create', { state: { data: travel, isEdit: true } });
-                  window.scrollTo(0, 0);
-                }}
-              >
-                {' '}
-                <img className={styles.dotsIcon} src={Dots} alt='dots' />
-              </div>
-            </>
-          ) : null}
         </div>
       </div>
 
