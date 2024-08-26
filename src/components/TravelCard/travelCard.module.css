@@ -33,8 +33,10 @@
 
 .topContainer {
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
     width: 100%;
+    gap: 4px;
     margin-bottom: 14px;
 }
 
@@ -76,9 +78,6 @@
     font-size: 16px;
     font-style: normal;
     font-weight: 500;
-    line-height: normal;
-
-    border-bottom: 1px solid #ACACAC;
 }
 
 .mainContainer {
@@ -91,6 +90,14 @@
     position: relative;
 
     width: 100%;
+}
+
+.titleInfo {
+    display: flex;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 19.2px;
+    color: #1F1F20;
 }
 
 
@@ -269,8 +276,13 @@
 }
 
 .date {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     color: grey;
     font-size: 12px;
+    display: flex;
+    gap: 10px;
 }
 
 .deleteModalContainer {
@@ -280,7 +292,6 @@
     height: 100%;
     align-items: center;
     justify-content: center;
-    /* background-color: rgba(255, 0, 0, 0.539); */
 }
 
 .deleteModal {
@@ -526,4 +537,11 @@
 
 .mainPhotoContainer {
   width: 100%;
+}
+
+.infoContainer {
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  align-items: center;
 }

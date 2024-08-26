@@ -1,16 +1,17 @@
-import HeaderNew from '~/components/HeaderNew';
-import styles from './SearchTrips.module.css';
 import React, { useEffect, useState } from 'react';
-import Footer from '~/components/Footer';
-import { DateRangePicker } from 'rsuite';
-import { toast } from 'react-toastify';
-import Rating from '~/components/Rating';
-import cn from 'classnames';
-
-import budget_icon from '~/assets/icons/budget-icon.svg';
 import { useLocation } from 'react-router-dom';
+import { toast } from 'react-toastify';
+
+import cn from 'classnames';
+import { DateRangePicker } from 'rsuite';
+import budget_icon from '~/assets/icons/budget-icon.svg';
+import Footer from '~/components/Footer';
+import HeaderNew from '~/components/HeaderNew';
+import Rating from '~/components/Rating';
 import TravelCard from '~/components/TravelCard/TravelCard';
 import { ITravel } from '~/types/travel';
+
+import styles from './SearchTrips.module.css';
 
 const SearchTrips = () => {
   const [startDate, setStartDate] = useState('');
@@ -41,7 +42,7 @@ const SearchTrips = () => {
       } else {
         setIsSearch(true);
       }
-    }
+    };
     handleResize();
 
     window.addEventListener('resize', () => {
@@ -61,7 +62,6 @@ const SearchTrips = () => {
       });
     };
   }, [window.innerWidth]);
-
 
   const formatDate = (date: Date | null) => {
     if (!date) return '';
@@ -92,7 +92,6 @@ const SearchTrips = () => {
     return new Date(+year, +month - 1, +day);
   };
 
-
   const handleMinChange = (e) => {
     const value = e.target.value;
     if (value === '' || (Number(value) >= 0 && Number(value) < Number(maxValue))) {
@@ -108,7 +107,10 @@ const SearchTrips = () => {
   };
 
   const handleMinSliderChange = (e) => {
-    const value = Math.min(Number(e.target.value), maxValue === '' ? maxLimit : Number(maxValue) - 1);
+    const value = Math.min(
+      Number(e.target.value),
+      maxValue === '' ? maxLimit : Number(maxValue) - 1
+    );
     setMinValue(value);
   };
 
@@ -129,20 +131,16 @@ const SearchTrips = () => {
     const pageNumbers = [];
 
     if (totalPages <= 5) {
-      // Якщо сторінок 5 або менше, показуємо всі
       for (let i = 1; i <= totalPages; i++) {
         pageNumbers.push(i);
       }
     } else {
-      // Показуємо першу сторінку
       pageNumbers.push(1);
 
-      // Крапочки перед поточним блоком сторінок, якщо потрібно
       if (currentPage > 3) {
         pageNumbers.push('...');
       }
 
-      // Блок сторінок, що залежить від поточної сторінки
       const startPage = Math.max(2, currentPage - 1);
       const endPage = Math.min(totalPages - 1, currentPage + 1);
 
@@ -150,18 +148,20 @@ const SearchTrips = () => {
         pageNumbers.push(i);
       }
 
-      // Крапочки після поточного блоку сторінок, якщо потрібно
       if (currentPage < totalPages - 2) {
         pageNumbers.push('...');
       }
 
-      // Показуємо останню сторінку
       pageNumbers.push(totalPages);
     }
 
     return pageNumbers.map((number, index) => {
       if (number === '...') {
-        return <span key={index} className={styles.ellipsis}>...</span>;
+        return (
+          <span key={index} className={styles.ellipsis}>
+            ...
+          </span>
+        );
       }
       return (
         <button
@@ -211,29 +211,27 @@ const SearchTrips = () => {
               <div className={styles.price}>
                 <p>Budget:</p>
                 <div className={styles.inputsContainer}>
-                  <img className={styles.budgetIcon} src={budget_icon} alt="budget_icon" />
+                  <img className={styles.budgetIcon} src={budget_icon} alt='budget_icon' />
                   <div className={styles.inputGroup}>
                     <input
-                      id="minInput"
-                      type="number"
+                      id='minInput'
+                      type='number'
                       value={minValue}
                       onChange={handleMinChange}
-                      placeholder="0"
-                      min="0"
+                      placeholder='0'
+                      min='0'
                       max={maxLimit}
                     />
                   </div>
-                  <div>
-                    -
-                  </div>
+                  <div>-</div>
                   <div className={styles.inputGroup}>
                     <input
-                      id="maxInput"
-                      type="number"
+                      id='maxInput'
+                      type='number'
                       value={maxValue}
                       onChange={handleMaxChange}
-                      placeholder="5000"
-                      min="0"
+                      placeholder='5000'
+                      min='0'
                       max={maxLimit}
                     />
                   </div>
@@ -243,19 +241,22 @@ const SearchTrips = () => {
                 <div className={styles.sliderTrack}></div>
                 <div
                   className={styles.rangeSelected}
-                  style={{ left: `${(+minValue / maxLimit) * 100}%`, right: `${100 - (+maxValue / maxLimit) * 100}%` }}
+                  style={{
+                    left: `${(+minValue / maxLimit) * 100}%`,
+                    right: `${100 - (+maxValue / maxLimit) * 100}%`,
+                  }}
                 ></div>
                 <input
-                  type="range"
-                  min="0"
+                  type='range'
+                  min='0'
                   max={maxLimit}
                   value={minValue || 0}
                   onChange={handleMinSliderChange}
                   className={`${styles.rangeSlider} ${styles.rangeMin}`}
                 />
                 <input
-                  type="range"
-                  min="0"
+                  type='range'
+                  min='0'
                   max={maxLimit}
                   value={maxValue || maxLimit}
                   onChange={handleMaxSliderChange}
@@ -266,54 +267,53 @@ const SearchTrips = () => {
               <div className={styles.statusContainer}>
                 <p>Status:</p>
                 <div className={styles.statuses}>
-                  {statuses.map((status) =>
+                  {statuses.map((status) => (
                     <div
+                      key={status}
                       onClick={() => setStatusTrip(status)}
-                      className={cn([styles.status], { [styles.isStatusActive]: statusTrip === status })}
+                      className={cn([styles.status], {
+                        [styles.isStatusActive]: statusTrip === status,
+                      })}
                     >
                       {status}
                     </div>
-                  )}
+                  ))}
                 </div>
               </div>
               <div className={styles.travelersContainer}>
                 <p>Travelers:</p>
                 <div className={styles.statuses}>
-                  {travelersMap.map((status) =>
+                  {travelersMap.map((status) => (
                     <div
+                      key={status}
                       onClick={() => setTravelersCount(status)}
-                      className={cn([styles.status], { [styles.isStatusActive]: travelersCount === status })}
+                      className={cn([styles.status], {
+                        [styles.isStatusActive]: travelersCount === status,
+                      })}
                     >
                       {status}
                     </div>
-                  )}
+                  ))}
                 </div>
               </div>
             </div>
           </div>
           <div className={styles.resultsContainer}>
-            <h3 className={styles.filterTitle}>Related user's trips</h3>
+            <h3 className={styles.filterTitle}>Related user&apos;s trips</h3>
             <div className={styles.tripsContainer}>
               {currentTrips.map((trip: ITravel) => (
-                <TravelCard
-                  travel={trip}
-                  isSearch={isSearch}
-                  key={trip.id}
-                />
+                <TravelCard travel={trip} isSearch={isSearch} key={trip.id} />
               ))}
             </div>
-            <div className={styles.pagination}>
-              {renderPagination()}
-            </div>
+            <div className={styles.pagination}>{renderPagination()}</div>
           </div>
         </div>
       </div>
       <div className={styles.footer}>
         <Footer />
-
       </div>
     </>
   );
-}
+};
 
 export default SearchTrips;

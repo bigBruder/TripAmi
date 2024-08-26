@@ -20,16 +20,16 @@ import { IUser } from '~/types/user';
 import { timeAgo } from '~/utils/daysAgo';
 
 import BinIcon from '@assets/icons/BinIcon.svg';
+import budget_icon from '@assets/icons/budget-icon.svg';
 import commentsIcon from '@assets/icons/comments.svg';
+import dateIcon from '@assets/icons/date_calendar.svg';
 import Dots from '@assets/icons/dots.svg';
+import people_icon from '@assets/icons/people.svg';
 import plus from '@assets/icons/plus.svg';
 import shareIcon from '@assets/icons/share.svg';
-import TouchIcon from '@assets/icons/touch.svg';
 import { deleteDoc, doc, documentId } from '@firebase/firestore';
 import { ref } from '@firebase/storage';
 
-import { UserPostInfo } from '../BigPost/UserPostInfo';
-import { DropdownProvider } from '../DropdownProvider/DropdownProvider';
 import { LightBox } from '../Lightbox/LightBox';
 import ShareModal from '../ShareModal/ShareModal';
 import styles from './travelCard.module.css';
@@ -68,6 +68,8 @@ const TravelCard: FC<Props> = ({ travel, isSwiper = false, isSearch = false }) =
     stage,
     usersSaved,
     photo,
+    people,
+    budget,
   } = travel;
   const navigate = useNavigate();
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
@@ -144,15 +146,6 @@ const TravelCard: FC<Props> = ({ travel, isSwiper = false, isSearch = false }) =
     setEditModalIsOpen(false);
   }, []);
 
-  const currentTimestamp = () => {
-    const now = new Date();
-    const seconds = Math.floor(now.getTime() / 1000);
-    const nanoseconds = (now.getTime() % 1000) * 1000000;
-    return { seconds, nanoseconds };
-  };
-
-  const timestamp = currentTimestamp();
-
   useEffect(() => {
     (async () => {
       if (userId) {
@@ -176,7 +169,10 @@ const TravelCard: FC<Props> = ({ travel, isSwiper = false, isSearch = false }) =
 
   return (
     <div
-      className={cn(styles.container, { [styles.containerSwiper]: isSwiper , [styles.containerSearch]: isSearch })}
+      className={cn(styles.container, {
+        [styles.containerSwiper]: isSwiper,
+        [styles.containerSearch]: isSearch,
+      })}
       onClick={(e) => {
         handleOpenTrip(e);
       }}
@@ -261,7 +257,25 @@ const TravelCard: FC<Props> = ({ travel, isSwiper = false, isSearch = false }) =
         <div className={styles.textContainer}>
           <h3 className={styles.tripName}>{tripName}</h3>
           <div className={styles.topContainer}>
-            <Rating disabled selectedStars={rate} />
+            <div className={styles.infoContainer}>
+              <div className={styles.date}>
+                <img src={dateIcon} alt='dateIcon' />
+                <p className={styles.titleInfo}>
+                  {startDate} - {stage === 'Finished' ? endDate : 'Current'}
+                </p>
+              </div>
+              <Rating disabled selectedStars={rate} />
+            </div>
+            <div className={styles.date}>
+              <div className={styles.date}>
+                <img src={people_icon} alt='people_icon' />
+                <p className={styles.titleInfo}>{people}</p>
+              </div>
+              <div className={styles.date}>
+                <img src={budget_icon} alt='budget_icon' />
+                <p className={styles.titleInfo}>{budget}</p>
+              </div>
+            </div>
           </div>
           <div className={styles.tripText}>{text.replaceAll('<br />', '\n')}</div>
         </div>
