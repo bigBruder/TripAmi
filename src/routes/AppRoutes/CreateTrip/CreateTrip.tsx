@@ -584,6 +584,8 @@ const CreateTrip: React.FC<Props> = () => {
     }
   };
 
+  const inputRef = useRef<HTMLInputElement>(null);
+
   const handleAddHashtag = () => {
     if (hashtagsResult.includes(hashtag)) {
       if (!toast.isActive('hashtag')) {
@@ -594,6 +596,7 @@ const CreateTrip: React.FC<Props> = () => {
     if (hashtag.trim().length > 0) {
       setHashtagsResult((prevState) => [...prevState, hashtag]);
       setHashtag('');
+      inputRef.current?.focus();
     }
   };
 
@@ -847,16 +850,17 @@ const CreateTrip: React.FC<Props> = () => {
                 placeholder='Write tags here'
                 className={styles.hashtagInput}
                 onKeyDown={(e) => addHashtag(e)}
+                ref={inputRef}
               />
               <img src={hashtag_icon} alt='hashtagIcon' className={styles.hashtagIcon} />
-              {/* {hashtag.trim().length > 0 && (
+              {hashtag.trim().length > 0 && (
                 <img
                   src={arrow_back}
                   alt='arrow_back'
                   className={styles.arrowBack}
                   onClick={() => handleAddHashtag()}
                 />
-              )} */}
+              )}
             </div>
             <div className={styles.peopleContainer}>
               <CustomDropdownEditor
