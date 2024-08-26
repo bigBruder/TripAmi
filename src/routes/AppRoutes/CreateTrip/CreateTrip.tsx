@@ -565,16 +565,22 @@ const CreateTrip: React.FC<Props> = () => {
   };
 
   const addHashtag = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (hashtagsResult.includes(hashtag) && event.key === 'Enter') {
-      if (!toast.isActive('hashtag')) {
-        toast('You have already added this hashtag', { toastId: 'hashtag' });
-      }
-      return;
-    }
-    if (event.key === 'Enter' && hashtag.trim().length > 0) {
+    const key = event.key.toLowerCase();
+
+    if (key === 'enter' || key === 'next' || key === 'tab') {
       event.preventDefault();
-      setHashtagsResult((prevState) => [...prevState, hashtag]);
-      setHashtag('');
+
+      if (hashtagsResult.includes(hashtag.trim())) {
+        if (!toast.isActive('hashtag')) {
+          toast('You have already added this hashtag', { toastId: 'hashtag' });
+        }
+        return;
+      }
+
+      if (hashtag.trim().length > 0) {
+        setHashtagsResult((prevState) => [...prevState, hashtag.trim()]);
+        setHashtag('');
+      }
     }
   };
 
@@ -843,14 +849,14 @@ const CreateTrip: React.FC<Props> = () => {
                 onKeyDown={(e) => addHashtag(e)}
               />
               <img src={hashtag_icon} alt='hashtagIcon' className={styles.hashtagIcon} />
-              {hashtag.trim().length > 0 && (
+              {/* {hashtag.trim().length > 0 && (
                 <img
                   src={arrow_back}
                   alt='arrow_back'
                   className={styles.arrowBack}
                   onClick={() => handleAddHashtag()}
                 />
-              )}
+              )} */}
             </div>
             <div className={styles.peopleContainer}>
               <CustomDropdownEditor
