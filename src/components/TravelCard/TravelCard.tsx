@@ -180,7 +180,7 @@ const TravelCard: FC<Props> = ({ travel, isSwiper = false, isSearch = false }) =
       <div className={styles.mainContainer}>
         <div className={styles.mainPhotoContainer}>
           {imageDownloadUrls.length === 0 ? (
-            <div className={styles.imageContainer}>
+            <div className={styles.imageContainer} style={isSearch ? { height: '100%', width: '100%' } : undefined}>
               <img
                 src={'/photoNotFound.jpg'}
                 alt='travel'
@@ -279,7 +279,7 @@ const TravelCard: FC<Props> = ({ travel, isSwiper = false, isSearch = false }) =
           </div>
           <div className={styles.tripText}>{text.replaceAll('<br />', '\n')}</div>
         </div>
-        <div className={styles.footer}>
+        <div className={styles.footer} style={isSearch ? { paddingBottom: '0' } : undefined}>
           <p className={styles.postedTimeTitle}>{`Posted: ${timeAgo(createdAt)}`}</p>
           <div className={styles.actionsButtons}>
             <div className={styles.shareContainer}>

@@ -175,6 +175,8 @@ export const Trip = () => {
             mainContainer.style.backgroundSize = 'cover';
             mainContainer.style.height = '1300px';
             mainContainer.style.paddingInline = '20px';
+            mainContainer.style.display = 'flex';
+            mainContainer.style.flexDirection = 'column';
           }
         })
         .catch((error) => {
@@ -186,6 +188,8 @@ export const Trip = () => {
             mainContainer.style.backgroundSize = 'cover';
             mainContainer.style.height = '1300px';
             mainContainer.style.paddingInline = '20px';
+            mainContainer.style.display = 'flex';
+            mainContainer.style.flexDirection = 'column';
           }
         });
     } else {
@@ -197,6 +201,8 @@ export const Trip = () => {
         mainContainer.style.backgroundSize = 'cover';
         mainContainer.style.height = '1300px';
         mainContainer.style.paddingInline = '20px';
+        mainContainer.style.display = 'flex';
+        mainContainer.style.flexDirection = 'column';
       }
     }
   }, [trip]);
@@ -421,7 +427,7 @@ export const Trip = () => {
   const hideTooltip = () => setHoveredGeoTagId('');
 
   return (
-    <div className={(styles.mainContainer, 'mainContainer')}>
+    <div className={(`${styles.mainContainer}, mainContainer`)}>
       <HeaderNew avatar={avatar} />
       <div className={styles.main}>
         <div className={styles.post}>
@@ -664,7 +670,7 @@ export const Trip = () => {
                       return (
                         <SwiperSlide
                           key={parsedDate.toDateString()}
-                          style={{ justifyContent: 'center', display: 'flex' }}
+                          style={{ justifyContent: 'center', display: 'flex'}}
                         >
                           <button
                             onClick={(e) => handleDateClick(e, parsedDate)}

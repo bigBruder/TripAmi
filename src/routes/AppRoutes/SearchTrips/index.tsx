@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
@@ -10,8 +10,13 @@ import HeaderNew from '~/components/HeaderNew';
 import Rating from '~/components/Rating';
 import TravelCard from '~/components/TravelCard/TravelCard';
 import { ITravel } from '~/types/travel';
+import default_user from '~/assets/icons/defaultUserIcon.svg';
 
 import styles from './SearchTrips.module.css';
+import { AuthContext } from '~/providers/authContext';
+import { getDownloadURL, ref } from 'firebase/storage';
+import { storage } from '~/firebase';
+import arrow from '~/assets/icons/arrowItinerary.svg';
 
 const SearchTrips = () => {
   const [startDate, setStartDate] = useState('');
@@ -27,13 +32,27 @@ const SearchTrips = () => {
   const [travelersCount, setTravelersCount] = useState('');
   const [isSearch, setIsSearch] = useState(false);
   const travelersMap = ['Solo trip', '2-5', '5-8', '8+'];
+  const { firestoreUser } = useContext(AuthContext);
+
+  const [avatar, setAvatar] = useState(default_user);
+  const [hideOptions, setHideOptions] = useState(false);
+  const [showHideOptions, setShowHideOptions] = useState(false);
 
   const location = useLocation();
   const { allTrips, currentGeoTag, searchValue } = location.state;
 
-  console.log('allTrips', allTrips);
-  console.log('currentGeoTag', currentGeoTag);
-  console.log('searchValue', searchValue);
+  // console.log('allTrips', allTrips);
+  // console.log('currentGeoTag', currentGeoTag);
+  // console.log('searchValue', searchValue);
+
+  useEffect(() => {
+    if (firestoreUser?.avatarUrl) {
+      (async () => {
+        const avatarLink = await getDownloadURL(ref(storage, firestoreUser?.avatarUrl || ''));
+        setAvatar(avatarLink);
+      })();
+    }
+  }, [firestoreUser?.avatarUrl]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -42,26 +61,24 @@ const SearchTrips = () => {
       } else {
         setIsSearch(true);
       }
+
+      if (window.innerWidth < 1059) {
+        setShowHideOptions(true);
+        setHideOptions(true);
+      } else {
+        setShowHideOptions(false);
+        setHideOptions(false);
+      }
     };
+
     handleResize();
 
-    window.addEventListener('resize', () => {
-      if (window.innerWidth < 768) {
-        setIsSearch(false);
-      } else {
-        setIsSearch(true);
-      }
-    });
+    window.addEventListener('resize', handleResize);
+
     return () => {
-      window.removeEventListener('resize', () => {
-        if (window.innerWidth < 768) {
-          setIsSearch(false);
-        } else {
-          setIsSearch(true);
-        }
-      });
+      window.removeEventListener('resize', handleResize);
     };
-  }, [window.innerWidth]);
+  }, []);
 
   const formatDate = (date: Date | null) => {
     if (!date) return '';
@@ -175,128 +192,144 @@ const SearchTrips = () => {
     });
   };
 
+  const toggleOptions = () => {
+    setHideOptions(!hideOptions);
+  };
+
   return (
     <>
       <div className={styles.main}>
-        <HeaderNew />
+        <HeaderNew avatar={avatar} />
         <div className={styles.mainContainer}>
           <div className={styles.filtersContainer}>
             <h3 className={styles.filterTitle}>Vienna: 43 results found</h3>
-            <p>Filters</p>
-            <div className={styles.filterOptions}>
-              <div className={styles.dates}>
-                <p>Dates:</p>
-                <DateRangePicker
-                  editable={false}
-                  value={[parseDate(startDate), parseDate(endDate)]}
-                  onChange={handleDateChange}
-                  size='sm'
-                  appearance='subtle'
-                  placeholder='Chose dates'
-                  showOneCalendar
+            <div className={styles.filtersTitleToggle}>
+              <p>Filters</p>
+              {showHideOptions && (
+                <img src={arrow} alt='arrow' onClick={toggleOptions} className={styles.buttonToggle}
                   style={{
-                    borderRadius: '12px',
-                    textAlign: 'right',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
+                    transform: hideOptions ? 'rotate(0deg)' : 'rotate(180deg)',
+                    transition: 'transform 0.3s ease',
                   }}
-                  format='MM-dd-yyyy'
                 />
-              </div>
-              <div className={styles.rating}>
-                <p>Rating:</p>
-                <Rating setSelectedStars={setRating} selectedStars={rating} />
-              </div>
-              <div className={styles.price}>
-                <p>Budget:</p>
-                <div className={styles.inputsContainer}>
-                  <img className={styles.budgetIcon} src={budget_icon} alt='budget_icon' />
-                  <div className={styles.inputGroup}>
-                    <input
-                      id='minInput'
-                      type='number'
-                      value={minValue}
-                      onChange={handleMinChange}
-                      placeholder='0'
-                      min='0'
-                      max={maxLimit}
-                    />
-                  </div>
-                  <div>-</div>
-                  <div className={styles.inputGroup}>
-                    <input
-                      id='maxInput'
-                      type='number'
-                      value={maxValue}
-                      onChange={handleMaxChange}
-                      placeholder='5000'
-                      min='0'
-                      max={maxLimit}
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className={styles.rangeContainer}>
-                <div className={styles.sliderTrack}></div>
-                <div
-                  className={styles.rangeSelected}
-                  style={{
-                    left: `${(+minValue / maxLimit) * 100}%`,
-                    right: `${100 - (+maxValue / maxLimit) * 100}%`,
-                  }}
-                ></div>
-                <input
-                  type='range'
-                  min='0'
-                  max={maxLimit}
-                  value={minValue || 0}
-                  onChange={handleMinSliderChange}
-                  className={`${styles.rangeSlider} ${styles.rangeMin}`}
-                />
-                <input
-                  type='range'
-                  min='0'
-                  max={maxLimit}
-                  value={maxValue || maxLimit}
-                  onChange={handleMaxSliderChange}
-                  className={`${styles.rangeSlider} ${styles.rangeMax}`}
-                />
-              </div>
-
-              <div className={styles.statusContainer}>
-                <p>Status:</p>
-                <div className={styles.statuses}>
-                  {statuses.map((status) => (
-                    <div
-                      key={status}
-                      onClick={() => setStatusTrip(status)}
-                      className={cn([styles.status], {
-                        [styles.isStatusActive]: statusTrip === status,
-                      })}
-                    >
-                      {status}
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className={styles.travelersContainer}>
-                <p>Travelers:</p>
-                <div className={styles.statuses}>
-                  {travelersMap.map((status) => (
-                    <div
-                      key={status}
-                      onClick={() => setTravelersCount(status)}
-                      className={cn([styles.status], {
-                        [styles.isStatusActive]: travelersCount === status,
-                      })}
-                    >
-                      {status}
-                    </div>
-                  ))}
-                </div>
-              </div>
+              )}
             </div>
+            {!hideOptions && (
+              <div className={styles.filterOptions}>
+                <div className={styles.dates}>
+                  <p className={styles.titlesFilter}>Dates:</p>
+                  <DateRangePicker
+                    editable={false}
+                    value={[parseDate(startDate), parseDate(endDate)]}
+                    onChange={handleDateChange}
+                    size='sm'
+                    appearance='subtle'
+                    placeholder='Chose dates'
+                    showOneCalendar
+                    style={{
+                      borderRadius: '12px',
+                      textAlign: 'right',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                    format='MM-dd-yyyy'
+                  />
+                </div>
+                <div className={styles.rating}>
+                  <p className={styles.titlesFilter}>Rating:</p>
+                  <Rating setSelectedStars={setRating} selectedStars={rating} />
+                </div>
+                <div className={styles.price}>
+                  <p className={styles.titlesFilter}>Budget:</p>
+                  <div className={styles.inputsContainer}>
+                    <img className={styles.budgetIcon} src={budget_icon} alt='budget_icon' />
+                    <div className={styles.inputGroup}>
+                      <input
+                        id='minInput'
+                        type='number'
+                        value={minValue}
+                        onChange={handleMinChange}
+                        placeholder='0'
+                        min='0'
+                        max={maxLimit}
+                      />
+                    </div>
+                    <div>-</div>
+                    <div className={styles.inputGroup}>
+                      <input
+                        id='maxInput'
+                        type='number'
+                        value={maxValue}
+                        onChange={handleMaxChange}
+                        placeholder='5000'
+                        min='0'
+                        max={maxLimit}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className={styles.rangeContainer}>
+                  <div className={styles.sliderTrack}></div>
+                  <div
+                    className={styles.rangeSelected}
+                    style={{
+                      left: `${(+minValue / maxLimit) * 100}%`,
+                      right: `${100 - (+maxValue / maxLimit) * 100}%`,
+                    }}
+                  ></div>
+                  <input
+                    type='range'
+                    min='0'
+                    max={maxLimit}
+                    value={minValue || 0}
+                    onChange={handleMinSliderChange}
+                    className={`${styles.rangeSlider} ${styles.rangeMin}`}
+                  />
+                  <input
+                    type='range'
+                    min='0'
+                    max={maxLimit}
+                    value={maxValue || maxLimit}
+                    onChange={handleMaxSliderChange}
+                    className={`${styles.rangeSlider} ${styles.rangeMax}`}
+                  />
+                </div>
+
+                <div className={styles.statusContainer}>
+                  <p className={styles.titlesFilter}>Status:</p>
+                  <div className={styles.statuses}>
+                    {statuses.map((status) => (
+                      <div
+                        key={status}
+                        onClick={() => setStatusTrip(status)}
+                        className={cn([styles.status], {
+                          [styles.isStatusActive]: statusTrip === status,
+                        })}
+                      >
+                        {status}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className={styles.travelersContainer}>
+                  <p className={styles.titlesFilter}>Travelers:</p>
+                  <div className={styles.statuses}>
+                    {travelersMap.map((status) => (
+                      <div
+                        key={status}
+                        onClick={() => setTravelersCount(status)}
+                        className={cn([styles.status], {
+                          [styles.isStatusActive]: travelersCount === status,
+                        })}
+                      >
+                        {status}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
           <div className={styles.resultsContainer}>
             <h3 className={styles.filterTitle}>Related user&apos;s trips</h3>

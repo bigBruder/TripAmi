@@ -70,6 +70,26 @@
   border-radius: 40px;
 }
 
+@media (max-width: 1059px) {
+  .main {
+    padding-inline: 16px;
+  }
+
+  .mainContainer {
+    row-gap: 24px;
+  }
+
+  .filtersContainer {
+    grid-column: 1 / -1;
+    border-radius: 40px;
+  }
+
+  .resultsContainer {
+    grid-column: 1 / -1;
+    border-radius: 40px;
+  }
+}
+
 .footer {
   z-index: 1;
   position: relative;
@@ -77,6 +97,7 @@
 
 .filterOptions {
   justify-content: center;
+  width: 100%;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   column-gap: 20px;
@@ -85,6 +106,7 @@
 
 .dates {
   grid-column: span 2;
+  order: 1;
 }
 
 .dates div {
@@ -103,13 +125,16 @@
 
 .rating {
   grid-column: span 2;
+  order: 2;
 }
 
 .price {
   grid-column: span 2;
+  order: 3;
 }
 
 .rangeContainer {
+  order: 4;
   grid-column: span 4;
   position: relative;
   width: 100%;
@@ -181,6 +206,7 @@
 .inputsContainer {
   display: flex;
   align-items: center;
+  min-height: 30px;
   gap: 2px;
   margin-bottom: 10px;
 
@@ -195,13 +221,14 @@
 }
 
 .inputGroup input {
-  width: 70%;
-  padding: 5px;
+  width: 35px;
+  padding: 0;
   border: 1px solid #ccc;
   border-radius: 4px;
   border: none;
   outline: none;
   border-radius: 12px;
+  margin-left: 4px;
 }
 
 .inputGroup input:focus {
@@ -220,13 +247,96 @@
 }
 
 .statusContainer {
+  order: 5;
   grid-column: span 2;
+}
+
+.travelersContainer {
+  order: 6;
+  grid-column: -1 / 1;
+}
+
+@media (max-width: 1059px) {
+  .filterOptions {
+    grid-template-columns: repeat(12, 1fr);
+  }
+
+  .dates {
+    grid-column: 1 / 5;
+    order: 1;
+  }
+
+  .rating {
+    grid-column: 8 / -1;
+    order: 3;
+  }
+
+  .statusContainer {
+    grid-column: 5 / 8;
+    order: 2;
+  }
+
+  .price {
+    grid-column: 1 / 5;
+    order: 4;
+  }
+  
+  .rangeContainer {
+    grid-column: 1 / 5;
+    order: 6;
+  }
+
+  .travelersContainer {
+    grid-column: 5 / -1;
+    order: 5;
+  }
+}
+
+@media (max-width: 768px) {
+  .filterOptions {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dates {
+    grid-column: 1 / -1;
+    order: 1;
+  }
+
+  .rating {
+    grid-column: 1 / -1;
+    order: 2;
+  }
+
+  .price {
+    grid-column: 1 / -1;
+    order: 3;
+  }
+
+  .statusContainer {
+    grid-column: 1 / -1;
+    order: 5;
+  }
+
+  .rangeContainer {
+    grid-column: 1 / -1;
+    order: 4;
+  }
+
+  .travelersContainer {
+    grid-column: 1 / -1;
+    order: 6;
+  }
 }
 
 .statuses {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+.titlesFilter {
+  margin-bottom: 8px;
+
 }
 
 .status {
@@ -243,10 +353,6 @@
 .isStatusActive {
   background: #FEFEFE;
   border-color: #4CAF50;
-}
-
-.travelersContainer {
-  grid-column: -1 / 1;
 }
 
 .pagination {
@@ -280,4 +386,22 @@
   margin: 0 5px;
   padding: 10px 15px;
   color: #888;
+}
+
+@media (max-width: 768px) {
+  .ellipsis {
+    padding-inline: 0;
+  }
+}
+
+.buttonToggle {
+  position: absolute;
+  top: 45%;
+  left: 200%;
+  transform: translateY(-50%);
+}
+
+.filtersTitleToggle {
+  position: relative;
+  display: flex;
 }

@@ -264,32 +264,6 @@ const MyAccount = () => {
     }
   }, [firestoreUser?.id]);
 
-  // const getSlidesPerPage = useMemo(() => {
-  //   if (width < 768) {
-  //     return 1;
-  //   } else if (width < 1142) {
-  //     return 2;
-  //   } else {
-  //     return 3;
-  //   }
-  // }, [width]);
-
-  // const onSelectWhereToNext = async (place: string) => {
-  //   if (firestoreUser?.id) {
-  //     try {
-  //       await updateDoc(doc(db, 'users', firestoreUser?.id), {
-  //         whereToNext: place.split(',')[0],
-  //       });
-  //     } catch (err) {
-  //       // @ts-ignore
-  //       alert(firebaseErrors[err.code]);
-  //     } finally {
-  //       setIsEditWhereToNext(false);
-  //       setWhereToNext('');
-  //     }
-  //   }
-  // };
-
   return (
     <>
       <div className={styles.container}>

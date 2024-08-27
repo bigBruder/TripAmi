@@ -1,6 +1,9 @@
 .header {
+  align-self: center;
   display: flex;
   justify-content: center;
+  max-width: 620px;
+  width: 100%;
 }
 
 .headerContainer {
@@ -9,8 +12,7 @@
   margin-top: 32px;
 
   min-height: 96px;
-  height: 100%;
-  width: 620px;
+  width: 100%;
 
   border-radius: 96px;
   border: 1px solid #EEEEEA;
