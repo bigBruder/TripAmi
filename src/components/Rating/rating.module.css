@@ -7,4 +7,6 @@
 .star {
   display: flex;
   cursor: pointer;
+  width: 20px;
+  height: 19px;
 }
