@@ -3,20 +3,20 @@ import { useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import cn from 'classnames';
+import { getDownloadURL, ref } from 'firebase/storage';
 import { DateRangePicker } from 'rsuite';
+import arrow from '~/assets/icons/arrowItinerary.svg';
 import budget_icon from '~/assets/icons/budget-icon.svg';
+import default_user from '~/assets/icons/defaultUserIcon.svg';
 import Footer from '~/components/Footer';
 import HeaderNew from '~/components/HeaderNew';
 import Rating from '~/components/Rating';
 import TravelCard from '~/components/TravelCard/TravelCard';
+import { storage } from '~/firebase';
+import { AuthContext } from '~/providers/authContext';
 import { ITravel } from '~/types/travel';
-import default_user from '~/assets/icons/defaultUserIcon.svg';
 
 import styles from './SearchTrips.module.css';
-import { AuthContext } from '~/providers/authContext';
-import { getDownloadURL, ref } from 'firebase/storage';
-import { storage } from '~/firebase';
-import arrow from '~/assets/icons/arrowItinerary.svg';
 
 const SearchTrips = () => {
   const [startDate, setStartDate] = useState('');
@@ -41,9 +41,7 @@ const SearchTrips = () => {
   const location = useLocation();
   const { allTrips, currentGeoTag, searchValue } = location.state;
 
-  // console.log('allTrips', allTrips);
-  // console.log('currentGeoTag', currentGeoTag);
-  // console.log('searchValue', searchValue);
+  console.log('allTrips', allTrips);
 
   useEffect(() => {
     if (firestoreUser?.avatarUrl) {
@@ -136,9 +134,32 @@ const SearchTrips = () => {
     setMaxValue(Math.min(value, maxLimit));
   };
 
+  const filterTrips = () => {
+    return allTrips.filter((trip: ITravel) => {
+      const matchesDate =
+        (startDate === '' || new Date(trip.startDate) >= new Date(startDate)) &&
+        (endDate === '' || new Date(trip.endDate) <= new Date(endDate));
+
+      const matchesRating = rating === -1 || trip.rate >= rating;
+      const matchesBudget = 
+      (minValue === '' || trip.budget >= parseFloat(minValue)) &&
+      (maxValue === '5000' ? true : trip.budget <= parseFloat(maxValue));
+
+      const matchesStatus = statusTrip === '' || trip.stage === statusTrip;
+
+      const matchesTravelers = travelersCount === '' || trip.people === travelersCount;
+
+      return matchesRating && matchesDate && matchesBudget && matchesStatus && matchesTravelers;
+    });
+  };
+
+  const filteredTrips = filterTrips();
+
+  console.log('filteredTrips', filteredTrips);
+
   const indexOfLastTrip = currentPage * tripsPerPage;
   const indexOfFirstTrip = indexOfLastTrip - tripsPerPage;
-  const currentTrips = allTrips.slice(indexOfFirstTrip, indexOfLastTrip);
+  const currentTrips = filteredTrips.slice(indexOfFirstTrip, indexOfLastTrip);
 
   const totalPages = Math.ceil(allTrips.length / tripsPerPage);
 
@@ -206,7 +227,11 @@ const SearchTrips = () => {
             <div className={styles.filtersTitleToggle}>
               <p>Filters</p>
               {showHideOptions && (
-                <img src={arrow} alt='arrow' onClick={toggleOptions} className={styles.buttonToggle}
+                <img
+                  src={arrow}
+                  alt='arrow'
+                  onClick={toggleOptions}
+                  className={styles.buttonToggle}
                   style={{
                     transform: hideOptions ? 'rotate(0deg)' : 'rotate(180deg)',
                     transition: 'transform 0.3s ease',
