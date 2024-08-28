@@ -8,6 +8,7 @@ import { DateRangePicker } from 'rsuite';
 import arrow from '~/assets/icons/arrowItinerary.svg';
 import budget_icon from '~/assets/icons/budget-icon.svg';
 import default_user from '~/assets/icons/defaultUserIcon.svg';
+import plus from '~/assets/icons/plus.svg';
 import Footer from '~/components/Footer';
 import HeaderNew from '~/components/HeaderNew';
 import Rating from '~/components/Rating';
@@ -16,22 +17,47 @@ import { storage } from '~/firebase';
 import { AuthContext } from '~/providers/authContext';
 import { ITravel } from '~/types/travel';
 
+import { IPlace } from '../Posts/types';
 import styles from './SearchTrips.module.css';
+import no_trips_search from '/no_trips_search.svg';
 
-const parseBudget = (budgetString: string) => parseFloat(budgetString.replace(/,/g, ''));
-
-const filterTrips = (allTrips: ITravel[], startDate: string, endDate: string, rating: number, minValue: string, maxValue: string, statusTrip: string, travelersCount: string) => {
+const filterTrips = (
+  allTrips: ITravel[],
+  startDate: string,
+  endDate: string,
+  rating: number,
+  minValue: string,
+  maxValue: string,
+  statusTrip: string,
+  travelersCount: string,
+  searchValue: string,
+  currentGeoTag: IPlace
+) => {
   const minBudget = minValue === '' ? 0 : parseFloat(minValue);
   const maxBudget = maxValue.toString() === '5000' ? Infinity : parseFloat(maxValue);
-  console.log('maxValue', maxValue);
-  
 
   return allTrips.filter((trip: ITravel) => {
+    let matchesSearchOrGeo = true;
+
+    if (searchValue) {
+      matchesSearchOrGeo = false;
+      matchesSearchOrGeo =
+        trip.tripName.toLowerCase().includes(searchValue.toLowerCase()) ||
+        trip.text.toLowerCase().includes(searchValue.toLowerCase());
+    }
+
+    if (currentGeoTag) {
+      matchesSearchOrGeo = false;
+      const places = trip.geoTags.map((geoTag) => geoTag.placeID);
+      matchesSearchOrGeo = places.includes(currentGeoTag.placeID);
+    }
+
     const matchesDate =
       (startDate === '' || new Date(trip.startDate) >= new Date(startDate)) &&
       (endDate === '' || new Date(trip.endDate) <= new Date(endDate));
 
     const matchesRating = rating === -1 || trip.rate >= rating;
+
     let matchesBudget = false;
     if (typeof trip.budget === 'string') {
       const tripBudget = parseFloat(trip.budget.replace(/,/g, ''));
@@ -42,7 +68,14 @@ const filterTrips = (allTrips: ITravel[], startDate: string, endDate: string, ra
 
     const matchesTravelers = travelersCount === '' || trip.people === travelersCount;
 
-    return matchesRating && matchesDate && matchesBudget && matchesStatus && matchesTravelers;
+    return (
+      matchesRating &&
+      matchesDate &&
+      matchesBudget &&
+      matchesStatus &&
+      matchesTravelers &&
+      matchesSearchOrGeo
+    );
   });
 };
 
@@ -79,7 +112,9 @@ const SearchTrips = () => {
       minValue,
       maxValue,
       statusTrip,
-      travelersCount
+      travelersCount,
+      searchValue,
+      currentGeoTag
     );
     setFilteredTrips(newFilteredTrips);
     setCurrentPage(1);
@@ -236,13 +271,51 @@ const SearchTrips = () => {
     setHideOptions(!hideOptions);
   };
 
+  const handleSetStatusTrip = (status: string) => {
+    if (statusTrip === status) {
+      setStatusTrip('');
+    } else {
+      setStatusTrip(status);
+    }
+  };
+
+  const handleSetCountTravelers = (count: string) => {
+    if (travelersCount === count) {
+      setTravelersCount('');
+    } else {
+      setTravelersCount(count);
+    }
+  };
+
+  const handleRangeReset = () => {
+    setMinValue('');
+    setMaxValue('5000');
+  };
+
+  const handleResetAllFilters = () => {
+    setStartDate('');
+    setEndDate('');
+    setRating(-1);
+    setMinValue('');
+    setMaxValue('5000');
+    setStatusTrip('');
+    setTravelersCount('');
+  };
+
   return (
     <>
       <div className={styles.main}>
         <HeaderNew avatar={avatar} />
         <div className={styles.mainContainer}>
           <div className={styles.filtersContainer}>
-            <h3 className={styles.filterTitle}>Vienna: 43 results found</h3>
+            <h3 className={styles.filterTitle}>
+              {searchValue
+                ? `${searchValue}:`
+                : currentGeoTag
+                  ? `${currentGeoTag.address.split(',')[0]}:`
+                  : ''}{' '}
+              {filteredTrips.length} results found
+            </h3>
             <div className={styles.filtersTitleToggle}>
               <p>Filters</p>
               {showHideOptions && (
@@ -263,6 +336,7 @@ const SearchTrips = () => {
                 <div className={styles.dates}>
                   <p className={styles.titlesFilter}>Dates:</p>
                   <DateRangePicker
+                    key={`${startDate}-${endDate}`}
                     value={[parseDate(startDate), parseDate(endDate)]}
                     onChange={handleDateChange}
                     size='sm'
@@ -315,6 +389,12 @@ const SearchTrips = () => {
                         max={maxLimit}
                       />
                     </div>
+                    <img
+                      src={plus}
+                      alt='plus'
+                      className={styles.deleteRange}
+                      onClick={() => handleRangeReset()}
+                    />
                   </div>
                 </div>
                 <div className={styles.rangeContainer}>
@@ -350,7 +430,7 @@ const SearchTrips = () => {
                     {statuses.map((status) => (
                       <div
                         key={status}
-                        onClick={() => setStatusTrip(status)}
+                        onClick={() => handleSetStatusTrip(status)}
                         className={cn([styles.status], {
                           [styles.isStatusActive]: statusTrip === status,
                         })}
@@ -366,7 +446,7 @@ const SearchTrips = () => {
                     {travelersMap.map((status) => (
                       <div
                         key={status}
-                        onClick={() => setTravelersCount(status)}
+                        onClick={() => handleSetCountTravelers(status)}
                         className={cn([styles.status], {
                           [styles.isStatusActive]: travelersCount === status,
                         })}
@@ -376,18 +456,48 @@ const SearchTrips = () => {
                     ))}
                   </div>
                 </div>
+                <div className={styles.resetButton} onClick={() => handleResetAllFilters()}>
+                  Reset filters
+                </div>
               </div>
             )}
           </div>
           <div className={styles.resultsContainer}>
-            <h3 className={styles.filterTitle}>Related user&apos;s trips</h3>
-            <div className={styles.tripsContainer}>
-              {currentTrips.map((trip: ITravel) => (
-                <TravelCard travel={trip} isSearch={isSearch} key={trip.id} />
-              ))}
-            </div>
-            <div className={styles.pagination}>{renderPagination()}</div>
+            {filteredTrips.length === 0 ? (
+              <>
+                <h3 className={styles.filterTitle}>No Related user&apos;s trips</h3>
+                <img src={no_trips_search} alt='no_trips_search' className={styles.noTripsImage} />
+              </>
+            ) : (
+              <>
+                <h3 className={styles.filterTitle}>Related user&apos;s trips</h3>
+                <div className={styles.tripsContainer}>
+                  {currentTrips.map((trip: ITravel) => (
+                    <TravelCard travel={trip} isSearch={isSearch} key={trip.id} />
+                  ))}
+                </div>
+                <div className={styles.pagination}>{renderPagination()}</div>
+              </>
+            )}
           </div>
+          {filteredTrips.length === 0 && (
+            <div className={styles.resultsContainer}>
+              <h3 className={styles.filterTitle}>Trips you may like</h3>
+              <div className={styles.tripsContainer}>
+                {allTrips
+                  .sort((item1: ITravel, item2: ITravel) => {
+                    console.log(item1.createdAt, item2.createdAt);
+                    return (
+                      new Date(item2.startDate).getTime() - new Date(item1.startDate).getTime()
+                    );
+                  })
+                  .slice(0, 5)
+                  .map((trip: ITravel) => (
+                    <TravelCard travel={trip} isSearch={isSearch} key={trip.id} />
+                  ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
       <div className={styles.footer}>

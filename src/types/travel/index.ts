@@ -21,4 +21,5 @@ export interface ITravel {
   budget: string;
   stage: string;
   people: string;
+  createdAt: string;
 }

@@ -23,9 +23,9 @@ const Rating: FC<Props> = ({
           key={i}
           disabled={disabled}
           selected={selectedStars >= i}
-          onSelect={() => {
-            setSelectedStars(i);
-          }}
+          selectedStar={selectedStars}
+          onSelect={setSelectedStars}
+          i={i}
         />
       ))}
     </div>

@@ -1,4 +1,5 @@
 import { useContext, useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import { doc, onSnapshot, updateDoc, where } from 'firebase/firestore';
@@ -7,10 +8,12 @@ import { Autoplay } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import CanYouDoCard from '~/components/CanYouDoCard/CanYouDoCard';
 import Footer from '~/components/Footer';
+import SearchTripsCard from '~/components/SearchTripsCard';
 import { SignUpModal } from '~/components/SignUpModal/SignUpModal';
 import TravelCard from '~/components/TravelCard/TravelCard';
 import { db, storage } from '~/firebase';
 import { AuthContext } from '~/providers/authContext';
+import { IPlace } from '~/routes/AppRoutes/Posts/types';
 import { tripsCollection, usersCollection } from '~/types/firestoreCollections';
 import { ITravel } from '~/types/travel';
 
@@ -25,9 +28,6 @@ import pic2 from '/pic2.png';
 import pic3 from '/pic3.png';
 
 import 'swiper/css';
-import SearchTripsCard from '~/components/SearchTripsCard';
-import { IPlace } from '~/routes/AppRoutes/Posts/types';
-import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
   const { firestoreUser } = useContext(AuthContext);
@@ -55,7 +55,7 @@ const LoginPage = () => {
   const handleClickOutside = (event) => {
     if (searchBarRef.current && !searchBarRef.current.contains(event.target)) {
       setIsDropdownOpen(false);
-    } 
+    }
   };
 
   useEffect(() => {
@@ -75,10 +75,10 @@ const LoginPage = () => {
 
         setAllTrips(fetchedTrips as ITravel[]);
 
-        const allGeoTags = fetchedTrips.flatMap(trip => trip.geoTags || []);
+        const allGeoTags = fetchedTrips.flatMap((trip) => trip.geoTags || []);
 
         const uniqueGeoTagsMap = new Map();
-        allGeoTags.forEach(tag => {
+        allGeoTags.forEach((tag) => {
           uniqueGeoTagsMap.set(tag.placeID, tag);
         });
 
@@ -208,9 +208,15 @@ const LoginPage = () => {
   const handleSearchClick = () => {
     if (!isFirestoreUser) {
       setModalIsOpen(true);
-    } else {
-      navigate('/search', { state: { searchValue, allTrips} });
+      return;
     }
+    if (searchValue.trim().length === 0) {
+      if (!toast.isActive('search')) {
+        toast.error('Please enter a search value or choose place', { toastId: 'search' });
+      }
+      return;
+    }
+    navigate('/search', { state: { searchValue, allTrips } });
   };
 
   return (
@@ -241,19 +247,20 @@ const LoginPage = () => {
             {isDropdownOpen && (
               <div className={styles.searchResults}>
                 {allGeoTagsMap
-                  .filter((geotag) => geotag.address.toLowerCase().includes(searchValue.toLowerCase()))
+                  .filter((geotag) =>
+                    geotag.address.toLowerCase().includes(searchValue.toLowerCase())
+                  )
                   .slice(0, 5)
                   .map((geotag) => (
                     <SearchTripsCard
                       geotag={geotag}
                       handleSearchPush={() => {
-                        setCurrentGeoTag(geotag); 
-                        navigate('/search', { state: { allTrips, currentGeoTag: geotag } })
+                        setCurrentGeoTag(geotag);
+                        navigate('/search', { state: { allTrips, currentGeoTag: geotag } });
                       }}
                       key={geotag.placeID}
                     />
-                  ))
-                }
+                  ))}
               </div>
             )}
           </div>
