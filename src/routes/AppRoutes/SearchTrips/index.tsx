@@ -18,6 +18,34 @@ import { ITravel } from '~/types/travel';
 
 import styles from './SearchTrips.module.css';
 
+const parseBudget = (budgetString: string) => parseFloat(budgetString.replace(/,/g, ''));
+
+const filterTrips = (allTrips: ITravel[], startDate: string, endDate: string, rating: number, minValue: string, maxValue: string, statusTrip: string, travelersCount: string) => {
+  const minBudget = minValue === '' ? 0 : parseFloat(minValue);
+  const maxBudget = maxValue.toString() === '5000' ? Infinity : parseFloat(maxValue);
+  console.log('maxValue', maxValue);
+  
+
+  return allTrips.filter((trip: ITravel) => {
+    const matchesDate =
+      (startDate === '' || new Date(trip.startDate) >= new Date(startDate)) &&
+      (endDate === '' || new Date(trip.endDate) <= new Date(endDate));
+
+    const matchesRating = rating === -1 || trip.rate >= rating;
+    let matchesBudget = false;
+    if (typeof trip.budget === 'string') {
+      const tripBudget = parseFloat(trip.budget.replace(/,/g, ''));
+      matchesBudget = tripBudget >= minBudget && tripBudget <= maxBudget;
+    }
+
+    const matchesStatus = statusTrip === '' || trip.stage === statusTrip;
+
+    const matchesTravelers = travelersCount === '' || trip.people === travelersCount;
+
+    return matchesRating && matchesDate && matchesBudget && matchesStatus && matchesTravelers;
+  });
+};
+
 const SearchTrips = () => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -37,11 +65,25 @@ const SearchTrips = () => {
   const [avatar, setAvatar] = useState(default_user);
   const [hideOptions, setHideOptions] = useState(false);
   const [showHideOptions, setShowHideOptions] = useState(false);
+  const [filteredTrips, setFilteredTrips] = useState<ITravel[]>([]);
 
   const location = useLocation();
   const { allTrips, currentGeoTag, searchValue } = location.state;
 
-  console.log('allTrips', allTrips);
+  useEffect(() => {
+    const newFilteredTrips = filterTrips(
+      allTrips,
+      startDate,
+      endDate,
+      rating,
+      minValue,
+      maxValue,
+      statusTrip,
+      travelersCount
+    );
+    setFilteredTrips(newFilteredTrips);
+    setCurrentPage(1);
+  }, [allTrips, startDate, endDate, rating, minValue, maxValue, statusTrip, travelersCount]);
 
   useEffect(() => {
     if (firestoreUser?.avatarUrl) {
@@ -134,34 +176,11 @@ const SearchTrips = () => {
     setMaxValue(Math.min(value, maxLimit));
   };
 
-  const filterTrips = () => {
-    return allTrips.filter((trip: ITravel) => {
-      const matchesDate =
-        (startDate === '' || new Date(trip.startDate) >= new Date(startDate)) &&
-        (endDate === '' || new Date(trip.endDate) <= new Date(endDate));
-
-      const matchesRating = rating === -1 || trip.rate >= rating;
-      const matchesBudget = 
-      (minValue === '' || trip.budget >= parseFloat(minValue)) &&
-      (maxValue === '5000' ? true : trip.budget <= parseFloat(maxValue));
-
-      const matchesStatus = statusTrip === '' || trip.stage === statusTrip;
-
-      const matchesTravelers = travelersCount === '' || trip.people === travelersCount;
-
-      return matchesRating && matchesDate && matchesBudget && matchesStatus && matchesTravelers;
-    });
-  };
-
-  const filteredTrips = filterTrips();
-
-  console.log('filteredTrips', filteredTrips);
-
   const indexOfLastTrip = currentPage * tripsPerPage;
   const indexOfFirstTrip = indexOfLastTrip - tripsPerPage;
   const currentTrips = filteredTrips.slice(indexOfFirstTrip, indexOfLastTrip);
 
-  const totalPages = Math.ceil(allTrips.length / tripsPerPage);
+  const totalPages = Math.ceil(filteredTrips.length / tripsPerPage);
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
@@ -244,7 +263,6 @@ const SearchTrips = () => {
                 <div className={styles.dates}>
                   <p className={styles.titlesFilter}>Dates:</p>
                   <DateRangePicker
-                    editable={false}
                     value={[parseDate(startDate), parseDate(endDate)]}
                     onChange={handleDateChange}
                     size='sm'
@@ -259,6 +277,11 @@ const SearchTrips = () => {
                       alignItems: 'center',
                     }}
                     format='MM-dd-yyyy'
+                    cleanable={true}
+                    onClean={() => {
+                      setStartDate('');
+                      setEndDate('');
+                    }}
                   />
                 </div>
                 <div className={styles.rating}>
