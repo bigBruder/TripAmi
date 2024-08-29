@@ -847,7 +847,7 @@ const CreateTrip: React.FC<Props> = () => {
                 type='text'
                 value={hashtag}
                 onChange={handleHashtagChange}
-                placeholder='Write tags here'
+                placeholder={window.innerWidth < 450 ? 'Write tags' : 'Write tags here'}
                 className={styles.hashtagInput}
                 onKeyDown={(e) => addHashtag(e)}
                 ref={inputRef}
