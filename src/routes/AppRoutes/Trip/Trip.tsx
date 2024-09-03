@@ -4,6 +4,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import cn from 'classnames';
 import { format, isValid } from 'date-fns';
+import { enUS } from 'date-fns/locale';
 import {
   collection,
   doc,
@@ -56,9 +57,7 @@ import saveTrip from '@assets/icons/saveTrip.svg';
 import shareTrip from '@assets/icons/shareTrip.svg';
 import tripSaved from '@assets/icons/tripSaved.svg';
 
-import sa from '../../../assets/images/LoginBackground.png';
 import styles from './trip.module.css';
-import { enUS } from 'date-fns/locale';
 
 export const Trip = () => {
   const { id } = useParams();
@@ -102,6 +101,8 @@ export const Trip = () => {
   const [inFavourites, setInFavourites] = useState(false);
   const [suggestedTrips, setSuggestedTrips] = useState<ITravel[]>([]);
 
+  console.log('trip', trip);
+  
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -427,7 +428,7 @@ export const Trip = () => {
   const hideTooltip = () => setHoveredGeoTagId('');
 
   return (
-    <div className={(`${styles.mainContainer}, mainContainer`)}>
+    <div className={`${styles.mainContainer}, mainContainer`}>
       <HeaderNew avatar={avatar} />
       <div className={styles.main}>
         <div className={styles.post}>
@@ -670,7 +671,7 @@ export const Trip = () => {
                       return (
                         <SwiperSlide
                           key={parsedDate.toDateString()}
-                          style={{ justifyContent: 'center', display: 'flex'}}
+                          style={{ justifyContent: 'center', display: 'flex' }}
                         >
                           <button
                             onClick={(e) => handleDateClick(e, parsedDate)}

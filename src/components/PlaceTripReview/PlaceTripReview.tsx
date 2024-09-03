@@ -1,5 +1,4 @@
 import { FC, useContext, useEffect, useState } from 'react';
-import Modal from 'react-modal';
 import { useNavigate } from 'react-router-dom';
 
 import { documentId, getDocs, query, where } from 'firebase/firestore';

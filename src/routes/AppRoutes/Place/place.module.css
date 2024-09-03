@@ -1,25 +1,145 @@
+* {
+  font-family: 'Gilroy-Regular', sans-serif;
+}
+
 h3, h2 {
     margin: 0;
 }
 
+.title {
+  display: flex;
+  justify-content: center;
+  font-size: 32px;
+  align-items: center;
+  text-align: center;
+  font-family: 'Gilroy-Bold', sans-serif;
+  color: #1F1F20;
+}
+
 .mainContainer {
-    height: 100vh;
+    height: 100%;
     width: 100vw;
     display: flex;
+    justify-content: center;
+    align-items: center;
     flex-direction: column;
+    position: relative;
+    z-index: 1;
+    box-sizing: border-box;
+    padding: 0 40px 80px 40px;
+}
+
+.mainContainer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: -1;
+
+  background-image: url('/place_background.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  overflow: hidden;
+}
+
+.suggestedTrips {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.suggestedTripsContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  padding: 45px 40px;
+  box-sizing: border-box;
+
+  border: 1px solid #EEEEEA;
+  background-color: rgba(254, 254, 254, 0.7);
+  box-shadow: rgba(222, 222, 215, 0.5);
+  backdrop-filter: blur(10px);
+  border-radius: 40px;
+  margin-bottom: 40px;
+}
+
+.containerComments {
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  max-width: 1440px;
+  width: 100%;
+  padding: 40px 40px 48px 40px;
+  margin: 0, 40px, 69px;
+  margin-top: 0;
+  margin-bottom: 69px;
+  border: 1px solid #EEEEEA;
+  border-radius: 40px;
+  background-color: rgba(254, 254, 254, 0.7);
+  backdrop-filter: blur(10px);
+  box-sizing: border-box;
+}
+
+.tabsContainer {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.tab {
+  font-family: 'Gilroy-Regular', sans-serif;
+  width: 45%;
+  font-size: 24px;
+  color: #1F1F20;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1px solid transparent;
+}
+
+.activeTab {
+  font-family: 'Gilroy-Bold', sans-serif;
+  border-bottom: 1px solid #CFB317;
 }
 
 .main {
+    max-width: 1360px;
+    width: 100%;
     display: flex;
     flex-direction: column;
     flex-grow: 1;
-    padding: 60px 60px 30px 60px;
+    height: 100%;
 
-    background-image: url('../../../assets/images/LoginBackground.png');
-    background-repeat: no-repeat;
-    background-size: cover;
+    box-sizing: border-box;
+    overflow-x: auto;
+}
 
-    overflow: auto;
+.seeMoreButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    border-radius: 20px;
+    background-color: transparent;
+    font-family: 'Gilroy-semibold', sans-serif;
+    color: #444445;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 18px;
+    line-height: 17px;
+}
+
+.titleAndRating {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
 }
 
 @media (max-width: 500px) {
@@ -44,33 +164,28 @@ h3, h2 {
     display: flex;
     flex-direction: column;
     gap: 28px;
+    height: 100%;
+    padding: 80px 40px;
+    border: 1px solid #EEEEEA;
+    background-color: rgba(254, 254, 254, 0.7);
+    box-shadow: rgba(222, 222, 215, 0.5);
+    backdrop-filter: blur(10px);
+    border-radius: 40px;
 
-    margin-top: 30px;
-    padding: 10px 16px 42px 16px;
-    background-color: #FFFFFF;
-
-    border-radius: 8px;
+    margin-bottom: 40px;
 }
 
 .postContainer {
     display: flex;
-    flex-direction: column;
     justify-content: space-between;
-    gap: 25px;
-}
-
-
-.postContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
     gap: 25px;
 }
 
 .postIMage {
     height: auto;
-    max-width: 100%;
+    max-width: 50%;
     object-fit: contain;
+    border-radius: 24px;
 }
 
 .loader {
@@ -114,16 +229,6 @@ h3, h2 {
     gap: 6px;
 
     cursor: pointer;
-}
-
-@media (min-width: 768px) {
-    .postContainer {
-        flex-direction: row;
-    }
-
-    .postIMage {
-        max-width: 40%;
-    }
 }
 
 .categoryTitle { 
@@ -173,9 +278,28 @@ h3, h2 {
 }
 
 .mapContainer {
+    width: 50%;
+    border-radius: 24px;
+}
+
+.mapContainer div {
+  border-radius: 24px;
+}
+
+.mapContainerImage {
     width: 100%;
     height: 100%;
     border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.description {
+    font-size: 18px;
+    line-height: 21px;
+    font-weight: 500;
+    color: #1F1F20;
 }
 
 @media (max-width: 768px) {

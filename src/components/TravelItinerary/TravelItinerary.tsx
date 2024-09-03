@@ -9,6 +9,7 @@ import { IPost } from '~/types/post';
 import { ITravel } from '~/types/travel';
 import { IUser } from '~/types/user';
 
+import { doc, updateDoc } from '@firebase/firestore';
 import { getDocs, onSnapshot, orderBy, query, where } from '@firebase/firestore';
 
 import { Sort } from '../Sort/Sort';
@@ -48,6 +49,24 @@ export const TravelItinerary = () => {
   const [isSuggestedPostsLoading, setIsSuggestedPostsLoading] = useState(false);
   const [sortBy, setSortBy] = useState<SortBy>('endDate');
   const [isReverse, setIsReverse] = useState(false);
+
+  useEffect(() => {
+    const updatePlaceIDs = async () => {
+      const updatePromises = travels.map(async (travel) => {
+        if (!travel.placeIDs) {
+          const placeIDs = travel.geoTags.map((place) => place.placeID);
+          const docRef = doc(tripsCollection, travel.id);
+          await updateDoc(docRef, {
+            placeIDs,
+          });
+        }
+      });
+
+      await Promise.all(updatePromises);
+    };
+
+    updatePlaceIDs();
+  }, [travels]);
 
   useEffect(() => {
     if (firestoreUser?.id) {

@@ -64,7 +64,7 @@ const MyAccount = () => {
   const { state } = useLocation();
 
   const { firestoreUser, loading, signOutUser } = useContext(AuthContext);
-  
+
   const navigate = useNavigate();
   const userRef = window.localStorage.getItem('ref');
 
@@ -268,8 +268,8 @@ const MyAccount = () => {
     <>
       <div className={styles.container}>
         <div className={styles.content}>
-          <HeaderNew avatar={avatar} />
           <div className={styles.myAccount}>
+            <HeaderNew avatar={avatar} />
             <div className={styles.topContainer}>
               <div className={styles.userInfo}>
                 <div className={styles.imageContainer}>

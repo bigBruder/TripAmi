@@ -38,6 +38,7 @@ interface Props {
   travel: ITravel;
   isSwiper?: boolean;
   isSearch?: boolean;
+  isPlace?: boolean;
 }
 
 const notifyInfo = (message: string) => {
@@ -47,7 +48,7 @@ const notifyInfo = (message: string) => {
 };
 const notifyError = (message: string) => toast.error(message);
 
-const TravelCard: FC<Props> = ({ travel, isSwiper = false, isSearch = false }) => {
+const TravelCard: FC<Props> = ({ travel, isSwiper = false, isSearch = false, isPlace = false }) => {
   const { firestoreUser, updateFirestoreUser } = useContext(AuthContext);
   const [imageDownloadUrls, setImageDownloadUrls] = useState<
     { url: string; type: string; description: string }[]
@@ -173,6 +174,7 @@ const TravelCard: FC<Props> = ({ travel, isSwiper = false, isSearch = false }) =
         [styles.containerSwiper]: isSwiper,
         [styles.containerSearch]: isSearch,
       })}
+      style={isPlace ? { width: '100%' } : undefined}
       onClick={(e) => {
         handleOpenTrip(e);
       }}
@@ -180,7 +182,10 @@ const TravelCard: FC<Props> = ({ travel, isSwiper = false, isSearch = false }) =
       <div className={styles.mainContainer}>
         <div className={styles.mainPhotoContainer}>
           {imageDownloadUrls.length === 0 ? (
-            <div className={styles.imageContainer} style={isSearch ? { height: '100%', width: '100%' } : undefined}>
+            <div
+              className={styles.imageContainer}
+              style={isSearch ? { height: '100%', width: '100%' } : undefined}
+            >
               <img
                 src={'/photoNotFound.jpg'}
                 alt='travel'

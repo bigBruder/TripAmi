@@ -144,7 +144,6 @@ export const CreateReviewModal: FC<Props> = ({ closeModal, placeId, startReview,
     }
   }, [
     filesList,
-    // startPost,
     placeId,
     selectedStars,
     closeModal,

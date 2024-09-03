@@ -13,21 +13,8 @@ import styles from './placeReview.module.css';
 
 interface Props {
   review: PlaceReviewType;
+  mainTitle: string;
 }
-const months = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
-];
 
 const MAX_LENGTH = 200;
 
@@ -36,13 +23,12 @@ const getDate = (timestamp) => {
   const options = {
     year: 'numeric' as const,
     month: 'long' as const,
-    // day: 'numeric',
   };
   const date = new Date(timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000);
   return date.toLocaleString('en-US', options);
 };
 
-export const PlaceReview: FC<Props> = ({ review }) => {
+export const PlaceReview: FC<Props> = ({ review, mainTitle }) => {
   const { firestoreUser } = useContext(AuthContext);
   const [images, setImages] = useState<{ type: string; url: string }[]>([]);
   const [userAvatar, setUserAvatar] = useState<string>('');
@@ -119,33 +105,23 @@ export const PlaceReview: FC<Props> = ({ review }) => {
           <div className={styles.descriptionContainer}>
             {isExtended ? (
               <>
-                <p className={styles.description}>{review.text.replaceAll('<br />', '\n')}</p>
+                <p className={styles.description}>{mainTitle.replaceAll('<br />', '\n')}</p>
                 <button className={styles.seeMoreButton} onClick={() => setIsExtended(false)}>
                   see less
                 </button>
-                <div>
-                  <p>Advice:</p>
-                  {review.advice}
-                </div>
               </>
             ) : (
               <>
                 <p className={styles.description}>
                   {review.text.slice(0, MAX_LENGTH).replaceAll('<br />', '\n')}...{' '}
-
                   {review.text.length > MAX_LENGTH && (
                     <button className={styles.seeMoreButton} onClick={() => setIsExtended(true)}>
                       see more
                     </button>
                   )}
                 </p>
-                <div>
-                  <p>Advice:</p>
-                  {review.advice}
-                </div>
               </>
             )}
-            {/* <div dangerouslySetInnerHTML={{ __html: trip.text }} /> */}
           </div>
         </div>
       </div>

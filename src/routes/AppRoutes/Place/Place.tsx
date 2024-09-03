@@ -3,6 +3,7 @@ import Skeleton from 'react-loading-skeleton';
 import { useParams } from 'react-router-dom';
 
 import axios from 'axios';
+import cn from 'classnames';
 import {
   average,
   collectionGroup,
@@ -13,14 +14,18 @@ import {
   onSnapshot,
   updateDoc,
 } from 'firebase/firestore';
+import { getDownloadURL, ref } from 'firebase/storage';
 import Lottie from 'lottie-react';
 import { CreateReviewModal } from '~/components/CreateReviewModal/CreateReviewModal';
 import CustomModal from '~/components/CustomModal';
+import HeaderNew from '~/components/HeaderNew';
 import { PageTitle } from '~/components/PageTitle';
 import { PlaceReview } from '~/components/PlaceReview/PlaceReview';
 import { PlaceTripReview } from '~/components/PlaceTripReview/PlaceTripReview';
+import Rating from '~/components/Rating';
+import TravelCard from '~/components/TravelCard/TravelCard';
 import Header from '~/components/profile/Header';
-import { db } from '~/firebase';
+import { db, storage } from '~/firebase';
 import { AuthContext } from '~/providers/authContext';
 import { IPlace } from '~/routes/AppRoutes/Posts/types';
 import { placesCollection, reviewsCollection, tripsCollection } from '~/types/firestoreCollections';
@@ -31,6 +36,7 @@ import { query, where } from '@firebase/firestore';
 import { APIProvider, Map } from '@vis.gl/react-google-maps';
 
 import styles from './place.module.css';
+import PlaceReviews from '~/components/PlaceReviews';
 
 const MAX_LENGTH = 700;
 
@@ -58,9 +64,36 @@ const Place = () => {
   const [isAddReviewOpen, setIsAddReviewOpen] = useState(false);
   const [myReview, setMyReview] = useState<any>();
   const [reviews, setReviews] = useState<any[]>([]);
+  const [averageRating, setAverageRating] = useState<number>(-1);
+  const [suggestedTrips, setSuggestedTrips] = useState<ITravel[]>([]);
+  const [activeTab, setActiveTab] = useState(0);
+  const tabs = ['Reviews', 'Advices'];
+
+  const [avatar, setAvatar] = useState<string>('');
 
   const truncatedText = useRef('');
   const remainingText = useRef('');
+  console.log(suggestedTrips, 'suggestedTrips');
+
+  useEffect(() => {
+    const placeId = id;
+
+    if (placeId) {
+      const q = query(tripsCollection, where('placeIDs', 'array-contains', placeId));
+      const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        const fetchedDocs = querySnapshot.docs.map((doc) => ({
+          ...doc.data(),
+          id: doc.id,
+        }));
+
+        setSuggestedTrips(fetchedDocs.slice(0, 3));
+      });
+
+      return () => {
+        unsubscribe();
+      };
+    }
+  }, [id]);
 
   useEffect(() => {
     (async () => {
@@ -71,11 +104,6 @@ const Place = () => {
             where('placeId', '==', id),
             where('authorId', '==', firestoreUser?.id)
           );
-          // const querySnapshot = await getDocs(q);
-          // const fetchedDocs = querySnapshot.docs.map((doc) => ({
-          //   ...doc.data(),
-          //   id: doc.id,
-          // }));
           const unsubscribe = onSnapshot(q, (querySnapshot) => {
             const fetchedDocs = querySnapshot.docs.map((doc) => ({
               ...doc.data(),
@@ -144,7 +172,7 @@ const Place = () => {
     (async () => {
       const q = query(reviewsCollection, where('placeId', '==', id));
       const snapshot = await getAggregateFromServer(q, { averageRating: average('rate') });
-      console.log(snapshot);
+      setAverageRating(snapshot._data.averageRating.doubleValue);
     })();
   }, [id]);
 
@@ -228,9 +256,9 @@ const Place = () => {
             }));
             trips.length > 0
               ? setRelatedTrips(
-                  // @ts-ignore
-                  trips as ITravel[]
-                )
+                // @ts-ignore
+                trips as ITravel[]
+              )
               : setRelatedTrips([]);
           }
         })();
@@ -239,6 +267,16 @@ const Place = () => {
       }
     }
   }, [id, firestoreUser?.id]);
+
+  useEffect(() => {
+    const fetchUserAvatar = async () => {
+      if (firestoreUser?.avatarUrl) {
+        const url = await getDownloadURL(ref(storage, firestoreUser.avatarUrl));
+        setAvatar(url);
+      }
+    };
+    fetchUserAvatar();
+  }, [firestoreUser?.avatarUrl]);
 
   const handleDeleteReview = async () => {
     try {
@@ -257,135 +295,115 @@ const Place = () => {
 
   return (
     <div className={styles.mainContainer}>
-      <div className={styles.header}>
-        <Header />
-      </div>
+      <HeaderNew avatar={avatar} />
 
       <div className={styles.main}>
-        <PageTitle title={'Place'} />
-
-        <div className={styles.post}>
-          <div className={styles.container}>
-            {geocode?.name === undefined ? (
-              <Skeleton height={50} />
-            ) : (
-              <h1 className={styles.title}>{geocode?.name}</h1>
-            )}
-            <div className={styles.postContainer}>
-              {isLoading ? (
-                <Lottie animationData={AnimationData} />
-              ) : placeData?.imageUrl || placeData?.articleText ? (
-                <>
-                  {placeData.imageUrl && (
-                    <img
-                      src={placeData.imageUrl || ''}
-                      alt={'place image'}
-                      className={styles.postIMage}
-                    />
-                  )}
-                  {id && geocode?.types && (
-                    <APIProvider apiKey='AIzaSyCwDkMaHWXRpO7hY6z62_Gu8eLxMMItjT8'>
-                      <div className={styles.mapContainer}>
-                        <Map
-                          center={geocode}
-                          {...mapOptions}
-                          zoom={geocode.types.includes('locality') ? 10 : 17}
-                        />
-                      </div>
-                    </APIProvider>
-                  )}
-                </>
-              ) : (
-                <h2 className={styles.empty}>There is no information about this place</h2>
-              )}
-            </div>
-            {placeData && placeData.articleText ? (
-              <div className={styles.textContainer}>
-                {isExpanded ? (
-                  <div>
-                    <div
-                      className={styles.description}
-                      dangerouslySetInnerHTML={{ __html: placeData.articleText }}
-                    />
-                    <button onClick={handleSeeMoreClick}>See less</button>
-                  </div>
-                ) : (
-                  <div>
-                    <div dangerouslySetInnerHTML={{ __html: truncatedText.current }} />
-                    {placeData.articleText.length > MAX_LENGTH && (
-                      <button onClick={handleSeeMoreClick}>See more</button>
-                    )}
-                  </div>
+        <div className={styles.container}>
+          {geocode?.name === undefined ? (
+            <Skeleton height={50} />
+          ) : (
+            <h1 className={styles.title}>{geocode?.name}</h1>
+          )}
+          <div className={styles.postContainer}>
+            {isLoading ? (
+              <Lottie animationData={AnimationData} />
+            ) : placeData?.imageUrl || placeData?.articleText ? (
+              <div className={styles.mapContainerImage}>
+                {placeData.imageUrl && (
+                  <img
+                    src={placeData.imageUrl || ''}
+                    alt={'place image'}
+                    className={styles.postIMage}
+                  />
+                )}
+                {id && geocode?.types && (
+                  <APIProvider apiKey='AIzaSyCwDkMaHWXRpO7hY6z62_Gu8eLxMMItjT8'>
+                    <div className={styles.mapContainer}>
+                      <Map
+                        center={geocode}
+                        {...mapOptions}
+                        zoom={geocode.types.includes('locality') ? 10 : 17}
+                      />
+                    </div>
+                  </APIProvider>
                 )}
               </div>
-            ) : null}
-
-            {myReview && myReview?.id ? (
-              <div>
-                <h2 className={styles.categoryTitle}>My review</h2>
-                <div key={myReview.id} className={styles.review}>
-                  <PlaceReview review={myReview} />
-                </div>
-                <div className={styles.reviewControl}>
-                  <button className={styles.button} onClick={() => setIsAddReviewOpen(true)}>
-                    Edit
-                  </button>
-                  <button className={styles.button} onClick={() => handleDeleteReview()}>
-                    Delete
-                  </button>
-                </div>
-              </div>
             ) : (
-              <div className={styles.addReviewContainer}>
-                <h3>Been here? Please, leave a your review</h3>
-                <button className={styles.button} onClick={() => setIsAddReviewOpen(true)}>
-                  Add review
-                </button>
-              </div>
-            )}
-
-            {relatedTrips.filter((trip) => trip.userId === firestoreUser?.id)?.length > 0 && (
-              <>
-                <h2 className={styles.categoryTitle}>My trips related with this place</h2>
-                {relatedTrips
-                  .filter((trip) => trip.userId === firestoreUser?.id)
-                  .map((review) => (
-                    <div key={review.id} className={styles.review}>
-                      <PlaceTripReview trip={review} />
-                    </div>
-                  ))}
-              </>
+              <h2 className={styles.empty}>There is no information about this place</h2>
             )}
           </div>
+          <div className={styles.titleAndRating}>
+            <h2>Place Overview</h2>
+            <Rating selectedStars={averageRating} />
+          </div>
+          {placeData && placeData.articleText ? (
+            <div className={styles.textContainer}>
+              {isExpanded ? (
+                <div>
+                  <div
+                    className={styles.description}
+                    dangerouslySetInnerHTML={{ __html: placeData.articleText }}
+                  />
+                  <button onClick={handleSeeMoreClick} className={styles.seeMoreButton}>
+                    See less
+                  </button>
+                </div>
+              ) : (
+                <div>
+                  <div
+                    className={styles.description}
+                    dangerouslySetInnerHTML={{ __html: truncatedText.current }}
+                  />
+                  {placeData.articleText.length > MAX_LENGTH && (
+                    <button onClick={handleSeeMoreClick} className={styles.seeMoreButton}>
+                      See more
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+          ) : null}
+        </div>
+        {suggestedTrips.length > 0 && (
+          <div className={styles.suggestedTripsContainer}>
+            <h2 className={styles.title} style={{ marginBottom: '37px' }}>
+              Related user&rsquo;s trips
+            </h2>
+            <div className={styles.suggestedTrips}>
+              {suggestedTrips.map((trip) => (
+                <TravelCard key={trip.id} travel={trip} isPlace={true} />
+              ))}
+            </div>
+          </div>
+        )}
 
-          {reviews.length > 0 && (
-            <>
-              <h3 className={styles.categoryTitle}>Some users already reviewed this place</h3>
-              <div className={styles.reviewsContainer}>
-                {reviews &&
-                  reviews.map((review) => (
-                    <div key={myReview?.id} className={styles.review}>
-                      <PlaceReview review={review} />
-                    </div>
-                  ))}
-              </div>
-            </>
-          )}
+        <div className={styles.containerComments}>
+          <div className={styles.tabsContainer}>
+            {tabs.map((tab, index) => (
+              <h2
+                onClick={() => setActiveTab(index)}
+                key={index}
+                className={cn([styles.tab], { [styles.activeTab]: activeTab === index })}
+              >
+                {tab}
+              </h2>
+            ))}
+          </div>
+          <div className={styles.commentsMap}>
+            {activeTab === 0 ? (
+              <PlaceReviews reviews={reviews} placeId={id} />
 
-          {relatedTrips.filter((trip) => trip.userId !== firestoreUser?.id)?.length > 0 && (
-            <>
-              <h3 className={styles.categoryTitle}>Check user`s trips related with this place</h3>
-              <div className={styles.reviewsContainer}>
-                {relatedTrips
-                  .filter((trip) => trip.userId !== firestoreUser?.id)
-                  .map((review) => (
-                    <div key={review.id} className={styles.review}>
-                      <PlaceTripReview trip={review} />
-                    </div>
-                  ))}
-              </div>
-            </>
-          )}
+            ) : (
+                // <PlaceAdvices />
+                <div></div>
+            )}
+          </div>
+          {/* <CommentField
+            postId={id}
+            commentsCount={trip?.comments_count || 0}
+            contentType='trip'
+            postOwnerId={trip?.userId || ''}
+          /> */}
         </div>
       </div>
       {id && (

@@ -305,6 +305,8 @@ const CreateTrip: React.FC<Props> = () => {
             };
           })
         );
+
+        const placeIDs = selectedGeoTags.map((tag) => tag.placeID);
         if (isEdit && data) {
           const docRef = doc(db, 'trips', data.id);
           await updateDoc(docRef, {
@@ -322,6 +324,7 @@ const CreateTrip: React.FC<Props> = () => {
             text: text.replace(/(?:\r\n|\r|\n)/g, '<br />'),
             stage: finished ? 'Finished' : activeTab,
             isPrivatJournal,
+            placeIDs,
           });
           const subcollectionPlaces = collection(db, `trips/${docRef.id}/places`);
           const queryPlaces = query(subcollectionPlaces);
@@ -372,6 +375,7 @@ const CreateTrip: React.FC<Props> = () => {
             stage: finished ? 'Finished' : activeTab,
             usersSaved: [],
             isPrivatJournal,
+            placeIDs,
           }).then(async (docRef) => {
             const subcollectionCities = collection(db, `trips/${docRef.id}/cities`);
             const subcollectionPlaces = collection(db, `trips/${docRef.id}/places`);
