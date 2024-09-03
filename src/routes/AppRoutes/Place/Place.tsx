@@ -20,7 +20,9 @@ import { CreateReviewModal } from '~/components/CreateReviewModal/CreateReviewMo
 import CustomModal from '~/components/CustomModal';
 import HeaderNew from '~/components/HeaderNew';
 import { PageTitle } from '~/components/PageTitle';
+import PlaceAdvices from '~/components/PlaceAdvices';
 import { PlaceReview } from '~/components/PlaceReview/PlaceReview';
+import PlaceReviews from '~/components/PlaceReviews';
 import { PlaceTripReview } from '~/components/PlaceTripReview/PlaceTripReview';
 import Rating from '~/components/Rating';
 import TravelCard from '~/components/TravelCard/TravelCard';
@@ -36,7 +38,6 @@ import { query, where } from '@firebase/firestore';
 import { APIProvider, Map } from '@vis.gl/react-google-maps';
 
 import styles from './place.module.css';
-import PlaceReviews from '~/components/PlaceReviews';
 
 const MAX_LENGTH = 700;
 
@@ -126,11 +127,7 @@ const Place = () => {
     (async () => {
       try {
         if (firestoreUser?.id) {
-          const q = query(
-            reviewsCollection,
-            where('placeId', '==', id),
-            where('authorId', '!=', firestoreUser?.id)
-          );
+          const q = query(reviewsCollection, where('placeId', '==', id));
           const querySnapshot = await getDocs(q);
           const fetchedDocs = querySnapshot.docs.map((doc) => ({
             ...doc.data(),
@@ -391,11 +388,9 @@ const Place = () => {
           </div>
           <div className={styles.commentsMap}>
             {activeTab === 0 ? (
-              <PlaceReviews reviews={reviews} placeId={id} />
-
+              <PlaceReviews reviews={reviews} />
             ) : (
-                // <PlaceAdvices />
-                <div></div>
+              <PlaceAdvices reviews={reviews} />
             )}
           </div>
           {/* <CommentField
@@ -404,6 +399,7 @@ const Place = () => {
             contentType='trip'
             postOwnerId={trip?.userId || ''}
           /> */}
+          <button onClick={() => setIsAddReviewOpen(true)}>asdfsadfsdaf</button>
         </div>
       </div>
       {id && (

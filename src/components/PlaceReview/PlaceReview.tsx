@@ -113,8 +113,8 @@ export const PlaceReview: FC<Props> = ({ review, mainTitle }) => {
             ) : (
               <>
                 <p className={styles.description}>
-                  {review.text.slice(0, MAX_LENGTH).replaceAll('<br />', '\n')}...{' '}
-                  {review.text.length > MAX_LENGTH && (
+                  {mainTitle.slice(0, MAX_LENGTH).replaceAll('<br />', '\n')}{' '}
+                  {mainTitle.length > MAX_LENGTH && (
                     <button className={styles.seeMoreButton} onClick={() => setIsExtended(true)}>
                       see more
                     </button>

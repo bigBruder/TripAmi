@@ -3,22 +3,22 @@ import React from 'react';
 import { PlaceReviewType } from '~/types/placeReviews';
 
 import { PlaceReview } from '../PlaceReview/PlaceReview';
-import styles from './PlaceReviews.module.css';
+import styles from './PlaceAdvices.module.css';
 
-interface PlaceReviewsProps {
+interface PlaceAdvicesProps {
   reviews: PlaceReviewType[];
 }
 
-const PlaceReviews: React.FC<PlaceReviewsProps> = ({ reviews }) => {
+const PlaceAdvices: React.FC<PlaceAdvicesProps> = ({ reviews }) => {
   return (
     <div className={styles.placeReviewsContainer}>
       <div className={styles.reviews}>
         {reviews.map((review) => (
-          <PlaceReview key={review.id} review={review} mainTitle={review.text} />
+          <PlaceReview key={review.id} review={review} mainTitle={review.advice} />
         ))}
       </div>
     </div>
   );
 };
 
-export default PlaceReviews;
+export default PlaceAdvices;

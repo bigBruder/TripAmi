@@ -8,4 +8,5 @@ export interface PlaceReviewType {
   placeId: string;
   rate: number;
   text: string;
+  advice: string;
 }
