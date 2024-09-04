@@ -36,6 +36,17 @@
     height: fit-content;
 }
 
+@media (max-width: 1024px) {
+    .leftContainer {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 12px;
+    }
+  
+}
+
 .secondContainer {
     display: flex;
     flex-direction: column;
@@ -103,88 +114,6 @@
 
 .activeOnMobile {
     display: none;
-}
-@media (max-width: 1200px) {
-    .container {
-        width: 100%;
-        flex-direction: column;
-        gap: 5px;
-    }
-    .rightContainer {
-        max-width: 100%;
-    }
-    .secondContainer {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-    .description {
-        display: inline-block;
-        width: 100%;
-        max-width: 100%;
-    }
-    .descriptionContainer {
-        width: 100%;
-    }
-    .upperRightContainer {
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
-        gap: 10px;  
-    }
-    .lowerRightContainer {
-        flex-direction: column;
-    }
-    .reviewInfoContainer {
-        display: flex;
-        justify-content: space-between;
-        gap: 10px;
-    }
-    .activeOnMobile {
-        display: block;
-    }
-    .inActiveOnMobile {
-        display: none;
-    }
-}
-
-@media (max-width: 500px) {
-    .container {
-        width: 100%;
-        flex-direction: column;
-        gap: 5px;
-    }
-    .rightContainer {
-        max-width: 100%;
-        width: 100%;
-    }
-    .secondContainer {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-    .description {
-        display: inline-block;
-        width: 100%;
-        flex-grow: 1;
-    }
-    .descriptionContainer {
-        width: 100%;
-    }
-    .lowerRightContainer {
-        flex-direction: column;
-    }
-    .reviewInfoContainer {
-        display: flex;
-        justify-content: space-between;
-        gap: 10px;
-    }
-    .activeOnMobile {
-        display: block;
-    }
-    .inActiveOnMobile {
-        display: none;
-    }
 }
 
 .lastImage {

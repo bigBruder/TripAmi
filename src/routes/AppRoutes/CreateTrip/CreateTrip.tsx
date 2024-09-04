@@ -798,7 +798,6 @@ const CreateTrip: React.FC<Props> = () => {
                   appearance='subtle'
                   placeholder='Trip Length'
                   showOneCalendar
-                  // shouldDisableDate={after(new Date())}
                   style={{
                     width: '90%',
                     textAlign: 'right',

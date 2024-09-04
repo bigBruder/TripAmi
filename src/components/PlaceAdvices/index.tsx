@@ -13,9 +13,13 @@ const PlaceAdvices: React.FC<PlaceAdvicesProps> = ({ reviews }) => {
   return (
     <div className={styles.placeReviewsContainer}>
       <div className={styles.reviews}>
-        {reviews.map((review) => (
-          <PlaceReview key={review.id} review={review} mainTitle={review.advice} />
-        ))}
+        {reviews.map((review) => {
+          if (review.advice) {
+            return <PlaceReview key={review.id} review={review} mainTitle={review.advice} />;
+          } else {
+            return null;
+          }
+        })}
       </div>
     </div>
   );

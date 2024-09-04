@@ -336,6 +336,7 @@ const SearchTrips = () => {
                 <div className={styles.dates}>
                   <p className={styles.titlesFilter}>Dates:</p>
                   <DateRangePicker
+                    editable={false}
                     key={`${startDate}-${endDate}`}
                     value={[parseDate(startDate), parseDate(endDate)]}
                     onChange={handleDateChange}
@@ -351,11 +352,6 @@ const SearchTrips = () => {
                       alignItems: 'center',
                     }}
                     format='MM-dd-yyyy'
-                    cleanable={true}
-                    onClean={() => {
-                      setStartDate('');
-                      setEndDate('');
-                    }}
                   />
                 </div>
                 <div className={styles.rating}>

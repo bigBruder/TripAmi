@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
-import Modal from 'react-modal';
-import { WhatsappShareButton, TelegramShareButton, EmailShareButton } from 'react-share';
-import { WhatsappIcon, TelegramIcon, EmailIcon } from 'react-share';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import Modal from 'react-modal';
+import { EmailShareButton, TelegramShareButton, WhatsappShareButton } from 'react-share';
+import { EmailIcon, TelegramIcon, WhatsappIcon } from 'react-share';
+
 import Done from '~/assets/icons/done.svg';
-import styles from './shareModal.module.css'; // Make sure to adjust the path as per your project structure
+
+import styles from './shareModal.module.css';
+
+// Make sure to adjust the path as per your project structure
 
 interface ModalProps {
   isOpen: boolean;
@@ -26,8 +30,9 @@ const ShareModal: React.FC<ModalProps> = ({ isOpen, onRequestClose, linkTo }) =>
           margin: 'auto',
         },
       }}
-      contentLabel="Example Modal"
-      onRequestClose={() => {
+      contentLabel='Example Modal'
+      onRequestClose={(e) => {
+        e.stopPropagation();
         setIsCopied(false);
         onRequestClose();
       }}
@@ -40,23 +45,23 @@ const ShareModal: React.FC<ModalProps> = ({ isOpen, onRequestClose, linkTo }) =>
           <WhatsappShareButton
             url={linkTo}
             title={'Check out this trip'}
-            separator=":: "
-            className="Demo__some-network__share-button"
+            separator=':: '
+            className='Demo__some-network__share-button'
           >
             <WhatsappIcon className={styles.socialIcon} round />
           </WhatsappShareButton>
           <TelegramShareButton
             url={linkTo}
             title={'Check out this trip'}
-            className="Demo__some-network__share-button"
+            className='Demo__some-network__share-button'
           >
             <TelegramIcon className={styles.socialIcon} round />
           </TelegramShareButton>
           <EmailShareButton
             url={linkTo}
             subject={'Check out this trip'}
-            body="body"
-            className="Demo__some-network__share-button"
+            body='body'
+            className='Demo__some-network__share-button'
           >
             <EmailIcon className={styles.socialIcon} round />
           </EmailShareButton>
@@ -74,7 +79,7 @@ const ShareModal: React.FC<ModalProps> = ({ isOpen, onRequestClose, linkTo }) =>
         {isCopied && (
           <div className={styles.doneContainer}>
             <p className={styles.copied}>Copied</p>
-            <img src={Done} alt="done" />
+            <img src={Done} alt='done' />
           </div>
         )}
       </div>

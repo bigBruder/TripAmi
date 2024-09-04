@@ -63,6 +63,8 @@ const Place = () => {
   const [averageRating, setAverageRating] = useState<number>(-1);
   const [suggestedTrips, setSuggestedTrips] = useState<ITravel[]>([]);
   const [activeTab, setActiveTab] = useState(0);
+  const [isReview, setIsReview] = useState(true);
+  const [isAdvice, setIsAdvice] = useState(false);
   const tabs = ['Reviews', 'Advices'];
 
   const [avatar, setAvatar] = useState<string>('');
@@ -177,6 +179,20 @@ const Place = () => {
     }
   }, [placeData?.articleText]);
 
+  const handleSetActiveTab = (index: number) => {
+    if (index === 0) {
+      setIsReview(true);
+      setIsAdvice(false);
+      setActiveTab(index);
+    }
+
+    if (index === 1) {
+      setIsReview(false);
+      setIsAdvice(true);
+      setActiveTab(index);
+    }
+  };
+
   useEffect(() => {
     (async () => {
       if (id) {
@@ -253,7 +269,7 @@ const Place = () => {
           {geocode?.name === undefined ? (
             <Skeleton height={50} />
           ) : (
-            <h1 className={styles.title}>{geocode?.name}</h1>
+            <h1 className={styles.title}>{geocode?.address}</h1>
           )}
           <div className={styles.postContainer}>
             {isLoading ? (
@@ -261,11 +277,13 @@ const Place = () => {
             ) : placeData?.imageUrl || placeData?.articleText ? (
               <div className={styles.mapContainerImage}>
                 {placeData.imageUrl && (
-                  <img
-                    src={placeData.imageUrl || ''}
-                    alt={'place image'}
-                    className={styles.postIMage}
-                  />
+                  <div className={styles.postImageMain}>
+                    <img
+                      src={placeData.imageUrl || '/place_imagenot.svg'}
+                      alt={'place image'}
+                      className={styles.postIMage}
+                    />
+                  </div>
                 )}
                 {id && geocode?.types && (
                   <APIProvider apiKey='AIzaSyCwDkMaHWXRpO7hY6z62_Gu8eLxMMItjT8'>
@@ -332,7 +350,7 @@ const Place = () => {
           <div className={styles.tabsContainer}>
             {tabs.map((tab, index) => (
               <h2
-                onClick={() => setActiveTab(index)}
+                onClick={() => handleSetActiveTab(index)}
                 key={index}
                 className={cn([styles.tab], { [styles.activeTab]: activeTab === index })}
               >
@@ -347,12 +365,6 @@ const Place = () => {
               <PlaceAdvices reviews={reviews} />
             )}
           </div>
-          {/* <CommentField
-            postId={id}
-            commentsCount={trip?.comments_count || 0}
-            contentType='trip'
-            postOwnerId={trip?.userId || ''}
-          /> */}
           <button
             style={{ backgroundColor: 'orange', color: 'white' }}
             onClick={() => setIsAddReviewOpen(true)}
@@ -368,6 +380,8 @@ const Place = () => {
             placeId={id}
             placeName={geocode?.name}
             startReview={myReview}
+            isReview={isReview}
+            isAdvice={isAdvice}
           />
         </CustomModal>
       )}

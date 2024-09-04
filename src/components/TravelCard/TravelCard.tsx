@@ -163,7 +163,6 @@ const TravelCard: FC<Props> = ({ travel, isSwiper = false, isSearch = false, isP
   }, [userId]);
 
   const handleOpenTrip = (e: React.MouseEvent) => {
-    e.stopPropagation();
     navigate('/trip/' + id, { state: { id: id } });
     window.scrollTo(0, 0);
   };
@@ -382,7 +381,10 @@ const TravelCard: FC<Props> = ({ travel, isSwiper = false, isSearch = false, isP
             <div className={styles.deleteControlContainer}>
               <button
                 className={`${styles.buttonModal}, ${styles.buttonModal_delete}`}
-                onClick={handleDeleteTrip}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDeleteTrip();
+                }}
               >
                 Delete
               </button>

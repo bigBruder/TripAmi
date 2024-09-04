@@ -246,21 +246,27 @@ const LoginPage = () => {
             </button>
             {isDropdownOpen && (
               <div className={styles.searchResults}>
-                {allGeoTagsMap
-                  .filter((geotag) =>
-                    geotag.address.toLowerCase().includes(searchValue.toLowerCase())
-                  )
-                  .slice(0, 5)
-                  .map((geotag) => (
-                    <SearchTripsCard
-                      geotag={geotag}
-                      handleSearchPush={() => {
-                        setCurrentGeoTag(geotag);
-                        navigate('/search', { state: { allTrips, currentGeoTag: geotag } });
-                      }}
-                      key={geotag.placeID}
-                    />
-                  ))}
+                {allGeoTagsMap.filter((geotag) =>
+                  geotag.address.toLowerCase().includes(searchValue.toLowerCase())
+                ).length ? (
+                  allGeoTagsMap
+                    .filter((geotag) =>
+                      geotag.address.toLowerCase().includes(searchValue.toLowerCase())
+                    )
+                    .slice(0, 5)
+                    .map((geotag) => (
+                      <SearchTripsCard
+                        geotag={geotag}
+                        handleSearchPush={() => {
+                          setCurrentGeoTag(geotag);
+                          navigate('/search', { state: { allTrips, currentGeoTag: geotag } });
+                        }}
+                        key={geotag.placeID}
+                      />
+                    ))
+                ) : (
+                  <div className={styles.noResults}>No results found</div>
+                )}
               </div>
             )}
           </div>

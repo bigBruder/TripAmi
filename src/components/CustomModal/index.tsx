@@ -20,15 +20,6 @@ const CustomModal: React.FC<Props> = ({ children, isOpen, onCloseModal }) => {
       <Modal
         closeTimeoutMS={500}
         isOpen={isOpen}
-        style={{
-          content: {
-            // padding: 0,
-            // margin: "auto",
-            // maxWidth: '600px',
-            // maxHeight: "80%",
-            // overflow: "auto",
-          },
-        }}
         contentLabel='Example Modal'
         onRequestClose={onCloseModal}
         shouldCloseOnOverlayClick

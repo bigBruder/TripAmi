@@ -144,22 +144,11 @@ h3, h2 {
     gap: 10px;
 }
 
-@media (max-width: 500px) {
-    .main {
-        padding: 30px 15px 15px 15px;
-    }
-}
-
 .post {
     display: flex;
     flex-direction: column;
     gap: 20px;
     max-width: 1200px;
-}
-
-@media (min-width: 768px) and (max-width: 1200px){
-    .post {
-    }
 }
 
 .container {
@@ -183,9 +172,16 @@ h3, h2 {
     gap: 25px;
 }
 
+.postImageMain {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .postIMage {
-    height: auto;
-    max-width: 50%;
+    height: 100%;
+    max-width: 100%;
     object-fit: contain;
     border-radius: 24px;
 }
@@ -280,21 +276,21 @@ h3, h2 {
 }
 
 .mapContainer {
-    width: 50%;
     border-radius: 24px;
+    width: 100%;
+    height: 100%;
 }
 
 .mapContainer div {
   border-radius: 24px;
+  height: 100%;
 }
 
 .mapContainerImage {
     width: 100%;
-    height: 100%;
-    border-radius: 8px;
-    display: flex;
-    justify-content: space-between;
-    gap: 24px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 10px;
 }
 
 .description {
@@ -304,23 +300,92 @@ h3, h2 {
     color: #1F1F20;
 }
 
-@media (max-width: 768px) {
-    .mapContainer {
-        height: 200px;
-        width: 100%;
-    }
+@media (max-width: 1024px) {
+  .mapContainerImage {
+    grid-template-columns: 1fr;
+    row-gap: 10px;
+  }
+
+  .mapContainer, .postImageMain {
+      aspect-ratio: 1 / 1;
+  }
+
+  .mainContainer {
+    padding: 0 40px 60px 40px;
+  }
+
+  .suggestedTrips {
+    grid-template-columns: 1fr;
+  }
+
+  .title {
+      font-size: 24px;
+  }
+
+  .categoryTitle {
+      font-size: 16px;
+  }
+
+  .description {
+      font-size: 16px;
+  }
+
+  .container {
+    border-radius: 96px;
+  }
+
+  .suggestedTripsContainer {
+    border-radius: 96px;
+  }
+
+  .containerComments {
+    border-radius: 96px;
+  }
 }
 
 @media (max-width: 768px) {
-    .title {
-        font-size: 16px;
-    }
-    .categoryTitle {
-        font-size: 16px;
-    }
-    .description {
-        font-size: 16px;
-    }
+  .mapContainerImage {
+    grid-template-columns: 1fr;
+    row-gap: 10px;
+  }
+
+  .mapContainer, .postImageMain {
+      aspect-ratio: 1 / 1;
+  }
+
+  .mainContainer {
+    padding: 15px 9px 60px 9px;
+  }
+
+  .suggestedTrips {
+    grid-template-columns: 1fr;
+  }
+
+  .title {
+      font-size: 32px;
+  }
+
+  .container {
+    border-radius: 40px;
+    padding: 16px 9px;
+  }
+
+  .suggestedTripsContainer {
+    border-radius: 40px;
+    padding: 15px 9px 60px 9px;
+  }
+
+  .containerComments {
+    border-radius: 40px;
+    padding: 15px 9px 60px 9px;
+  }
+
+  .titleAndRating {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+  
 }
 
 .reviewControl {
@@ -329,3 +394,4 @@ h3, h2 {
     justify-content: flex-end;
     gap: 10px;
 }
+
