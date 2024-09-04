@@ -57,9 +57,6 @@ export const PlaceReview: FC<Props> = ({ review, mainTitle }) => {
   return (
     <div className={styles.container}>
       <div className={styles.leftContainer}>
-        <div className={styles.rate}>
-          <Rating selectedStars={review.rate} />
-        </div>
         <div className={styles.reviewInfoContainer}>
           <div className={styles.avatarContainer}>
             <img
@@ -71,37 +68,23 @@ export const PlaceReview: FC<Props> = ({ review, mainTitle }) => {
               }}
               style={{ cursor: review.authorId === firestoreUser?.id ? 'default' : 'pointer' }}
             />
-            <div className={`${styles.name} ${styles.activeOnMobile}`}>{review.authorName}</div>
-          </div>
-          <div className={`${styles.upperRightContainer} ${styles.activeOnMobile}`}>
-            <p>{getDate(review.createdAt)}</p>
+
+            <div className={styles.rate}>
+              <div className={`${styles.name}`}>{review.authorName}</div>
+              <p style={{ display: 'flex', justifyContent: 'center', whiteSpace: 'nowrap' }}>
+                {getDate(review.createdAt)}
+              </p>
+            </div>
           </div>
         </div>
-
-        <div className={styles.secondContainer}></div>
+        <div className={`${styles.upperRightContainer}`}>
+          <div className={styles.dateContainer}>
+            <Rating selectedStars={review.rate} />
+          </div>
+        </div>
       </div>
       <div className={styles.rightContainer}>
-        <div className={`${styles.upperRightContainer} ${styles.inActiveOnMobile}`}>
-          <div className={styles.name}>{review.authorName}</div>
-          <div className={styles.dateContainer}>
-            <p>{getDate(review.createdAt)}</p>
-          </div>
-        </div>
         <div className={styles.lowerRightContainer}>
-          <div className={styles.imagesContainer}>
-            {images.map((image, index) =>
-              image.type.includes('image') ? (
-                <img
-                  key={image.url + index}
-                  src={image.url}
-                  alt='place image'
-                  className={styles.image}
-                />
-              ) : (
-                <video key={image.url + index} src={image.url} className={styles.image} />
-              )
-            )}
-          </div>
           <div className={styles.descriptionContainer}>
             {isExtended ? (
               <>

@@ -1,16 +1,14 @@
 .container {
     display: flex;
     align-items: flex-start;
-    gap: 5px;
+    flex-direction: column;
+    gap: 12px;
     box-sizing: border-box;
 
     padding: 10px 16px;
-    min-height: 140px;
-    max-height: max-content;
-
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    height: fit-content;
+    border-bottom: 1px solid #DEDED7;
+    margin-bottom: 16px;
 }
 
 .avatar {
@@ -25,18 +23,17 @@
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 .rate {
-    align-self: center;
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
 }
 .leftContainer {
     display: flex;
-    align-items: flex-start;
+    justify-content: space-between;
+    align-items: center;
     gap: 10px;
-}
-
-@media (min-width: 1200px) {
-    .leftContainer {
-        height: 140px;
-    }
+    width: 100%;
+    height: fit-content;
 }
 
 .secondContainer {
@@ -81,7 +78,7 @@
 }
 
 .descriptionContainer {
-    width: 500px;
+    width: 100%;
 }
 
 .description {
@@ -113,10 +110,6 @@
         flex-direction: column;
         gap: 5px;
     }
-    .leftContainer {
-        width: 100%;
-        flex-direction: column;
-    }
     .rightContainer {
         max-width: 100%;
     }
@@ -136,6 +129,7 @@
     .upperRightContainer {
         display: flex;
         flex-direction: column;
+        justify-content: flex-end;
         gap: 10px;  
     }
     .lowerRightContainer {
@@ -145,7 +139,6 @@
         display: flex;
         justify-content: space-between;
         gap: 10px;
-        width: 100%;
     }
     .activeOnMobile {
         display: block;
@@ -160,10 +153,6 @@
         width: 100%;
         flex-direction: column;
         gap: 5px;
-    }
-    .leftContainer {
-        width: 100%;
-        flex-direction: column;
     }
     .rightContainer {
         max-width: 100%;
@@ -189,7 +178,6 @@
         display: flex;
         justify-content: space-between;
         gap: 10px;
-        width: 100%;
     }
     .activeOnMobile {
         display: block;

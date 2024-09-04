@@ -19,14 +19,10 @@ import Lottie from 'lottie-react';
 import { CreateReviewModal } from '~/components/CreateReviewModal/CreateReviewModal';
 import CustomModal from '~/components/CustomModal';
 import HeaderNew from '~/components/HeaderNew';
-import { PageTitle } from '~/components/PageTitle';
 import PlaceAdvices from '~/components/PlaceAdvices';
-import { PlaceReview } from '~/components/PlaceReview/PlaceReview';
 import PlaceReviews from '~/components/PlaceReviews';
-import { PlaceTripReview } from '~/components/PlaceTripReview/PlaceTripReview';
 import Rating from '~/components/Rating';
 import TravelCard from '~/components/TravelCard/TravelCard';
-import Header from '~/components/profile/Header';
 import { db, storage } from '~/firebase';
 import { AuthContext } from '~/providers/authContext';
 import { IPlace } from '~/routes/AppRoutes/Posts/types';
@@ -60,7 +56,6 @@ const Place = () => {
   const [placeData, setPlaceData] = useState<IPlace | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
-  const [relatedTrips, setRelatedTrips] = useState<ITravel[]>([]);
   const [geocode, setGeocode] = useState<any>(null);
   const [isAddReviewOpen, setIsAddReviewOpen] = useState(false);
   const [myReview, setMyReview] = useState<any>();
@@ -225,47 +220,6 @@ const Place = () => {
   }, [id]);
 
   useEffect(() => {
-    if (firestoreUser?.id) {
-      const queryCities = query(collectionGroup(db, 'cities'), where('placeID', '==', id));
-      const queryPlaces = query(collectionGroup(db, 'places'), where('placeID', '==', id));
-      try {
-        (async () => {
-          const queryCitiesSnapshot = await getDocs(queryCities);
-          const queryPlacesSnapshot = await getDocs(queryPlaces);
-          const tripsId: string[] = [];
-          queryPlacesSnapshot.docs.map((document) => {
-            if (document.ref.parent && document.ref.parent.parent) {
-              tripsId.push(document.ref?.parent?.parent?.id);
-            }
-          });
-          queryCitiesSnapshot.docs.map((document) => {
-            if (document.ref.parent && document.ref.parent.parent) {
-              tripsId.push(document.ref?.parent?.parent?.id);
-            }
-          });
-
-          if (tripsId.length > 0) {
-            const tripQuery = query(tripsCollection, where(documentId(), 'in', tripsId));
-            const tripQuerySnapshot = await getDocs(tripQuery);
-            const trips = tripQuerySnapshot.docs.map((document) => ({
-              ...document.data(),
-              id: document.id,
-            }));
-            trips.length > 0
-              ? setRelatedTrips(
-                // @ts-ignore
-                trips as ITravel[]
-              )
-              : setRelatedTrips([]);
-          }
-        })();
-      } catch (err) {
-        console.log('[ERROR getting data about place] => ', err);
-      }
-    }
-  }, [id, firestoreUser?.id]);
-
-  useEffect(() => {
     const fetchUserAvatar = async () => {
       if (firestoreUser?.avatarUrl) {
         const url = await getDownloadURL(ref(storage, firestoreUser.avatarUrl));
@@ -399,7 +353,12 @@ const Place = () => {
             contentType='trip'
             postOwnerId={trip?.userId || ''}
           /> */}
-          <button onClick={() => setIsAddReviewOpen(true)}>asdfsadfsdaf</button>
+          <button
+            style={{ backgroundColor: 'orange', color: 'white' }}
+            onClick={() => setIsAddReviewOpen(true)}
+          >
+            Add Review
+          </button>
         </div>
       </div>
       {id && (

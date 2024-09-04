@@ -27,6 +27,7 @@ h3, h2 {
     z-index: 1;
     box-sizing: border-box;
     padding: 0 40px 80px 40px;
+    background: #F8F7F1;
 }
 
 .mainContainer::before {
@@ -90,6 +91,7 @@ h3, h2 {
   display: flex;
   width: 100%;
   justify-content: space-between;
+  margin-bottom: 32px;
 }
 
 .tab {
