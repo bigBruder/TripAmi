@@ -358,6 +358,11 @@ const Place = () => {
               </h2>
             ))}
           </div>
+          <div className={styles.addReviewButtonContainer}>
+            <button className={styles.addReviewButton} onClick={() => setIsAddReviewOpen(true)}>
+              Add {isReview ? 'review' : 'advice'}
+            </button>
+          </div>
           <div className={styles.commentsMap}>
             {activeTab === 0 ? (
               <PlaceReviews reviews={reviews} />
@@ -365,12 +370,6 @@ const Place = () => {
               <PlaceAdvices reviews={reviews} />
             )}
           </div>
-          <button
-            style={{ backgroundColor: 'orange', color: 'white' }}
-            onClick={() => setIsAddReviewOpen(true)}
-          >
-            Add Review
-          </button>
         </div>
       </div>
       {id && (
