@@ -137,7 +137,7 @@ const Place = () => {
         console.log('[ERROR getting geocode data] => ', err);
       }
     })();
-  }, [firestoreUser?.id, id]);
+  }, [firestoreUser?.id, id, isReview, isAdvice]);
 
   useEffect(() => {
     if (id) {

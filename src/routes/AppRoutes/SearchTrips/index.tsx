@@ -185,16 +185,26 @@ const SearchTrips = () => {
   };
 
   const handleMinChange = (e) => {
-    const value = e.target.value;
-    if (value === '' || (Number(value) >= 0 && Number(value) < Number(maxValue))) {
-      setMinValue(value);
-    }
+    setMinValue(e.target.value);
   };
 
   const handleMaxChange = (e) => {
-    const value = e.target.value;
-    if (value === '' || (Number(value) > Number(minValue) && Number(value) <= maxLimit)) {
-      setMaxValue(value);
+    setMaxValue(e.target.value);
+  };
+
+  const validateMinValue = () => {
+    if (Number(minValue) >= 0 && Number(minValue) < Number(maxValue)) {
+      setMinValue(minValue);
+    } else {
+      setMinValue('');
+    }
+  };
+
+  const validateMaxValue = () => {
+    if (Number(maxValue) > Number(minValue) && Number(maxValue) <= maxLimit) {
+      setMaxValue(maxValue);
+    } else {
+      setMaxValue(maxLimit);
     }
   };
 
@@ -368,6 +378,7 @@ const SearchTrips = () => {
                         type='number'
                         value={minValue}
                         onChange={handleMinChange}
+                        onBlur={validateMinValue}
                         placeholder='0'
                         min='0'
                         max={maxLimit}
@@ -380,6 +391,7 @@ const SearchTrips = () => {
                         type='number'
                         value={maxValue}
                         onChange={handleMaxChange}
+                        onBlur={validateMaxValue}
                         placeholder='5000'
                         min='0'
                         max={maxLimit}
