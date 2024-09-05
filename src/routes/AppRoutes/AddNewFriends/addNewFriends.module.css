@@ -158,25 +158,26 @@
 
 .userCard {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     gap: 12px;
+    width: 100%;
     cursor: pointer;
     align-items: center;
 }
 
 .avatar {
-    width: 72px;
-    height: 72px;
-    flex-shrink: 0;
+    width: 112px;
+    height: 112px;
 
     border-radius: 50%;
     border: 0.5px solid #FFFFFF;
 }
 
-@media (max-width: 1400px) {
+@media (max-width: 600px) {
     .avatar {
-        width: 64px;
-        height: 64px;
+        width: 96px;
+        height: 96px;
     }
 }
 
@@ -195,11 +196,11 @@
 
 .userName {
     color: #1F1F20;
-    font-family: 'Gilroy-Bold', sans-serif;
-    font-size: 24px;
+    font-family: 'Gilroy-Regular', sans-serif;
+    font-size: 18px;
     font-style: normal;
     font-weight: 400;
-    line-height: normal;
+    line-height: 21.6px;
 }
 
 @media (max-width: 721px) {
@@ -217,10 +218,6 @@
     font-style: normal;
     font-weight: 600;
     line-height: normal;
-}
-
-.orangeText {
-    color: #FF4D00;
 }
 
 .addToFriendButton {
@@ -257,7 +254,7 @@
 }
 
 .removeFriend {
-    background-color: #FF4D00;
+    background-color: #D51104;
     color: #FFFFFF;
 }
 

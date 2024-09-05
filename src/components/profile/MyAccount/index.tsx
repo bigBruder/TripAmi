@@ -57,7 +57,7 @@ const MyAccount = () => {
   const [suggestedPosts, setSuggestedPosts] = useState<IPost[] | null>(null);
   const [isPostsLoading, setIsPostsLoading] = useState(false);
   const [isSuggestedPostsLoading, setIsSuggestedPostsLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(2);
   const [avatar, setAvatar] = useState<string>(defaultUserIcon);
   const [avatarIsLoading, setAvatarIsLoading] = useState(true);
   const { setTips } = useMapContext();
@@ -114,12 +114,6 @@ const MyAccount = () => {
 
     updateFriends();
   }, [firestoreUser, userRef, db]);
-
-  useEffect(() => {
-    if (state && state.activeTab !== undefined && activeTab !== state.activeTab) {
-      setActiveTab(state.activeTab);
-    }
-  }, [state]);
 
   useEffect(() => {
     if (firestoreUser?.id) {

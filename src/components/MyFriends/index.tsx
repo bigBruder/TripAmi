@@ -36,20 +36,22 @@ export const MyFriends = () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.usersContainer}>
-        {friends.length ? (
-          friends.map((friend) => <UserCard key={friend.id} user={friend} isFriend />)
-        ) : (
-          <>
-            <p className={styles.emptyState}>
-              Hmm... Unfortunately, you have no friends. Fix it now and add your first friends!
-            </p>
-            <button className={styles.button} onClick={() => navigate('/add-friends')}>
-              Add friends & contacts
-            </button>
-          </>
-        )}
-      </div>
+      {friends.length ? (
+        friends.map((friend) => (
+          <div className={styles.usersContainer} key={friend.id}>
+            <UserCard key={friend.id} user={friend} isFriend />
+          </div>
+        ))
+      ) : (
+        <>
+          <p className={styles.emptyState}>
+            Hmm... Unfortunately, you have no friends. Fix it now and add your first friends!
+          </p>
+          <button className={styles.button} onClick={() => navigate('/add-friends')}>
+            Add friends & contacts
+          </button>
+        </>
+      )}
       <p className={styles.emptyState}>
         Also, you can
         <p className={styles.onlyText}>

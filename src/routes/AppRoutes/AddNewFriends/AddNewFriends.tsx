@@ -245,11 +245,20 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user }) => {
           </button>
         </div>
         <div className={styles.allPeopleContainer}>
-
-          <div className={cn([styles.container], [styles.containerSecond], { [styles.containerFacebook]: facebookContainerQuery })}>
+          <div
+            className={cn([styles.container], [styles.containerSecond], {
+              [styles.containerFacebook]: facebookContainerQuery,
+            })}
+          >
             <h1 className={styles.friendsTitle}>Find new friends</h1>
             <p className={styles.friendsTitleSecond}>Here you can see all users of the platform</p>
-            <div className={cn([styles.usersContainer], { [styles.userContainerFacebook]: firestoreUser?.accessToken && firestoreUser?.userFromFacebook })} style={{ columnGap: '10%' }}>
+            <div
+              className={cn([styles.usersContainer], {
+                [styles.userContainerFacebook]:
+                  firestoreUser?.accessToken && firestoreUser?.userFromFacebook,
+              })}
+              style={{ columnGap: '10%' }}
+            >
               {users.map((user) => (
                 <UserCard
                   user={user}
@@ -270,15 +279,20 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user }) => {
             <div className={`${styles.container} ${styles.containerFirst}`}>
               <h1 className={styles.friendsTitle}>
                 People you might know
-              <div
-                className={styles.closeFacebook}
-                onClick={() => setCloseFacebook(true)}
-              >
-                <img src='/closeFacebook.svg' alt="closeFacebook" />
-              </div>
+                <div className={styles.closeFacebook} onClick={() => setCloseFacebook(true)}>
+                  <img src='/closeFacebook.svg' alt='closeFacebook' />
+                </div>
               </h1>
-              <p className={styles.friendsTitleSecond}>Here you can see contacts from Facebook, which are also on Tripami</p>
-              <div className={cn([styles.usersContainer], { [styles.userContainerFacebook]: firestoreUser?.accessToken && firestoreUser?.userFromFacebook })} style={{ columnGap: '10%' }}>
+              <p className={styles.friendsTitleSecond}>
+                Here you can see contacts from Facebook, which are also on Tripami
+              </p>
+              <div
+                className={cn([styles.usersContainer], {
+                  [styles.userContainerFacebook]:
+                    firestoreUser?.accessToken && firestoreUser?.userFromFacebook,
+                })}
+                style={{ columnGap: '10%' }}
+              >
                 {facebookFriends.map((user) => (
                   <UserCard
                     user={user}
@@ -294,7 +308,8 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user }) => {
                   />
                 ))}
               </div>
-            </div>) : null}
+            </div>
+          ) : null}
         </div>
       </div>
       <Footer />
@@ -522,49 +537,39 @@ export const UserCard: FC<Props> = ({
         <img src={userAvatar} className={styles.avatar} alt='User avatar' />
         <div className={styles.userInfo}>
           <p className={styles.userName}>{user.username}</p>
-          {lastTrip?.tripName && lastTrip?.stage ? (
-            <div className={styles.lastTripInfo}>
-              <span className={styles.lastTripTitle}>
-                {lastTrip?.stage ? `${lastTrip?.stage}:` : ''}
-              </span>
-              <div className={styles.lastTripName}>
-                {lastTrip?.tripName ? cutTripTitle(lastTrip?.tripName) : ''}
-              </div>
-            </div>
-          ) : null}
         </div>
-      </div>
-      {!withDefaultUserImage ? (
-        <>
-          {!invited && !gotInvite && !isFriend ? (
-            <button className={styles.addToFriendButton} onClick={handleSendFriendshipRequest}>
-              Follow
-            </button>
-          ) : null}
-          {gotInvite ? (
-            <button className={styles.addToFriendButton} onClick={handleAcceptFriendshipRequest}>
-              Accept friendship request
-            </button>
-          ) : null}
-          {isFriend ? (
-            <button
-              className={`${styles.addToFriendButton} ${styles.removeFriend}`}
-              onClick={handleRemoveFriend}
-            >
-              Remove friend
-            </button>
-          ) : null}
+        {!withDefaultUserImage ? (
+          <>
+            {!invited && !gotInvite && !isFriend ? (
+              <button className={styles.addToFriendButton} onClick={handleSendFriendshipRequest}>
+                Follow
+              </button>
+            ) : null}
+            {gotInvite ? (
+              <button className={styles.addToFriendButton} onClick={handleAcceptFriendshipRequest}>
+                Accept
+              </button>
+            ) : null}
+            {isFriend ? (
+              <button
+                className={`${styles.addToFriendButton} ${styles.removeFriend}`}
+                onClick={handleRemoveFriend}
+              >
+                Remove
+              </button>
+            ) : null}
 
-          {invited ? (
-            <button
-              className={`${styles.addToFriendButton} ${styles.invited}`}
-              onClick={handleCancelInvite}
-            >
-              Invited
-            </button>
-          ) : null}
-        </>
-      ) : null}
+            {invited ? (
+              <button
+                className={`${styles.addToFriendButton} ${styles.invited}`}
+                onClick={handleCancelInvite}
+              >
+                Invited
+              </button>
+            ) : null}
+          </>
+        ) : null}
+      </div>
     </div>
   );
 };
