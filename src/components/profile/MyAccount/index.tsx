@@ -24,6 +24,7 @@ import Map from '~/components/Map/Map';
 import { MyFriends } from '~/components/MyFriends';
 // import PlaceAutocomplete from '~/components/PlaceAutocomplete/PlaceAutocomplete';
 import PostItem from '~/components/Posts';
+import SavedUserTrips from '~/components/SavedUserTrips';
 import { TravelItinerary } from '~/components/TravelItinerary/TravelItinerary';
 import useMyPosts from '~/components/profile/store';
 import { firebaseErrors } from '~/constants/firebaseErrors';
@@ -61,12 +62,30 @@ const MyAccount = () => {
   const [avatar, setAvatar] = useState<string>(defaultUserIcon);
   const [avatarIsLoading, setAvatarIsLoading] = useState(true);
   const { setTips } = useMapContext();
-  const { state } = useLocation();
+
+  const [savedUserTripsMap, setSavedUserTripsMap] = useState<ITravel[]>([]);
 
   const { firestoreUser, loading, signOutUser } = useContext(AuthContext);
 
   const navigate = useNavigate();
   const userRef = window.localStorage.getItem('ref');
+
+  useEffect(() => {
+    if (firestoreUser?.id) {
+      const q = query(tripsCollection, where('usersSaved', 'array-contains', firestoreUser.id));
+      const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        const fetchedPosts = querySnapshot.docs.map((doc) => ({
+          ...doc.data(),
+          id: doc.id,
+        }));
+        setSavedUserTripsMap(fetchedPosts as ITravel[]);
+      });
+
+      return () => {
+        unsubscribe();
+      };
+    }
+  }, [firestoreUser, setTips]);
 
   useEffect(() => {
     const updateFriends = async () => {
@@ -424,7 +443,7 @@ const MyAccount = () => {
                 <TravelItinerary />
               ) : activeTab === 4 ? (
                 // <EditMap />
-                <div>Saved</div>
+                <SavedUserTrips trips={savedUserTripsMap} />
               ) : (
                 <MyFriends />
               )}

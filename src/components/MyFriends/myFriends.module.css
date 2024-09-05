@@ -1,15 +1,18 @@
 .container {
     display: flex;
     flex-direction: column;
-    gap: 42px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 40px;
 }
 
 .emptyState {
     display: flex;
-    color: #262626;
-    font-family: Gilroy, sans-serif;
-    font-size: 20px;
+    color: #6B6B6E;
+    font-family: "Gilroy-Regular", sans-serif;
+    font-size: 24px;
     font-style: normal;
+    text-align: center;
     font-weight: 500;
     line-height: normal;
     gap: 10px;
@@ -21,24 +24,35 @@
 
 .button {
     display: inline-flex;
-    padding: 8px 48px;
+    box-sizing: border-box;
+    text-wrap: nowrap;
+    padding: 13px 46px;
     justify-content: center;
     align-items: center;
     gap: 10px;
     border-radius: 25px;
-    background: #FF4D00;
+    background: #CFB317;
 
     max-width: 306px;
 
     color: #FFF;
-    font-family: Gilroy, sans-serif;
-    font-size: 20px;
+    font-family: "Gilroy-Regular", sans-serif;
+    font-size: 18px;
     font-style: normal;
     font-weight: 500;
     line-height: normal;
 }
 
+.invitePeopleContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-top: 40px;
+}
+
 .usersContainer {
+    width: 100%;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 24px;
@@ -53,12 +67,28 @@
 @media (max-width: 600px) {
   .usersContainer {
       grid-template-columns: repeat(2, 1fr);
-  }  
+  }
+
+  .button {
+      padding: 13px 20px;
+      font-size: 16px;
+  }
+
+  
+  .emptyState {
+    font-size: 16px;
+  }
+}
+
+.imageF {
+  margin-top: 16px;
+  margin-bottom: 16px;
 }
 
 
 @media (max-width: 500px) {
     .invite_button {
         align-self: center;
+        font-size: 16px;
     }
 }

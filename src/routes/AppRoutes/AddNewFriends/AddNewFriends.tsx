@@ -255,7 +255,7 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user }) => {
             <div
               className={cn([styles.usersContainer], {
                 [styles.userContainerFacebook]:
-                  firestoreUser?.accessToken && firestoreUser?.userFromFacebook,
+                  firestoreUser?.accessToken && firestoreUser?.userFromFacebook && !closeFacebook,
               })}
               style={{ columnGap: '10%' }}
             >
@@ -326,6 +326,7 @@ interface Props {
   invitation?: IInvitation;
   isFriend?: boolean;
   withDefaultUserImage?: boolean;
+  isTabs?: boolean;
 }
 
 export const UserCard: FC<Props> = ({
@@ -335,6 +336,7 @@ export const UserCard: FC<Props> = ({
   invitation,
   isFriend,
   withDefaultUserImage,
+  isTabs = false,
 }) => {
   const { firestoreUser } = useContext(AuthContext);
   const [userAvatar, setUserAvatar] = useState(defaultUserIcon);
@@ -532,44 +534,83 @@ export const UserCard: FC<Props> = ({
   };
 
   return (
-    <div className={styles.cardMain}>
-      <div className={styles.userCard} onClick={handleOpenUserProfile}>
+    <div
+      className={styles.cardMain}
+      style={
+        isTabs
+          ? { flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: '8px' }
+          : {}
+      }
+    >
+      <div
+        className={styles.userCard}
+        onClick={handleOpenUserProfile}
+        style={isTabs ? { justifyContent: 'center' } : {}}
+      >
         <img src={userAvatar} className={styles.avatar} alt='User avatar' />
-        <div className={styles.userInfo}>
-          <p className={styles.userName}>{user.username}</p>
-        </div>
-        {!withDefaultUserImage ? (
-          <>
-            {!invited && !gotInvite && !isFriend ? (
-              <button className={styles.addToFriendButton} onClick={handleSendFriendshipRequest}>
-                Follow
-              </button>
+        {!isTabs ? (
+          <div className={styles.userInfo}>
+            <p className={styles.userName}>{user.username}</p>
+            {lastTrip?.tripName && lastTrip?.stage ? (
+              <div className={styles.lastTripInfo}>
+                <span className={styles.lastTripTitle}>
+                  {lastTrip?.stage ? `${lastTrip?.stage}:` : ''}
+                </span>
+                <div className={styles.lastTripName}>
+                  {lastTrip?.tripName ? cutTripTitle(lastTrip?.tripName) : ''}
+                </div>
+              </div>
             ) : null}
-            {gotInvite ? (
-              <button className={styles.addToFriendButton} onClick={handleAcceptFriendshipRequest}>
-                Accept
-              </button>
-            ) : null}
-            {isFriend ? (
-              <button
-                className={`${styles.addToFriendButton} ${styles.removeFriend}`}
-                onClick={handleRemoveFriend}
-              >
-                Remove
-              </button>
-            ) : null}
-
-            {invited ? (
-              <button
-                className={`${styles.addToFriendButton} ${styles.invited}`}
-                onClick={handleCancelInvite}
-              >
-                Invited
-              </button>
-            ) : null}
-          </>
+          </div>
         ) : null}
       </div>
+      {isTabs && (
+        <div className={styles.userInfo}>
+          <p className={styles.userName}>{user.username}</p>
+          {lastTrip?.tripName && lastTrip?.stage ? (
+            <div className={styles.lastTripInfo}>
+              <span className={styles.lastTripTitle}>
+                {lastTrip?.stage ? `${lastTrip?.stage}:` : ''}
+              </span>
+              <div className={styles.lastTripName}>
+                {lastTrip?.tripName ? cutTripTitle(lastTrip?.tripName) : ''}
+              </div>
+            </div>
+          ) : null}
+        </div>
+      )}
+
+      {!withDefaultUserImage && !isTabs ? (
+        <>
+          {!invited && !gotInvite && !isFriend ? (
+            <button className={styles.addToFriendButton} onClick={handleSendFriendshipRequest}>
+              Follow
+            </button>
+          ) : null}
+          {gotInvite ? (
+            <button className={styles.addToFriendButton} onClick={handleAcceptFriendshipRequest}>
+              Accept
+            </button>
+          ) : null}
+          {isFriend ? (
+            <button
+              className={`${styles.addToFriendButton} ${styles.removeFriend}`}
+              onClick={handleRemoveFriend}
+            >
+              Remove
+            </button>
+          ) : null}
+
+          {invited ? (
+            <button
+              className={`${styles.addToFriendButton} ${styles.invited}`}
+              onClick={handleCancelInvite}
+            >
+              Invited
+            </button>
+          ) : null}
+        </>
+      ) : null}
     </div>
   );
 };
