@@ -20,11 +20,45 @@ interface Props {
   ) => void;
 }
 
+const countSlides = (fileLength: number): number => {
+  const width = window.innerWidth;
+  let slidesToShow = width >= 1420 ? 3 : width >= 834 ? 2 : 1;
+
+  if (width < 1400 && fileLength === 2) {
+    slidesToShow = 2;
+  }
+
+  if (width < 800 && fileLength >= 2) {
+    slidesToShow = 1;
+  }
+
+  return Math.min(slidesToShow, fileLength);
+};
+
+const shouldShowArrows = (fileLength: number): boolean => {
+  const slidesToShow = countSlides(fileLength);
+  return fileLength > slidesToShow;
+};
+
 const UploadImagesEditor: React.FC<Props> = ({ file, handleChange, handleRemove }) => {
   const fileTypes = ['JPEG', 'PNG', 'JPG', 'MP4', 'HEIC'];
 
   const sliderRef = useRef<SwiperRef>(null);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [slidesToShow, setSlidesToShow] = useState(1);
+  const [showArrows, setShowArrows] = useState(false);
+
+  console.log(file.length, 'file.length');
+  console.log(currentSlide, 'currentSlide');
+  
+  
+
+  useEffect(() => {
+    if (sliderRef.current && sliderRef.current.swiper) {
+      sliderRef.current.swiper.update();
+      setCurrentSlide(0);
+    }
+  }, [file.length]);
 
   useEffect(() => {
     if (sliderRef.current && sliderRef.current.swiper) {
@@ -33,7 +67,27 @@ const UploadImagesEditor: React.FC<Props> = ({ file, handleChange, handleRemove 
         setCurrentSlide(swiperInstance.realIndex);
       });
     }
-  }, [file, currentSlide]);
+  }, [sliderRef, file]);
+
+  useEffect(() => {
+    const slidesToShow = countSlides(file.length);
+    const showArrows = shouldShowArrows(file.length);
+
+    setSlidesToShow(slidesToShow);
+    setShowArrows(showArrows);
+  }, [file]);
+
+  useEffect(() => {
+    if (sliderRef.current && sliderRef.current.swiper) {
+      setTimeout(() => {
+        sliderRef.current?.swiper.update();
+        const swiperInstance = sliderRef.current.swiper;
+        swiperInstance.on('slideChange', () => {
+          setCurrentSlide(swiperInstance.realIndex);
+        });
+      }, 0);
+    }
+  }, [file]);
 
   const handlePrev = (event: React.MouseEvent<HTMLDivElement, MouseEvent> | null) => {
     if (!sliderRef.current || !event) {
@@ -52,29 +106,6 @@ const UploadImagesEditor: React.FC<Props> = ({ file, handleChange, handleRemove 
   };
 
   const isVideo = (file: File) => file.type.startsWith('video');
-
-  const countSlides = (fileLength: number): number => {
-    const width = window.innerWidth;
-    let slidesToShow = width >= 1420 ? 3 : width >= 834 ? 2 : 1;
-
-    if (width < 1400 && fileLength === 2) {
-      slidesToShow = 2;
-    }
-
-    if (width < 800 && fileLength >= 2) {
-      slidesToShow = 1;
-    }
-
-    return Math.min(slidesToShow, fileLength);
-  };
-
-  const shouldShowArrows = (fileLength: number): boolean => {
-    const slidesToShow = countSlides(fileLength);
-    return fileLength > slidesToShow;
-  };
-
-  const showArrows = shouldShowArrows(file.length);
-  const slidesToShow = countSlides(file.length);
 
   return (
     <div className={styles.fileLoaderContainer}>
@@ -136,9 +167,10 @@ const UploadImagesEditor: React.FC<Props> = ({ file, handleChange, handleRemove 
               slidesPerView={countSlides(file.length)}
               className={styles.swiperContainer}
               modules={[Navigation]}
+              key={file.length}
             >
               {file.map((file, index) => (
-                <SwiperSlide key={file.name + index} className={styles.swiperSlide}>
+                <SwiperSlide key={file.name} className={styles.swiperSlide}>
                   {isVideo(file) ? (
                     <video src={URL.createObjectURL(file)} controls className={styles.image} />
                   ) : (
@@ -162,7 +194,8 @@ const UploadImagesEditor: React.FC<Props> = ({ file, handleChange, handleRemove 
                   <img src={arrow_right} alt='arrow-left' className={styles.arrow_left} />
                 </div>
                 <div
-                  className={`${styles.next_arrow} ${currentSlide + slidesToShow >= file.length ? styles.disabled : ''}`}
+                  className={`${styles.next_arrow} ${currentSlide + slidesToShow >= file.length ? styles.disabled : ''
+                    }`}
                   onClick={currentSlide + slidesToShow < file.length ? handleNext : undefined}
                 >
                   <img src={arrow_right} alt='arrow-right' className={styles.arrow_right} />

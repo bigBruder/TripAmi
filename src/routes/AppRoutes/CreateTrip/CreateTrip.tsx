@@ -189,13 +189,7 @@ const CreateTrip: React.FC<Props> = () => {
   const notify = (textValue: string) => toast.error(textValue);
 
   const handleChange = (fileList: FileList) => {
-    setFile((prevState) => {
-      if (prevState) {
-        return [...prevState, ...Object.values(fileList)];
-      } else {
-        return Object.values(fileList);
-      }
-    });
+    setFile((prevState) => [...prevState, ...Array.from(fileList)]);
   };
 
   const parseDateDaily = (dateString: string) => {

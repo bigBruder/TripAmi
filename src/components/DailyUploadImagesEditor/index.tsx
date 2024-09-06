@@ -13,7 +13,11 @@ import styles from './DailyUploadImagesEditor.module.css';
 interface Props {
   dailyInfo: File[];
   handleChange: (files: FileList) => void;
-  handleRemove: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, photoName: string, index: number) => void;
+  handleRemove: (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    photoName: string,
+    index: number
+  ) => void;
 }
 
 const DailyUploadImagesEditor: React.FC<Props> = ({ dailyInfo, handleChange, handleRemove }) => {
@@ -24,11 +28,13 @@ const DailyUploadImagesEditor: React.FC<Props> = ({ dailyInfo, handleChange, han
 
   useEffect(() => {
     if (sliderRef.current && sliderRef.current.swiper) {
-      sliderRef.current.swiper.on('slideChange', () => {
-        if (sliderRef.current && sliderRef.current.swiper) {
-          setCurrentSlide(sliderRef.current.swiper.realIndex as number);
-        }
-      });
+      setTimeout(() => {
+        sliderRef.current?.swiper.update();
+        const swiperInstance = sliderRef.current.swiper;
+        swiperInstance.on('slideChange', () => {
+          setCurrentSlide(swiperInstance.realIndex);
+        });
+      }, 0);
     }
   }, [currentSlide, dailyInfo]);
 
