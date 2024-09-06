@@ -254,7 +254,41 @@ const CreateTrip: React.FC<Props> = () => {
 
   const handleOnSave = async (finished = false) => {
     if (!tripName.length) {
-      toast.error('Please enter a trip name');
+      if (!toast.isActive('tripName')) {
+        toast.error('Please enter a trip name', { toastId: 'tripName' });
+      }
+      window.scrollTo(0, 0);
+      return;
+    }
+
+    if (rating === -1) {
+      if (!toast.isActive('rating')) {
+        toast.error('Please rate your trip', { toastId: 'rating' });
+      }
+      window.scrollTo(0, 0);
+      return;
+    }
+
+    if (!selectedPeople) {
+      if (!toast.isActive('people')) {
+        toast.error('Please select people', { toastId: 'people' });
+      }
+      window.scrollTo(0, 0);
+      return;
+    }
+
+    if (!budget) {
+      if (!toast.isActive('budget')) {
+        toast.error('Please enter a budget', { toastId: 'budget' });
+      }
+      window.scrollTo(0, 0);
+      return;
+    }
+
+    if (file.length === 0) {
+      if (!toast.isActive('file')) {
+        toast.error('Please upload at least one image', { toastId: 'file' });
+      }
       window.scrollTo(0, 0);
       return;
     }
