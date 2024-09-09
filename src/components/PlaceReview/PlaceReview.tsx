@@ -30,7 +30,6 @@ const getDate = (timestamp) => {
 
 export const PlaceReview: FC<Props> = ({ review, mainTitle }) => {
   const { firestoreUser } = useContext(AuthContext);
-  const [images, setImages] = useState<{ type: string; url: string }[]>([]);
   const [userAvatar, setUserAvatar] = useState<string>('');
   const [isExtended, setIsExtended] = useState(false);
   const navigate = useNavigate();
@@ -41,18 +40,6 @@ export const PlaceReview: FC<Props> = ({ review, mainTitle }) => {
       setUserAvatar(userAvatarRef);
     })();
   }, [review.authorAvatar]);
-
-  useEffect(() => {
-    (async () => {
-      const images: { type: string; url: string }[] = await Promise.all(
-        review.images.map(async (image) => {
-          const url = await getDownloadURL(ref(storage, image.url));
-          return { url, type: image.type };
-        })
-      );
-      setImages(images);
-    })();
-  }, [review.images.join(',')]);
 
   return (
     <div className={styles.container}>

@@ -339,35 +339,6 @@ const MyAccount = () => {
                     </div>
                   </div>
                 </div>
-                {/* <div className={styles.whereToNextContainer}>
-                    {!isEditWhereToNext && firestoreUser?.tripCount !== undefined && (
-                      <p className={styles.text}>Where to next? </p>
-                    )}
-
-                    {isEditWhereToNext ? (
-                      <div className={styles.autocomplete}>
-                        <PlaceAutocomplete
-                          searchOptions={{ types: ['locality'] }}
-                          location={whereToNext || ''}
-                          setLocation={setWhereToNext}
-                          onSelectPlace={(e) => onSelectWhereToNext(e)}
-                        />
-                      </div>
-                    ) : (
-                      <p className={`${styles.value} ${styles.text}`}>
-                        {firestoreUser?.whereToNext && firestoreUser?.whereToNext?.length > 10
-                          ? firestoreUser?.whereToNext?.slice(0, 10) + '...'
-                          : firestoreUser?.whereToNext}
-                      </p>
-                    )}
-
-                    <img
-                      className={`${styles.editButton}`}
-                      src={editText}
-                      alt='edit icon'
-                      onClick={() => setIsEditWhereToNext(!isEditWhereToNext)}
-                    />
-                  </div> */}
                 {firestoreUser?.tripCount === undefined && (
                   <Skeleton style={{ width: 100, height: 20 }} />
                 )}

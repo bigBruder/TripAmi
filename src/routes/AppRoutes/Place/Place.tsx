@@ -18,7 +18,9 @@ import { getDownloadURL, ref } from 'firebase/storage';
 import Lottie from 'lottie-react';
 import { CreateReviewModal } from '~/components/CreateReviewModal/CreateReviewModal';
 import CustomModal from '~/components/CustomModal';
+import Footer from '~/components/Footer';
 import HeaderNew from '~/components/HeaderNew';
+import PhotoModal from '~/components/PhotoModal';
 import PlaceAdvices from '~/components/PlaceAdvices';
 import PlaceReviews from '~/components/PlaceReviews';
 import Rating from '~/components/Rating';
@@ -31,7 +33,7 @@ import { ITravel } from '~/types/travel';
 
 import AnimationData from '@assets/animations/loader.json';
 import { query, where } from '@firebase/firestore';
-import { APIProvider, Map } from '@vis.gl/react-google-maps';
+import { APIProvider, Map, Marker } from '@vis.gl/react-google-maps';
 
 import styles from './place.module.css';
 
@@ -66,6 +68,10 @@ const Place = () => {
   const [isReview, setIsReview] = useState(true);
   const [isAdvice, setIsAdvice] = useState(false);
   const tabs = ['Reviews', 'Advices'];
+  const [isPhotoOpen, setIsPhotoOpen] = useState(false);
+  const [photoForModal, setPhotoForModal] = useState<string>(
+    placeData?.imageUrl || '/place_imagenot.svg'
+  );
 
   const [avatar, setAvatar] = useState<string>('');
 
@@ -260,131 +266,154 @@ const Place = () => {
     }
   };
 
-  return (
-    <div className={styles.mainContainer}>
-      <HeaderNew avatar={avatar} />
+  const handleMapClick = (event) => {
+    const clickedLat = event.latLng.lat();
+    const clickedLng = event.latLng.lng();
+    const googleMapsUrl = `https://www.google.com/maps?q=${clickedLat},${clickedLng}`;
+    window.open(googleMapsUrl, '_blank');
+  };
 
-      <div className={styles.main}>
-        <div className={styles.container}>
-          {geocode?.name === undefined ? (
-            <Skeleton height={50} />
-          ) : (
-            <h1 className={styles.title}>{geocode?.address}</h1>
-          )}
-          <div className={styles.postContainer}>
-            {isLoading ? (
-              <Lottie animationData={AnimationData} />
-            ) : placeData?.imageUrl || placeData?.articleText ? (
-              <div className={styles.mapContainerImage}>
-                {placeData.imageUrl && (
-                  <div className={styles.postImageMain}>
-                    <img
-                      src={placeData.imageUrl || '/place_imagenot.svg'}
-                      alt={'place image'}
-                      className={styles.postIMage}
-                    />
-                  </div>
-                )}
-                {id && geocode?.types && (
-                  <APIProvider apiKey='AIzaSyCwDkMaHWXRpO7hY6z62_Gu8eLxMMItjT8'>
-                    <div className={styles.mapContainer}>
-                      <Map
-                        center={geocode}
-                        {...mapOptions}
-                        zoom={geocode.types.includes('locality') ? 10 : 17}
+  return (
+    <>
+      <div className={styles.mainContainer}>
+        <HeaderNew avatar={avatar} />
+
+        <div className={styles.main}>
+          <div className={styles.container}>
+            {geocode?.name === undefined ? (
+              <Skeleton height={50} />
+            ) : (
+              <h1 className={styles.title}>{geocode?.address.split(',').slice(0, 2).join(',')}</h1>
+            )}
+            <div className={styles.postContainer}>
+              {isLoading ? (
+                <Lottie animationData={AnimationData} />
+              ) : placeData?.imageUrl || placeData?.articleText ? (
+                <div className={styles.mapContainerImage}>
+                  {placeData.imageUrl && (
+                    <div className={styles.postImageMain}>
+                      <img
+                        src={placeData.imageUrl || '/place_imagenot.svg'}
+                        alt={'place image'}
+                        className={styles.postIMage}
+                        onClick={() => {
+                          setPhotoForModal(placeData.imageUrl);
+                          setIsPhotoOpen(true);
+                        }}
                       />
                     </div>
-                  </APIProvider>
-                )}
-              </div>
-            ) : (
-              <h2 className={styles.empty}>There is no information about this place</h2>
-            )}
-          </div>
-          <div className={styles.titleAndRating}>
-            <h2>Place Overview</h2>
-            <Rating selectedStars={averageRating} />
-          </div>
-          {placeData && placeData.articleText ? (
-            <div className={styles.textContainer}>
-              {isExpanded ? (
-                <div>
-                  <div
-                    className={styles.description}
-                    dangerouslySetInnerHTML={{ __html: placeData.articleText }}
-                  />
-                  <button onClick={handleSeeMoreClick} className={styles.seeMoreButton}>
-                    See less
-                  </button>
-                </div>
-              ) : (
-                <div>
-                  <div
-                    className={styles.description}
-                    dangerouslySetInnerHTML={{ __html: truncatedText.current }}
-                  />
-                  {placeData.articleText.length > MAX_LENGTH && (
-                    <button onClick={handleSeeMoreClick} className={styles.seeMoreButton}>
-                      See more
-                    </button>
+                  )}
+                  {id && geocode?.types && (
+                    <APIProvider apiKey='AIzaSyCwDkMaHWXRpO7hY6z62_Gu8eLxMMItjT8'>
+                      <div className={styles.mapContainer}>
+                        <Map
+                          center={geocode}
+                          {...mapOptions}
+                          zoom={geocode.types.includes('locality') ? 10 : 17}
+                          onClick={handleMapClick}
+                        >
+                          <Marker position={geocode} />
+                        </Map>
+                      </div>
+                    </APIProvider>
                   )}
                 </div>
+              ) : (
+                <h2 className={styles.empty}>There is no information about this place</h2>
               )}
             </div>
-          ) : null}
-        </div>
-        {suggestedTrips.length > 0 && (
-          <div className={styles.suggestedTripsContainer}>
-            <h2 className={styles.title} style={{ marginBottom: '37px' }}>
-              Related user&rsquo;s trips
-            </h2>
-            <div className={styles.suggestedTrips}>
-              {suggestedTrips.map((trip) => (
-                <TravelCard key={trip.id} travel={trip} isPlace={true} />
+            <div className={styles.titleAndRating}>
+              <h2>Place Overview</h2>
+              <Rating selectedStars={averageRating} />
+            </div>
+            {placeData && placeData.articleText ? (
+              <div className={styles.textContainer}>
+                {isExpanded ? (
+                  <div>
+                    <div
+                      className={styles.description}
+                      dangerouslySetInnerHTML={{ __html: placeData.articleText }}
+                    />
+                    <button onClick={handleSeeMoreClick} className={styles.seeMoreButton}>
+                      See less
+                    </button>
+                  </div>
+                ) : (
+                  <div>
+                    <div
+                      className={styles.description}
+                      dangerouslySetInnerHTML={{ __html: truncatedText.current }}
+                    />
+                    {placeData.articleText.length > MAX_LENGTH && (
+                      <button onClick={handleSeeMoreClick} className={styles.seeMoreButton}>
+                        See more
+                      </button>
+                    )}
+                  </div>
+                )}
+              </div>
+            ) : null}
+          </div>
+          {suggestedTrips.length > 0 && (
+            <div className={styles.suggestedTripsContainer}>
+              <h2 className={styles.title} style={{ marginBottom: '37px' }}>
+                Related user&rsquo;s trips
+              </h2>
+              <div className={styles.suggestedTrips}>
+                {suggestedTrips.map((trip) => (
+                  <TravelCard key={trip.id} travel={trip} isPlace={true} />
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className={styles.containerComments}>
+            <div className={styles.tabsContainer}>
+              {tabs.map((tab, index) => (
+                <h2
+                  onClick={() => handleSetActiveTab(index)}
+                  key={index}
+                  className={cn([styles.tab], { [styles.activeTab]: activeTab === index })}
+                >
+                  {tab}
+                </h2>
               ))}
             </div>
-          </div>
-        )}
-
-        <div className={styles.containerComments}>
-          <div className={styles.tabsContainer}>
-            {tabs.map((tab, index) => (
-              <h2
-                onClick={() => handleSetActiveTab(index)}
-                key={index}
-                className={cn([styles.tab], { [styles.activeTab]: activeTab === index })}
-              >
-                {tab}
-              </h2>
-            ))}
-          </div>
-          <div className={styles.addReviewButtonContainer}>
-            <button className={styles.addReviewButton} onClick={() => setIsAddReviewOpen(true)}>
-              Add {isReview ? 'review' : 'advice'}
-            </button>
-          </div>
-          <div className={styles.commentsMap}>
-            {activeTab === 0 ? (
-              <PlaceReviews reviews={reviews} />
-            ) : (
-              <PlaceAdvices reviews={reviews} />
-            )}
+            <div className={styles.addReviewButtonContainer}>
+              <button className={styles.addReviewButton} onClick={() => setIsAddReviewOpen(true)}>
+                Add {isReview ? 'review' : 'advice'}
+              </button>
+            </div>
+            <div className={styles.commentsMap}>
+              {activeTab === 0 ? (
+                <PlaceReviews reviews={reviews} />
+              ) : (
+                <PlaceAdvices reviews={reviews} />
+              )}
+            </div>
           </div>
         </div>
+        {id && (
+          <CustomModal isOpen={isAddReviewOpen} onCloseModal={() => setIsAddReviewOpen(false)}>
+            <CreateReviewModal
+              closeModal={() => setIsAddReviewOpen(false)}
+              placeId={id}
+              placeName={geocode?.name}
+              startReview={myReview}
+              isReview={isReview}
+              isAdvice={isAdvice}
+            />
+          </CustomModal>
+        )}
+
+        <PhotoModal
+          photoForModal={photoForModal}
+          setIsPhotoOpen={setIsPhotoOpen}
+          isPhotoOpen={isPhotoOpen}
+        />
       </div>
-      {id && (
-        <CustomModal isOpen={isAddReviewOpen} onCloseModal={() => setIsAddReviewOpen(false)}>
-          <CreateReviewModal
-            closeModal={() => setIsAddReviewOpen(false)}
-            placeId={id}
-            placeName={geocode?.name}
-            startReview={myReview}
-            isReview={isReview}
-            isAdvice={isAdvice}
-          />
-        </CustomModal>
-      )}
-    </div>
+      <Footer />
+    </>
   );
 };
 

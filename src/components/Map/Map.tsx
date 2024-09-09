@@ -8,8 +8,6 @@ import { tripsCollection } from '~/types/firestoreCollections';
 import { ITravel } from '~/types/travel';
 
 import GeoJson from '@assets/geoJson/countries-110m.json';
-import Minus from '@assets/icons/map/minus.svg';
-import Plus from '@assets/icons/map/plus.svg';
 import { getDocs, query, where } from '@firebase/firestore';
 
 import styles from './map.module.css';
