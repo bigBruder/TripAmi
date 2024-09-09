@@ -118,7 +118,18 @@ const SearchTrips = () => {
     );
     setFilteredTrips(newFilteredTrips);
     setCurrentPage(1);
-  }, [allTrips, startDate, endDate, rating, minValue, maxValue, statusTrip, travelersCount]);
+  }, [
+    allTrips,
+    startDate,
+    endDate,
+    rating,
+    minValue,
+    maxValue,
+    statusTrip,
+    travelersCount,
+    currentGeoTag,
+    searchValue,
+  ]);
 
   useEffect(() => {
     if (firestoreUser?.avatarUrl) {
