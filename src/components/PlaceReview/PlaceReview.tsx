@@ -123,12 +123,13 @@ export const PlaceReview: FC<Props> = ({
                 </p>
               </>
             )}
-            {isMyReviewExist && review.id === myReview.id && (
-              <button className={styles.deleteReviewButton} onClick={() => handleDeleteReview()}>
-                Delete
-              </button>
-            )}
           </div>
+
+          {isMyReviewExist && review.authorId === firestoreUser?.id && (
+            <button className={styles.deleteReviewButton} onClick={handleDeleteReview}>
+              Delete
+            </button>
+          )}
         </div>
       </div>
     </div>

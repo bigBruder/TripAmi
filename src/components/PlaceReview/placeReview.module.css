@@ -90,9 +90,6 @@
 
 .descriptionContainer {
     width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-self: center;
 }
 
 .deleteReviewButton {
@@ -110,8 +107,6 @@
 
 .description {
     font-size: 14px;
-    display: flex;
-    align-items: center;
 }
 
 .seeMoreButton {
