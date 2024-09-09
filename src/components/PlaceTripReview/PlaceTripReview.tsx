@@ -135,7 +135,10 @@ export const PlaceTripReview: FC<Props> = ({ trip }) => {
         <div className={styles.geoTagsContainer}>
           {trip?.cities?.map((tag) => (
             <p
-              onClick={() => navigate('/place/' + tag.placeID)}
+              onClick={() => {
+                navigate('/place/' + tag.placeID);
+                window.scrollTo(0, 0);
+              }}
               key={tag.placeID}
               className={styles.tag}
             >
@@ -144,7 +147,10 @@ export const PlaceTripReview: FC<Props> = ({ trip }) => {
           ))}
           {trip?.geoTags?.map((tag) => (
             <p
-              onClick={() => navigate('/place/' + tag.placeID)}
+              onClick={() => {
+                navigate('/place/' + tag.placeID);
+                window.scrollTo(0, 0);
+              }}
               key={tag.placeID}
               className={styles.tag}
             >

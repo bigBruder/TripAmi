@@ -7,15 +7,29 @@ import styles from './PlaceAdvices.module.css';
 
 interface PlaceAdvicesProps {
   reviews: PlaceReviewType[];
+  myReview: PlaceReviewType;
+  fetchReviews: () => void;
 }
 
-const PlaceAdvices: React.FC<PlaceAdvicesProps> = ({ reviews }) => {
+const PlaceAdvices: React.FC<PlaceAdvicesProps> = ({ reviews, myReview, fetchReviews }) => {
+  const isAdvice = true;
+  const isMyReviewExist = myReview?.advice ? true : false;
   return (
     <div className={styles.placeReviewsContainer}>
       <div className={styles.reviews}>
         {reviews.map((review) => {
           if (review.advice) {
-            return <PlaceReview key={review.id} review={review} mainTitle={review.advice} />;
+            return (
+              <PlaceReview
+                key={review.id}
+                review={review}
+                mainTitle={review.advice}
+                isAdvice={isAdvice}
+                myReview={myReview}
+                isMyReviewExist={isMyReviewExist}
+                fetchReviews={fetchReviews}
+              />
+            );
           } else {
             return null;
           }

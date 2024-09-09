@@ -102,7 +102,7 @@ export const Trip = () => {
   const [suggestedTrips, setSuggestedTrips] = useState<ITravel[]>([]);
 
   console.log('trip', trip);
-  
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -580,12 +580,18 @@ export const Trip = () => {
                               <img
                                 src={place_filled}
                                 alt='geoTagImage'
-                                onClick={() => navigate('/place/' + geoTag.placeID)}
+                                onClick={() => {
+                                  navigate('/place/' + geoTag.placeID);
+                                  window.scrollTo(0, 0);
+                                }}
                                 className={styles.geoTagImage}
                               />
                               <p
                                 className={styles.geotagTitle}
-                                onClick={() => navigate('/place/' + geoTag.placeID)}
+                                onClick={() => {
+                                  navigate('/place/' + geoTag.placeID);
+                                  window.scrollTo(0, 0);
+                                }}
                               >
                                 {geoTag.address.split(',')[0]}
                               </p>
@@ -732,7 +738,10 @@ export const Trip = () => {
                           <div className={styles.geoTagContainer} key={geoTag.placeID}>
                             <img src={geo_filled} alt='geo_filled' />
                             <div
-                              onClick={() => navigate('/place/' + geoTag.placeID)}
+                              onClick={() => {
+                                navigate('/place/' + geoTag.placeID);
+                                window.scrollTo(0, 0);
+                              }}
                               className={styles.geotagTitle}
                             >
                               {geoTag.address}

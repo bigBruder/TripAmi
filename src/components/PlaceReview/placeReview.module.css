@@ -90,10 +90,28 @@
 
 .descriptionContainer {
     width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-self: center;
+}
+
+.deleteReviewButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 10px;
+    border-radius: 25px;
+    background-color: #FF0000;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
 }
 
 .description {
     font-size: 14px;
+    display: flex;
+    align-items: center;
 }
 
 .seeMoreButton {

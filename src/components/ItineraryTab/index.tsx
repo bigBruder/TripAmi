@@ -1,7 +1,9 @@
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { geocodeByPlaceId } from 'react-places-autocomplete';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
+import axios from 'axios';
 import cn from 'classnames';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '~/firebase';
@@ -15,12 +17,10 @@ import place_icon from '@assets/icons/place_icon.svg';
 
 import AddFolderModal from '../AddFolderModal';
 import DeleteFolderModal from '../DeleteFolderModal';
+import PlaceAutocomplete from '../PlaceAutocomplete/PlaceAutocomplete';
 import styles from './ItineraryTab.module.css';
 import addFolder from '/addFolder.svg';
 import empty_itinerary from '/empty_itinerary.svg';
-import PlaceAutocomplete from '../PlaceAutocomplete/PlaceAutocomplete';
-import { geocodeByPlaceId } from 'react-places-autocomplete';
-import axios from 'axios';
 
 enum WindowWidth {
   Small = 'Small',
@@ -291,15 +291,19 @@ const ItineraryTab = () => {
           const newItinerary = firestoreUser?.itinerary.map((item) => {
             if (item.id === folder.id) {
               return {
-                ...item, places: [...item.places, {
-                  address,
-                  placeID,
-                  lat: coordinates[0].geometry.location.lat(),
-                  lng: coordinates[0].geometry.location.lng(),
-                  types: coordinates[0].types,
-                  name: coordinates[0].formatted_address,
-                  photo: photo,
-                }]
+                ...item,
+                places: [
+                  ...item.places,
+                  {
+                    address,
+                    placeID,
+                    lat: coordinates[0].geometry.location.lat(),
+                    lng: coordinates[0].geometry.location.lng(),
+                    types: coordinates[0].types,
+                    name: coordinates[0].formatted_address,
+                    photo: photo,
+                  },
+                ],
               };
             }
             return item;
@@ -309,15 +313,19 @@ const ItineraryTab = () => {
               itinerary: newItinerary,
             });
             setFolder({
-              ...folder, places: [...folder.places, {
-                address,
-                placeID,
-                lat: coordinates[0].geometry.location.lat(),
-                lng: coordinates[0].geometry.location.lng(),
-                types: coordinates[0].types,
-                name: coordinates[0].formatted_address,
-                photo: photo,
-              }]
+              ...folder,
+              places: [
+                ...folder.places,
+                {
+                  address,
+                  placeID,
+                  lat: coordinates[0].geometry.location.lat(),
+                  lng: coordinates[0].geometry.location.lng(),
+                  types: coordinates[0].types,
+                  name: coordinates[0].formatted_address,
+                  photo: photo,
+                },
+              ],
             });
             console.log('Document successfully updated');
           } catch {
@@ -562,14 +570,20 @@ const ItineraryTab = () => {
               </div>
               <div
                 className={cn(styles.geoTagContainer, styles.geoTagContainerImagePlus)}
-                onClick={() => navigate('/place/' + geoTag.placeID)}
+                onClick={() => {
+                  navigate('/place/' + geoTag.placeID);
+                  window.scrollTo(0, 0);
+                }}
               >
                 <img src={geo_filled} alt='geotagFilled' className={styles.iconGeoFilled} />
                 <p className={styles.geotagTitle}>{geoTag?.address?.split(',')[0]}</p>
               </div>
               <div
                 className={cn(styles.geoTagContainer, styles.geoTagContainerImagePlus)}
-                onClick={() => navigate('/place/' + geoTag.placeID)}
+                onClick={() => {
+                  navigate('/place/' + geoTag.placeID);
+                  window.scrollTo(0, 0);
+                }}
               >
                 <p className={styles.geotagTitleNav}>Reviews/ Advice</p>
               </div>

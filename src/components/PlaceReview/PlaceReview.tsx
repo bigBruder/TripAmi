@@ -1,8 +1,9 @@
 import { FC, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { doc, updateDoc } from 'firebase/firestore';
 import { getDownloadURL, ref } from 'firebase/storage';
-import { storage } from '~/firebase';
+import { db, storage } from '~/firebase';
 import { AuthContext } from '~/providers/authContext';
 import { PlaceReviewType } from '~/types/placeReviews';
 
@@ -14,6 +15,10 @@ import styles from './placeReview.module.css';
 interface Props {
   review: PlaceReviewType;
   mainTitle: string;
+  isAdvice?: boolean;
+  isMyReviewExist?: boolean;
+  myReview: PlaceReviewType;
+  fetchReviews: () => void;
 }
 
 const MAX_LENGTH = 200;
@@ -23,12 +28,22 @@ const getDate = (timestamp) => {
   const options = {
     year: 'numeric' as const,
     month: 'long' as const,
+    day: 'numeric' as const,
+    hour: 'numeric' as const,
+    minute: 'numeric' as const,
   };
   const date = new Date(timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000);
   return date.toLocaleString('en-US', options);
 };
 
-export const PlaceReview: FC<Props> = ({ review, mainTitle }) => {
+export const PlaceReview: FC<Props> = ({
+  review,
+  mainTitle,
+  isAdvice,
+  isMyReviewExist,
+  myReview,
+  fetchReviews,
+}) => {
   const { firestoreUser } = useContext(AuthContext);
   const [userAvatar, setUserAvatar] = useState<string>('');
   const [isExtended, setIsExtended] = useState(false);
@@ -40,6 +55,20 @@ export const PlaceReview: FC<Props> = ({ review, mainTitle }) => {
       setUserAvatar(userAvatarRef);
     })();
   }, [review.authorAvatar]);
+
+  const handleDeleteReview = async () => {
+    if (isAdvice) {
+      await updateDoc(doc(db, 'reviews', myReview.id), {
+        advice: '',
+      });
+      fetchReviews();
+    } else {
+      await updateDoc(doc(db, 'reviews', myReview.id), {
+        text: '',
+      });
+      fetchReviews();
+    }
+  };
 
   return (
     <div className={styles.container}>
@@ -64,11 +93,13 @@ export const PlaceReview: FC<Props> = ({ review, mainTitle }) => {
             </div>
           </div>
         </div>
-        <div className={`${styles.upperRightContainer}`}>
-          <div className={styles.dateContainer}>
-            <Rating selectedStars={review.rate} />
+        {!isAdvice && (
+          <div className={`${styles.upperRightContainer}`}>
+            <div className={styles.dateContainer}>
+              <Rating selectedStars={review.rate} />
+            </div>
           </div>
-        </div>
+        )}
       </div>
       <div className={styles.rightContainer}>
         <div className={styles.lowerRightContainer}>
@@ -91,6 +122,11 @@ export const PlaceReview: FC<Props> = ({ review, mainTitle }) => {
                   )}
                 </p>
               </>
+            )}
+            {isMyReviewExist && review.id === myReview.id && (
+              <button className={styles.deleteReviewButton} onClick={() => handleDeleteReview()}>
+                Delete
+              </button>
             )}
           </div>
         </div>

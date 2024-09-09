@@ -126,24 +126,28 @@ const Place = () => {
     })();
   }, [firestoreUser?.id, id]);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        if (firestoreUser?.id) {
-          const q = query(reviewsCollection, where('placeId', '==', id));
-          const querySnapshot = await getDocs(q);
-          const fetchedDocs = querySnapshot.docs.map((doc) => ({
-            ...doc.data(),
-            id: doc.id,
-          }));
+  const fetchReviews = async () => {
+    try {
+      if (firestoreUser?.id) {
+        const q = query(reviewsCollection, where('placeId', '==', id));
+        const querySnapshot = await getDocs(q);
+        const fetchedDocs = querySnapshot.docs.map((doc) => ({
+          ...doc.data(),
+          id: doc.id,
+        }));
 
-          setReviews(fetchedDocs);
-        }
-      } catch (err) {
-        console.log('[ERROR getting geocode data] => ', err);
+        setReviews(fetchedDocs);
       }
-    })();
+    } catch (err) {
+      console.log('[ERROR getting reviews data] => ', err);
+    }
+  };
+
+  useEffect(() => {
+    fetchReviews();
   }, [firestoreUser?.id, id, isReview, isAdvice]);
+
+  console.log(myReview, 'myReview');
 
   useEffect(() => {
     if (id) {
@@ -251,28 +255,6 @@ const Place = () => {
     fetchUserAvatar();
   }, [firestoreUser?.avatarUrl]);
 
-  const handleDeleteReview = async () => {
-    try {
-      const q = query(
-        reviewsCollection,
-        where('authorId', '==', firestoreUser?.id),
-        where('placeId', '==', id)
-      );
-
-      const querySnapshot = await getDocs(q);
-      await deleteDoc(querySnapshot.docs[0].ref);
-    } catch (err) {
-      console.log('[ERROR deleting review] => ', err);
-    }
-  };
-
-  const handleMapClick = (event) => {
-    const clickedLat = event.latLng.lat();
-    const clickedLng = event.latLng.lng();
-    const googleMapsUrl = `https://www.google.com/maps?q=${clickedLat},${clickedLng}`;
-    window.open(googleMapsUrl, '_blank');
-  };
-
   return (
     <>
       <div className={styles.mainContainer}>
@@ -310,7 +292,6 @@ const Place = () => {
                           center={geocode}
                           {...mapOptions}
                           zoom={geocode.types.includes('locality') ? 10 : 17}
-                          onClick={handleMapClick}
                         >
                           <Marker position={geocode} />
                         </Map>
@@ -381,14 +362,16 @@ const Place = () => {
             </div>
             <div className={styles.addReviewButtonContainer}>
               <button className={styles.addReviewButton} onClick={() => setIsAddReviewOpen(true)}>
-                Add {isReview ? 'review' : 'advice'}
+                {isReview
+                  ? (myReview?.text ? 'Change' : 'Add') + ' review'
+                  : (myReview?.advice ? 'Change' : 'Add') + ' advice'}
               </button>
             </div>
             <div className={styles.commentsMap}>
               {activeTab === 0 ? (
-                <PlaceReviews reviews={reviews} />
+                <PlaceReviews reviews={reviews} myReview={myReview} fetchReviews={fetchReviews}/>
               ) : (
-                <PlaceAdvices reviews={reviews} />
+                <PlaceAdvices reviews={reviews} myReview={myReview} fetchReviews={fetchReviews} />
               )}
             </div>
           </div>
@@ -402,6 +385,7 @@ const Place = () => {
               startReview={myReview}
               isReview={isReview}
               isAdvice={isAdvice}
+              fetchReviews={fetchReviews}
             />
           </CustomModal>
         )}

@@ -12,6 +12,7 @@ import { PlaceReviewType } from '~/types/placeReviews';
 import { LoadingScreen } from '../LoadingScreen';
 import Rating from '../Rating';
 import styles from './createReviewModal.module.css';
+import { create } from 'zustand';
 
 interface Props {
   closeModal: () => void;
@@ -20,6 +21,7 @@ interface Props {
   placeName: string;
   isReview?: boolean;
   isAdvice?: boolean;
+  fetchReviews: () => void;
 }
 
 export const CreateReviewModal: FC<Props> = ({
@@ -29,6 +31,7 @@ export const CreateReviewModal: FC<Props> = ({
   placeName,
   isReview,
   isAdvice,
+  fetchReviews,
 }) => {
   const { firestoreUser, updateFirestoreUser } = useContext(AuthContext);
   const [postText, setPostText] = useState(startReview?.text || '');
@@ -58,7 +61,9 @@ export const CreateReviewModal: FC<Props> = ({
             text: postText,
             advice: adviceText,
             rate: selectedStars,
+            createdAt: new Date(),
           });
+          fetchReviews();
         } else {
           await addDoc(collection(db, 'reviews'), {
             authorId: firestoreUser?.id,
@@ -71,6 +76,7 @@ export const CreateReviewModal: FC<Props> = ({
             placeId: placeId,
             placeName: placeName,
           });
+          fetchReviews();
         }
       })();
 
