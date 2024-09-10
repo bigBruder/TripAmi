@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { SignUpModal } from '~/components/SignUpModal/SignUpModal';
 
+import defaultUserIcon from '@assets/icons/defaultUserIcon.svg';
 import facebook_white from '@assets/icons/facebook_white.svg';
 import Logo from '@assets/icons/headerLogo.svg';
 import search from '@assets/icons/iconamoon_search-thin.svg';
@@ -10,8 +11,6 @@ import instagram_white from '@assets/icons/instagram_white.svg';
 import x_white from '@assets/icons/x_white.svg';
 
 import styles from './header.module.css';
-
-import defaultUserIcon from '@assets/icons/defaultUserIcon.svg';
 
 interface HeaderProps {
   avatar?: string;

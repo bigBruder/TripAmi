@@ -6,8 +6,6 @@ import { deleteDoc, documentId } from 'firebase/firestore';
 import { getDownloadURL } from 'firebase/storage';
 import Footer from '~/components/Footer';
 import HeaderNew from '~/components/HeaderNew';
-import { PageTitle } from '~/components/PageTitle';
-import Header from '~/components/profile/Header';
 import { firebaseErrors } from '~/constants/firebaseErrors';
 import { db, storage } from '~/firebase';
 import { AuthContext } from '~/providers/authContext';
@@ -58,6 +56,10 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user }) => {
   const [facebookFriends, setFacebookFriends] = useState([]);
   const [closeFacebook, setCloseFacebook] = useState(false);
   const [facebookContainerQuery, setFacebookContainerQuery] = useState(false);
+
+  console.log(facebookFriendsId, 'facebookFriendsId');
+  console.log(facebookFriends, 'facebookFriends');
+  console.log(firestoreUser, 'firestoreUser');
 
   useEffect(() => {
     if (!firestoreUser?.accessToken && !firestoreUser?.userFromFacebook) {
@@ -286,7 +288,7 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user }) => {
           </div>
           {firestoreUser?.accessToken && firestoreUser?.userFromFacebook && !closeFacebook ? (
             <div
-              className={`${styles.container} ${styles.containerFirst} ${styles.styles.containerFriendsPage}`}
+              className={`${styles.container} ${styles.containerFirst} ${styles.containerFriendsPage}`}
             >
               <h1 className={styles.friendsTitle}>
                 People you might know

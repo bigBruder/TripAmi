@@ -48,6 +48,7 @@ import styles from './myaccount.module.css';
 import './styles.css';
 
 import 'swiper/css';
+import Header from '../Header';
 
 const TABS = ['Friends', 'Trips', 'Itinerary', 'Saved'];
 

@@ -11,13 +11,20 @@ interface Props {
 export const DropdownProvider: FC<Props> = ({ trigger, content, side }) => {
   return (
     <DropdownMenu.Root>
-      <DropdownMenu.Trigger>{trigger}</DropdownMenu.Trigger>
+      <DropdownMenu.Trigger style={{ position: 'relative' }}>{trigger}</DropdownMenu.Trigger>
       <DropdownMenu.Content style={{ zIndex: '5' }} side={side ? side : 'bottom'}>
         {/* This is the content of the dropdown */}
         <DropdownMenu.Group>
           <DropdownMenu.Item
-            onSelect={() => {}}
-            style={{ position: 'relative', marginLeft: '20px' }}
+            onSelect={() => { }}
+            style={{
+              position: 'absolute',
+              marginLeft: '20px',
+              border: 'none',
+              outline: 'none',
+              right: '20%',
+              top: '0',
+            }}
           >
             {content}
           </DropdownMenu.Item>

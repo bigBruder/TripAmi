@@ -23,6 +23,27 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  position: relative;
+}
+
+.notificationContainer {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+}
+
+.notificationContainer button {
+  background-color: transparent;
+  border: none;
+  outline: none;
+  overflow: visible;
+}
+
+.notificationContainer button:focus {
+  background-color: transparent;
+  border: none;
+  outline: none;
 }
 
 .logoHeader {

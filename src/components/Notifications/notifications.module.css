@@ -1,15 +1,18 @@
 .container {
-    width: 300px;
-    padding: 10px;
+    width: clamp(300px, 10vw, 400px);
+    padding: 20px;
     background-color: white;
-    border-radius: 5px;
+    border-radius: 24px;
     font-size: 14px;
     gap: 10px;
     max-height: 300px;
-
+    
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     background-color: #fff;
+    border: 1px solid #e5e5e5;
+    outline: none;
 }
 
 .notifications_container {
@@ -19,6 +22,7 @@
     gap: 10px;
     max-height: 300px;
     overflow-y: auto;
+    padding-right: 10px;
 }
 
 .notification {
@@ -26,9 +30,10 @@
     justify-content: space-between;
     align-items: center;
     gap: 5px;
-    background-color: rgba(174, 174, 174, 0.64);
-    padding: 5px;
-    border-radius: 5px;
+    padding: 10px 5px;
+    border-radius: 12px;
+    border: 1px solid #e5e5e5;
+    box-sizing: border-box;
 }
 
 .notification_readed {
@@ -38,23 +43,25 @@
 
 .title {
     font-weight: bold;
-    font-family: Gilroy, sans-serif;;
+    font-family: 'Gilroy-Regular', sans-serif;;
 }
 
 .text {
-    font-family: Gilroy, sans-serif;
+    font-family: 'Gilroy-Regular', sans-serif;
     font-weight: bold;
 }
 
 .button {
-    background-color: rgba(255, 77, 0, 0.9);
+    background-color: #D51104;
     font-size: 12px;
-    color: white;
-    padding: 5px;
+    color: #262626;
+    padding: 5px 10px;
+    border-radius: 12px;
+    transition: all 0.3s;
 }
 
 .button:hover {
-    background-color: rgba(255, 77, 0, 1);
+    background-color: #D51104;
 }
 
 .button_delete {
@@ -68,11 +75,11 @@
 }
 
 .button_remove:hover {
-    background-color: rgba(255, 77, 0, 0.5);
+    background-color: #D51104;
 }
 
 .base_text {
-    color: grey;
+    color: #262626;
 }
 .control_container {
     display: flex;
