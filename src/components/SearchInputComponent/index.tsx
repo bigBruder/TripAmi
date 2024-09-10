@@ -104,6 +104,8 @@ const SearchInputComponent = () => {
     if (e.key === 'Enter') {
       navigate('/search', { state: { searchValue, allTrips } });
       setSearchValue('');
+      setCurrentGeoTag(null);
+      setIsModalOpen(false);
     }
   };
 
@@ -158,12 +160,13 @@ const SearchInputComponent = () => {
       >
         <div className={styles.modalSearchContainer}>
           <input
-            type='text'
+            type='form'
             placeholder='Search'
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
             className={styles.modalSearchInput}
             autoFocus
+            onKeyDown={(e) => handleSearchClick(e)}
           />
           {isDropdownOpen && (
             <div className={styles.searchResults}>

@@ -41,10 +41,13 @@
   box-sizing: border-box;
   margin-top: 24px;
   margin-bottom: 80px;
-  background-color: rgba(254, 254, 254, 0.7);
-  backdrop-filter: blur(10px);
   border-radius: 96px;
   height: fit-content;
+}
+
+.containerFriendsPage {
+  background-color: rgba(254, 254, 254, 0.7);
+  backdrop-filter: blur(10px);
 }
 
 @media (max-width: 1400px) {

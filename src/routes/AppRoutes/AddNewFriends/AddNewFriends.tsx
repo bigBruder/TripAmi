@@ -77,8 +77,6 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user }) => {
       fetch('https://graph.facebook.com/v12.0/me/friends?access_token=' + firestoreUser.accessToken)
         .then((response) => response.json())
         .then((data) => {
-          console.log(data, 'data');
-
           setFacebookFriendsId(data.data.map((friend: any) => friend.id));
         });
     }
@@ -193,7 +191,7 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user }) => {
   }, [firestoreUser?.firebaseUid, firestoreUser?.id, user?.id]);
 
   if (user) {
-    return (
+    return users.length ? (
       <div className={styles.container}>
         <div className={styles.usersContainer}>
           {users.map((user) => (
@@ -208,6 +206,12 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user }) => {
               invitation={invitations.find((invitation) => invitation.fromUser === user.id)}
             />
           ))}
+        </div>
+      </div>
+    ) : (
+      <div className={styles.container}>
+        <div className={styles.noFriendsContainer}>
+          <h1 className={styles.noFriendsTitle}>No friends found</h1>
         </div>
       </div>
     );
@@ -246,9 +250,14 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user }) => {
         </div>
         <div className={styles.allPeopleContainer}>
           <div
-            className={cn([styles.container], [styles.containerSecond], {
-              [styles.containerFacebook]: facebookContainerQuery,
-            })}
+            className={cn(
+              [styles.container],
+              [styles.containerSecond],
+              [styles.containerFriendsPage],
+              {
+                [styles.containerFacebook]: facebookContainerQuery,
+              }
+            )}
           >
             <h1 className={styles.friendsTitle}>Find new friends</h1>
             <p className={styles.friendsTitleSecond}>Here you can see all users of the platform</p>
@@ -276,7 +285,9 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user }) => {
             </div>
           </div>
           {firestoreUser?.accessToken && firestoreUser?.userFromFacebook && !closeFacebook ? (
-            <div className={`${styles.container} ${styles.containerFirst}`}>
+            <div
+              className={`${styles.container} ${styles.containerFirst} ${styles.styles.containerFriendsPage}`}
+            >
               <h1 className={styles.friendsTitle}>
                 People you might know
                 <div className={styles.closeFacebook} onClick={() => setCloseFacebook(true)}>

@@ -13,8 +13,8 @@ import { UserProfile } from '~/routes/AppRoutes/UserProfile';
 import { Intro } from '~/routes/Auth/Intro';
 
 import CreateTrip from './AppRoutes/CreateTrip/CreateTrip';
-import { Trip } from './AppRoutes/Trip/Trip';
 import SearchTrips from './AppRoutes/SearchTrips';
+import { Trip } from './AppRoutes/Trip/Trip';
 
 const router = createHashRouter([
   {
@@ -60,7 +60,7 @@ const router = createHashRouter([
   {
     path: '/search',
     element: <SearchTrips />,
-  }
+  },
 ]);
 
 const Navigator = () => {

@@ -171,6 +171,9 @@ const UserProfile = () => {
       const q = query(usersCollection, where(documentId(), '==', id));
       const querySnapshot = await getDocs(q);
 
+      console.log(querySnapshot.docs[0].data(), 'querySnapshot.docs[0].data()');
+      
+
       setUserData(querySnapshot.docs[0].data());
     })();
   }, [id]);
@@ -216,10 +219,10 @@ const UserProfile = () => {
   const invitation = invitations.find((invitation) => invitation.fromUser === userData?.id);
 
   const handleSendFriendshipRequest = useCallback(async () => {
-    if (firestoreUser?.id) {
+    if (firestoreUser?.id && userData?.id) {
       try {
         await addDoc(friendsRequestsCollection, {
-          toUser: userData?.id,
+          toUser: userData.id,
           fromUser: firestoreUser.id,
           createdAt: new Date().toISOString(),
           status: FriendsRequestStatus.PENDING,
@@ -227,8 +230,10 @@ const UserProfile = () => {
       } catch (err) {
         console.log(err);
         // @ts-ignore
-        alert(firebaseErrors[err]);
+        alert(err, 'Error while sending request');
       }
+    } else {
+      console.error('Invalid user data:', { firestoreUser, userData });
     }
   }, [userData, firestoreUser]);
 

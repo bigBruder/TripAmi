@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import cn from 'classnames';
 import { AuthContext } from '~/providers/authContext';
 import { UserCard } from '~/routes/AppRoutes/AddNewFriends/AddNewFriends';
 import { usersCollection } from '~/types/firestoreCollections';
@@ -53,38 +54,38 @@ export const MyFriends = () => {
 
   return (
     <div className={styles.container}>
-      {friends.length ? (
-        friends.map((friend) => (
-          <div className={styles.usersContainer} key={friend.id}>
-            <UserCard key={friend.id} user={friend} isFriend isTabs />
-          </div>
-        ))
-      ) : (
-        <>
-          <p className={styles.emptyState}>Hmm... Unfortunately, you have no friends.</p>
-          <p className={styles.emptyState}>Fix it now and add your first friends!</p>
-          <button
-            className={styles.button}
-            onClick={() => navigate('/add-friends')}
-            style={{ marginTop: '16px' }}
-          >
-            Add friends
-          </button>
-          <img src={no_trips_search} alt='no_trips_search' className={styles.imageF}/>
-          <div className={styles.invitePeopleContainer}>
-            <p className={styles.emptyState}>
-              Also, you can add only {firestoreUser?.friends_request_limit} new friends!
-            </p>
+      <div
+        className={cn([styles.usersContainer], { [styles.displayEmptyFriends]: !friends.length })}
+      >
+        {friends.length ? (
+          friends.map((friend) => <UserCard key={friend.id} user={friend} isFriend isTabs />)
+        ) : (
+          <>
+            <p className={styles.emptyState}>Hmm... Unfortunately, you have no friends.</p>
+            <p className={styles.emptyState}>Fix it now and add your first friends!</p>
             <button
-              className={`${styles.button} ${styles.invite_button}`}
-              onClick={() => handleCopyLink()}
-              style={{ backgroundColor: '#629015' }}
+              className={styles.button}
+              onClick={() => navigate('/add-friends')}
+              style={{ marginTop: '16px' }}
             >
-              {copyLink ? 'Link copied!' : 'Invite friends'}
+              Add friends
             </button>
-          </div>
-        </>
-      )}
+            <img src={no_trips_search} alt='no_trips_search' className={styles.imageF} />
+            <div className={styles.invitePeopleContainer}>
+              <p className={styles.emptyState}>
+                Also, you can add only {firestoreUser?.friends_request_limit} new friends!
+              </p>
+              <button
+                className={`${styles.button} ${styles.invite_button}`}
+                onClick={() => handleCopyLink()}
+                style={{ backgroundColor: '#629015' }}
+              >
+                {copyLink ? 'Link copied!' : 'Invite friends'}
+              </button>
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 };
