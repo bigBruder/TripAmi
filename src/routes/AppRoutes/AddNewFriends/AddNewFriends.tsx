@@ -73,6 +73,8 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user }) => {
 
   console.log(facebookFriends, 'facebookFriends');
   console.log(firestoreUser, 'firestoreUser');
+  console.log(firestoreUser?.accessToken, 'firestoreUser.accessToken');
+  
 
   useEffect(() => {
     if (firestoreUser?.id && firestoreUser?.accessToken && firestoreUser?.userFromFacebook) {
