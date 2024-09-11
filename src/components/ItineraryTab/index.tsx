@@ -350,7 +350,7 @@ const ItineraryTab = () => {
             value={searchTitle}
             onChange={handleSearch}
             className={styles.inputSearch}
-            placeholder='Enter a place name'
+            placeholder='Search'
           />
         </div>
         <div className={styles.dropdownContainer} ref={dropdownRef}>
