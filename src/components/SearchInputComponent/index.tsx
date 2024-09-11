@@ -127,10 +127,12 @@ const SearchInputComponent = () => {
       {isDropdownOpen && (
         <div className={styles.searchResults}>
           {allGeoTagsMap.filter((geotag) =>
-            geotag.address.toLowerCase().includes(searchValue.toLowerCase())
+            geotag.address.toLowerCase().includes(searchValue.toLowerCase().trim())
           ).length ? (
             allGeoTagsMap
-              .filter((geotag) => geotag.address.toLowerCase().includes(searchValue.toLowerCase()))
+              .filter((geotag) =>
+                geotag.address.toLowerCase().includes(searchValue.toLowerCase().trim())
+              )
               .slice(0, 5)
               .map((geotag) => (
                 <SearchTripsCard
