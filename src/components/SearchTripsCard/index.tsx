@@ -19,13 +19,19 @@ const SearchTripsCard: React.FC<CardProps> = ({ geotag, handleSearchPush }) => {
     }
   }, [geotag.photo]);
 
+  const maxAddressLength = 20;
+
   return (
     <div className={styles.searchTripsContainer} onClick={() => handleSearchPush()}>
       <div className={styles.searchPhotoContainer}>
         <img src={photo} alt='tripPhoto' className={styles.searchPhoto} />
       </div>
       <div className={styles.searchTripInfo}>
-        <h3 className={styles.searchTripName}>{geotag.address.split(',')[0]}</h3>
+        <h3 className={styles.searchTripName}>
+          {geotag.address.split(',')[0].length > maxAddressLength
+            ? geotag.address.split(',')[0].slice(0, 17) + '...'
+            : geotag.address.split(',')[0]}
+        </h3>
       </div>
     </div>
   );
