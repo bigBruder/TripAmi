@@ -24,6 +24,7 @@
   background-size: cover;
   background-position: center;
   z-index: -1;
+  overflow: hidden;
 }
 
 .filterTitle {
@@ -37,6 +38,7 @@
   display: grid;
   grid-template-columns: repeat(12, 1fr);
   column-gap: 24px;
+  margin-bottom: 104px;
 }
 
 .filtersContainer {
