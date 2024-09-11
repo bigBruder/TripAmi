@@ -49,7 +49,7 @@ const HeaderNew: React.FC<HeaderNewProps> = ({ avatar }) => {
         ...doc.data(),
         id: doc.id,
       }));
-      setNotifications(fetchedDocs);
+      setNotifications(fetchedDocs as Notification[]);
     });
 
     return () => {
