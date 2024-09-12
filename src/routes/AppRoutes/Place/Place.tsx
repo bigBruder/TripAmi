@@ -118,7 +118,7 @@ const Place = () => {
       return () => unsubscribe();
     };
     fetchAllTrips();
-  }, [id, allGeoTagsMap]);
+  }, [id]);
 
   useEffect(() => {
     const placeId = id;
