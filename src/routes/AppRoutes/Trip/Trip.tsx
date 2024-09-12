@@ -765,6 +765,23 @@ export const Trip = () => {
             zIndex: '-1',
           }}
         ></div>
+        {id && comments && (
+          <div className={styles.containerComments}>
+            <h2 className={styles.commentsTitle}>Comments</h2>
+            <div className={styles.commentsMap}>
+              {comments?.map((comment) => (
+                <Comment key={comment.id} comment={comment} contentType='trip' />
+              ))}
+            </div>
+            <CommentField
+              postId={id}
+              commentsCount={trip?.comments_count || 0}
+              contentType='trip'
+              postOwnerId={trip?.userId || ''}
+            />
+          </div>
+        )}
+
         {suggestedTrips.length > 0 && firestoreUser?.id !== trip?.userId && (
           <div className={styles.suggestedTripContainer} style={{ marginBottom: '40px' }}>
             <h2 className={styles.title} style={{ marginBottom: '40px' }}>
@@ -808,23 +825,6 @@ export const Trip = () => {
                 </SwiperSlide>
               ))}
             </Swiper>
-          </div>
-        )}
-
-        {id && comments && (
-          <div className={styles.containerComments}>
-            <h2 className={styles.commentsTitle}>Comments</h2>
-            <div className={styles.commentsMap}>
-              {comments?.map((comment) => (
-                <Comment key={comment.id} comment={comment} contentType='trip' />
-              ))}
-            </div>
-            <CommentField
-              postId={id}
-              commentsCount={trip?.comments_count || 0}
-              contentType='trip'
-              postOwnerId={trip?.userId || ''}
-            />
           </div>
         )}
       </div>

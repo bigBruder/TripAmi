@@ -59,6 +59,7 @@ export const Notifications: FC<Props> = ({
       case NotificationType.NewPost:
       case NotificationType.NewTrip:
         navigate(`/${getWay(notification.type)}/${notification.postId}`);
+        deleteMessage(notification.id);
         break;
       case NotificationType.CommentPost:
       case NotificationType.CommentTrip:
