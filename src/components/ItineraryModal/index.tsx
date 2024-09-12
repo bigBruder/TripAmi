@@ -61,7 +61,6 @@ const ItineraryModal: React.FC<ItineraryModalProps> = ({ closeModal, selectedIti
     }
 
     if (initiaryName.trim() && firestoreUser?.id) {
-      console.log('firestoreUser?.itinerary', firestoreUser?.itinerary);
 
       const itineraryHandle = async () => {
         try {

@@ -2,16 +2,18 @@ import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import { useParams } from 'react-router-dom';
 
-import axios from 'axios';
+import axios, { all } from 'axios';
 import cn from 'classnames';
 import {
   average,
   collectionGroup,
   deleteDoc,
+  doc,
   documentId,
   getAggregateFromServer,
   getDocs,
   onSnapshot,
+  orderBy,
   updateDoc,
 } from 'firebase/firestore';
 import { getDownloadURL, ref } from 'firebase/storage';
@@ -20,6 +22,7 @@ import { CreateReviewModal } from '~/components/CreateReviewModal/CreateReviewMo
 import CustomModal from '~/components/CustomModal';
 import Footer from '~/components/Footer';
 import HeaderNew from '~/components/HeaderNew';
+import ItineraryModal from '~/components/ItineraryModal';
 import PhotoModal from '~/components/PhotoModal';
 import PlaceAdvices from '~/components/PlaceAdvices';
 import PlaceReviews from '~/components/PlaceReviews';
@@ -33,7 +36,8 @@ import { ITravel } from '~/types/travel';
 
 import AnimationData from '@assets/animations/loader.json';
 import { query, where } from '@firebase/firestore';
-import { APIProvider, Map, Marker } from '@vis.gl/react-google-maps';
+import { APIProvider, Marker } from '@vis.gl/react-google-maps';
+import { Map as MapCart } from '@vis.gl/react-google-maps';
 
 import styles from './place.module.css';
 
@@ -72,12 +76,49 @@ const Place = () => {
   const [photoForModal, setPhotoForModal] = useState<string>(
     placeData?.imageUrl || '/place_imagenot.svg'
   );
+  const [isItinerary, setIsItinerary] = useState(false);
+  const [allGeoTagsMap, setAllGeoTagsMap] = useState<IPlace[]>([]);
+  const [placeForItinerary, setPlaceForItinerary] = useState<IPlace | null>(null);
 
   const [avatar, setAvatar] = useState<string>('');
 
   const truncatedText = useRef('');
   const remainingText = useRef('');
-  console.log(suggestedTrips, 'suggestedTrips');
+
+  useEffect(() => {
+    const place = allGeoTagsMap.find((tag) => tag.placeID === id);
+
+    if (place) {
+      setPlaceForItinerary(place);
+    }
+  }, [placeData, allGeoTagsMap]);
+
+  useEffect(() => {
+    const fetchAllTrips = async () => {
+      const qu = query(tripsCollection, orderBy('createdAt', 'desc'));
+
+      const unsubscribe = onSnapshot(qu, (querySnapshot) => {
+        const fetchedTrips = querySnapshot.docs.map((doc) => ({
+          ...doc.data(),
+          id: doc.id,
+        }));
+        const allGeoTags = fetchedTrips.flatMap((trip) => trip.geoTags || []);
+
+        const uniqueGeoTagsMap = new Map();
+
+        allGeoTags.forEach((tag) => {
+          uniqueGeoTagsMap.set(tag.placeID, tag);
+        });
+
+        const uniqueGeoTags = Array.from(uniqueGeoTagsMap.values());
+
+        setAllGeoTagsMap(uniqueGeoTags as IPlace[]);
+      });
+
+      return () => unsubscribe();
+    };
+    fetchAllTrips();
+  }, [id, allGeoTagsMap]);
 
   useEffect(() => {
     const placeId = id;
@@ -146,8 +187,6 @@ const Place = () => {
   useEffect(() => {
     fetchReviews();
   }, [firestoreUser?.id, id, isReview, isAdvice]);
-
-  console.log(myReview, 'myReview');
 
   useEffect(() => {
     if (id) {
@@ -255,6 +294,23 @@ const Place = () => {
     fetchUserAvatar();
   }, [firestoreUser?.avatarUrl]);
 
+  const itineraryHandle = async () => {
+    if (!firestoreUser?.itinerary) {
+      try {
+        await updateDoc(doc(db, 'users', firestoreUser?.id), {
+          itinerary: [],
+        });
+      } catch (e) {
+        console.error(e);
+        console.log('Error updating document: ', e);
+      }
+    }
+  };
+
+  const toggleModal = () => {
+    setIsItinerary(!isItinerary);
+  };
+
   return (
     <>
       <div className={styles.mainContainer}>
@@ -265,8 +321,22 @@ const Place = () => {
             {geocode?.name === undefined ? (
               <Skeleton height={50} />
             ) : (
-              <h1 className={styles.title}>{geocode?.address.split(',').slice(0, 2).join(',')}</h1>
+              <div className={styles.importContainer}>
+                <h1 className={`${styles.title} ${styles.titleMain}`}>
+                  {geocode?.address.split(',').slice(0, 2).join(',')}
+                </h1>
+                <button
+                  onClick={() => {
+                    itineraryHandle();
+                    toggleModal();
+                  }}
+                  className={styles.importButton}
+                >
+                  Import
+                </button>
+              </div>
             )}
+
             <div className={styles.postContainer}>
               {isLoading ? (
                 <Lottie animationData={AnimationData} />
@@ -288,13 +358,13 @@ const Place = () => {
                   {id && geocode?.types && (
                     <APIProvider apiKey='AIzaSyCwDkMaHWXRpO7hY6z62_Gu8eLxMMItjT8'>
                       <div className={styles.mapContainer}>
-                        <Map
+                        <MapCart
                           center={geocode}
                           {...mapOptions}
                           zoom={geocode.types.includes('locality') ? 10 : 17}
                         >
                           <Marker position={geocode} />
-                        </Map>
+                        </MapCart>
                       </div>
                     </APIProvider>
                   )}
@@ -369,13 +439,16 @@ const Place = () => {
             </div>
             <div className={styles.commentsMap}>
               {activeTab === 0 ? (
-                <PlaceReviews reviews={reviews} myReview={myReview} fetchReviews={fetchReviews}/>
+                <PlaceReviews reviews={reviews} myReview={myReview} fetchReviews={fetchReviews} />
               ) : (
                 <PlaceAdvices reviews={reviews} myReview={myReview} fetchReviews={fetchReviews} />
               )}
             </div>
           </div>
         </div>
+        {isItinerary && (
+          <ItineraryModal closeModal={toggleModal} selectedItinerary={placeForItinerary} />
+        )}
         {id && (
           <CustomModal isOpen={isAddReviewOpen} onCloseModal={() => setIsAddReviewOpen(false)}>
             <CreateReviewModal

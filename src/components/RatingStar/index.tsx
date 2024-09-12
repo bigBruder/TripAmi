@@ -24,10 +24,6 @@ const Star: FC<Props> = ({
   i,
   isCard,
 }) => {
-  console.log(isCard, 'isCard');
-  console.log(disabled, 'disabled');
-  
-
   return (
     <div
       className={cn([styles.container], { [styles.pointer]: isCard })}

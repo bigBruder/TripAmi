@@ -48,11 +48,6 @@ const UploadImagesEditor: React.FC<Props> = ({ file, handleChange, handleRemove 
   const [slidesToShow, setSlidesToShow] = useState(1);
   const [showArrows, setShowArrows] = useState(false);
 
-  console.log(file.length, 'file.length');
-  console.log(currentSlide, 'currentSlide');
-  
-  
-
   useEffect(() => {
     if (sliderRef.current && sliderRef.current.swiper) {
       sliderRef.current.swiper.update();

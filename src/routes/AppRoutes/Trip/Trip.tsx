@@ -101,8 +101,6 @@ export const Trip = () => {
   const [inFavourites, setInFavourites] = useState(false);
   const [suggestedTrips, setSuggestedTrips] = useState<ITravel[]>([]);
 
-  console.log('trip', trip);
-
   const navigate = useNavigate();
 
   useEffect(() => {

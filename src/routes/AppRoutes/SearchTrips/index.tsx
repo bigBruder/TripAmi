@@ -505,7 +505,6 @@ const SearchTrips = () => {
               <div className={styles.tripsContainer}>
                 {allTrips
                   .sort((item1: ITravel, item2: ITravel) => {
-                    console.log(item1.createdAt, item2.createdAt);
                     return (
                       new Date(item2.startDate).getTime() - new Date(item1.startDate).getTime()
                     );

@@ -57,10 +57,6 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user }) => {
   const [closeFacebook, setCloseFacebook] = useState(false);
   const [facebookContainerQuery, setFacebookContainerQuery] = useState(false);
 
-  console.log(facebookFriendsId, 'facebookFriendsId');
-  console.log(facebookFriends, 'facebookFriends');
-  console.log(firestoreUser, 'firestoreUser');
-
   useEffect(() => {
     if (!firestoreUser?.accessToken && !firestoreUser?.userFromFacebook) {
       setFacebookContainerQuery(true);
@@ -70,11 +66,6 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user }) => {
       setFacebookContainerQuery(true);
     }
   }, [firestoreUser?.accessToken, firestoreUser?.userFromFacebook, closeFacebook]);
-
-  console.log(facebookFriends, 'facebookFriends');
-  console.log(firestoreUser, 'firestoreUser');
-  console.log(firestoreUser?.accessToken, 'firestoreUser.accessToken');
-  
 
   useEffect(() => {
     if (firestoreUser?.id && firestoreUser?.accessToken && firestoreUser?.userFromFacebook) {

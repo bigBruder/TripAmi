@@ -124,7 +124,6 @@ const Settings = () => {
         } catch (err) {
           // @ts-ignore
           // alert(firebaseErrors[err.code]);
-          console.log(err);
         }
       } else {
         setPasswordError(true);

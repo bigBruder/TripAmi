@@ -153,7 +153,6 @@ const UserProfile = () => {
         setAvatarIsLoading(true);
         try {
           const url = await getDownloadURL(ref(storage, firestoreUser.avatarUrl));
-          console.log(url, 'url');
           setMyAvatar(url);
         } catch (error) {
           console.log('[ERROR getting user photo] => ', error);
@@ -170,9 +169,6 @@ const UserProfile = () => {
       if (!id) return;
       const q = query(usersCollection, where(documentId(), '==', id));
       const querySnapshot = await getDocs(q);
-
-      console.log(querySnapshot.docs[0].data(), 'querySnapshot.docs[0].data()');
-      
 
       setUserData(querySnapshot.docs[0].data());
     })();

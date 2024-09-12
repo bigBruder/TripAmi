@@ -40,8 +40,6 @@ export const CreateReviewModal: FC<Props> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [isMaxError, setIsMaxError] = useState(false);
 
-  console.log(adviceText, 'adviceText');
-
   useEffect(() => {
     if (isMaxError) {
       notify('The maximum number of photos is 3');

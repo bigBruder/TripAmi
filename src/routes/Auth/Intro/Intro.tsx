@@ -125,7 +125,6 @@ const LoginPage = () => {
 
           if (!userSnapshot.empty) {
             const user = userSnapshot.docs[0].data();
-            console.log('user', user);
 
             await updateDoc(doc(db, 'users', userRef), {
               friends: [...user.friends, firestoreUser.id],
