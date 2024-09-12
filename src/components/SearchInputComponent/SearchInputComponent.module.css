@@ -6,11 +6,19 @@
   border-radius: 32px;
   max-width: 628px;
   width: 50%;
+  height: 48px;
   align-self: center;
   padding-block: 8px;
   padding-left: 50px;
   padding-right: 8px;
   background-color: #FEFEFE;
+  border: 1px solid #DEDED7;
+}
+
+@media (max-width: 834px) {
+  .searchBarContainer {
+    height: 40px;
+  }
 }
 
 .searchIcon {
@@ -25,6 +33,7 @@
   border: none;
   outline: none !important;
   height: 100%;
+  width: 100%;
   border-radius: 24px;
   font-size: 16px;
   line-height: 27px;
