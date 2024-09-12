@@ -324,7 +324,7 @@ const SearchTrips = () => {
   };
 
   return (
-    <>
+    <div className={styles.mainContainerFull}>
       <div className={styles.main}>
         <HeaderNew avatar={avatar} />
         <div className={styles.mainContainer}>
@@ -522,7 +522,7 @@ const SearchTrips = () => {
       <div className={styles.footer}>
         <Footer />
       </div>
-    </>
+    </div>
   );
 };
 

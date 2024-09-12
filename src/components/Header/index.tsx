@@ -25,6 +25,7 @@ import x_white from '@assets/icons/x_white.svg';
 
 import { DropdownProvider } from '../DropdownProvider/DropdownProvider';
 import { Notifications } from '../Notifications/Notifications';
+import SearchInputComponent from '../SearchInputComponent';
 import styles from './header.module.css';
 
 interface HeaderProps {
@@ -34,6 +35,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ avatar, isFirestoreUser }) => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
   const navigate = useNavigate();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const { firestoreUser } = useContext(AuthContext);
@@ -59,6 +61,16 @@ const Header: React.FC<HeaderProps> = ({ avatar, isFirestoreUser }) => {
       unsubscribe();
     };
   }, [firestoreUser?.id]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setScreenWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, [screenWidth]);
 
   const handleDeleteMessages = async () => {
     if (!notifications.length) return;
@@ -103,51 +115,97 @@ const Header: React.FC<HeaderProps> = ({ avatar, isFirestoreUser }) => {
             })
           }
         />
-        <div className={styles.header_icons}>
-          <img src={facebook_white} alt='facebook_white' className={styles.iconSocial} />
-          <img src={x_white} alt='x_white' className={styles.iconSocial} />
-          <img src={instagram_white} alt='instagram_white' className={styles.iconSocial} />
-        </div>
-        {isFirestoreUser ? (
+        {screenWidth > 530 ? (
           <>
-            <img
-              className={styles.defaultUserIcon}
-              src={isFirestoreUser ? avatar : defaultUserIcon}
-              alt='default user icon'
-              onClick={() =>
-                navigate('/profile', {
-                  state: {
-                    activeTab: 0,
-                  },
-                })
-              }
-            />
-            <div className={styles.notificationContainer}>
-              {notifications && (
-                <DropdownProvider
-                  trigger={
-                    <NotificationsIcon
-                      isActive={notifications.length > 0}
-                      counter={notifications.length}
-                    />
-                  }
-                  content={
-                    <Notifications
-                      onClose={() => { }}
-                      notifications={notifications}
-                      deleteMessages={handleDeleteMessages}
-                      deleteMessage={handleDeleteMessage}
-                    />
+            <SearchInputComponent />
+            {isFirestoreUser ? (
+              <>
+                <img
+                  className={styles.defaultUserIcon}
+                  src={isFirestoreUser ? avatar : defaultUserIcon}
+                  alt='default user icon'
+                  onClick={() =>
+                    navigate('/profile', {
+                      state: {
+                        activeTab: 0,
+                      },
+                    })
                   }
                 />
-              )}
-            </div>
+                <div className={styles.notificationContainer}>
+                  {notifications && (
+                    <DropdownProvider
+                      trigger={
+                        <NotificationsIcon
+                          isActive={notifications.length > 0}
+                          counter={notifications.length}
+                        />
+                      }
+                      content={
+                        <Notifications
+                          onClose={() => { }}
+                          notifications={notifications}
+                          deleteMessages={handleDeleteMessages}
+                          deleteMessage={handleDeleteMessage}
+                        />
+                      }
+                    />
+                  )}
+                </div>
+              </>
+            ) : (
+              <div className={styles.icon}>
+                <div className={styles.button} onClick={() => setModalIsOpen(true)}>
+                  Join Us
+                </div>
+              </div>
+            )}
           </>
         ) : (
-          <div className={styles.icon}>
-            <div className={styles.button} onClick={() => setModalIsOpen(true)}>
-              Join Us
-            </div>
+          <div className={styles.mobileSearchContainer}>
+            <SearchInputComponent />
+            {isFirestoreUser ? (
+              <>
+                <img
+                  className={styles.defaultUserIcon}
+                  src={isFirestoreUser ? avatar : defaultUserIcon}
+                  alt='default user icon'
+                  onClick={() =>
+                    navigate('/profile', {
+                      state: {
+                        activeTab: 0,
+                      },
+                    })
+                  }
+                />
+                <div className={styles.notificationContainer}>
+                  {notifications && (
+                    <DropdownProvider
+                      trigger={
+                        <NotificationsIcon
+                          isActive={notifications.length > 0}
+                          counter={notifications.length}
+                        />
+                      }
+                      content={
+                        <Notifications
+                          onClose={() => { }}
+                          notifications={notifications}
+                          deleteMessages={handleDeleteMessages}
+                          deleteMessage={handleDeleteMessage}
+                        />
+                      }
+                    />
+                  )}
+                </div>
+              </>
+            ) : (
+              <div className={styles.icon}>
+                <div className={styles.button} onClick={() => setModalIsOpen(true)}>
+                  Join Us
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>

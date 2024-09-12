@@ -1,16 +1,19 @@
-import {FC, useCallback, useContext, useState} from "react";
+import { FC, useCallback, useContext, useState } from 'react';
+
+import { firebaseErrors } from '~/constants/firebaseErrors';
+import { AuthContext } from '~/providers/authContext';
+import { placesCommentsCollection } from '~/types/firestoreCollections';
+
+import { addDoc } from '@firebase/firestore';
+
 import styles from './placeCommentField.module.css';
-import {addDoc} from "@firebase/firestore";
-import {placesCommentsCollection} from "~/types/firestoreCollections";
-import {AuthContext} from "~/providers/authContext";
-import {firebaseErrors} from "~/constants/firebaseErrors";
 
 interface Props {
   placeId: string;
 }
 
-export const PlaceCommentField: FC<Props> = ({placeId}) => {
-  const {firestoreUser} = useContext(AuthContext);
+export const PlaceCommentField: FC<Props> = ({ placeId }) => {
+  const { firestoreUser } = useContext(AuthContext);
   const [enteredText, setEnteredText] = useState('');
 
   const handleComment = useCallback(async () => {
@@ -42,7 +45,9 @@ export const PlaceCommentField: FC<Props> = ({placeId}) => {
         value={enteredText}
       />
       <div className={styles.buttonsContainer}>
-        <button className={styles.commentButton} onClick={handleComment}>Comment</button>
+        <button className={styles.commentButton} onClick={handleComment}>
+          Comment
+        </button>
       </div>
     </div>
   );

@@ -17,6 +17,12 @@
   }
 }
 
+.mobileSearchContainer {
+  display: flex;
+  gap: 15px;
+}
+
+
 .defaultUserIcon {
   cursor: pointer;
   width: 48px;

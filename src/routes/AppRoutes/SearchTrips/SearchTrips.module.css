@@ -11,20 +11,22 @@
   padding-inline: 55px;
   box-sizing: border-box;
   background-color: #F8F7F1;
-}
-
-.main::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
   background-image: url('/search_background.jpg');
   background-size: cover;
   background-position: center;
-  z-index: -1;
-  overflow: hidden;
+}
+
+.mainContainerFull {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100vh;
+  box-sizing: border-box;
+  background-color: #F8F7F1;
 }
 
 .filterTitle {
@@ -34,7 +36,7 @@
 .mainContainer {
   max-width: 1500px;
   width: 100%;
-
+  height: 100%;
   display: grid;
   grid-template-columns: repeat(12, 1fr);
   column-gap: 24px;
@@ -69,6 +71,7 @@
   padding: 24px 16px;
   margin-bottom: 24px;
   box-sizing: border-box;
+  height: fit-content;
 
   border: 1px solid #EEEEEA;
   background-color: rgba(254, 254, 254, 0.7);
@@ -99,8 +102,10 @@
 }
 
 .footer {
+  width: 100%;
   z-index: 1;
   position: relative;
+  align-self: flex-end;
 }
 
 .filterOptions {
