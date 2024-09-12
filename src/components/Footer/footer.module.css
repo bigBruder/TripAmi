@@ -50,6 +50,7 @@
   line-height: 24px;
   color: #000000;
   align-self: center;
+  cursor: pointer;
 }
 
 .socialLogo {
@@ -85,4 +86,8 @@ padding-bottom: 80px;
   color: #46464D;
   font-size: 18px;
   line-height: 27px;
+}
+
+.logo {
+  cursor: pointer;
 }

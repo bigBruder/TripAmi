@@ -1,5 +1,7 @@
 import { Dispatch, FC, SetStateAction } from 'react';
 
+import cn from 'classnames';
+
 import Star1 from '@assets/icons/Star1.svg';
 import Star2 from '@assets/icons/star_editor.svg';
 
@@ -11,6 +13,7 @@ interface Props {
   disabled?: boolean;
   selectedStar?: number;
   i: number;
+  isCard?: boolean;
 }
 
 const Star: FC<Props> = ({
@@ -19,24 +22,31 @@ const Star: FC<Props> = ({
   disabled = false,
   selectedStar,
   i,
-}) => (
-  <div
-    className={styles.container}
-    onClick={() => {
-      if (selectedStar === i) {
-        onSelect(-1);
-        return;
-      }
-      onSelect(i);
-    }}
-    style={{ cursor: disabled ? 'default' : 'pointer' }}
-  >
-    {selected ? (
-      <img className={styles.star} src={Star2} />
-    ) : (
-      <img className={styles.star} src={Star1} />
-    )}
-  </div>
-);
+  isCard,
+}) => {
+  console.log(isCard, 'isCard');
+  console.log(disabled, 'disabled');
+  
+
+  return (
+    <div
+      className={cn([styles.container], { [styles.pointer]: isCard })}
+      onClick={() => {
+        if (selectedStar === i) {
+          onSelect(-1);
+          return;
+        }
+        onSelect(i);
+      }}
+      style={{ cursor: disabled ? 'default' : isCard ? 'pointer' : 'default' }}
+    >
+      {selected ? (
+        <img className={styles.star} src={Star2} />
+      ) : (
+        <img className={styles.star} src={Star1} />
+      )}
+    </div>
+  );
+};
 
 export default Star;

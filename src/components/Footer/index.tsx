@@ -25,9 +25,9 @@ const Footer = () => {
         <p className={styles.footerTitle}>Privacy policy</p>
         <p className={styles.footerTitle}>Contacts</p>
         <div className={styles.socialLogo}>
-          <img src={facebook_logo} alt='facebook_logo' />
-          <img src={x_logo} alt='x_logo' />
-          <img src={instagram_logo} alt='instagram_logo' />
+          <img src={facebook_logo} alt='facebook_logo' className={styles.logo} />
+          <img src={x_logo} alt='x_logo' className={styles.logo} />
+          <img src={instagram_logo} alt='instagram_logo' className={styles.logo} />
         </div>
       </div>
       <div className={styles.rights}>

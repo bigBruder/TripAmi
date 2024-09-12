@@ -1,5 +1,7 @@
 import React, { FC, useState } from 'react';
 
+import cn from 'classnames';
+
 import Star from '../RatingStar';
 import styles from './rating.module.css';
 
@@ -8,16 +10,18 @@ interface Props {
   selectedStars?: number;
   setSelectedStars?: React.Dispatch<React.SetStateAction<number>>;
   disabled?: boolean;
+  isCard?: boolean;
 }
 
 const Rating: FC<Props> = ({
   totalStars = 5,
   selectedStars = 0,
-  setSelectedStars = () => {},
+  setSelectedStars = () => { },
   disabled,
+  isCard,
 }) => {
   return (
-    <div className={styles.container}>
+    <div className={cn([styles.container], { [styles.pointer]: isCard })}>
       {[...Array(totalStars)].map((n, i) => (
         <Star
           key={i}
@@ -26,6 +30,7 @@ const Rating: FC<Props> = ({
           selectedStar={selectedStars}
           onSelect={setSelectedStars}
           i={i}
+          isCard={isCard}
         />
       ))}
     </div>

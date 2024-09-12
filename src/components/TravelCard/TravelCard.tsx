@@ -268,7 +268,7 @@ const TravelCard: FC<Props> = ({ travel, isSwiper = false, isSearch = false, isP
                   {startDate} - {stage === 'Finished' ? endDate : 'Current'}
                 </p>
               </div>
-              <Rating disabled selectedStars={rate} />
+              <Rating selectedStars={rate} isCard={true} />
             </div>
             <div className={styles.date}>
               <div className={styles.date}>

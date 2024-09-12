@@ -10,3 +10,7 @@
   width: 20px;
   height: 19px;
 }
+
+.pointer {
+  cursor: pointer;
+}
