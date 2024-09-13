@@ -117,9 +117,9 @@ const Header: React.FC<HeaderProps> = ({ avatar, isFirestoreUser }) => {
         />
         {screenWidth > 530 ? (
           <>
-            <SearchInputComponent />
             {isFirestoreUser ? (
               <>
+                <SearchInputComponent />
                 <img
                   className={styles.defaultUserIcon}
                   src={isFirestoreUser ? avatar : defaultUserIcon}
@@ -163,9 +163,9 @@ const Header: React.FC<HeaderProps> = ({ avatar, isFirestoreUser }) => {
           </>
         ) : (
           <div className={styles.mobileSearchContainer}>
-            <SearchInputComponent />
             {isFirestoreUser ? (
               <>
+                <SearchInputComponent />
                 <img
                   className={styles.defaultUserIcon}
                   src={isFirestoreUser ? avatar : defaultUserIcon}
