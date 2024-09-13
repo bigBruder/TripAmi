@@ -159,11 +159,11 @@ const SearchTrips = () => {
 
     handleResize();
 
-    window.addEventListener('resize', handleResize);
+    // window.addEventListener('resize', handleResize);
 
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
+    // return () => {
+    //   window.removeEventListener('resize', handleResize);
+    // };
   }, []);
 
   const formatDate = (date: Date | null) => {
@@ -220,10 +220,7 @@ const SearchTrips = () => {
   };
 
   const handleMinSliderChange = (e) => {
-    const value = Math.min(
-      Number(e.target.value),
-      maxValue === '' ? maxLimit : Number(maxValue) - 1
-    );
+    const value = Math.min(+e.target.value, maxValue === '' ? maxLimit : Number(maxValue) - 1);
     setMinValue(value);
   };
 
