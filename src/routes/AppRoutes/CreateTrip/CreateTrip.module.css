@@ -995,6 +995,7 @@ rotate: 45deg;
   width: fit-content;
   text-wrap: nowrap;
   background-color: white;
+  box-sizing: border-box;
   cursor: pointer;
   font-size: 16px;
   color: #1a1a1a;

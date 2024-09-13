@@ -15,7 +15,7 @@ const Footer = () => {
           className={styles.mainLogoFooter}
           src={Logo}
           onClick={() =>
-            navigate('/profile', {
+            navigate('/', {
               state: {
                 activeTab: 0,
               },
