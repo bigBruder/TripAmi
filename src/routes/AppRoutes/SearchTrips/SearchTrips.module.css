@@ -29,9 +29,22 @@ body {
   padding-inline: 55px;
   box-sizing: border-box;
   background-color: #F8F7F1;
+  position: relative;
+  z-index: 1;
+}
+
+.main::before {
+  content: "";
   background-image: url('/search_background.jpg');
-  background-size: cover;
+  background-repeat: no-repeat;
   background-position: center;
+  background-size: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 130vh;
+  z-index: -1;
 }
 
 .mainContainerFull {

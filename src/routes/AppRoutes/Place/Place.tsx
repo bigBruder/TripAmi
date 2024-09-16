@@ -23,6 +23,7 @@ import CustomModal from '~/components/CustomModal';
 import Footer from '~/components/Footer';
 import HeaderNew from '~/components/HeaderNew';
 import ItineraryModal from '~/components/ItineraryModal';
+import MapComponent from '~/components/Map/Map';
 import PhotoModal from '~/components/PhotoModal';
 import PlaceAdvices from '~/components/PlaceAdvices';
 import PlaceReviews from '~/components/PlaceReviews';
@@ -37,7 +38,6 @@ import { ITravel } from '~/types/travel';
 import AnimationData from '@assets/animations/loader.json';
 import { query, where } from '@firebase/firestore';
 import { APIProvider, Marker } from '@vis.gl/react-google-maps';
-import { Map as MapCart } from '@vis.gl/react-google-maps';
 
 import styles from './place.module.css';
 
@@ -79,11 +79,13 @@ const Place = () => {
   const [isItinerary, setIsItinerary] = useState(false);
   const [allGeoTagsMap, setAllGeoTagsMap] = useState<IPlace[]>([]);
   const [placeForItinerary, setPlaceForItinerary] = useState<IPlace | null>(null);
+  const [geotagForMap, setGeotagForMap] = useState<IPlace | null>(null);
 
   const [avatar, setAvatar] = useState<string>('');
 
   const truncatedText = useRef('');
   const remainingText = useRef('');
+  const commentsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const place = allGeoTagsMap.find((tag) => tag.placeID === id);
@@ -104,7 +106,7 @@ const Place = () => {
         }));
         const allGeoTags = fetchedTrips.flatMap((trip) => trip.geoTags || []);
 
-        const uniqueGeoTagsMap = new Map();
+        const uniqueGeoTagsMap: Map<any, any> = new Map();
 
         allGeoTags.forEach((tag) => {
           uniqueGeoTagsMap.set(tag.placeID, tag);
@@ -113,6 +115,9 @@ const Place = () => {
         const uniqueGeoTags = Array.from(uniqueGeoTagsMap.values());
 
         setAllGeoTagsMap(uniqueGeoTags as IPlace[]);
+
+        const place = uniqueGeoTags.find((tag) => tag.placeID === id);
+        setGeotagForMap(place);
       });
 
       return () => unsubscribe();
@@ -313,6 +318,16 @@ const Place = () => {
 
   const backgroundImageUrl = placeData?.imageUrl || '/place_imagenot.svg';
 
+  const handleAdviceAction = () => {
+    setIsReview(false);
+    setIsAdvice(true);
+    setActiveTab(1);
+    if (commentsRef.current) {
+      commentsRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+    setIsAddReviewOpen(true);
+  };
+
   return (
     <>
       <div
@@ -365,17 +380,9 @@ const Place = () => {
                     </div>
                   )}
                   {id && geocode?.types && (
-                    <APIProvider apiKey='AIzaSyCwDkMaHWXRpO7hY6z62_Gu8eLxMMItjT8'>
-                      <div className={styles.mapContainer}>
-                        <MapCart
-                          center={geocode}
-                          {...mapOptions}
-                          zoom={geocode.types.includes('locality') ? 10 : 17}
-                        >
-                          <Marker position={geocode} />
-                        </MapCart>
-                      </div>
-                    </APIProvider>
+                    <div className={styles.mapContainerTrans}>
+                      <MapComponent geotag={geotagForMap} />
+                    </div>
                   )}
                 </div>
               ) : (
@@ -413,6 +420,16 @@ const Place = () => {
                 )}
               </div>
             ) : null}
+
+            <div className={styles.teleportToAdviceContainer}>
+              <h3 className={styles.tipTitle}>Been here? Add a travel tip</h3>
+              <button
+                className={styles.teleportToAdviceButton}
+                onClick={() => handleAdviceAction()}
+              >
+                Add tip
+              </button>
+            </div>
           </div>
           {suggestedTrips.length > 0 && (
             <div className={styles.suggestedTripsContainer}>
@@ -427,7 +444,7 @@ const Place = () => {
             </div>
           )}
 
-          <div className={styles.containerComments}>
+          <div className={styles.containerComments} ref={commentsRef}>
             <div className={styles.tabsContainer}>
               {tabs.map((tab, index) => (
                 <h2
@@ -461,7 +478,7 @@ const Place = () => {
         {id && (
           <CustomModal isOpen={isAddReviewOpen} onCloseModal={() => setIsAddReviewOpen(false)}>
             <CreateReviewModal
-              closeModal={() => setIsAddReviewOpen(false)}
+              closeModal={(e) => setIsAddReviewOpen(false)}
               placeId={id}
               placeName={geocode?.name}
               startReview={myReview}

@@ -547,7 +547,12 @@ export const UserCard: FC<Props> = ({
       className={styles.cardMain}
       style={
         isTabs
-          ? { flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: '8px' }
+          ? {
+            flexDirection: 'column',
+            justifyContent: 'flex-start',
+            alignItems: 'center',
+            gap: '8px',
+          }
           : {}
       }
     >
@@ -572,7 +577,7 @@ export const UserCard: FC<Props> = ({
             }
           >
             <p className={styles.userName}>{user.username}</p>
-            {lastTrip?.tripName && lastTrip?.stage ? (
+            {lastTrip?.tripName && lastTrip?.stage && !isTabs ? (
               <div className={styles.lastTripInfo}>
                 <span className={styles.lastTripTitle}>
                   {lastTrip?.stage ? `${lastTrip?.stage}:` : ''}
@@ -587,17 +592,18 @@ export const UserCard: FC<Props> = ({
       </div>
       {isTabs && (
         <div className={styles.userInfo}>
-          <p className={styles.userName}>{user.username}</p>
-          {lastTrip?.tripName && lastTrip?.stage ? (
-            <div className={styles.lastTripInfo}>
-              <span className={styles.lastTripTitle}>
-                {lastTrip?.stage ? `${lastTrip?.stage}:` : ''}
-              </span>
-              <div className={styles.lastTripName}>
-                {lastTrip?.tripName ? cutTripTitle(lastTrip?.tripName) : ''}
-              </div>
-            </div>
-          ) : null}
+          <p
+            className={styles.userName}
+            style={
+              isTabs
+                ? {
+                  textAlign: 'center',
+                }
+                : {}
+            }
+          >
+            {user.username}
+          </p>
         </div>
       )}
 

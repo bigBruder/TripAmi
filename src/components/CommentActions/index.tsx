@@ -1,12 +1,12 @@
 import { FC, useContext, useMemo } from 'react';
 
+import cn from 'classnames';
 import { useComment } from '~/hooks/comment/useComment';
 import { AuthContext } from '~/providers/authContext';
 import { IComment } from '~/types/comments';
 
 import commentsIcon from '@assets/icons/comments.svg';
 import { LikeIcon } from '@assets/icons/likeIcon';
-import cn from 'classnames';
 
 import styles from './commetActions.module.css';
 
@@ -44,9 +44,13 @@ export const CommentActions: FC<Props> = ({ comment, setRepliesOpen, isReply, re
     <div className={styles.footer}>
       <div className={styles.shareContainer} onClick={() => setRepliesOpen()}>
         <div>
-          <img src={commentsIcon} alt='comments' className={styles.actionIcons}/>
+          <img src={commentsIcon} alt='comments' className={styles.actionIcons} />
         </div>
-        <span className={`${styles.share}`}>
+        <span
+          className={cn([styles.share], {
+            [styles.allowReplies]: repliesCount !== undefined && repliesCount > 0,
+          })}
+        >
           {repliesCount ? repliesCount + ' ' : ''} {getReplyString(repliesCount)}
         </span>
       </div>

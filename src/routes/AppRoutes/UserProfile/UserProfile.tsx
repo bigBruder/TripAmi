@@ -2,6 +2,7 @@ import { useCallback, useContext, useEffect, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import { useParams } from 'react-router-dom';
 
+import cn from 'classnames';
 import {
   addDoc,
   deleteDoc,
@@ -35,7 +36,7 @@ import defaulUserAvatar from '@assets/icons/defaultUserIcon.svg';
 import { getDocs, query, where } from '@firebase/firestore';
 import { ref } from '@firebase/storage';
 
-import AddNewFriends from '../AddNewFriends/AddNewFriends';
+import AddNewFriends, { UserCard } from '../AddNewFriends/AddNewFriends';
 import styles from './userProfile.module.css';
 
 type SortBy = 'endDate' | 'rate' | 'alphabetically';
@@ -88,6 +89,7 @@ const UserProfile = () => {
   const [invitedUsers, setInvitedUsers] = useState<string[]>([]);
   const [invitationsFromUsers, setInvitationsFromUsers] = useState<string[]>([]);
   const [buttonStatus, setButtonStatus] = useState<string>(StatusButton.FOLLOW);
+  const [friends, setFriends] = useState<IUser[]>([]);
 
   useEffect(() => {
     if (firestoreUser?.id && userData?.id) {
@@ -325,6 +327,28 @@ const UserProfile = () => {
     }
   }, [userData, firestoreUser]);
 
+  useEffect(() => {
+    const fetchFriends = async () => {
+      if (userData?.friends?.length) {
+        try {
+          const q = query(usersCollection, where(documentId(), 'in', userData?.friends));
+          const querySnapshot = await getDocs(q);
+          const fetchedUsers = querySnapshot.docs.map((doc) => ({
+            ...doc.data(),
+            id: doc.id,
+          }));
+          setFriends(fetchedUsers);
+        } catch (error) {
+          console.error('Error fetching friends:', error);
+        }
+      } else {
+        setFriends([]);
+      }
+    };
+
+    fetchFriends();
+  }, [userData?.friends, usersCollection]);
+
   return (
     <>
       <div className={styles.main}>
@@ -408,14 +432,19 @@ const UserProfile = () => {
             <div className={styles.userContent}>
               {activeTab === 0 && userData && (
                 <>
-                  <div>
+                  <div
+                    className={cn([styles.usersContainer], {
+                      [styles.displayEmptyFriends]: !friends.length,
+                    })}
+                  >
                     {userData &&
                       firestoreUser?.id &&
                       userData?.friends?.includes(firestoreUser?.id) && (
                         <h3>You and {userData.username?.split(' ')[0]} are friends</h3>
                       )}
-                    <h3>Friends</h3>
-                    <AddNewFriends user={userData} isFriend isTabs/>
+                    {friends.map((friend) => (
+                      <UserCard key={friend.id} user={friend} isFriend isTabs={true} />
+                    ))}
                   </div>
                 </>
               )}

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { ComposableMap, Geographies, Geography, Marker, ZoomableGroup } from 'react-simple-maps';
 
 import useMapContext from '~/components/EditMap/store';
+import { IPlace } from '~/routes/AppRoutes/Posts/types';
 import { tripsCollection } from '~/types/firestoreCollections';
 import { ITravel } from '~/types/travel';
 
@@ -16,6 +17,7 @@ interface Props {
   onClick?: (value: string) => void;
   selectedTripId?: string | null;
   userId?: string;
+  geotag?: IPlace | null;
 }
 
 interface IPosition {
@@ -31,7 +33,7 @@ interface IPin {
   place_id: string;
 }
 
-const Map: FC<Props> = ({ userId }) => {
+const Map: FC<Props> = ({ userId, geotag = null }) => {
   const { trips } = useMapContext();
   const [position, setPosition] = useState<IPosition>({ coordinates: [0, 0], zoom: 1 });
   const [scaleFactor, setScaleFactor] = useState(1);
@@ -54,14 +56,6 @@ const Map: FC<Props> = ({ userId }) => {
     };
     fetchUserTrips();
   }, [userId]);
-
-  const handleZoomIn = useCallback(() => {
-    setPosition((pos) => ({ ...pos, zoom: Math.min(pos.zoom * 2, 4) }));
-  }, []);
-
-  const handleZoomOut = useCallback(() => {
-    setPosition((pos) => ({ ...pos, zoom: Math.max(pos.zoom / 2, 1) }));
-  }, []);
 
   const handleMoveEnd = useCallback((positionValue: IPosition) => {
     setPosition(positionValue);
@@ -147,6 +141,7 @@ const Map: FC<Props> = ({ userId }) => {
     }, 3000);
     return () => clearTimeout(timerId);
   }, [selectedMarkerAddress]);
+
   return (
     <div className={styles.mapContainer} style={{ position: 'relative' }}>
       {selectedMarkerAddress && (
@@ -165,7 +160,7 @@ const Map: FC<Props> = ({ userId }) => {
           center={position.coordinates}
           onMoveEnd={handleMoveEnd}
           onMove={({ zoom }) => setScaleFactor(zoom)}
-          style={{ width: '100%', height: '100%' }}
+          style={{ width: '100%', height: '100%'}}
           minZoom={1}
           maxZoom={30}
         >
@@ -186,11 +181,11 @@ const Map: FC<Props> = ({ userId }) => {
             }
           </Geographies>
 
-          {citiesToDisplay?.map((city) => (
+          {geotag ? (
             <Marker
-              key={`${city.place_id}${city.lng}${city.lat}`}
-              coordinates={[city.lng, city.lat]}
-              onClick={() => handleSelectMarker(city.name, city.place_id)}
+              key={`${geotag.placeID}${geotag.lng}${geotag.lat}`}
+              coordinates={[geotag.lng, geotag.lat]}
+              onClick={() => handleSelectMarker(geotag.name, geotag.placeID)}
               cursor={'pointer'}
             >
               <g
@@ -208,20 +203,55 @@ const Map: FC<Props> = ({ userId }) => {
                     height={30 / scaleFactor}
                     d='M24,1.32c-9.92,0-18,7.8-18,17.38A16.83,16.83,0,0,0,9.57,29.09l12.84,16.8a2,2,0,0,0,3.18,0l12.84-16.8A16.84,16.84,0,0,0,42,18.7C42,9.12,33.92,1.32,24,1.32Z'
                     fill={
-                      selectedMarkerAddress?.address === city.name ? 'red' : city.color || '#1400FF'
+                      selectedMarkerAddress?.address === geotag.name
+                        ? 'red'
+                        : geotag.color || '#1400FF'
                     }
                   />
                   <path d='M25.37,12.13a7,7,0,1,0,5.5,5.5A7,7,0,0,0,25.37,12.13Z' fill='white' />
                 </svg>
               </g>
             </Marker>
-          ))}
+          ) : (
+            citiesToDisplay?.map((city) => (
+              <Marker
+                key={`${city.place_id}${city.lng}${city.lat}`}
+                coordinates={[city.lng, city.lat]}
+                onClick={() => handleSelectMarker(city.name, city.place_id)}
+                cursor={'pointer'}
+              >
+                <g
+                  transform={`translate(${-10 / scaleFactor}, ${-26 / scaleFactor})`}
+                  className={styles.marker}
+                >
+                  <svg
+                    width={window.innerWidth > 500 ? 30 / scaleFactor : 40 / scaleFactor}
+                    height={window.innerWidth > 500 ? 40 / scaleFactor : 60 / scaleFactor}
+                    viewBox='0 0 48 48'
+                    xmlns='http://www.w3.org/2000/svg'
+                  >
+                    <path
+                      width={20 / scaleFactor}
+                      height={30 / scaleFactor}
+                      d='M24,1.32c-9.92,0-18,7.8-18,17.38A16.83,16.83,0,0,0,9.57,29.09l12.84,16.8a2,2,0,0,0,3.18,0l12.84-16.8A16.84,16.84,0,0,0,42,18.7C42,9.12,33.92,1.32,24,1.32Z'
+                      fill={
+                        selectedMarkerAddress?.address === city.name
+                          ? 'red'
+                          : city.color || '#1400FF'
+                      }
+                    />
+                    <path d='M25.37,12.13a7,7,0,1,0,5.5,5.5A7,7,0,0,0,25.37,12.13Z' fill='white' />
+                  </svg>
+                </g>
+              </Marker>
+            ))
+          )}
 
-          {placesToDisplay?.map((place) => (
+          {geotag ? (
             <Marker
-              key={`${place.place_id}${place.lng}${place.lat}`}
-              onClick={() => handleSelectMarker(place.name, place.place_id)}
-              coordinates={[place.lng, place.lat]}
+              key={`${geotag.placeID}${geotag.lng}${geotag.lat}`}
+              coordinates={[geotag.lng, geotag.lat]}
+              onClick={() => handleSelectMarker(geotag.name, geotag.placeID)}
               cursor={'pointer'}
             >
               <g
@@ -235,18 +265,51 @@ const Map: FC<Props> = ({ userId }) => {
                   xmlns='http://www.w3.org/2000/svg'
                 >
                   <path
+                    width={20 / scaleFactor}
+                    height={30 / scaleFactor}
                     d='M24,1.32c-9.92,0-18,7.8-18,17.38A16.83,16.83,0,0,0,9.57,29.09l12.84,16.8a2,2,0,0,0,3.18,0l12.84-16.8A16.84,16.84,0,0,0,42,18.7C42,9.12,33.92,1.32,24,1.32Z'
                     fill={
-                      selectedMarkerAddress?.address === place.name
+                      selectedMarkerAddress?.address === geotag.name
                         ? 'red'
-                        : place.color || '#1400FF'
+                        : geotag.color || '#1400FF'
                     }
                   />
                   <path d='M25.37,12.13a7,7,0,1,0,5.5,5.5A7,7,0,0,0,25.37,12.13Z' fill='white' />
                 </svg>
               </g>
             </Marker>
-          ))}
+          ) : (
+            placesToDisplay?.map((place) => (
+              <Marker
+                key={`${place.place_id}${place.lng}${place.lat}`}
+                onClick={() => handleSelectMarker(place.name, place.place_id)}
+                coordinates={[place.lng, place.lat]}
+                cursor={'pointer'}
+              >
+                <g
+                  transform={`translate(${-10 / scaleFactor}, ${-26 / scaleFactor})`}
+                  className={styles.marker}
+                >
+                  <svg
+                    width={window.innerWidth > 500 ? 30 / scaleFactor : 40 / scaleFactor}
+                    height={window.innerWidth > 500 ? 40 / scaleFactor : 60 / scaleFactor}
+                    viewBox='0 0 48 48'
+                    xmlns='http://www.w3.org/2000/svg'
+                  >
+                    <path
+                      d='M24,1.32c-9.92,0-18,7.8-18,17.38A16.83,16.83,0,0,0,9.57,29.09l12.84,16.8a2,2,0,0,0,3.18,0l12.84-16.8A16.84,16.84,0,0,0,42,18.7C42,9.12,33.92,1.32,24,1.32Z'
+                      fill={
+                        selectedMarkerAddress?.address === place.name
+                          ? 'red'
+                          : place.color || '#1400FF'
+                      }
+                    />
+                    <path d='M25.37,12.13a7,7,0,1,0,5.5,5.5A7,7,0,0,0,25.37,12.13Z' fill='white' />
+                  </svg>
+                </g>
+              </Marker>
+            ))
+          )}
         </ZoomableGroup>
       </ComposableMap>
 

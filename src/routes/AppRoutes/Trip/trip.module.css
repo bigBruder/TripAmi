@@ -278,6 +278,7 @@ html {
   .container {
     padding: 16px;
     border-radius: 40px;
+    margin-bottom: 2px;
   }
 }
 
@@ -295,6 +296,13 @@ html {
   background-color: rgba(254, 254, 254, 0.7);
   backdrop-filter: blur(10px);
   box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .containerComments {
+    padding-inline: 8px;
+    border-radius: 40px;
+  }
 }
 
 .commentsTitle {

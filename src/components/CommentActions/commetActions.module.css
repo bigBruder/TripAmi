@@ -1,7 +1,7 @@
 .footer {
     display: flex;
     align-items: center;
-    height: 35px;
+    height: fit-content;
     color: #aeaeae;
     gap: 14px;
 }
@@ -16,13 +16,29 @@
     cursor: pointer;
 }
 
+@media (max-width: 768px) {
+  .shareContainer {
+    gap: 3px;
+  }
+
+  .footer {
+    gap: 10px;
+    justify-content: flex-end;
+    width: 100%;
+  }
+}
+
+.allowReplies {
+  color: #a67c52;
+}
+
 .actionIcons {
   width: 24px;
   height: 24px;
 }
 
 .share {
-    font-size: 10px;
+    font-size: 14px;
     font-style: normal;
     font-weight: 400;
 }

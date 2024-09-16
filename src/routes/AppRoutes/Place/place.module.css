@@ -161,7 +161,7 @@ h3, h2 {
     display: flex;
     flex-direction: column;
     gap: 16px;
-    height: 100%;
+    height: fit-content;
     padding: 80px 40px;
     border: 1px solid #EEEEEA;
     background-color: rgba(254, 254, 254, 0.7);
@@ -327,6 +327,11 @@ h3, h2 {
     height: 100%;
 }
 
+.mapContainerTrans {
+  position: relative;
+  box-sizing: border-box;
+}
+
 .mapContainer div {
   border-radius: 24px;
   height: 100%;
@@ -367,10 +372,46 @@ h3, h2 {
   font-size: 16px;
 }
 
+.tipTitle {
+    font-size: 24px;
+    font-weight: 500;
+    color: #444445;
+    text-wrap: nowrap;
+}
+
+.teleportToAdviceContainer {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.teleportToAdviceButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 10px 43px;
+    border-radius: 24px;
+    background-color: #CFB317;
+    color: #FEFEFE;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-wrap: nowrap;
+}
+
+.teleportToAdviceButton:hover {
+    background-color: #c9ab06;
+}
+
 @media (max-width: 1024px) {
   .mapContainerImage {
     grid-template-columns: 1fr;
     row-gap: 10px;
+  }
+
+  .teleportToAdviceContainer {
+    justify-content: space-between;
   }
 
   .mapContainer, .postImageMain {
@@ -426,6 +467,14 @@ h3, h2 {
   .mapContainerImage {
     grid-template-columns: 1fr;
     row-gap: 10px;
+  }
+
+  .teleportToAdviceContainer {
+    flex-direction: column;
+  }
+
+  .teleportToAdviceButton {
+    width: 100%;
   }
 
   .titleMain {

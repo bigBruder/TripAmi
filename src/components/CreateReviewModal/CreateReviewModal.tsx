@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
 import { getBlob, ref, uploadBytes } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
+import { create } from 'zustand';
 import { firebaseErrors } from '~/constants/firebaseErrors';
 import { db, storage } from '~/firebase';
 import { AuthContext } from '~/providers/authContext';
@@ -12,7 +13,6 @@ import { PlaceReviewType } from '~/types/placeReviews';
 import { LoadingScreen } from '../LoadingScreen';
 import Rating from '../Rating';
 import styles from './createReviewModal.module.css';
-import { create } from 'zustand';
 
 interface Props {
   closeModal: () => void;
@@ -101,7 +101,7 @@ export const CreateReviewModal: FC<Props> = ({
       <div className={styles.contentContainer}>
         {isReview && (
           <>
-            <h2>Add your review</h2>
+            <h2>{startReview?.text.length ? 'Change' : 'Add'} your review</h2>
             <textarea
               className={styles.textArea}
               placeholder='Describe your experience...'
@@ -120,7 +120,7 @@ export const CreateReviewModal: FC<Props> = ({
         )}
         {isAdvice && (
           <>
-            <h2>Add your advice</h2>
+            <h2>{startReview?.advice.length ? 'Change' : 'Add'} your advice</h2>
             <textarea
               className={styles.textArea}
               placeholder='Add advice...'

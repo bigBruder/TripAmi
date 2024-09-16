@@ -6,4 +6,6 @@ export interface IPlace {
   photo: string;
   address: string;
   name: string;
+  lng: number;
+  lat: number;
 }
