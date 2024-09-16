@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import { useParams } from 'react-router-dom';
 
@@ -311,9 +311,18 @@ const Place = () => {
     setIsItinerary(!isItinerary);
   };
 
+  const backgroundImageUrl = placeData?.imageUrl || '/place_imagenot.svg';
+
   return (
     <>
-      <div className={styles.mainContainer}>
+      <div
+        className={styles.mainContainer}
+        style={
+          {
+            '--background-image': `url(${backgroundImageUrl})`,
+          } as React.CSSProperties
+        }
+      >
         <HeaderNew avatar={avatar} />
 
         <div className={styles.main}>

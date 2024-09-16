@@ -57,17 +57,10 @@ export const PlaceReview: FC<Props> = ({
   }, [review.authorAvatar]);
 
   const handleDeleteReview = async () => {
-    if (isAdvice) {
-      await updateDoc(doc(db, 'reviews', myReview.id), {
-        advice: '',
-      });
-      fetchReviews();
-    } else {
-      await updateDoc(doc(db, 'reviews', myReview.id), {
-        text: '',
-      });
-      fetchReviews();
-    }
+    await updateDoc(doc(db, 'reviews', myReview.id), {
+      ...(isAdvice ? { advice: '' } : { text: '' }),
+    });
+    fetchReviews();
   };
 
   return (

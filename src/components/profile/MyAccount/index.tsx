@@ -68,6 +68,9 @@ const MyAccount = () => {
 
   const { firestoreUser, loading, signOutUser } = useContext(AuthContext);
 
+  console.log('firestoreUser', firestoreUser);
+  
+
   const navigate = useNavigate();
   const userRef = window.localStorage.getItem('ref');
 

@@ -59,11 +59,13 @@
   flex-direction: column;
   justify-content: space-between;
   padding: 40px;
+  padding-top: 0;
 }
 
 @media (max-width: 850px) {
   .myAccount {
     padding: 20px;
+    padding-top: 0;
   }
 }
 
