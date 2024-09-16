@@ -37,6 +37,8 @@ import styles from './addNewFriends.module.css';
 
 interface AddNewFriendsProps {
   user: IUser;
+  isFriend?: boolean;
+  isTabs?: boolean;
 }
 
 enum windowSize {
@@ -44,7 +46,7 @@ enum windowSize {
   DESKTOP = 'Big',
 }
 
-const AddNewFriends: FC<AddNewFriendsProps> = ({ user }) => {
+const AddNewFriends: FC<AddNewFriendsProps> = ({ user, isFriend = false, isTabs = false }) => {
   const [users, setUsers] = useState<IUser[]>([]);
   const [invitedUsers, setInvitedUsers] = useState<string[]>([]);
   const [invitationsFromUsers, setInvitationsFromUsers] = useState<string[]>([]);
@@ -199,6 +201,7 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user }) => {
               }
               gotInvite={user.id ? invitationsFromUsers.includes(user.id) : false}
               invitation={invitations.find((invitation) => invitation.fromUser === user.id)}
+              isTabs={isTabs}
             />
           ))}
         </div>
@@ -555,7 +558,19 @@ export const UserCard: FC<Props> = ({
       >
         <img src={userAvatar} className={styles.avatar} alt='User avatar' />
         {!isTabs ? (
-          <div className={styles.userInfo}>
+          <div
+            className={styles.userInfo}
+            style={
+              isTabs
+                ? {
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  gap: '8px',
+                }
+                : {}
+            }
+          >
             <p className={styles.userName}>{user.username}</p>
             {lastTrip?.tripName && lastTrip?.stage ? (
               <div className={styles.lastTripInfo}>

@@ -415,7 +415,7 @@ const UserProfile = () => {
                         <h3>You and {userData.username?.split(' ')[0]} are friends</h3>
                       )}
                     <h3>Friends</h3>
-                    <AddNewFriends user={userData} />
+                    <AddNewFriends user={userData} isFriend isTabs/>
                   </div>
                 </>
               )}
