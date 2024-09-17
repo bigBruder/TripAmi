@@ -500,10 +500,12 @@ export const UserCard: FC<Props> = ({
   const navigate = useNavigate();
 
   const handleOpenUserProfile = useCallback(() => {
-    if (user.id !== firestoreUser?.firebaseUid) {
+    if (user.id !== firestoreUser?.id) {
       navigate('/user/' + user.id);
+      window.scrollTo(0, 0);
     } else {
       navigate('/profile');
+      window.scrollTo(0, 0);
     }
   }, [firestoreUser?.firebaseUid, navigate, user.id]);
 

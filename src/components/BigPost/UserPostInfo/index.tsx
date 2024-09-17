@@ -1,6 +1,7 @@
 import React, { FC, useCallback, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { Timestamp } from 'firebase/firestore';
 import { getDownloadURL, ref } from 'firebase/storage';
 import { create } from 'zustand';
 import { storage } from '~/firebase';
@@ -22,6 +23,25 @@ interface Props {
   isMasterPage?: boolean;
   setPosted?: React.Dispatch<React.SetStateAction<string>>;
 }
+//@ts-ignore
+const getDate = (createdAt) => {
+  const dateTo = new Date(createdAt);
+
+  const seconds = Math.floor(dateTo.getTime() / 1000);
+  const nanoseconds = (dateTo.getTime() % 1000) * 1e6; // перетворення мілісекунд у наносекунди
+
+  // Створення Timestamp
+  const timestamp = new Timestamp(seconds, nanoseconds);
+  const options = {
+    year: 'numeric' as const,
+    month: 'long' as const,
+    day: 'numeric' as const,
+    hour: 'numeric' as const,
+    minute: 'numeric' as const,
+  };
+  const date = new Date(timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000);
+  return date.toLocaleString('en-US', options);
+};
 
 export const UserPostInfo: FC<Props> = ({
   userData,
@@ -59,7 +79,7 @@ export const UserPostInfo: FC<Props> = ({
         <img src={userAvatar || Avatar} style={{ width: 40, height: 40, borderRadius: 50 }} />
         <div>
           <p className={styles.location}>{userData?.username}</p>
-          {createdAt && <p className={styles.time}>{timeAgo(createdAt)}</p>}
+          {createdAt && <p className={styles.time}>{getDate(Date.parse(createdAt))}</p>}
         </div>
       </div>
       {/* {!isMasterPage && (

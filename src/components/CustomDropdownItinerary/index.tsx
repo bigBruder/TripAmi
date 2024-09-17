@@ -60,21 +60,23 @@ const CustomDropdownItinerary: React.FC<CustomDropdownItineraryProps> = ({
           <div className={styles.addNewFolder} onClick={() => setIsAddingFolder(true)}>
             <img src={plus} alt='plus' /> Add new folder
           </div>
-          {firestoreUser?.itinerary.map((item) => (
-            <div
-              key={item.id}
-              className={cn([
-                styles.dropdownItem,
-                selectedItem === item.name && styles.selectedOption,
-              ])}
-              onClick={() => {
-                setSelectedFolder(item);
-                handleSelect(item.name);
-              }}
-            >
-              {item.name}
-            </div>
-          ))}
+          <div className={styles.itineraryItemsContainer}>
+            {firestoreUser?.itinerary.map((item) => (
+              <div
+                key={item.id}
+                className={cn([
+                  styles.dropdownItem,
+                  selectedItem === item.name && styles.selectedOption,
+                ])}
+                onClick={() => {
+                  setSelectedFolder(item);
+                  handleSelect(item.name);
+                }}
+              >
+                {item.name}
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>

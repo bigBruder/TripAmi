@@ -313,7 +313,13 @@ const Place = () => {
   };
 
   const toggleModal = () => {
-    setIsItinerary(!isItinerary);
+    if (!isItinerary) {
+      setIsItinerary(!isItinerary);
+      document.body.style.overflow = 'hidden';
+    } else {
+      setIsItinerary(!isItinerary);
+      document.body.style.overflow = 'auto';
+    }
   };
 
   const backgroundImageUrl = placeData?.imageUrl || '/place_imagenot.svg';
@@ -478,7 +484,7 @@ const Place = () => {
         {id && (
           <CustomModal isOpen={isAddReviewOpen} onCloseModal={() => setIsAddReviewOpen(false)}>
             <CreateReviewModal
-              closeModal={(e) => setIsAddReviewOpen(false)}
+              closeModal={() => setIsAddReviewOpen(false)}
               placeId={id}
               placeName={geocode?.name}
               startReview={myReview}

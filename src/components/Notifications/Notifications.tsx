@@ -66,6 +66,7 @@ export const Notifications: FC<Props> = ({
       case NotificationType.NewReplyPost:
       case NotificationType.NewReplyTrip:
         handleOpenComment(notification);
+        deleteMessage(notification.id);
         break;
       default:
         break;

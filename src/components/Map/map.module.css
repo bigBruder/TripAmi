@@ -17,6 +17,7 @@
   background-color: transparent;
   box-shadow: rgba(222, 222, 215, 0.5);
   backdrop-filter: blur(10px);
+  background-color: rgba(254, 254, 254, 0.7) !important;
 }
 
 @keyframes __bounceInDown {

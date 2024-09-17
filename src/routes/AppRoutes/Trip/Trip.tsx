@@ -70,7 +70,13 @@ export const Trip = () => {
   const [selectedItinerary, setSelectedItinerary] = useState({});
 
   const toggleModal = () => {
-    setIsItinerary(!isItinerary);
+    if (!isItinerary) {
+      setIsItinerary(!isItinerary);
+      document.body.style.overflow = 'hidden';
+    } else {
+      setIsItinerary(!isItinerary);
+      document.body.style.overflow = 'auto';
+    }
   };
 
   const [imageUrls, setImageUrls] = useState<

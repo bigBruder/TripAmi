@@ -432,16 +432,16 @@ const UserProfile = () => {
             <div className={styles.userContent}>
               {activeTab === 0 && userData && (
                 <>
+                  {userData &&
+                    firestoreUser?.id &&
+                    userData?.friends?.includes(firestoreUser?.id) && (
+                      <h3>You and {userData.username?.split(' ')[0]} are friends</h3>
+                    )}
                   <div
                     className={cn([styles.usersContainer], {
                       [styles.displayEmptyFriends]: !friends.length,
                     })}
                   >
-                    {userData &&
-                      firestoreUser?.id &&
-                      userData?.friends?.includes(firestoreUser?.id) && (
-                        <h3>You and {userData.username?.split(' ')[0]} are friends</h3>
-                      )}
                     {friends.map((friend) => (
                       <UserCard key={friend.id} user={friend} isFriend isTabs={true} />
                     ))}

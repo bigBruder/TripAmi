@@ -109,6 +109,9 @@ const SearchInputComponent = () => {
     }
   };
 
+  console.log(searchValue, 'searchValue');
+  
+
   return screenWidth > 530 ? (
     <div className={styles.searchBarContainer} ref={searchBarRef}>
       <input
@@ -174,7 +177,7 @@ const SearchInputComponent = () => {
             <div className={styles.searchResults}>
               {allGeoTagsMap
                 .filter((geotag) =>
-                  geotag.address.toLowerCase().includes(searchValue.toLowerCase())
+                  geotag.address.toLowerCase().includes(searchValue.toLowerCase().trim())
                 )
                 .slice(0, 5)
                 .map((geotag) => (

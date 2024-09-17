@@ -87,8 +87,8 @@
 
 .arrow_back {
   position: absolute;
-  top: 55%;
-  left: -50px;
+  top: 18px;
+  left: 0;
   transform: translateY(-55%);
   align-self: flex-start;
   cursor: pointer;
