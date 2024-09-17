@@ -25,8 +25,15 @@ const SearchInputComponent = () => {
   const [currentGeoTag, setCurrentGeoTag] = useState(null);
   const navigate = useNavigate();
 
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+  const openModal = () => {
+    setIsModalOpen(true);
+    document.body.style.overflow = 'hidden';
+  };
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSearchValue('');
+    document.body.style.overflow = 'auto';
+  };
 
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
 
@@ -176,7 +183,7 @@ const SearchInputComponent = () => {
                 .filter((geotag) =>
                   geotag.address.toLowerCase().includes(searchValue.toLowerCase().trim())
                 )
-                .slice(0, 5)
+                .slice(0, 4)
                 .map((geotag) => (
                   <SearchTripsCard
                     geotag={geotag}
