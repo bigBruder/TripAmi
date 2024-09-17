@@ -109,9 +109,6 @@ const SearchInputComponent = () => {
     }
   };
 
-  console.log(searchValue, 'searchValue');
-  
-
   return screenWidth > 530 ? (
     <div className={styles.searchBarContainer} ref={searchBarRef}>
       <input
