@@ -27,18 +27,6 @@ export const SignUpModal: FC<Props> = ({ onClose, isOpen, isLogin = false }) => 
     useContext(AuthContext);
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   if (isOpen) {
-  //     document.body.style.overflow = 'hidden';
-  //   } else {
-  //     document.body.style.overflow = 'scroll';
-  //   }
-
-  //   return () => {
-  //     document.body.style.overflow = 'scroll';
-  //   };
-  // }, [isOpen]);
-
   const handelRegister = useCallback(async () => {
     const result = await signUp(email, password, userName);
 

@@ -6,6 +6,7 @@ export interface Notification {
   text: string;
   commentId?: string;
   isReaded?: boolean;
+  fromUserId?: string;
 }
 
 export enum NotificationType {
@@ -15,4 +16,5 @@ export enum NotificationType {
   CommentTrip = 'comment trip',
   NewReplyTrip = 'new reply trip',
   NewReplyPost = 'new reply post',
+  NewFriend = 'new friend',
 }

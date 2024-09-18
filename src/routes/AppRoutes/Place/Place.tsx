@@ -294,6 +294,8 @@ const Place = () => {
       if (firestoreUser?.avatarUrl) {
         const url = await getDownloadURL(ref(storage, firestoreUser.avatarUrl));
         setAvatar(url);
+      } else {
+        setAvatar('./defaultUserIcon.svg');
       }
     };
     fetchUserAvatar();
@@ -372,7 +374,7 @@ const Place = () => {
                 <Lottie animationData={AnimationData} />
               ) : placeData?.imageUrl || placeData?.articleText ? (
                 <div className={styles.mapContainerImage}>
-                  {placeData.imageUrl && (
+                  {placeData.imageUrl ? (
                     <div className={styles.postImageMain}>
                       <img
                         src={placeData.imageUrl || '/place_imagenot.svg'}
@@ -382,6 +384,14 @@ const Place = () => {
                           setPhotoForModal(placeData.imageUrl);
                           setIsPhotoOpen(true);
                         }}
+                      />
+                    </div>
+                  ) : (
+                    <div className={styles.postImageMain}>
+                      <img
+                        src={'/place_imagenot.svg'}
+                        alt={'place image'}
+                        className={styles.postIMage}
                       />
                     </div>
                   )}

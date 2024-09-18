@@ -43,7 +43,8 @@ const filterTrips = (
       matchesSearchOrGeo = false;
       matchesSearchOrGeo =
         trip.tripName.toLowerCase().includes(searchValue.toLowerCase()) ||
-        trip.text.toLowerCase().includes(searchValue.toLowerCase());
+        trip.text.toLowerCase().includes(searchValue.toLowerCase()) ||
+        trip.hashtags.some((hashtag) => hashtag.toLowerCase().includes(searchValue.toLowerCase()));
     }
 
     if (currentGeoTag) {
@@ -102,6 +103,8 @@ const SearchTrips = () => {
 
   const location = useLocation();
   const { allTrips, currentGeoTag, searchValue } = location.state;
+  console.log('allTrips', allTrips);
+  
 
   useEffect(() => {
     const newFilteredTrips = filterTrips(

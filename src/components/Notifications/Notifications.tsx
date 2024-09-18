@@ -68,6 +68,11 @@ export const Notifications: FC<Props> = ({
         handleOpenComment(notification);
         deleteMessage(notification.id);
         break;
+
+      case NotificationType.NewFriend:
+        deleteMessage(notification.id);
+        navigate('/user/' + notification.fromUserId);
+        break;
       default:
         break;
     }

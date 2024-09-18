@@ -140,7 +140,6 @@ const SearchInputComponent = () => {
               .filter((geotag) =>
                 geotag.address.toLowerCase().includes(searchValue.toLowerCase().trim())
               )
-              .slice(0, 5)
               .map((geotag) => (
                 <SearchTripsCard
                   geotag={geotag}
@@ -183,7 +182,6 @@ const SearchInputComponent = () => {
                 .filter((geotag) =>
                   geotag.address.toLowerCase().includes(searchValue.toLowerCase().trim())
                 )
-                .slice(0, 4)
                 .map((geotag) => (
                   <SearchTripsCard
                     geotag={geotag}

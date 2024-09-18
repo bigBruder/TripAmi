@@ -22,4 +22,7 @@ export interface ITravel {
   stage: string;
   people: string;
   createdAt: string;
+  hashtags: string[];
+  isPrivatJournal: boolean;
+  isTripPrivacy: boolean;
 }

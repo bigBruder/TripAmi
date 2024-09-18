@@ -272,14 +272,17 @@
 }
 
 .travelsContainerMain {
-  display: flex;
-  flex-direction: column;
+  margin-top: 40px;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, 1fr);
 }
 
-.travelContainer {
-    padding: 0 0 70px 60px;
-    gap: 70px;
-    width: 90vw;
+@media (max-width: 768px) {
+  .travelsContainerMain {
+    grid-template-columns: repeat(1, 1fr);
+  }
+  
 }
 
 .sliderContainer {

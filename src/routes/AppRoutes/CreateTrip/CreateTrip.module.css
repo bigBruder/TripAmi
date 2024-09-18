@@ -1192,3 +1192,7 @@ rotate: 45deg;
   top: 50%;
   right: -5px;
 }
+
+.toggleWrapperTrip {
+  margin-top: 24px;
+}

@@ -71,6 +71,16 @@
   text-align: center;
 }
 
+.closeModal {
+  position: absolute;
+  top: 3px;
+  right: 0;
+  transform: translateY(-55%);
+  align-self: flex-start;
+  cursor: pointer;
+  transform: rotate(45deg);
+}
+
 .mainTitleCreate {
   color: #000000;
   font-family: 'Gilroy-Bold';

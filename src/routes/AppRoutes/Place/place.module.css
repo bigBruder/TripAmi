@@ -337,6 +337,25 @@ h3, h2 {
   height: 100%;
 }
 
+.commentsMap {
+  max-height: 650px;
+  height: fit-content;
+  overflow-y: auto;
+}
+
+.commentsMap::-webkit-scrollbar {
+  width: 6px;
+}
+
+.commentsMap::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.commentsMap::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+}
+
 .mapContainerImage {
     width: 100%;
     display: grid;

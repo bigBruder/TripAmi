@@ -10,6 +10,7 @@ import { Itinerary } from '~/types/user';
 
 import arrow_back from '@assets/icons/arrow_back.svg';
 import location from '@assets/icons/place_icon.svg';
+import close from '@assets/icons/plus.svg';
 
 import CustomDropdownItinerary from '../CustomDropdownItinerary';
 import styles from './ItineraryModal.module.css';
@@ -61,7 +62,6 @@ const ItineraryModal: React.FC<ItineraryModalProps> = ({ closeModal, selectedIti
     }
 
     if (initiaryName.trim() && firestoreUser?.id) {
-
       const itineraryHandle = async () => {
         try {
           await updateDoc(doc(db, 'users', firestoreUser?.id), {
@@ -137,6 +137,12 @@ const ItineraryModal: React.FC<ItineraryModalProps> = ({ closeModal, selectedIti
               className={styles.arrow_back}
               onClick={() => setIsAddingFolder(false)}
             />
+            <img
+              src={close}
+              alt='close'
+              className={styles.closeModal}
+              onClick={() => closeModal()}
+            />
             <h2 className={styles.mainTitleCreate}>Create Itinerary Folder</h2>
           </div>
           <div className={styles.inputContainer}>
@@ -161,7 +167,15 @@ const ItineraryModal: React.FC<ItineraryModalProps> = ({ closeModal, selectedIti
         </div>
       ) : (
         <div className={styles.modalContent}>
-          <h2 className={styles.mainTitle}>Add place to Itinerary</h2>
+          <div className={styles.topContainer}>
+            <img
+              src={close}
+              alt='close'
+              className={styles.closeModal}
+              onClick={() => closeModal()}
+            />
+            <h2 className={styles.mainTitle}>Add place to Itinerary</h2>
+          </div>
           <p className={styles.text}>
             Add a destination to an existing itinerary or create a new one.
           </p>

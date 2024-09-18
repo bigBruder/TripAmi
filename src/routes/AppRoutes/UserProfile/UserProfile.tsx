@@ -23,6 +23,7 @@ import { db, storage } from '~/firebase';
 import { AuthContext } from '~/providers/authContext';
 import {
   friendsRequestsCollection,
+  notificationsCollection,
   tripsCollection,
   usersCollection,
 } from '~/types/firestoreCollections';
@@ -38,6 +39,7 @@ import { ref } from '@firebase/storage';
 
 import AddNewFriends, { UserCard } from '../AddNewFriends/AddNewFriends';
 import styles from './userProfile.module.css';
+import { NotificationType } from '~/types/notifications/notifications';
 
 type SortBy = 'endDate' | 'rate' | 'alphabetically';
 const TABS = ['Friends', 'Trips'];
@@ -224,6 +226,14 @@ const UserProfile = () => {
           fromUser: firestoreUser.id,
           createdAt: new Date().toISOString(),
           status: FriendsRequestStatus.PENDING,
+        });
+        await addDoc(notificationsCollection, {
+          targetUserId: userData.id,
+          fromUserId: firestoreUser.id,
+          type: NotificationType.NewFriend,
+          text: `${firestoreUser.username} wants to be your friend`,
+          createdAt: new Date().toISOString(),
+          isReaded: false,
         });
       } catch (err) {
         console.log(err);
@@ -453,26 +463,19 @@ const UserProfile = () => {
                   <p className={styles.title}>{userData?.username} has not any travels</p>
                 ) : (
                   <>
+                    <Sort
+                      onSelect={setSortBy}
+                      isReverse={isReverse}
+                      setReverse={() => setIsReverse((prevState) => !prevState)}
+                    />
                     <div className={styles.travelsContainerMain}>
-                      <Sort
-                        onSelect={setSortBy}
-                        isReverse={isReverse}
-                        setReverse={() => setIsReverse((prevState) => !prevState)}
-                      />
-                      <div className={styles.travelsContainer}>
-                        {travelsIsLoading ? (
-                          <Skeleton
-                            count={2}
-                            height={100}
-                            width={400}
-                            style={{ margin: '10px 0' }}
-                          />
-                        ) : (
-                          userTravels.map((travel) => (
-                            <TravelCard key={travel.id} travel={travel} />
-                          ))
-                        )}
-                      </div>
+                      {travelsIsLoading ? (
+                        <Skeleton count={2} height={100} width={400} style={{ margin: '10px 0' }} />
+                      ) : (
+                        userTravels
+                          .filter((travel: ITravel) => !travel.isTripPrivacy)
+                          .map((travel) => <TravelCard key={travel.id} travel={travel} isPlace />)
+                      )}
                     </div>
                   </>
                 ))}

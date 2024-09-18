@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 
 import axios from 'axios';
 import cn from 'classnames';
-import { eachDayOfInterval, format, isValid, parse, parseISO } from 'date-fns';
+import { eachDayOfInterval, format, isValid, parse } from 'date-fns';
 import {
   collection,
   deleteDoc,
@@ -44,6 +44,7 @@ import {
   tripsCollection,
 } from '~/types/firestoreCollections';
 import { NotificationType } from '~/types/notifications/notifications';
+import { ITravel } from '~/types/travel';
 import { UpdatedDateJournal } from '~/types/updatedDateJournal';
 import getNeutralColor from '~/utils/getNeutralColor';
 
@@ -82,8 +83,6 @@ interface Props {
   };
 }
 
-const apiKey = import.meta.env.VITE_PUBLIC_KEY;
-
 const CreateTrip: React.FC<Props> = () => {
   const { state } = useLocation();
   const { data, isEdit } = state || {};
@@ -97,6 +96,7 @@ const CreateTrip: React.FC<Props> = () => {
   const [hashtagsResult, setHashtagsResult] = useState<string[]>(data?.hashtags || []);
   const [startDate, setStartDate] = useState(data?.startDate || moment().format('MM/DD/YYYY'));
   const [endDate, setEndDate] = useState(data?.endDate || moment().format('MM/DD/YYYY'));
+  const [isTripPrivacy, setIsTripPrivacy] = useState(data?.isTripPrivacy || false);
 
   const [isLoading, setIsLoading] = useState(false);
   const [text, setText] = useState(data?.text || '');
@@ -104,21 +104,12 @@ const CreateTrip: React.FC<Props> = () => {
   const [selectedGeoTags, setSelectedGeoTags] = useState<
     { address: string; placeID: string; photo: string }[]
   >(data?.geoTags || []);
-  const [selectedCities, setSelectedCities] = useState<{ address: string; placeID: string }[]>(
-    data?.cities || []
-  );
   const [tripName, setTripName] = useState(data?.tripName || '');
   const [avatar, setAvatar] = useState<string>(defaultUserIcon);
   const [activeTab, setActiveTab] = useState(data?.stage || 'Finished');
   const [downloadedImages, setDownloadedImages] = useState<
     { url: string; type: string; description: string }[]
   >(data?.imageUrl || []);
-  const [imagesDescription, setImagesDescription] = useState<
-    { name: string; value: string; id?: number }[]
-  >(
-    downloadedImages?.map((image, id) => ({ name: image.url, value: image.description, id: id })) ||
-    []
-  );
 
   const [selectedDate, setSelectedDate] = useState<Date>(new Date(startDate));
   const [dailyInfo, setDailyInfo] = useState<DateInfo[]>([]);
@@ -130,6 +121,10 @@ const CreateTrip: React.FC<Props> = () => {
 
   const toggle = () => {
     setIsPrivatJournal(!isPrivatJournal);
+  };
+
+  const toggleTripPrivacy = () => {
+    setIsTripPrivacy(!isTripPrivacy);
   };
 
   const navigate = useNavigate();
@@ -353,6 +348,7 @@ const CreateTrip: React.FC<Props> = () => {
             stage: finished ? 'Finished' : activeTab,
             isPrivatJournal,
             placeIDs,
+            isTripPrivacy,
           });
           const subcollectionPlaces = collection(db, `trips/${docRef.id}/places`);
           const queryPlaces = query(subcollectionPlaces);
@@ -404,33 +400,10 @@ const CreateTrip: React.FC<Props> = () => {
             usersSaved: [],
             isPrivatJournal,
             placeIDs,
+            isTripPrivacy,
           }).then(async (docRef) => {
-            const subcollectionCities = collection(db, `trips/${docRef.id}/cities`);
             const subcollectionPlaces = collection(db, `trips/${docRef.id}/places`);
 
-            selectedCities.forEach(async (city) => {
-              await addDoc(subcollectionCities, {
-                address: city.address,
-                placeID: city.placeID,
-                lat: city.lat,
-                lng: city.lng,
-                types: city.types,
-                name: city.name,
-              });
-
-              const q = query(placesCollection, where('placeId', '==', city.placeID));
-              const querySnapshot = await getDocs(q);
-              if (querySnapshot.docs.length === 0) {
-                await addDoc(placesCollection, {
-                  address: city.address,
-                  placeId: city.placeID,
-                  lat: city.lat,
-                  lng: city.lng,
-                  types: city.types,
-                  name: city.name,
-                });
-              }
-            });
             selectedGeoTags.forEach(async (city) => {
               await addDoc(subcollectionPlaces, {
                 address: city.address,
@@ -480,13 +453,46 @@ const CreateTrip: React.FC<Props> = () => {
             tripCount: firestoreUser?.tripCount ? firestoreUser?.tripCount + 1 : 1,
           });
         }
+      }
+
+      if (isEdit && data) {
+        if (!toast.isActive('success')) {
+          toast.success('Trip updated!', { toastId: 'success' });
+        }
       } else {
-        notify('Upload at least one media and insert a location');
+        if (!toast.isActive('success')) {
+          toast.success('Trip created!', { toastId: 'success' });
+        }
+      }
+
+      const fetchNewTripForNavigate = async () => {
+        const q = query(tripsCollection, where('userId', '==', firestoreUser?.id));
+        const querySnapshot = await getDocs(q);
+        const fetchedTrips: ITravel[] = querySnapshot.docs.map((doc) => ({
+          ...(doc.data() as ITravel),
+          id: doc.id,
+          createdAt: doc.data().createdAt.toDate(),
+        }));
+        const newTrip = fetchedTrips.sort(
+          (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+        console.log('newTrip', newTrip);
+        return newTrip[0];
+      };
+
+      if (isEdit && data) {
+        navigate(`/trip/${data.id}`);
+      } else {
+        const newTrip = await fetchNewTripForNavigate();
+        console.log('newTrip', newTrip);
+        if (newTrip) {
+          navigate(`/trip/${newTrip.id}`);
+        }
       }
     } catch (err) {
       console.log('[ERROR saving the trip] => ', err);
+      // navigate('/profile');
     } finally {
-      navigate('/profile');
       setIsLoading(false);
     }
   };
@@ -533,7 +539,6 @@ const CreateTrip: React.FC<Props> = () => {
     event.preventDefault();
 
     setFile((prevState) => prevState.filter((_, i) => i !== index));
-    setImagesDescription((prevState) => prevState.filter((_, i) => i !== index));
   };
 
   const handleDayDescriptionChange = (
@@ -951,6 +956,19 @@ const CreateTrip: React.FC<Props> = () => {
               value={text}
               onChange={(e) => handleTextChange(e.target.value)}
             />
+          </div>
+          <div>
+            <div className={`${styles.toggleWrapper} ${styles.toggleWrapperTrip}`}>
+              <div
+                className={`${styles.toggleContainer} ${isTripPrivacy ? styles.active : ''}`}
+                onClick={toggleTripPrivacy}
+              >
+                <div className={styles.toggleCircle}></div>
+              </div>
+              <span className={styles.privatPublicJournal}>
+                {isTripPrivacy ? 'Private' : 'Public'} Trip
+              </span>
+            </div>
           </div>
           <div className={styles.placeContainer}>
             <h2 className={styles.placesTitle}>Add Your Places</h2>

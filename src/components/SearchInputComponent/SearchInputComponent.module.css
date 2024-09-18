@@ -56,16 +56,38 @@
   top: 120%;
   left: 0;
   width: 100%;
+  max-height: 320px;
   height: fit-content;
+  overflow-y: auto;
   border-radius: 24px;
   padding: 16px;
   box-sizing: border-box;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 16px;
   flex-direction: column;
   background-color: rgba(254, 254, 254, 0.9);
   z-index: 100;
+}
+
+@media (max-width: 834px) {
+  .searchResults {
+    max-height: 450px;
+  }
+}
+
+.searchResults::-webkit-scrollbar {
+  width: 6px;
+}
+
+.searchResults::-webkit-scrollbar-track {
+  background-color: transparent;
+  margin: 20px 0;
+}
+
+.searchResults::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
 }
 
 .modalOverlay {

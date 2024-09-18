@@ -7,6 +7,7 @@ import { db } from '~/firebase';
 import { AuthContext } from '~/providers/authContext';
 
 import location from '@assets/icons/place_icon.svg';
+import close from '@assets/icons/plus.svg';
 
 import styles from './AddFolderModal.module.css';
 
@@ -77,6 +78,12 @@ const AddFolderModal: React.FC<AddFolderModalProps> = ({ setIsAddFolderOpen, set
       <div className={styles.modalContent}>
         <div className={styles.topContainer}>
           <h2 className={styles.mainTitleCreate}>Create Itinerary Folder</h2>
+          <img
+            src={close}
+            alt='close'
+            className={styles.closeModal}
+            onClick={() => setIsAddFolderOpen(false)}
+          />
         </div>
         <div className={styles.inputContainer}>
           <img src={location} className={styles.icon} />
