@@ -122,7 +122,7 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user, isFriend = false, isTabs 
               usersCollection,
               where(documentId(), 'in', user.friends),
               where(documentId(), '!=', firestoreUser.id),
-              limit(40)
+              limit(60)
             );
           } else if (user && user.friends && user.friends.length === 0) {
             q = null;
@@ -130,7 +130,7 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user, isFriend = false, isTabs 
             q = query(
               usersCollection,
               where('firebaseUid', '!=', firestoreUser?.firebaseUid),
-              limit(40)
+              limit(60)
             );
           }
 
@@ -223,7 +223,7 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user, isFriend = false, isTabs 
         setCopyLink(true);
         setTimeout(() => {
           setCopyLink(false);
-        }, 5000);
+        }, 2000);
       })
       .catch(() => {
         console.log('Failed to copy link to clipboard');

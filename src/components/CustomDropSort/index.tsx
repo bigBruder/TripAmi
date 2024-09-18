@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import styles from './CustomDropSort.module.css';
+
 import { SortDirection } from '~/assets/icons/SortDirection';
+
+import styles from './CustomDropSort.module.css';
 
 interface Sort {
   onSelect: (value: string) => void;
@@ -40,11 +42,7 @@ const CustomSortDropdown: React.FC<Sort> = ({ onSelect, isReverse, setReverse })
 
   return (
     <div className={styles.dropdown} ref={dropRef} tabIndex={-1} onBlur={handleBlur}>
-      <div
-        className={styles.dropdown_header}
-        onClick={() => setIsOpen(!isOpen)}
-        tabIndex={0}
-      >
+      <div className={styles.dropdown_header} onClick={() => setIsOpen(!isOpen)} tabIndex={0}>
         Filter by: {selectedOption}
       </div>
       {isOpen && (

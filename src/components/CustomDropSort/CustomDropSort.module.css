@@ -1,15 +1,14 @@
 .dropdown {
   position: relative;
   display: inline-block;
-  width: 42%;
   margin-top: 40px;
-
+  grid-column: span 1;
   border-radius: 24px;
 }
 
 @media (max-width: 600px) {
   .dropdown {
-    width: 100%;
+    grid-column: span 2;
   }
 }
 

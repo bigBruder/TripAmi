@@ -114,8 +114,7 @@ export const TravelItinerary = () => {
     <div className={styles.container}>
       {travels && travels.length > 0 ? (
         <>
-          {/* <p className={styles.title}>{firestoreUser?.username}`s travels</p> */}
-          <div style={{ alignSelf: 'flex-start', width: '100%' }}>
+          <div style={{ width: '100%' }}>
             <Sort
               onSelect={setSortBy}
               isReverse={isReverse}
@@ -125,7 +124,7 @@ export const TravelItinerary = () => {
 
           <div className={styles.travelsContainer}>
             {travels.map((travel) => (
-              <TravelCard key={travel.id} travel={travel} />
+              <TravelCard key={travel.id} travel={travel} isPlace />
             ))}
           </div>
         </>

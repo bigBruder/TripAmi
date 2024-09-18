@@ -37,7 +37,7 @@
     flex-direction: column;
     justify-content: space-between;
     width: 100%;
-    gap: 4px;
+    gap: 10px;
     margin-bottom: 14px;
 }
 
@@ -544,7 +544,8 @@
 
 .infoContainer {
   display: flex;
+  flex-direction: column;
   gap: 10px;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
 }

@@ -23,9 +23,17 @@
 .travelsContainer {
     flex-wrap: wrap;
     justify-content: space-between;
-    display: flex;
-    gap: 20px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
     margin-bottom: 35px;
+    margin-top: 40px;
+}
+
+@media (max-width: 600px) {
+  .travelsContainer {
+    grid-template-columns: 1fr;
+  }
 }
 
 .bottomSliderContainer {

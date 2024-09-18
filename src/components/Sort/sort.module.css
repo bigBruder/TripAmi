@@ -1,9 +1,9 @@
 .sortContainer {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   justify-content: flex-start;
   gap: 20px;
   align-items: center;
-  margin-bottom: 20px;
   width: 100%;
 
   position: relative;
