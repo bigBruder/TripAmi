@@ -106,6 +106,28 @@ html {
   border-radius: 10px;
 }
 
+.editButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  line-height: 40px;
+  font-size: 18px;
+  font-weight: 500;
+  color: #FFFFFF;
+  border: 1px solid rgba(98, 144, 21, 0.6);
+  background: rgba(98, 144, 21, 0.6);
+  border-radius: 24px;
+  max-width: 190px;
+  box-sizing: border-box;
+  width: 100%;
+  transition: 0.3s;
+}
+
+.editButton:hover {
+  background: rgba(98, 144, 21, 0.4);
+}
+
 .commentsMap > *:not(:last-child) {
   border-bottom: 1px solid #DEDED7;
 }
@@ -200,11 +222,13 @@ html {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-top: ;
 }
 
 @media (max-width: 800px) {
   .headerTrip {
-    margin-bottom: 40px;
+    margin-bottom: 20px;
+    margin-top: 16px;
   }
 }
 
@@ -373,7 +397,7 @@ html {
     justify-content: flex-start;
     order: 0;
     grid-column: 1 / 3;
-  } 
+  }
 }
 
 @media (min-width: 1024px) {
@@ -381,7 +405,7 @@ html {
     justify-content: flex-start;
     order: 0;
     grid-column: 1 / 2;
-  } 
+  }
 }
 
 .topRightContainer {
@@ -409,10 +433,10 @@ html {
 .rateContainer {
   order: 5;
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
   gap: 10px;
-  grid-column: 1 / -1;
+  grid-column: span 1;
 }
 
 @media (min-width: 834px) {
@@ -492,13 +516,6 @@ html {
   font-family: 'Gilroy-Regular', sans-serif;
   font-weight: 400;
   line-height: 27px;
-}
-
-@media (max-width: 768px) {
-  .selectedTagsContainer {
-      flex-wrap: wrap;
-      width: 100%;
-  }  
 }
 
 .geotagTitle {
@@ -590,7 +607,7 @@ html {
   display: flex;
   align-items: center;
   gap: 10px;
-  grid-column: 1 / -1;
+  grid-column: span 1;
 }
 
 @media (min-width: 834px) {
@@ -675,6 +692,20 @@ html {
         width: 726px;
         margin: 0 auto;
     }
+
+    .editButton {
+      max-width: 100px;
+    }
+}
+
+@media (max-width: 768px) {
+  .selectedTagsContainer {
+      flex-wrap: wrap;
+      width: 100%;
+  }
+  .editButton {
+    max-width: 70px;
+  }
 }
 
 .suggestedTripContainer {

@@ -66,26 +66,12 @@ import 'rsuite/dist/rsuite.min.css';
 
 interface Props {
   isEdit?: boolean;
-  data?: {
-    id: string;
-    rate: number;
-    startDate: string;
-    endDate: string;
-    cities: { placeID: string; address: string }[];
-    tripName: string;
-    locationName: string;
-    text: string;
-    dayDescription: { date: string; description: string }[];
-    location: { name: string; longitude: number; latitude: number; color: string };
-    geoTags: { address: string; placeID: string }[];
-    imageUrl: { url: string; type: string; description: string }[];
-    isPrivatJournal: boolean;
-  };
+  data?: ITravel;
 }
 
 const CreateTrip: React.FC<Props> = () => {
   const { state } = useLocation();
-  const { data, isEdit } = state || {};
+  const { data, isEdit, id } = state || {};
   const { firestoreUser, updateFirestoreUser } = useContext(AuthContext);
   const [budget, setBudget] = useState(data?.budget || '');
   const [selectedPeople, setSelectedPeople] = useState(data?.people || '');
@@ -331,7 +317,7 @@ const CreateTrip: React.FC<Props> = () => {
 
         const placeIDs = selectedGeoTags.map((tag) => tag.placeID);
         if (isEdit && data) {
-          const docRef = doc(db, 'trips', data.id);
+          const docRef = doc(db, 'trips', id ? id : data.id);
           await updateDoc(docRef, {
             userId: firestoreUser?.id,
             imageUrl: [...uploadedImages],
@@ -350,6 +336,7 @@ const CreateTrip: React.FC<Props> = () => {
             placeIDs,
             isTripPrivacy,
           });
+
           const subcollectionPlaces = collection(db, `trips/${docRef.id}/places`);
           const queryPlaces = query(subcollectionPlaces);
           const querySnapshotPlaces = await getDocs(queryPlaces);
@@ -380,6 +367,10 @@ const CreateTrip: React.FC<Props> = () => {
               });
             }
           });
+
+          if (!toast.isActive('success')) {
+            toast.success('Trip updated!', { toastId: 'success' });
+          }
         } else {
           await addDoc(tripsCollection, {
             userId: firestoreUser?.id,
@@ -455,14 +446,8 @@ const CreateTrip: React.FC<Props> = () => {
         }
       }
 
-      if (isEdit && data) {
-        if (!toast.isActive('success')) {
-          toast.success('Trip updated!', { toastId: 'success' });
-        }
-      } else {
-        if (!toast.isActive('success')) {
-          toast.success('Trip created!', { toastId: 'success' });
-        }
+      if (!toast.isActive('success')) {
+        toast.success('Trip created!', { toastId: 'success' });
       }
 
       const fetchNewTripForNavigate = async () => {
@@ -476,15 +461,13 @@ const CreateTrip: React.FC<Props> = () => {
         const newTrip = fetchedTrips.sort(
           (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );
-        console.log('newTrip', newTrip);
         return newTrip[0];
       };
 
       if (isEdit && data) {
-        navigate(`/trip/${data.id}`);
+        navigate(`/trip/${id ? id : data.id}`);
       } else {
         const newTrip = await fetchNewTripForNavigate();
-        console.log('newTrip', newTrip);
         if (newTrip) {
           navigate(`/trip/${newTrip.id}`);
         }
@@ -554,14 +537,28 @@ const CreateTrip: React.FC<Props> = () => {
   useEffect(() => {
     (async () => {
       if (isEdit && data) {
-        const querySnapshot = await query(tripsCollection, where(documentId(), '==', data.id));
-        const docRef = await getDocs(querySnapshot);
-        const docData = docRef.docs[0].data();
-        for (let i = 0; i < docData.imageUrl.length; i++) {
-          const url = await getDownloadURL(ref(storage, docData.imageUrl[i].url));
-          docData.imageUrl[i].url = url;
+        if (id) {
+          const querySnapshot = await getDocs(
+            query(tripsCollection, where(documentId(), '==', id))
+          );
+          const docRef = querySnapshot.docs[0];
+          const docData = docRef.data();
+          for (let i = 0; i < docData.imageUrl.length; i++) {
+            const url = await getDownloadURL(ref(storage, docData.imageUrl[i].url));
+            docData.imageUrl[i].url = url;
+          }
+          setDownloadedImages(docData.imageUrl);
+        } else {
+          const querySnapshot = await query(tripsCollection, where(documentId(), '==', data.id));
+
+          const docRef = await getDocs(querySnapshot);
+          const docData = docRef.docs[0].data();
+          for (let i = 0; i < docData.imageUrl.length; i++) {
+            const url = await getDownloadURL(ref(storage, docData.imageUrl[i].url));
+            docData.imageUrl[i].url = url;
+          }
+          setDownloadedImages(docData.imageUrl);
         }
-        setDownloadedImages(docData.imageUrl);
       }
     })();
   }, [data, isEdit]);
@@ -1139,6 +1136,19 @@ const CreateTrip: React.FC<Props> = () => {
                   </div>
                 </div>
               </div>
+              {selectedDate && (
+                <div className={styles.descriptionContainer}>
+                  <textarea
+                    className={`${styles.input} ${styles.textArea}`}
+                    placeholder={'Add journal entry'}
+                    value={
+                      dailyInfo.find((day) => day.date === formatedDate(selectedDate))
+                        ?.description || ''
+                    }
+                    onChange={(e) => handleDayDescriptionChange(e, formatedDate(selectedDate))}
+                  />
+                </div>
+              )}
               <DailyUploadImagesEditor
                 handleChange={handleChangePhotoDaily}
                 dailyInfo={
@@ -1174,19 +1184,6 @@ const CreateTrip: React.FC<Props> = () => {
                     </div>
                   ))}
               </div>
-              {selectedDate && (
-                <div className={styles.descriptionContainer}>
-                  <textarea
-                    className={`${styles.input} ${styles.textArea}`}
-                    placeholder={'Description'}
-                    value={
-                      dailyInfo.find((day) => day.date === formatedDate(selectedDate))
-                        ?.description || ''
-                    }
-                    onChange={(e) => handleDayDescriptionChange(e, formatedDate(selectedDate))}
-                  />
-                </div>
-              )}
             </div>
           </div>
           <div className={styles.submit_container}>

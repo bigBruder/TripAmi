@@ -94,10 +94,11 @@ const DailyUploadImagesEditor: React.FC<Props> = ({ dailyInfo, handleChange, han
           hoverTitle={' '}
         >
           <div className={styles.uploadContainer}>
-            <p className={styles.text}>Drag and drop image/video or click on </p>
+            <p className={styles.text}>Drag and drop image/video or click on</p>
             <div className={styles.buttonUploadContainer}>
               <img src={downloadButton} alt='downloadButton' className={styles.buttonUpload} />
             </div>
+            <p className={styles.text}>To upload media to your day description</p>
           </div>
         </FileUploader>
       ) : dailyInfo.length === 1 ? (

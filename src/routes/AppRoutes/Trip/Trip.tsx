@@ -213,13 +213,26 @@ export const Trip = () => {
   }, [trip]);
 
   useEffect(() => {
-    if (id) {
-      const docRef = doc(db, 'trips', id);
-      const unsubscribe = onSnapshot(docRef, (doc) => {
-        setTrip(doc.data());
-      });
-      return () => unsubscribe();
-    }
+    const fetchTrip = async () => {
+      if (id) {
+        try {
+          const docRef = doc(db, 'trips', id);
+          const docSnapshot = await getDoc(docRef);
+
+          if (docSnapshot.exists()) {
+            setTrip(docSnapshot.data());
+            console.log('trip', docSnapshot.data());
+          } else {
+            console.error('document not found');
+            setTrip(null);
+          }
+        } catch (error) {
+          console.error('error update document', error);
+        }
+      }
+    };
+
+    fetchTrip();
   }, [id, db]);
 
   useEffect(() => {
@@ -337,13 +350,11 @@ export const Trip = () => {
       const userId = firestoreUser.id;
 
       if (trip.usersSaved?.includes(userId)) {
-        // Видаляємо користувача зі списку збережених
         await updateDoc(docRef, {
           usersSaved: trip.usersSaved.filter((user) => user !== userId),
         });
         setInFavourites(false);
       } else {
-        // Додаємо користувача до списку збережених
         await updateDoc(docRef, {
           usersSaved: trip.usersSaved ? [...trip.usersSaved, userId] : [userId],
         });
@@ -461,13 +472,23 @@ export const Trip = () => {
                   className={styles.socialIcon}
                   onClick={() => setIsModalShareOpen(true)}
                 />
-                {firestoreUser?.id !== trip?.userId && (
+                {firestoreUser?.id !== trip?.userId ? (
                   <img
                     src={inFavourites ? tripSaved : saveTrip}
                     alt='saveTrip'
                     className={styles.socialIcon}
                     onClick={handleFavouriteClick}
                   />
+                ) : (
+                  <button
+                    className={styles.editButton}
+                    onClick={() => {
+                      navigate('/trip/create', { state: { data: trip, isEdit: true, id: id } });
+                      window.scrollTo(0, 0);
+                    }}
+                  >
+                    Edit
+                  </button>
                 )}
               </div>
             </div>
