@@ -252,7 +252,6 @@ const LoginPage = () => {
                     .filter((geotag) =>
                       geotag.address.toLowerCase().includes(searchValue.toLowerCase())
                     )
-                    .slice(0, 5)
                     .map((geotag) => (
                       <SearchTripsCard
                         geotag={geotag}
