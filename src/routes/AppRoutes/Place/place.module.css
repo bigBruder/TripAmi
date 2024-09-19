@@ -339,8 +339,9 @@ h3, h2 {
 
 .commentsMap {
   max-height: 650px;
-  height: fit-content;
-  overflow-y: auto;
+  height: 100%;
+  overflow-y: scroll;
+  scroll-behavior: smooth;
 }
 
 .commentsMap::-webkit-scrollbar {

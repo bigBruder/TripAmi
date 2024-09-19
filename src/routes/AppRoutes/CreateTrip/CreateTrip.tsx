@@ -24,7 +24,6 @@ import { DatePicker, DateRangePicker } from 'rsuite';
 import { Navigation } from 'swiper/modules';
 import { Swiper, SwiperRef, SwiperSlide } from 'swiper/react';
 import { v4 as uuidv4 } from 'uuid';
-import { create } from 'zustand';
 import Plus from '~/assets/icons/plus.svg';
 import CustomDropdownEditor from '~/components/CustomDropdownEditor';
 import CustomPlacesDropdown from '~/components/CustomPlacesDropdown';
@@ -418,7 +417,7 @@ const CreateTrip: React.FC<Props> = () => {
                 });
               }
             });
-            if (firestoreUser?.friends) {
+            if (firestoreUser?.friends && !isTripPrivacy) {
               const q = query(
                 tripsCollection,
                 where('userId', '==', firestoreUser?.id),

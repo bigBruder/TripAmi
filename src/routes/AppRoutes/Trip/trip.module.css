@@ -89,8 +89,9 @@ html {
   flex-direction: column;
   gap: 20px;
   max-height: 550px;
-  height: fit-content;
-  overflow-y: auto;
+  height: 100%;
+  overflow-y: scroll;
+  scroll-behavior: smooth;
 }
 
 .commentsMap::-webkit-scrollbar {
@@ -589,7 +590,7 @@ html {
 @media (min-width: 834px) {
   .dateContainerBudget {
     justify-content: flex-start;
-    grid-column: 4 / 6;
+    grid-column: 6 / 6;
     order: 3;
   }
 }

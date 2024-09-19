@@ -192,7 +192,7 @@
     justify-content: space-between;
     align-self: flex-start;
     flex-wrap: wrap;
-    height: 35px;
+    gap: 4px;
     color: #aeaeae;
     padding: 12.5px 0;
     align-self: stretch;

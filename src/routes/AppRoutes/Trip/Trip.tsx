@@ -404,11 +404,11 @@ export const Trip = () => {
 
   const updateWidth = () => {
     if (window.innerWidth >= 1420) {
-      setWidth('80%');
+      setWidth('90%');
     } else if (window.innerWidth >= 860) {
-      setWidth('75%');
+      setWidth('85%');
     } else {
-      setWidth('65%');
+      setWidth('75%');
     }
   };
 
@@ -670,19 +670,19 @@ export const Trip = () => {
                     className={styles.dateButtonsContainer}
                     style={{
                       margin: '0',
-                      width: '80%',
+                      width: width,
                       alignSelf: 'center',
                       justifyContent: 'center',
                     }}
                     breakpoints={{
-                      320: {
+                      480: {
                         slidesPerView: 1,
                       },
-                      480: {
+                      650: {
                         slidesPerView: 2,
                       },
-                      650: {
-                        slidesPerView: 3,
+                      860: {
+                        slidesPerView: 2,
                       },
                       1040: {
                         slidesPerView: 4,

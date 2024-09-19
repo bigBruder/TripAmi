@@ -119,7 +119,6 @@ const Header: React.FC<HeaderProps> = ({ avatar, isFirestoreUser }) => {
           <>
             {isFirestoreUser ? (
               <>
-                <SearchInputComponent />
                 <img
                   className={styles.defaultUserIcon}
                   src={isFirestoreUser ? avatar : defaultUserIcon}
@@ -165,7 +164,6 @@ const Header: React.FC<HeaderProps> = ({ avatar, isFirestoreUser }) => {
           <div className={styles.mobileSearchContainer}>
             {isFirestoreUser ? (
               <>
-                <SearchInputComponent />
                 <img
                   className={styles.defaultUserIcon}
                   src={isFirestoreUser ? avatar : defaultUserIcon}
