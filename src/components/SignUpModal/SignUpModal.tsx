@@ -39,7 +39,11 @@ export const SignUpModal: FC<Props> = ({ onClose, isOpen, isLogin = false }) => 
     const result = await signIn(email, password);
 
     if (result) {
-      navigate('/profile');
+      if (auth.currentUser) {
+        navigate('/profile');
+      } else {
+        console.error('User not authenticated');
+      }
     }
   }, [email, password]);
 

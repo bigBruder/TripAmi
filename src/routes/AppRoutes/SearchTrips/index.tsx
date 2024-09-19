@@ -104,7 +104,6 @@ const SearchTrips = () => {
   const location = useLocation();
   const { allTrips, currentGeoTag, searchValue } = location.state;
   console.log('allTrips', allTrips);
-  
 
   useEffect(() => {
     const newFilteredTrips = filterTrips(
@@ -492,7 +491,12 @@ const SearchTrips = () => {
                 <h3 className={styles.filterTitle}>Related user&apos;s trips</h3>
                 <div className={styles.tripsContainer}>
                   {currentTrips.map((trip: ITravel) => (
-                    <TravelCard travel={trip} isSearch={isSearch} key={trip.id} />
+                    <TravelCard
+                      travel={trip}
+                      isSearch={isSearch}
+                      key={trip.id}
+                      isUniqueSearch={true}
+                    />
                   ))}
                 </div>
                 <div className={styles.pagination}>{renderPagination()}</div>

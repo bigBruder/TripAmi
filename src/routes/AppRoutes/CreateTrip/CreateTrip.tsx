@@ -169,6 +169,8 @@ const CreateTrip: React.FC<Props> = () => {
   const notify = (textValue: string) => toast.error(textValue);
 
   const handleChange = (fileList: FileList) => {
+    console.log(fileList);
+
     setFile((prevState) => [...prevState, ...Array.from(fileList)]);
   };
 
@@ -432,6 +434,7 @@ const CreateTrip: React.FC<Props> = () => {
                   type: NotificationType.NewTrip,
                   createdAt: new Date().toISOString(),
                   isReaded: false,
+                  fromUserName: firestoreUser?.username,
                 });
               });
             }

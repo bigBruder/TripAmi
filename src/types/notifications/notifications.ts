@@ -7,6 +7,7 @@ export interface Notification {
   commentId?: string;
   isReaded?: boolean;
   fromUserId?: string;
+  fromUserName?: string;
 }
 
 export enum NotificationType {

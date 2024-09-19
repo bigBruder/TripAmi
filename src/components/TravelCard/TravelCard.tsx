@@ -39,6 +39,7 @@ interface Props {
   isSwiper?: boolean;
   isSearch?: boolean;
   isPlace?: boolean;
+  isUniqueSearch?: boolean;
 }
 
 const notifyInfo = (message: string) => {
@@ -48,12 +49,19 @@ const notifyInfo = (message: string) => {
 };
 const notifyError = (message: string) => toast.error(message);
 
-const TravelCard: FC<Props> = ({ travel, isSwiper = false, isSearch = false, isPlace = false }) => {
+const TravelCard: FC<Props> = ({
+  travel,
+  isSwiper = false,
+  isSearch = false,
+  isPlace = false,
+  isUniqueSearch = false,
+}) => {
   const { firestoreUser, updateFirestoreUser } = useContext(AuthContext);
   const [imageDownloadUrls, setImageDownloadUrls] = useState<
     { url: string; type: string; description: string }[]
   >([]);
   const [userData, setUserData] = useState<IUser>();
+  const [userAvatar, setUserAvatar] = useState<string>('');
   const [isImageLoading, setIsImageLoading] = useState(true);
 
   const {
@@ -115,6 +123,18 @@ const TravelCard: FC<Props> = ({ travel, isSwiper = false, isSearch = false, isP
   }, [firestoreUser?.tripCount, id, updateFirestoreUser]);
 
   useEffect(() => {
+    const fetchUserAvatar = async () => {
+      if (userData?.avatarUrl) {
+        const url = await getDownloadURL(ref(storage, userData.avatarUrl));
+        setUserAvatar(url);
+      } else {
+        setUserAvatar('./defaultUserIcon.svg');
+      }
+    };
+    fetchUserAvatar();
+  }, [userData]);
+
+  useEffect(() => {
     (async () => {
       try {
         setIsImageLoading(true);
@@ -162,7 +182,7 @@ const TravelCard: FC<Props> = ({ travel, isSwiper = false, isSearch = false, isP
     })();
   }, [userId]);
 
-  const handleOpenTrip = (e: React.MouseEvent) => {
+  const handleOpenTrip = () => {
     navigate('/trip/' + id, { state: { id: id } });
     window.scrollTo(0, 0);
   };
@@ -174,16 +194,20 @@ const TravelCard: FC<Props> = ({ travel, isSwiper = false, isSearch = false, isP
         [styles.containerSearch]: isSearch,
       })}
       style={isPlace ? { width: '100%' } : undefined}
-      onClick={(e) => {
-        handleOpenTrip(e);
-      }}
+      onClick={() => handleOpenTrip()}
     >
       <div className={styles.mainContainer}>
         <div className={styles.mainPhotoContainer}>
           {imageDownloadUrls.length === 0 ? (
             <div
               className={styles.imageContainer}
-              style={isSearch ? { height: '100%', width: '100%' } : undefined}
+              style={
+                isSearch
+                  ? { height: '100%', width: '100%' }
+                  : isUniqueSearch
+                    ? { height: '220px' }
+                    : undefined
+              }
             >
               <img
                 src={'/photoNotFound.jpg'}
@@ -214,6 +238,7 @@ const TravelCard: FC<Props> = ({ travel, isSwiper = false, isSearch = false, isP
                   navigate('/trip/' + id, { state: { id: id } });
                   window.scrollTo(0, 0);
                 }}
+                style={isUniqueSearch ? { height: '220px' } : undefined}
               />
 
               {imageDownloadUrls.length > 2 && (
@@ -259,7 +284,24 @@ const TravelCard: FC<Props> = ({ travel, isSwiper = false, isSearch = false, isP
       </div>
       <div className={styles.mainFooterContainer}>
         <div className={styles.textContainer}>
-          <h3 className={styles.tripName}>{tripName}</h3>
+          <div className={styles.tripNameAndUser}>
+            <h3 className={styles.tripName}>{tripName}</h3>
+            {isUniqueSearch && (
+              <div className={styles.userContainer}>
+                <img
+                  src={userAvatar || '/defaultUserIcon.svg'}
+                  alt='user'
+                  className={styles.userAvatar}
+                  onClick={() => {
+                    navigate(`/profile/${userId}`);
+                  }}
+                />
+                <p className={styles.userName} onClick={() => navigate(`/profile/${userId}`)}>
+                  {userData?.username}
+                </p>
+              </div>
+            )}
+          </div>
           <div className={styles.topContainer}>
             <div className={styles.infoContainer}>
               <div className={styles.date}>

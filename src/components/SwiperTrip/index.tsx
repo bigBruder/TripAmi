@@ -99,7 +99,7 @@ const SwiperTrip: React.FC<Props> = ({ file, setIsPhotoOpen, setPhotoForModal })
             >
               {file.map((file) => (
                 <SwiperSlide key={file.url} className={styles.swiperSlide}>
-                  {file.type.includes('image') ? (
+                  {file.type.includes('image') || file.type === '' ? (
                     <img
                       src={file.url}
                       alt='Uploaded'

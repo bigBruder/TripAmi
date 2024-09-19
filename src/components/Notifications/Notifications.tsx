@@ -14,7 +14,9 @@ interface Props {
   onClose: () => void;
 }
 
-const getTitle = (type: NotificationType) => {
+const getTitle = (type: NotificationType, notification: Notification) => {
+  console.log(notification, 'friend');
+  
   switch (type.toLowerCase()) {
     case NotificationType.NewPost:
       return 'Your friend has created a new post!';
@@ -23,7 +25,7 @@ const getTitle = (type: NotificationType) => {
     case NotificationType.CommentTrip:
       return 'Somebody has commented on your trip:';
     case NotificationType.NewTrip:
-      return 'Your friend has created a new trip!';
+      return `${notification.fromUserName} has created a new trip!`;
     case NotificationType.NewReplyPost:
     case NotificationType.NewReplyTrip:
       return 'Somebody has replied to your comment:';
@@ -119,7 +121,7 @@ export const Notifications: FC<Props> = ({
                 className={`${styles.notification} ${notification.isReaded ? styles.notification_readed : ''}`}
               >
                 <div>
-                  <p className={styles.base_text}>{getTitle(notification.type)}</p>
+                  <p className={styles.base_text}>{getTitle(notification.type, notification)}</p>
                   {notification.text && (
                     <p className={styles.text}>
                       {notification.text.length > 20

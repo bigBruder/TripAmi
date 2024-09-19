@@ -42,6 +42,7 @@ import { ref, uploadBytes } from '@firebase/storage';
 import PlaceAutocomplete from '../PlaceAutocomplete/PlaceAutocomplete';
 import styles from './createTripModal.module.css';
 import './styles.css';
+import { fr } from 'date-fns/locale';
 
 const fileTypes = ['JPEG', 'PNG', 'JPG', 'MP4'];
 
@@ -309,6 +310,7 @@ const CreatePostModal: React.FC<Props> = ({ closeModal, isEdit, data }) => {
               firestoreUser?.friends.forEach(async (friendId) => {
                 await addDoc(notificationsCollection, {
                   targetUserId: friendId,
+                  fromUserId: firestoreUser?.username,
                   postId: querySnapshot.docs[0].id,
                   type: NotificationType.NewTrip,
                   createdAt: new Date().toISOString(),
