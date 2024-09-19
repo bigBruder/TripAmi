@@ -41,7 +41,7 @@ const shouldShowArrows = (fileLength: number): boolean => {
 };
 
 const UploadImagesEditor: React.FC<Props> = ({ file, handleChange, handleRemove }) => {
-  const fileTypes = ['JPEG', 'PNG', 'JPG', 'MP4', 'HEIC'];
+  const fileTypes = ['JPEG', 'PNG', 'JPG', 'MP4', 'heic', 'webp'];
 
   const sliderRef = useRef<SwiperRef>(null);
   const [currentSlide, setCurrentSlide] = useState(0);
