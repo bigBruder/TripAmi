@@ -70,6 +70,23 @@
   z-index: 100;
 }
 
+.seeResultsButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4.5px;
+  padding-block: 10.5px;
+  padding-left: 16px;
+  padding-right: 24px;
+  border: none;
+  border-radius: 24px;
+  background-color: #A27E65;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
 @media (max-width: 834px) {
   .searchResults {
     max-height: 320px;

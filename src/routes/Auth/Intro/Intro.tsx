@@ -2,6 +2,7 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
+import { all } from 'axios';
 import { doc, onSnapshot, updateDoc, where } from 'firebase/firestore';
 import { getDownloadURL, ref } from 'firebase/storage';
 import { Autoplay } from 'swiper/modules';
@@ -39,6 +40,7 @@ const LoginPage = () => {
   const [currentGeoTag, setCurrentGeoTag] = useState<IPlace | null>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [allTrips, setAllTrips] = useState<ITravel[]>([]);
+  const [filteredTripsLength, setFilteredTripsLength] = useState(0);
   const userRef = window.localStorage.getItem('ref');
   const searchBarRef = useRef(null);
 
@@ -218,6 +220,23 @@ const LoginPage = () => {
     navigate('/search', { state: { searchValue, allTrips } });
   };
 
+  const fetchFilteredTrips = async (newValue: string) => {
+    const filteredTrips = allTrips.filter(
+      (trip: ITravel) =>
+        (trip.tripName.toLowerCase().includes(newValue.toLowerCase()) ||
+          trip.text.toLowerCase().includes(newValue.toLowerCase()) ||
+          trip.hashtags.some((hashtag) =>
+            hashtag.toLowerCase().includes(newValue.toLowerCase())
+          )) &&
+        trip.budget.length !== 0 &&
+        typeof trip.budget === 'string' &&
+        trip.rate >= -1 &&
+        trip.people !== undefined
+    );
+
+    setFilteredTripsLength(filteredTrips.length);
+  };
+
   return (
     <>
       <div className={styles.main}>
@@ -233,8 +252,10 @@ const LoginPage = () => {
               placeholder='Search city, country or place'
               value={searchValue}
               onChange={(e) => {
-                setSearchValue(e.target.value);
+                const newValue = e.target.value;
+                setSearchValue(newValue);
                 setCurrentGeoTag(null);
+                fetchFilteredTrips(newValue);
               }}
               className={styles.searchInput}
               onFocus={() => handleInputFocus()}
@@ -263,7 +284,28 @@ const LoginPage = () => {
                       />
                     ))
                 ) : (
-                  <div className={styles.noResults}>No results found</div>
+                  <>
+                    <div className={styles.noResults}>
+                      No{' '}
+                      {allGeoTagsMap.filter((geotag) =>
+                        geotag.address.toLowerCase().includes(searchValue.toLowerCase())
+                      ).length || filteredTripsLength > 0
+                        ? 'places'
+                        : 'places and trips'}{' '}
+                      found
+                    </div>
+                    {filteredTripsLength > 0 && (
+                      <>
+                        <div className={styles.noResults}>
+                          But we have other {filteredTripsLength} results that match your search
+                          query
+                        </div>
+                        <div className={`${styles.noResults} ${styles.seeResultsButton}`}>
+                          See results
+                        </div>
+                      </>
+                    )}
+                  </>
                 )}
               </div>
             )}

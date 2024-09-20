@@ -23,6 +23,7 @@ const SearchInputComponent = () => {
   const [allGeoTagsMap, setAllGeoTagsMap] = useState<IPlace[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentGeoTag, setCurrentGeoTag] = useState(null);
+  const [filteredTripsLength, setFilteredTripsLength] = useState(0);
   const navigate = useNavigate();
 
   const openModal = () => {
@@ -116,6 +117,33 @@ const SearchInputComponent = () => {
     }
   };
 
+  const handleNavigate = () => {
+    navigate('/search', { state: { searchValue, allTrips } });
+    setSearchValue('');
+    setCurrentGeoTag(null);
+    setIsModalOpen(false);
+  };
+
+  const fetchFilteredTrips = async (newValue: string) => {
+    const filteredTrips = allTrips.filter(
+      (trip: ITravel) =>
+        (trip.tripName.toLowerCase().includes(newValue.toLowerCase()) ||
+          trip.text.toLowerCase().includes(newValue.toLowerCase()) ||
+          trip.hashtags.some((hashtag) =>
+            hashtag.toLowerCase().includes(newValue.toLowerCase())
+          )) &&
+        trip.budget.length !== 0 &&
+        typeof trip.budget === 'string' &&
+        trip.rate >= -1 &&
+        trip.people !== undefined
+    );
+
+    setFilteredTripsLength(filteredTrips.length);
+  };
+
+  console.log(filteredTripsLength, 'filteredTripsLength');
+  
+
   return screenWidth > 530 ? (
     <div className={styles.searchBarContainer} ref={searchBarRef}>
       <input
@@ -125,6 +153,7 @@ const SearchInputComponent = () => {
         onChange={(e) => {
           setSearchValue(e.target.value);
           setCurrentGeoTag(null);
+          fetchFilteredTrips(e.target.value);
         }}
         className={styles.searchInput}
         onFocus={() => handleInputFocus()}
@@ -152,7 +181,30 @@ const SearchInputComponent = () => {
                 />
               ))
           ) : (
-            <div className={styles.noResults}>No results found</div>
+            <>
+              <div className={styles.noResults}>
+                No{' '}
+                {allGeoTagsMap.filter((geotag) =>
+                  geotag.address.toLowerCase().includes(searchValue.toLowerCase())
+                ).length || filteredTripsLength > 0
+                  ? 'places'
+                  : 'places and trips'}{' '}
+                found
+              </div>
+              {filteredTripsLength > 0 && (
+                <>
+                  <div className={styles.noResults}>
+                    But we have other {filteredTripsLength} results that match your search query
+                  </div>
+                  <div
+                    className={`${styles.noResults} ${styles.seeResultsButton}`}
+                    onClick={() => handleNavigate()}
+                  >
+                    See results
+                  </div>
+                </>
+              )}
+            </>
           )}
         </div>
       )}
@@ -171,30 +223,61 @@ const SearchInputComponent = () => {
             type='form'
             placeholder='Search'
             value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value)}
+            onChange={(e) => {
+              setSearchValue(e.target.value);
+              setCurrentGeoTag(null);
+              fetchFilteredTrips(e.target.value);
+            }}
             className={styles.modalSearchInput}
             autoFocus
             onKeyDown={(e) => handleSearchClick(e)}
           />
           {isDropdownOpen && (
             <div className={styles.searchResults}>
-              {allGeoTagsMap
-                .filter((geotag) =>
-                  geotag.address.toLowerCase().includes(searchValue.toLowerCase().trim())
-                )
-                .map((geotag) => (
-                  <SearchTripsCard
-                    geotag={geotag}
-                    key={geotag.placeID}
-                    handleSearchPush={() => {
-                      setCurrentGeoTag(geotag);
-                      navigate('/search', { state: { allTrips, currentGeoTag: geotag } });
-                      setSearchValue('');
-                      setCurrentGeoTag(null);
-                      closeModal();
-                    }}
-                  />
-                ))}
+              {allGeoTagsMap.filter((geotag) =>
+                geotag.address.toLowerCase().includes(searchValue.toLowerCase().trim())
+              ).length ? (
+                allGeoTagsMap
+                  .filter((geotag) =>
+                    geotag.address.toLowerCase().includes(searchValue.toLowerCase().trim())
+                  )
+                  .map((geotag) => (
+                    <SearchTripsCard
+                      geotag={geotag}
+                      handleSearchPush={() => {
+                        setCurrentGeoTag(geotag);
+                        navigate('/search', { state: { allTrips, currentGeoTag: geotag } });
+                        setSearchValue('');
+                      }}
+                      key={geotag.placeID}
+                    />
+                  ))
+              ) : (
+                <>
+                  <div className={styles.noResults}>
+                    No{' '}
+                    {allGeoTagsMap.filter((geotag) =>
+                      geotag.address.toLowerCase().includes(searchValue.toLowerCase())
+                    ).length || filteredTripsLength > 0
+                      ? 'places'
+                      : 'places and trips'}{' '}
+                    found
+                  </div>
+                  {filteredTripsLength > 0 && (
+                    <>
+                      <div className={styles.noResults}>
+                        But we have other {filteredTripsLength} results that match your search query
+                      </div>
+                      <div
+                        onClick={() => handleNavigate()}
+                        className={`${styles.noResults} ${styles.seeResultsButton}`}
+                      >
+                        See results
+                      </div>
+                    </>
+                  )}
+                </>
+              )}
             </div>
           )}
           <button onClick={closeModal} className={styles.closeButton}>
