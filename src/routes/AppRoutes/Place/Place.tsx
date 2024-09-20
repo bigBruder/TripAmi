@@ -395,11 +395,7 @@ const Place = () => {
                       />
                     </div>
                   )}
-                  {id && geocode?.types && (
-                    <div className={styles.mapContainerTrans}>
-                      <MapComponent geotag={geotagForMap} />
-                    </div>
-                  )}
+                  {id && geocode?.types && <MapComponent geotag={geotagForMap} />}
                 </div>
               ) : (
                 <h2 className={styles.empty}>There is no information about this place</h2>

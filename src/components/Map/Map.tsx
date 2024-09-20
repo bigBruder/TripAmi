@@ -143,7 +143,15 @@ const Map: FC<Props> = ({ userId, geotag = null }) => {
   }, [selectedMarkerAddress]);
 
   return (
-    <div className={styles.mapContainer} style={{ position: 'relative' }}>
+    <div
+      className={styles.mapContainer}
+      style={{
+        position: 'relative',
+        ...(geotag
+          ? { border: 'none', backgroundColor: 'transparent', backdropFilter: 'none' }
+          : {}),
+      }}
+    >
       {selectedMarkerAddress && (
         <div className={styles.selectedMarkerAddress} onClick={() => handleSelectPlace()}>
           {selectedMarkerAddress.address}
@@ -160,7 +168,7 @@ const Map: FC<Props> = ({ userId, geotag = null }) => {
           center={position.coordinates}
           onMoveEnd={handleMoveEnd}
           onMove={({ zoom }) => setScaleFactor(zoom)}
-          style={{ width: '100%', height: '100%'}}
+          style={{ width: '100%', height: '100%' }}
           minZoom={1}
           maxZoom={30}
         >
