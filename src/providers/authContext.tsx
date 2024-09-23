@@ -1,12 +1,26 @@
 import React, { createContext, useEffect, useState } from 'react';
 
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import {
+  OAuthProvider,
+  createUserWithEmailAndPassword,
+  linkWithPopup,
+  signInWithEmailAndPassword,
+  signOut,
+} from 'firebase/auth';
 import { firebaseErrors } from '~/constants/firebaseErrors';
 import { auth, db, facebookProvider, googleProvider } from '~/firebase';
 import { usersCollection } from '~/types/firestoreCollections';
 import { IUser } from '~/types/user';
 
-import { FacebookAuthProvider, User, signInWithPopup, signInWithRedirect } from '@firebase/auth';
+import {
+  FacebookAuthProvider,
+  GoogleAuthProvider,
+  User,
+  fetchSignInMethodsForEmail,
+  getAuth,
+  linkWithCredential,
+  signInWithPopup,
+} from '@firebase/auth';
 import { addDoc, doc, getDocs, onSnapshot, query, updateDoc, where } from '@firebase/firestore';
 
 interface AuthContext {
@@ -17,7 +31,6 @@ interface AuthContext {
   loading: boolean;
   firestoreUser: null | IUser;
   updateFirestoreUser: (() => void) | ((data: IUser) => void);
-  signInViaFacebook: () => void;
   signInViaGoogle: () => Promise<unknown>;
   signInWithFacebook: () => Promise<boolean>;
 }
@@ -30,7 +43,6 @@ const defaultValue = {
   loading: true,
   firestoreUser: null,
   updateFirestoreUser: () => { },
-  signInViaFacebook: () => { },
   signInViaGoogle: () => new Promise((resolve) => { }),
   signInWithFacebook: () => new Promise((resolve) => { }),
 };
@@ -94,24 +106,12 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const signInViaFacebook = async () => {
-    setLoading(true);
-    try {
-      await signInWithRedirect(auth, facebookProvider);
-    } catch (err) {
-      // @ts-ignore
-      alert(firebaseErrors[err.code]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const signInWithFacebook = async () => {
     setLoading(true);
 
     try {
-      const provider = new FacebookAuthProvider(); 
-      
+      const provider = new FacebookAuthProvider();
+
       const result = await signInWithPopup(auth, provider);
 
       const credential = FacebookAuthProvider.credentialFromResult(result);
@@ -150,10 +150,54 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         });
       }
 
+      if (querySnapshot.docs.length > 0) {
+        await updateDoc(doc(db, 'users', querySnapshot.docs[0].id), {
+          accessToken,
+          userFromFacebook: true,
+          facebookId: result.user.providerData[0].uid,
+        });
+      }
+
       return true;
-    } catch (err) {
-      // @ts-ignore
-      console.error(err);
+    } catch (error: any) {
+      if (error.code === 'auth/account-exists-with-different-credential') {
+        const email = error.customData.email;
+        const auth = getAuth();
+        const pendingCredential = FacebookAuthProvider.credential(
+          error.customData._tokenResponse.oauthAccessToken
+        );
+
+        const existingSignInMethods = await fetchSignInMethodsForEmail(auth, email);
+
+        if (existingSignInMethods.includes('google.com')) {
+          const googleProvider = new GoogleAuthProvider();
+
+          try {
+            const googleResult = await signInWithPopup(auth, googleProvider);
+
+            await linkWithCredential(googleResult.user, pendingCredential);
+
+            const q = query(usersCollection, where('firebaseUid', '==', googleResult.user.uid));
+            const querySnapshot = await getDocs(q);
+
+            if (querySnapshot.docs.length > 0) {
+              await updateDoc(doc(db, 'users', querySnapshot.docs[0].id), {
+                accessToken: error.customData._tokenResponse.oauthAccessToken,
+                userFromFacebook: true,
+                facebookId: error.customData._tokenResponse.user_id,
+              });
+            }
+            console.log('Facebook account linked to Google account');
+          } catch (linkError) {
+            console.error('Error linking Facebook to Google account:', linkError);
+          }
+        } else {
+          console.error('The email is linked with a provider other than Google.');
+        }
+      } else {
+        console.error('Error during Facebook sign-in:', error);
+      }
+
       return false;
     } finally {
       setLoading(false);
@@ -183,6 +227,14 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           avatarUrl: null,
           whereToNext: '',
           itinerary: [],
+        });
+      }
+
+      if (querySnapshot.docs.length > 0) {
+        await updateDoc(doc(db, 'users', querySnapshot.docs[0].id), {
+          accessToken: null,
+          userFromFacebook: false,
+          facebookId: null,
         });
       }
 
@@ -267,7 +319,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     loading,
     firestoreUser,
     updateFirestoreUser,
-    signInViaFacebook,
     signInViaGoogle,
     signInWithFacebook,
   };
