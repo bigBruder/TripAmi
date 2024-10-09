@@ -17,6 +17,7 @@ import {
 } from '~/types/firestoreCollections';
 import { FriendsRequestStatus } from '~/types/friends';
 import { IInvitation } from '~/types/invitations';
+import { NotificationType } from '~/types/notifications/notifications';
 import { IUser } from '~/types/user';
 
 import defaultAvarat from '@assets/icons/defaultUserIcon.svg';
@@ -35,7 +36,6 @@ import {
 import { ref } from '@firebase/storage';
 
 import styles from './addNewFriends.module.css';
-import { NotificationType } from '~/types/notifications/notifications';
 
 interface AddNewFriendsProps {
   user: IUser;
@@ -97,7 +97,7 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user, isFriend = false, isTabs 
       }
     };
     fetchFriendsFromFacebook();
-  }, [firestoreUser?.id, facebookFriendsId]);
+  }, [firestoreUser?.id, facebookFriendsId.length]);
 
   useEffect(() => {
     const fetchAvatar = async () => {

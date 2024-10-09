@@ -1,15 +1,15 @@
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { signOut } from 'firebase/auth';
 import { LoadingScreen } from '~/components/LoadingScreen';
 import { auth } from '~/firebase';
 import { AuthContext } from '~/providers/authContext';
 
 import GoogleIcon from '@assets/icons/GoogleIcon.svg';
-import FacebookIcon from '@assets/icons/facebook_logo.svg';
+import FacebookIcon from '@assets/icons/facebook_logo_login.svg';
 
 import styles from './signUpModal.module.css';
-import { signOut } from 'firebase/auth';
 
 interface Props {
   onClose: () => void;
@@ -117,7 +117,10 @@ export const SignUpModal: FC<Props> = ({ onClose, isOpen, isLogin = false }) => 
             <span className={styles.name}>Continue with Google</span>
           </div>
 
-          <div className={`${styles.facebook} ${styles.google}`} onClick={handleLoginFacebook}>
+          <div
+            className={`${styles.facebook} ${styles.google} ${styles.facebookBg}`}
+            onClick={handleLoginFacebook}
+          >
             <img className={styles.icon} src={FacebookIcon} alt='google icon' />
             <span className={styles.name}>Continue with Facebook</span>
           </div>
@@ -129,6 +132,13 @@ export const SignUpModal: FC<Props> = ({ onClose, isOpen, isLogin = false }) => 
           <div className={`${styles.facebook} ${styles.google}`} onClick={handleLoginWithGoogle}>
             <img className={styles.icon} src={GoogleIcon} alt='google icon' />
             <span className={styles.name}>Continue with Google</span>
+          </div>
+          <div
+            className={`${styles.facebook} ${styles.google} ${styles.facebookBg}`}
+            onClick={handleLoginFacebook}
+          >
+            <img className={styles.icon} src={FacebookIcon} alt='google icon' />
+            <span className={styles.name}>Continue with Facebook</span>
           </div>
         </>
       );

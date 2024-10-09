@@ -117,14 +117,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const credential = FacebookAuthProvider.credentialFromResult(result);
       const accessToken = credential?.accessToken;
 
-      const qe = query(usersCollection, where('firebaseUid', '==', result.user.uid));
-      const querySnapshotR = await getDocs(qe);
-      if (accessToken && querySnapshotR.docs.length > 0) {
-        await updateDoc(doc(db, 'users', querySnapshotR.docs[0].id), {
-          accessToken,
-        });
-      }
-
       setCurrentUser(result.user);
 
       const q = query(usersCollection, where('firebaseUid', '==', result.user.uid));
@@ -188,6 +180,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
               });
             }
             console.log('Facebook account linked to Google account');
+
+            return true;
           } catch (linkError) {
             console.error('Error linking Facebook to Google account:', linkError);
           }
