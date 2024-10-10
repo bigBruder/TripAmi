@@ -156,7 +156,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       console.log(result.user, 'result.user');
 
-      // return true;
+      return true;
     } catch (error: any) {
       if (error.code === 'auth/account-exists-with-different-credential') {
         const email = error.customData.email;
@@ -189,7 +189,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             console.info('Facebook account linked to Google account');
             console.log(error.customData, 'error.customData');
 
-            // return true;
+            return true;
           } catch (linkError: any) {
             if (linkError.code === 'auth/provider-already-linked') {
               const q = query(usersCollection, where('email', '==', error.customData.email));
@@ -208,10 +208,10 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 });
               }
               console.log('Accounts already linked, fields updated');
-              // return true;
+              return true;
             }
             console.error('Error linking Facebook to Google account:', linkError);
-            // return true;
+            return true;
           }
         } else {
           console.error('The email is linked with a provider other than Google.');
