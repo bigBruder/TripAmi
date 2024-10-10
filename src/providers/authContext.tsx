@@ -111,6 +111,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     try {
       const provider = new FacebookAuthProvider();
+      provider.addScope('user_friends');
 
       const result = await signInWithPopup(auth, provider);
 

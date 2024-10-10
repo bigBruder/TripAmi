@@ -141,9 +141,6 @@ const SearchInputComponent = () => {
     setFilteredTripsLength(filteredTrips.length);
   };
 
-  console.log(filteredTripsLength, 'filteredTripsLength');
-  
-
   return screenWidth > 530 ? (
     <div className={styles.searchBarContainer} ref={searchBarRef}>
       <input
