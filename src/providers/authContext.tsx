@@ -57,7 +57,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user?.uid) {
-        const q = query(usersCollection, where('firebaseUid', '==', user.uid));
+        const q = query(usersCollection, where('email', '==', user.email));
         const querySnapshot = await getDocs(q);
 
         setFirestoreUser({
@@ -76,7 +76,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     if (currentUser?.uid) {
-      const q = query(usersCollection, where('firebaseUid', '==', currentUser.uid));
+      const q = query(usersCollection, where('email', '==', currentUser.email));
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
         setFirestoreUser({
           ...querySnapshot.docs[0].data(),
@@ -120,7 +120,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       setCurrentUser(result.user);
 
-      const q = query(usersCollection, where('firebaseUid', '==', result.user.uid));
+      const q = query(usersCollection, where('email', '==', result.user.email));
       const querySnapshot = await getDocs(q);
 
       if (querySnapshot.docs.length === 0) {
@@ -141,17 +141,22 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           userFromFacebook: true,
           facebookId: result.user.providerData[0].uid,
         });
-      }
-
-      if (querySnapshot.docs.length > 0) {
+      } else {
+        const facebookId = result.user.providerData.find(
+          (provider) => provider.providerId === 'facebook.com'
+        )?.uid;
         await updateDoc(doc(db, 'users', querySnapshot.docs[0].id), {
-          accessToken,
+          accessToken: accessToken,
           userFromFacebook: true,
-          facebookId: result.user.providerData[0].uid,
+          facebookId: facebookId,
         });
+
+        console.log('UPDATE USER');
       }
 
-      return true;
+      console.log(result.user, 'result.user');
+
+      // return true;
     } catch (error: any) {
       if (error.code === 'auth/account-exists-with-different-credential') {
         const email = error.customData.email;
@@ -170,21 +175,43 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
             await linkWithCredential(googleResult.user, pendingCredential);
 
-            const q = query(usersCollection, where('firebaseUid', '==', googleResult.user.uid));
+            const q = query(usersCollection, where('email', '==', googleResult.user.email));
             const querySnapshot = await getDocs(q);
-
+            console.info(error.customData, 'error.customData');
+            const facebookId = error.customData._tokenResponse.federatedId.split('/').pop();
             if (querySnapshot.docs.length > 0) {
               await updateDoc(doc(db, 'users', querySnapshot.docs[0].id), {
-                accessToken: error.customData._tokenResponse.oauthAccessToken,
+                accessToken: pendingCredential.accessToken,
                 userFromFacebook: true,
-                facebookId: error.customData._tokenResponse.user_id,
+                facebookId: facebookId,
               });
             }
-            console.log('Facebook account linked to Google account');
+            console.info('Facebook account linked to Google account');
+            console.log(error.customData, 'error.customData');
 
-            return true;
-          } catch (linkError) {
+            // return true;
+          } catch (linkError: any) {
+            if (linkError.code === 'auth/provider-already-linked') {
+              const q = query(usersCollection, where('email', '==', error.customData.email));
+              const querySnapshot = await getDocs(q);
+
+              console.log(error.customData, 'error.customData');
+
+              const facebookId = error.customData._tokenResponse.federatedId.split('/').pop();
+
+              if (querySnapshot.docs.length > 0) {
+                const userDocRef = doc(db, 'users', querySnapshot.docs[0].id);
+                await updateDoc(userDocRef, {
+                  accessToken: pendingCredential.accessToken,
+                  userFromFacebook: true,
+                  facebookId: facebookId,
+                });
+              }
+              console.log('Accounts already linked, fields updated');
+              // return true;
+            }
             console.error('Error linking Facebook to Google account:', linkError);
+            // return true;
           }
         } else {
           console.error('The email is linked with a provider other than Google.');
@@ -205,7 +232,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const result = await signInWithPopup(auth, googleProvider);
       setCurrentUser(result.user);
 
-      const q = query(usersCollection, where('firebaseUid', '==', result.user.uid));
+      const q = query(usersCollection, where('email', '==', result.user.email));
       const querySnapshot = await getDocs(q);
 
       if (querySnapshot.docs.length === 0) {
@@ -223,9 +250,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           whereToNext: '',
           itinerary: [],
         });
-      }
-
-      if (querySnapshot.docs.length > 0) {
+      } else {
         await updateDoc(doc(db, 'users', querySnapshot.docs[0].id), {
           accessToken: null,
           userFromFacebook: false,

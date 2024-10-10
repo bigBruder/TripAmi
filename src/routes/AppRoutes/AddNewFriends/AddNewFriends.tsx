@@ -76,6 +76,8 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user, isFriend = false, isTabs 
       fetch('https://graph.facebook.com/v12.0/me/friends?access_token=' + firestoreUser.accessToken)
         .then((response) => response.json())
         .then((data) => {
+          console.log(data.data, 'dataIDSSSSSSSSSSSS');
+          
           setFacebookFriendsId(data.data.map((friend: any) => friend.id));
         });
     }
@@ -92,6 +94,9 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user, isFriend = false, isTabs 
           ...doc.data(),
           id: doc.id,
         }));
+
+        console.log(fetchedUsers, 'fetchedUsers');
+        
 
         setFacebookFriends(fetchedUsers);
       }
