@@ -114,7 +114,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const provider = new FacebookAuthProvider();
       provider.addScope('user_friends');
 
-      const result = await signInWithPopup(auth, provider);
+      const result: any = await signInWithRedirect(auth, provider);
 
       const credential = FacebookAuthProvider.credentialFromResult(result);
       const accessToken = credential?.accessToken;
