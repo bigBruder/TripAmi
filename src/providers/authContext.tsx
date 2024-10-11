@@ -20,6 +20,7 @@ import {
   getAuth,
   linkWithCredential,
   signInWithPopup,
+  signInWithRedirect,
 } from '@firebase/auth';
 import { addDoc, doc, getDocs, onSnapshot, query, updateDoc, where } from '@firebase/firestore';
 
@@ -113,7 +114,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const provider = new FacebookAuthProvider();
       provider.addScope('user_friends');
 
-      const result = await signInWithPopup(auth, provider);
+      const result = await signInWithRedirect(auth, provider);
 
       const credential = FacebookAuthProvider.credentialFromResult(result);
       const accessToken = credential?.accessToken;
@@ -154,8 +155,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         console.log('UPDATE USER');
       }
 
-      console.log(result.user, 'result.user');
-
       return true;
     } catch (error: any) {
       if (error.code === 'auth/account-exists-with-different-credential') {
@@ -177,7 +176,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
             const q = query(usersCollection, where('email', '==', googleResult.user.email));
             const querySnapshot = await getDocs(q);
-            console.info(error.customData, 'error.customData');
             const facebookId = error.customData._tokenResponse.federatedId.split('/').pop();
             if (querySnapshot.docs.length > 0) {
               await updateDoc(doc(db, 'users', querySnapshot.docs[0].id), {
@@ -187,15 +185,12 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
               });
             }
             console.info('Facebook account linked to Google account');
-            console.log(error.customData, 'error.customData');
 
             return true;
           } catch (linkError: any) {
             if (linkError.code === 'auth/provider-already-linked') {
               const q = query(usersCollection, where('email', '==', error.customData.email));
               const querySnapshot = await getDocs(q);
-
-              console.log(error.customData, 'error.customData');
 
               const facebookId = error.customData._tokenResponse.federatedId.split('/').pop();
 
