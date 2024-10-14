@@ -122,23 +122,23 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const signInWithFacebook = async () => {
     // setLoading(true);
 
-    window.FB.login(
-      (response) => {
-        if (response.authResponse) {
-          const accessToken = response.authResponse.accessToken;
+    // window.FB.login(
+    //   (response) => {
+    //     if (response.authResponse) {
+    //       const accessToken = response.authResponse.accessToken;
 
-          const credential = FacebookAuthProvider.credential(accessToken);
-          signInWithCredential(auth, credential)
-            .then((userCredential) => {
-              console.log('Успішний вхід до Firebase', userCredential);
-            })
-            .catch((error) => {
-              console.error('Помилка при вході до Firebase', error);
-            });
-        }
-      },
-      { scope: 'email,public_profile,user_friends' }
-    );
+    //       const credential = FacebookAuthProvider.credential(accessToken);
+    //       signInWithCredential(auth, credential)
+    //         .then((userCredential) => {
+    //           console.log('Успішний вхід до Firebase', userCredential);
+    //         })
+    //         .catch((error) => {
+    //           console.error('Помилка при вході до Firebase', error);
+    //         });
+    //     }
+    //   },
+    //   { scope: 'email,public_profile,user_friends' }
+    // );
 
     // try {
     //   const provider = new FacebookAuthProvider();
