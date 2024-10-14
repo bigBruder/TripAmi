@@ -23,7 +23,16 @@ import {
   signInWithPopup,
   signInWithRedirect,
 } from '@firebase/auth';
-import { addDoc, doc, getDocs, onSnapshot, query, updateDoc, where } from '@firebase/firestore';
+import {
+  addDoc,
+  collection,
+  doc,
+  getDocs,
+  onSnapshot,
+  query,
+  updateDoc,
+  where,
+} from '@firebase/firestore';
 
 interface AuthContext {
   currentUser: null | User;
@@ -120,135 +129,119 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const signInWithFacebook = async () => {
-    // setLoading(true);
+    setLoading(true);
+    try {
+      const response = await new Promise((resolve, reject) => {
+        window.FB.login(
+          (response) => {
+            if (response.authResponse) {
+              resolve(response);
+            } else {
+              reject(new Error('User cancelled login or did not fully authorize.'));
+            }
+          },
+          { scope: 'email,public_profile,user_friends' }
+        );
+      });
 
-    // window.FB.login(
-    //   (response) => {
-    //     if (response.authResponse) {
-    //       const accessToken = response.authResponse.accessToken;
+      const accessToken = response.authResponse.accessToken;
+      const credential = FacebookAuthProvider.credential(accessToken);
 
-    //       const credential = FacebookAuthProvider.credential(accessToken);
-    //       signInWithCredential(auth, credential)
-    //         .then((userCredential) => {
-    //           console.log('Успішний вхід до Firebase', userCredential);
-    //         })
-    //         .catch((error) => {
-    //           console.error('Помилка при вході до Firebase', error);
-    //         });
-    //     }
-    //   },
-    //   { scope: 'email,public_profile,user_friends' }
-    // );
+      // Використовуємо await замість then для signInWithCredential
+      const userCredential = await signInWithCredential(auth, credential);
+      const user = userCredential.user;
+      const usersCollection = collection(db, 'users');
+      const q = query(usersCollection, where('email', '==', user.email));
+      const querySnapshot = await getDocs(q);
 
-    // try {
-    //   const provider = new FacebookAuthProvider();
-    //   provider.addScope('user_friends');
+      if (querySnapshot.docs.length === 0) {
+        await addDoc(usersCollection, {
+          email: user.email,
+          username: user.displayName,
+          friends: [],
+          friends_count: 0,
+          createdAt: new Date().toISOString(),
+          firebaseUid: user.uid,
+          postsCount: 0,
+          tripCount: 0,
+          friends_request_limit: 10,
+          avatarUrl: null,
+          whereToNext: '',
+          itinerary: [],
+          accessToken: accessToken,
+          userFromFacebook: true,
+          facebookId: user.providerData[0].uid,
+        });
+      } else {
+        const facebookId = user.providerData.find(
+          (provider) => provider.providerId === 'facebook.com'
+        )?.uid;
+        await updateDoc(doc(db, 'users', querySnapshot.docs[0].id), {
+          accessToken: accessToken,
+          userFromFacebook: true,
+          facebookId: facebookId,
+        });
+        console.log('UPDATE USER');
+      }
 
-    //   const result: any = await signInWithPopup(auth, provider);
+      return true;
+    } catch (error) {
+      if (error.code === 'auth/account-exists-with-different-credential') {
+        const email = error.customData.email;
+        const pendingCredential = FacebookAuthProvider.credential(
+          error.customData._tokenResponse.oauthAccessToken
+        );
 
-    //   const credential = FacebookAuthProvider.credentialFromResult(result);
-    //   const accessToken = credential?.accessToken;
+        const existingSignInMethods = await fetchSignInMethodsForEmail(auth, email);
 
-    //   setCurrentUser(result.user);
+        if (existingSignInMethods.includes('google.com')) {
+          const googleProvider = new GoogleAuthProvider();
+          try {
+            const googleResult = await signInWithPopup(auth, googleProvider);
+            await linkWithCredential(googleResult.user, pendingCredential);
 
-    //   const q = query(usersCollection, where('email', '==', result.user.email));
-    //   const querySnapshot = await getDocs(q);
+            const q = query(usersCollection, where('email', '==', googleResult.user.email));
+            const querySnapshot = await getDocs(q);
+            const facebookId = error.customData._tokenResponse.federatedId.split('/').pop();
 
-    //   if (querySnapshot.docs.length === 0) {
-    //     await addDoc(usersCollection, {
-    //       email: result.user.email,
-    //       username: result.user.displayName,
-    //       friends: [],
-    //       friends_count: 0,
-    //       createdAt: new Date().toISOString(),
-    //       firebaseUid: result.user.uid,
-    //       postsCount: 0,
-    //       tripCount: 0,
-    //       friends_request_limit: 10,
-    //       avatarUrl: null,
-    //       whereToNext: '',
-    //       itinerary: [],
-    //       accessToken: accessToken,
-    //       userFromFacebook: true,
-    //       facebookId: result.user.providerData[0].uid,
-    //     });
-    //   } else {
-    //     const facebookId = result.user.providerData.find(
-    //       (provider) => provider.providerId === 'facebook.com'
-    //     )?.uid;
-    //     await updateDoc(doc(db, 'users', querySnapshot.docs[0].id), {
-    //       accessToken: accessToken,
-    //       userFromFacebook: true,
-    //       facebookId: facebookId,
-    //     });
+            if (querySnapshot.docs.length > 0) {
+              await updateDoc(doc(db, 'users', querySnapshot.docs[0].id), {
+                accessToken: pendingCredential.accessToken,
+                userFromFacebook: true,
+                facebookId: facebookId,
+              });
+            }
+            console.info('Facebook account linked to Google account');
+            return true;
+          } catch (linkError) {
+            if (linkError.code === 'auth/provider-already-linked') {
+              const q = query(usersCollection, where('email', '==', error.customData.email));
+              const querySnapshot = await getDocs(q);
+              const facebookId = error.customData._tokenResponse.federatedId.split('/').pop();
 
-    //     console.log('UPDATE USER');
-    //   }
-
-    //   return true;
-    // } catch (error: any) {
-    //   if (error.code === 'auth/account-exists-with-different-credential') {
-    //     const email = error.customData.email;
-    //     const auth = getAuth();
-    //     const pendingCredential = FacebookAuthProvider.credential(
-    //       error.customData._tokenResponse.oauthAccessToken
-    //     );
-
-    //     const existingSignInMethods = await fetchSignInMethodsForEmail(auth, email);
-
-    //     if (existingSignInMethods.includes('google.com')) {
-    //       const googleProvider = new GoogleAuthProvider();
-
-    //       try {
-    //         const googleResult = await signInWithPopup(auth, googleProvider);
-
-    //         await linkWithCredential(googleResult.user, pendingCredential);
-
-    //         const q = query(usersCollection, where('email', '==', googleResult.user.email));
-    //         const querySnapshot = await getDocs(q);
-    //         const facebookId = error.customData._tokenResponse.federatedId.split('/').pop();
-    //         if (querySnapshot.docs.length > 0) {
-    //           await updateDoc(doc(db, 'users', querySnapshot.docs[0].id), {
-    //             accessToken: pendingCredential.accessToken,
-    //             userFromFacebook: true,
-    //             facebookId: facebookId,
-    //           });
-    //         }
-    //         console.info('Facebook account linked to Google account');
-
-    //         return true;
-    //       } catch (linkError: any) {
-    //         if (linkError.code === 'auth/provider-already-linked') {
-    //           const q = query(usersCollection, where('email', '==', error.customData.email));
-    //           const querySnapshot = await getDocs(q);
-
-    //           const facebookId = error.customData._tokenResponse.federatedId.split('/').pop();
-
-    //           if (querySnapshot.docs.length > 0) {
-    //             const userDocRef = doc(db, 'users', querySnapshot.docs[0].id);
-    //             await updateDoc(userDocRef, {
-    //               accessToken: pendingCredential.accessToken,
-    //               userFromFacebook: true,
-    //               facebookId: facebookId,
-    //             });
-    //           }
-    //           console.log('Accounts already linked, fields updated');
-    //           return true;
-    //         }
-    //         console.error('Error linking Facebook to Google account:', linkError);
-    //         return true;
-    //       }
-    //     } else {
-    //       console.error('The email is linked with a provider other than Google.');
-    //     }
-    //   } else {
-    //     console.error('Error during Facebook sign-in:', error);
-    //   }
-
-    //   return false;
-    // } finally {
-    //   setLoading(false);
-    // }
+              if (querySnapshot.docs.length > 0) {
+                await updateDoc(doc(db, 'users', querySnapshot.docs[0].id), {
+                  accessToken: pendingCredential.accessToken,
+                  userFromFacebook: true,
+                  facebookId: facebookId,
+                });
+              }
+              console.log('Accounts already linked, fields updated');
+              return true;
+            } else {
+              console.error('Error linking Facebook to Google account:', linkError);
+            }
+          }
+        } else {
+          console.error('The email is linked with a provider other than Google.');
+        }
+      } else {
+        console.error('Error during Facebook sign-in:', error);
+      }
+      return false;
+    } finally {
+      setLoading(false);
+    }
   };
 
   const signInViaGoogle = async () => {
