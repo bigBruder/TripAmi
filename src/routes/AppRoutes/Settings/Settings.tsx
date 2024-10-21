@@ -1,6 +1,7 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import Dropdown, { Option } from 'react-dropdown';
 import 'react-dropdown/style.css';
+import { useNavigate } from 'react-router-dom';
 import Switch from 'react-switch';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -9,6 +10,7 @@ import axios from 'axios';
 import { getDownloadURL } from 'firebase/storage';
 import { CustomInput } from '~/components/CustomInput';
 import CustomModal from '~/components/CustomModal';
+import CustomModalDeleteAccount from '~/components/CustomModalDeleteAccount';
 import Footer from '~/components/Footer';
 import HeaderNew from '~/components/HeaderNew';
 import { ImageUploaderModal } from '~/components/ImageUploaderModal';
@@ -19,12 +21,21 @@ import { firebaseErrors } from '~/constants/firebaseErrors';
 import { db, storage } from '~/firebase';
 import { AuthContext } from '~/providers/authContext';
 import { Country } from '~/types/countries';
+import { usersCollection } from '~/types/firestoreCollections';
 
 import CameraIcon from '@assets/icons/CameraIcon.svg';
 import FatPencil from '@assets/icons/FatPencil.svg';
 import DefaultAvatar from '@assets/icons/defaultUserIcon.svg';
-import { updatePassword } from '@firebase/auth';
-import { doc, updateDoc } from '@firebase/firestore';
+import { deleteUser, getAuth, signOut, updatePassword } from '@firebase/auth';
+import {
+  deleteDoc,
+  doc,
+  getDocs,
+  getFirestore,
+  query,
+  updateDoc,
+  where,
+} from '@firebase/firestore';
 import { ref } from '@firebase/storage';
 import { urlBase64ToUint8Array } from '@utils/urlBase64ToUint8Array';
 
@@ -47,6 +58,8 @@ const Settings = () => {
   const [isCropperModalOpen, setIsCropperModalOpen] = useState(false);
   const [avatar, setAvatar] = useState<string>(DefaultAvatar);
   const [screenWidth, setScreenWidth] = useState('Large');
+  const [isModalDeleteOpen, setIsModalDeleteOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleResize = () => {
@@ -235,6 +248,33 @@ const Settings = () => {
     })();
   }, [firestoreUser]);
 
+  const handleOpenModalDelete = () => {
+    setIsModalDeleteOpen(true);
+  };
+
+  const handleDeleteAccoount = async () => {
+    const auth = await getAuth();
+    const user = auth.currentUser;
+
+    const q = query(usersCollection, where('email', '==', user?.email));
+
+    try {
+      await signOut(auth);
+      navigate('/');
+      if (!toast.isActive('deleteAcc')) {
+        toast.success('Account deleted successfully', { toastId: 'deleteAcc' });
+      }
+
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        deleteDoc(doc.ref);
+      });
+    } catch (error) {
+      console.error('Error deleting user:', error);
+    }
+    setIsModalDeleteOpen(false);
+  };
+
   return (
     <>
       <div className={styles.main}>
@@ -253,6 +293,12 @@ const Settings = () => {
                   Save
                 </button>
                 <button className={`${styles.save} ${styles.cancel}`}>Cancel</button>
+                <button
+                  className={`${styles.save} ${styles.deleteAccount}`}
+                  onClick={() => handleOpenModalDelete()}
+                >
+                  Delete account
+                </button>
               </div>
             </div>
           </div>
@@ -277,6 +323,12 @@ const Settings = () => {
                       Save
                     </button>
                     <button className={`${styles.save} ${styles.cancel}`}>Cancel</button>
+                    <button
+                      className={`${styles.save} ${styles.deleteAccount}`}
+                      onClick={() => handleOpenModalDelete()}
+                    >
+                      Delete account
+                    </button>
                   </div>
                 </div>
               </div>
@@ -367,6 +419,11 @@ const Settings = () => {
         <CustomModal isOpen={isCropperModalOpen} onCloseModal={() => setIsCropperModalOpen(false)}>
           <ImageUploaderModal closeModal={() => setIsCropperModalOpen(false)} />
         </CustomModal>
+        <CustomModalDeleteAccount
+          isOpen={isModalDeleteOpen}
+          onClose={setIsModalDeleteOpen}
+          handleDeleteAccoount={handleDeleteAccoount}
+        />
       </div>
       <Footer />
     </>

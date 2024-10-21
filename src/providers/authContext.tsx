@@ -44,6 +44,7 @@ interface AuthContext {
   updateFirestoreUser: (() => void) | ((data: IUser) => void);
   signInViaGoogle: () => Promise<unknown>;
   signInWithFacebook: () => Promise<boolean>;
+  accessToken: string;
 }
 
 const defaultValue = {
@@ -56,6 +57,7 @@ const defaultValue = {
   updateFirestoreUser: () => { },
   signInViaGoogle: () => new Promise((resolve) => { }),
   signInWithFacebook: () => new Promise((resolve) => { }),
+  accessToken: '',
 };
 
 const AuthContext = createContext<AuthContext>(defaultValue);
@@ -64,6 +66,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [firestoreUser, setFirestoreUser] = useState<null | IUser>(null);
+  const [accessToken, setAccessToken] = useState<string>('');
 
   useEffect(() => {
     window.fbAsyncInit = function () {
@@ -153,6 +156,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const usersCollection = collection(db, 'users');
       const q = query(usersCollection, where('email', '==', user.email));
       const querySnapshot = await getDocs(q);
+      setAccessToken(accessToken);
 
       if (querySnapshot.docs.length === 0) {
         await addDoc(usersCollection, {
@@ -168,7 +172,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           avatarUrl: null,
           whereToNext: '',
           itinerary: [],
-          accessToken: accessToken,
           userFromFacebook: true,
           facebookId: user.providerData[0].uid,
         });
@@ -176,8 +179,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const facebookId = user.providerData.find(
           (provider) => provider.providerId === 'facebook.com'
         )?.uid;
+        setAccessToken(accessToken);
         await updateDoc(doc(db, 'users', querySnapshot.docs[0].id), {
-          accessToken: accessToken,
           userFromFacebook: true,
           facebookId: facebookId,
         });
@@ -205,8 +208,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             const facebookId = error.customData._tokenResponse.federatedId.split('/').pop();
 
             if (querySnapshot.docs.length > 0) {
+              setAccessToken(pendingCredential.accessToken);
               await updateDoc(doc(db, 'users', querySnapshot.docs[0].id), {
-                accessToken: pendingCredential.accessToken,
                 userFromFacebook: true,
                 facebookId: facebookId,
               });
@@ -220,8 +223,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
               const facebookId = error.customData._tokenResponse.federatedId.split('/').pop();
 
               if (querySnapshot.docs.length > 0) {
+                setAccessToken(pendingCredential.accessToken);
                 await updateDoc(doc(db, 'users', querySnapshot.docs[0].id), {
-                  accessToken: pendingCredential.accessToken,
                   userFromFacebook: true,
                   facebookId: facebookId,
                 });
@@ -359,6 +362,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     updateFirestoreUser,
     signInViaGoogle,
     signInWithFacebook,
+    accessToken,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

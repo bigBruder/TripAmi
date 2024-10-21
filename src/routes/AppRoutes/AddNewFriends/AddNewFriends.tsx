@@ -53,7 +53,7 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user, isFriend = false, isTabs 
   const [invitedUsers, setInvitedUsers] = useState<string[]>([]);
   const [invitationsFromUsers, setInvitationsFromUsers] = useState<string[]>([]);
   const [invitations, setInvitations] = useState<IInvitation[]>([]);
-  const { firestoreUser } = useContext(AuthContext);
+  const { firestoreUser, accessToken } = useContext(AuthContext);
   const [avatar, setAvatar] = useState<string | null>(null);
   const [copyLink, setCopyLink] = useState(false);
   const [facebookFriendsId, setFacebookFriendsId] = useState([]);
@@ -62,26 +62,26 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user, isFriend = false, isTabs 
   const [facebookContainerQuery, setFacebookContainerQuery] = useState(false);
 
   useEffect(() => {
-    if (!firestoreUser?.accessToken && !firestoreUser?.userFromFacebook) {
+    if (!accessToken && !firestoreUser?.userFromFacebook) {
       setFacebookContainerQuery(true);
-    } else if (firestoreUser?.accessToken && !closeFacebook) {
+    } else if (accessToken && !closeFacebook) {
       setFacebookContainerQuery(false);
-    } else if (firestoreUser?.accessToken && closeFacebook) {
+    } else if (accessToken && closeFacebook) {
       setFacebookContainerQuery(true);
     }
-  }, [firestoreUser?.accessToken, firestoreUser?.userFromFacebook, closeFacebook]);
+  }, [accessToken, firestoreUser?.userFromFacebook, closeFacebook]);
 
   useEffect(() => {
-    if (firestoreUser?.id && firestoreUser?.accessToken && firestoreUser?.userFromFacebook) {
-      fetch('https://graph.facebook.com/v12.0/me/friends?access_token=' + firestoreUser.accessToken)
+    if (firestoreUser?.id && accessToken && firestoreUser?.userFromFacebook) {
+      fetch('https://graph.facebook.com/v12.0/me/friends?access_token=' + accessToken)
         .then((response) => response.json())
         .then((data) => {
           console.log(data.data, 'dataIDSSSSSSSSSSSS');
-          
+
           setFacebookFriendsId(data.data.map((friend: any) => friend.id));
         });
     }
-  }, [firestoreUser?.id, firestoreUser?.accessToken, firestoreUser?.userFromFacebook]);
+  }, [firestoreUser?.id, accessToken, firestoreUser?.userFromFacebook]);
 
   useEffect(() => {
     const fetchFriendsFromFacebook = async () => {
@@ -96,7 +96,6 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user, isFriend = false, isTabs 
         }));
 
         console.log(fetchedUsers, 'fetchedUsers');
-        
 
         setFacebookFriends(fetchedUsers);
       }
@@ -269,7 +268,7 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user, isFriend = false, isTabs 
             <div
               className={cn([styles.usersContainer], {
                 [styles.userContainerFacebook]:
-                  firestoreUser?.accessToken && firestoreUser?.userFromFacebook && !closeFacebook,
+                  accessToken && firestoreUser?.userFromFacebook && !closeFacebook,
               })}
               style={{ columnGap: '10%' }}
             >
@@ -289,7 +288,7 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user, isFriend = false, isTabs 
               ))}
             </div>
           </div>
-          {firestoreUser?.accessToken && firestoreUser?.userFromFacebook && !closeFacebook ? (
+          {accessToken && firestoreUser?.userFromFacebook && !closeFacebook ? (
             <div
               className={`${styles.container} ${styles.containerFirst} ${styles.containerFriendsPage}`}
             >
@@ -304,8 +303,7 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user, isFriend = false, isTabs 
               </p>
               <div
                 className={cn([styles.usersContainer], {
-                  [styles.userContainerFacebook]:
-                    firestoreUser?.accessToken && firestoreUser?.userFromFacebook,
+                  [styles.userContainerFacebook]: accessToken && firestoreUser?.userFromFacebook,
                 })}
                 style={{ columnGap: '10%' }}
               >

@@ -87,7 +87,7 @@
 .topContainer {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   align-items: flex-start;
   gap: 34px;
   grid-column: 1 / span 4;
@@ -98,7 +98,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 45%;
+  width: 80%;
   gap: 23px;
 
 }
@@ -314,6 +314,15 @@
     background: transparent;
     border: 1px solid #A27E65;
     color: #A27E65;
+}
+
+.deleteAccount {
+  color: #fff;
+  background-color: #FF0000;
+  font-family: 'Gilroy', sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
 }
 
 .dropdownContainer {
