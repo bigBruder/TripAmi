@@ -13,6 +13,8 @@ import { UserProfile } from '~/routes/AppRoutes/UserProfile';
 import { Intro } from '~/routes/Auth/Intro';
 
 import CreateTrip from './AppRoutes/CreateTrip/CreateTrip';
+import { DeletePersonalDataInfo } from './AppRoutes/DeletePersonalDataInfo';
+import { PrivacyPolicy } from './AppRoutes/PrivacyPolicy';
 import SearchTrips from './AppRoutes/SearchTrips';
 import { Trip } from './AppRoutes/Trip/Trip';
 
@@ -60,6 +62,14 @@ const router = createHashRouter([
   {
     path: '/search',
     element: <SearchTrips />,
+  },
+  {
+    path: '/privacy-policy',
+    element: <PrivacyPolicy />,
+  },
+  {
+    path: '/delete-personal-data-info',
+    element: <DeletePersonalDataInfo />,
   },
 ]);
 

@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import facebook_logo from '../../assets/icons/facebook_logo.svg';
 import Logo from '../../assets/icons/headerLogo.svg';
@@ -22,7 +22,12 @@ const Footer = () => {
             })
           }
         />
-        <p className={styles.footerTitle}>Privacy policy</p>
+        <Link to={'/privacy-policy'} className={styles.footerTitle}>
+          Privacy policy
+        </Link>
+        <Link to={'/delete-personal-data-info'} className={styles.footerTitle}>
+          Delete Personal Data Info
+        </Link>
         <p className={styles.footerTitle}>Contacts</p>
         <div className={styles.socialLogo}>
           <img src={facebook_logo} alt='facebook_logo' className={styles.logo} />
