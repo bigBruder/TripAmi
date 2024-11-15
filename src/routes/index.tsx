@@ -1,19 +1,23 @@
-import {useContext, useEffect} from "react";
-import {AuthContext} from "~/providers/authContext";
-import {createBrowserRouter, createHashRouter, RouterProvider} from "react-router-dom";
-import {Intro} from "~/routes/Auth/Intro";
-import {Profile} from "~/routes/AppRoutes/Profile";
-import {PostsPage} from "~/routes/AppRoutes/Posts";
-import {AddNewFriends} from "~/routes/AppRoutes/AddNewFriends";
-import {InvitePeople} from "~/routes/AppRoutes/InvitePeople";
-import {Settings} from "~/routes/AppRoutes/Settings";
-import {Place} from "~/routes/AppRoutes/Place";
-import {UserProfile} from "~/routes/AppRoutes/UserProfile";
-import { Trip } from "./AppRoutes/Trip/Trip";
+import { useContext, useEffect } from 'react';
+import { RouterProvider, createBrowserRouter, createHashRouter } from 'react-router-dom';
+
+import { AuthContext } from '~/providers/authContext';
+import { AddNewFriends } from '~/routes/AppRoutes/AddNewFriends';
+import { InvitePeople } from '~/routes/AppRoutes/InvitePeople';
+import { Place } from '~/routes/AppRoutes/Place';
+import { PostsPage } from '~/routes/AppRoutes/Posts';
+import { Profile } from '~/routes/AppRoutes/Profile';
+import { Settings } from '~/routes/AppRoutes/Settings';
+import { UserProfile } from '~/routes/AppRoutes/UserProfile';
+import { Intro } from '~/routes/Auth/Intro';
+
+import { DeleteData } from './AppRoutes/DeleteData';
+import { PrivacyPolicy } from './AppRoutes/PrivacyPolicy';
+import { Trip } from './AppRoutes/Trip/Trip';
 
 const router = createHashRouter([
   {
-    path: "/",
+    path: '/',
     element: <Intro />,
   },
   {
@@ -47,22 +51,30 @@ const router = createHashRouter([
   {
     path: '/user/:id',
     element: <UserProfile />,
-  }
+  },
+  {
+    path: '/privacy-policy',
+    element: <PrivacyPolicy />,
+  },
+  {
+    path: '/delete-your-data',
+    element: <DeleteData />,
+  },
 ]);
 
 const Navigator = () => {
-  const {currentUser, loading} = useContext(AuthContext);
+  const { currentUser, loading } = useContext(AuthContext);
 
   const routArray = window.location.href.split('/');
 
   useEffect(() => {
     if (!currentUser && routArray[routArray.length - 1].length !== 0 && !loading) {
-      window.history.pushState({}, "/", "/");
+      window.history.pushState({}, '/', '/');
       window.location.reload();
     }
   }, [currentUser, loading]);
 
-  return <RouterProvider router={router} />
-}
+  return <RouterProvider router={router} />;
+};
 
 export default Navigator;
