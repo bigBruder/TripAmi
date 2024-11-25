@@ -19,7 +19,7 @@ import SearchTrips from './AppRoutes/SearchTrips';
 import { Trip } from './AppRoutes/Trip/Trip';
 
 const Navigator = () => {
-  const { currentUser } = useContext(AuthContext);
+  const { currentUser, loading } = useContext(AuthContext);
 
   const router = createHashRouter([
     {
@@ -28,43 +28,43 @@ const Navigator = () => {
     },
     {
       path: '/profile',
-      element: currentUser ? <Profile /> : <Navigate to={'/'} />,
+      element: loading ? <Intro /> : currentUser ? <Profile /> : <Navigate to={'/'} />,
     },
     {
       path: '/posts/:id',
-      element: currentUser ? <PostsPage /> : <Navigate to={'/'} />,
+      element: loading ? <Intro /> : currentUser ? <PostsPage /> : <Navigate to={'/'} />,
     },
     {
       path: '/add-friends',
-      element: currentUser ? <AddNewFriends /> : <Navigate to={'/'} />,
+      element: loading ? <Intro /> : currentUser ? <AddNewFriends /> : <Navigate to={'/'} />,
     },
     {
       path: '/invite-people',
-      element: currentUser ? <InvitePeople /> : <Navigate to={'/'} />,
+      element: loading ? <Intro /> : currentUser ? <InvitePeople /> : <Navigate to={'/'} />,
     },
     {
       path: '/settings',
-      element: currentUser ? <Settings /> : <Navigate to={'/'} />,
+      element: loading ? <Intro /> : currentUser ? <Settings /> : <Navigate to={'/'} />,
     },
     {
       path: '/place/:id',
-      element: currentUser ? <Place /> : <Navigate to={'/'} />,
+      element: loading ? <Intro /> : currentUser ? <Place /> : <Navigate to={'/'} />,
     },
     {
       path: '/trip/:id',
-      element: currentUser ? <Trip /> : <Navigate to={'/'} />,
+      element: loading ? <Intro /> : currentUser ? <Trip /> : <Navigate to={'/'} />,
     },
     {
       path: '/user/:id',
-      element: currentUser ? <UserProfile /> : <Navigate to={'/'} />,
+      element: loading ? <Intro /> : currentUser ? <UserProfile /> : <Navigate to={'/'} />,
     },
     {
       path: '/trip/create',
-      element: currentUser ? <CreateTrip /> : <Navigate to={'/'} />,
+      element: loading ? <Intro /> : currentUser ? <CreateTrip /> : <Navigate to={'/'} />,
     },
     {
       path: '/search',
-      element: currentUser ? <SearchTrips /> : <Navigate to={'/'} />,
+      element: loading ? <Intro /> : currentUser ? <SearchTrips /> : <Navigate to={'/'} />,
     },
     {
       path: '/privacy-policy',
