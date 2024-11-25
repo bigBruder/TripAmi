@@ -32,6 +32,7 @@ export const SignUpModal: FC<Props> = ({ onClose, isOpen, isLogin = false }) => 
 
     if (result) {
       navigate('/profile');
+      onClose();
     }
   }, [email, password, userName]);
 
@@ -61,6 +62,7 @@ export const SignUpModal: FC<Props> = ({ onClose, isOpen, isLogin = false }) => 
     const result = await signInWithFacebook();
     if (result) {
       navigate('/profile');
+      onClose();
     }
   };
 
