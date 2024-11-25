@@ -1,5 +1,5 @@
 import { useContext, useEffect } from 'react';
-import { RouterProvider, createBrowserRouter, createHashRouter } from 'react-router-dom';
+import { Navigate, RouterProvider, createBrowserRouter, createHashRouter } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 
 import { AuthContext } from '~/providers/authContext';
@@ -18,87 +18,63 @@ import { PrivacyPolicy } from './AppRoutes/PrivacyPolicy';
 import SearchTrips from './AppRoutes/SearchTrips';
 import { Trip } from './AppRoutes/Trip/Trip';
 
-const router = createHashRouter([
-  {
-    path: '/',
-    element: <Intro />,
-  },
-  {
-    path: '/profile',
-    element: <Profile />,
-  },
-  {
-    path: '/posts/:id',
-    element: <PostsPage />,
-  },
-  {
-    path: '/add-friends',
-    element: <AddNewFriends />,
-  },
-  {
-    path: '/invite-people',
-    element: <InvitePeople />,
-  },
-  {
-    path: '/settings',
-    element: <Settings />,
-  },
-  {
-    path: '/place/:id',
-    element: <Place />,
-  },
-  {
-    path: '/trip/:id',
-    element: <Trip />,
-  },
-  {
-    path: '/user/:id',
-    element: <UserProfile />,
-  },
-  {
-    path: '/trip/create',
-    element: <CreateTrip />,
-  },
-  {
-    path: '/search',
-    element: <SearchTrips />,
-  },
-  {
-    path: '/privacy-policy',
-    element: <PrivacyPolicy />,
-  },
-  {
-    path: '/delete-personal-data-info',
-    element: <DeletePersonalDataInfo />,
-  },
-]);
-
 const Navigator = () => {
-  const { currentUser, loading } = useContext(AuthContext);
+  const { currentUser } = useContext(AuthContext);
 
-  const routArray = window.location.href.split('/');
-  const search = window.location.search;
-  const params = new URLSearchParams(search);
-  const userId = params.get('ref');
-
-  useEffect(() => {
-    if (!currentUser && userId) {
-      return;
-    }
-
-    const excludedRoutes = ['#/privacy-policy', '#/delete-personal-data-info'];
-    const currentHash = window.location.hash;
-
-    if (
-      !currentUser &&
-      !excludedRoutes.includes(currentHash) &&
-      routArray[routArray.length - 1].length !== 0 &&
-      !loading
-    ) {
-      window.history.pushState({}, '/', '/');
-      window.location.reload();
-    }
-  }, [currentUser, loading]);
+  const router = createHashRouter([
+    {
+      path: '/',
+      element: <Intro />,
+    },
+    {
+      path: '/profile',
+      element: currentUser ? <Profile /> : <Navigate to={'/'} />,
+    },
+    {
+      path: '/posts/:id',
+      element: currentUser ? <PostsPage /> : <Navigate to={'/'} />,
+    },
+    {
+      path: '/add-friends',
+      element: currentUser ? <AddNewFriends /> : <Navigate to={'/'} />,
+    },
+    {
+      path: '/invite-people',
+      element: currentUser ? <InvitePeople /> : <Navigate to={'/'} />,
+    },
+    {
+      path: '/settings',
+      element: currentUser ? <Settings /> : <Navigate to={'/'} />,
+    },
+    {
+      path: '/place/:id',
+      element: currentUser ? <Place /> : <Navigate to={'/'} />,
+    },
+    {
+      path: '/trip/:id',
+      element: currentUser ? <Trip /> : <Navigate to={'/'} />,
+    },
+    {
+      path: '/user/:id',
+      element: currentUser ? <UserProfile /> : <Navigate to={'/'} />,
+    },
+    {
+      path: '/trip/create',
+      element: currentUser ? <CreateTrip /> : <Navigate to={'/'} />,
+    },
+    {
+      path: '/search',
+      element: currentUser ? <SearchTrips /> : <Navigate to={'/'} />,
+    },
+    {
+      path: '/privacy-policy',
+      element: <PrivacyPolicy />,
+    },
+    {
+      path: '/delete-personal-data-info',
+      element: <DeletePersonalDataInfo />,
+    },
+  ]);
 
   return (
     <>
