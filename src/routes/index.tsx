@@ -86,7 +86,15 @@ const Navigator = () => {
       return;
     }
 
-    if (!currentUser && routArray[routArray.length - 1].length !== 0 && !loading) {
+    const excludedRoutes = ['#/privacy-policy', '#/delete-personal-data-info'];
+    const currentHash = window.location.hash;
+
+    if (
+      !currentUser &&
+      !excludedRoutes.includes(currentHash) &&
+      routArray[routArray.length - 1].length !== 0 &&
+      !loading
+    ) {
       window.history.pushState({}, '/', '/');
       window.location.reload();
     }
