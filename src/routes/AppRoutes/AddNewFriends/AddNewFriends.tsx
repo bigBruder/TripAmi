@@ -38,7 +38,7 @@ import { ref } from '@firebase/storage';
 import styles from './addNewFriends.module.css';
 
 interface AddNewFriendsProps {
-  user: IUser;
+  user?: IUser;
   isFriend?: boolean;
   isTabs?: boolean;
 }
@@ -563,11 +563,11 @@ export const UserCard: FC<Props> = ({
       style={
         isTabs
           ? {
-            flexDirection: 'column',
-            justifyContent: 'flex-start',
-            alignItems: 'center',
-            gap: '8px',
-          }
+              flexDirection: 'column',
+              justifyContent: 'flex-start',
+              alignItems: 'center',
+              gap: '8px',
+            }
           : {}
       }
     >
@@ -583,11 +583,11 @@ export const UserCard: FC<Props> = ({
             style={
               isTabs
                 ? {
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  gap: '8px',
-                }
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    gap: '8px',
+                  }
                 : {}
             }
           >
@@ -612,8 +612,8 @@ export const UserCard: FC<Props> = ({
             style={
               isTabs
                 ? {
-                  textAlign: 'center',
-                }
+                    textAlign: 'center',
+                  }
                 : {}
             }
           >

@@ -41,6 +41,7 @@ export const SignUpModal: FC<Props> = ({ onClose, isOpen, isLogin = false }) => 
     if (result) {
       if (auth.currentUser) {
         navigate('/profile');
+        onClose();
       } else {
         console.error('User not authenticated');
       }
@@ -52,6 +53,7 @@ export const SignUpModal: FC<Props> = ({ onClose, isOpen, isLogin = false }) => 
 
     if (result) {
       navigate('/profile');
+      onClose();
     }
   }, []);
 
