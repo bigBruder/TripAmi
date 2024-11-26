@@ -72,7 +72,7 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user, isFriend = false, isTabs 
   }, [accessToken, firestoreUser?.userFromFacebook, closeFacebook]);
 
   useEffect(() => {
-    const accessTokenFb = accessToken || sessionStorage.getItem('facebook_token');
+    const accessTokenFb = accessToken || localStorage.getItem('facebook_token');
 
     if (firestoreUser?.id && firestoreUser?.userFromFacebook) {
       fetch('https://graph.facebook.com/v12.0/me/friends?access_token=' + accessTokenFb)
