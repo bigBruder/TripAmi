@@ -49,14 +49,14 @@ interface AuthContext {
 
 const defaultValue = {
   currentUser: null,
-  signUp: () => { },
-  signIn: () => { },
-  signOutUser: () => { },
+  signUp: () => {},
+  signIn: () => {},
+  signOutUser: () => {},
   loading: true,
   firestoreUser: null,
-  updateFirestoreUser: () => { },
-  signInViaGoogle: () => new Promise((resolve) => { }),
-  signInWithFacebook: () => new Promise((resolve) => { }),
+  updateFirestoreUser: () => {},
+  signInViaGoogle: () => new Promise((resolve) => {}),
+  signInWithFacebook: () => new Promise((resolve) => {}),
   accessToken: '',
 };
 
@@ -157,6 +157,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const q = query(usersCollection, where('email', '==', user.email));
       const querySnapshot = await getDocs(q);
       setAccessToken(accessToken);
+      sessionStorage.setItem('facebook_token', accessToken);
 
       if (querySnapshot.docs.length === 0) {
         await addDoc(usersCollection, {
@@ -180,6 +181,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           (provider) => provider.providerId === 'facebook.com'
         )?.uid;
         setAccessToken(accessToken);
+        sessionStorage.setItem('facebook_token', accessToken);
         await updateDoc(doc(db, 'users', querySnapshot.docs[0].id), {
           userFromFacebook: true,
           facebookId: facebookId,
@@ -209,6 +211,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
             if (querySnapshot.docs.length > 0) {
               setAccessToken(pendingCredential.accessToken);
+              sessionStorage.setItem('facebook_token', pendingCredential.accessToken);
               await updateDoc(doc(db, 'users', querySnapshot.docs[0].id), {
                 userFromFacebook: true,
                 facebookId: facebookId,
@@ -224,6 +227,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
               if (querySnapshot.docs.length > 0) {
                 setAccessToken(pendingCredential.accessToken);
+                sessionStorage.setItem('facebook_token', pendingCredential.accessToken);
                 await updateDoc(doc(db, 'users', querySnapshot.docs[0].id), {
                   userFromFacebook: true,
                   facebookId: facebookId,
