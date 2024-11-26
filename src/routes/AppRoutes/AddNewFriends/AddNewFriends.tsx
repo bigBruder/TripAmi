@@ -72,16 +72,16 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user, isFriend = false, isTabs 
   }, [accessToken, firestoreUser?.userFromFacebook, closeFacebook]);
 
   useEffect(() => {
-    if (firestoreUser?.id && accessToken && firestoreUser?.userFromFacebook) {
-      fetch('https://graph.facebook.com/v12.0/me/friends?access_token=' + accessToken)
+    const accessTokenFb = accessToken || localStorage.getItem('facebook_token');
+
+    if (firestoreUser?.id && firestoreUser?.userFromFacebook) {
+      fetch('https://graph.facebook.com/v12.0/me/friends?access_token=' + accessTokenFb)
         .then((response) => response.json())
         .then((data) => {
-          console.log(data.data, 'dataIDSSSSSSSSSSSS');
-
           setFacebookFriendsId(data.data.map((friend: any) => friend.id));
         });
     }
-  }, [firestoreUser?.id, accessToken, firestoreUser?.userFromFacebook]);
+  }, [firestoreUser?.id, firestoreUser?.userFromFacebook]);
 
   useEffect(() => {
     const fetchFriendsFromFacebook = async () => {
@@ -94,8 +94,6 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user, isFriend = false, isTabs 
           ...doc.data(),
           id: doc.id,
         }));
-
-        console.log(fetchedUsers, 'fetchedUsers');
 
         setFacebookFriends(fetchedUsers);
       }
@@ -288,7 +286,7 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user, isFriend = false, isTabs 
               ))}
             </div>
           </div>
-          {accessToken && firestoreUser?.userFromFacebook && !closeFacebook ? (
+          {facebookFriends.length > 0 && firestoreUser?.userFromFacebook && !closeFacebook ? (
             <div
               className={`${styles.container} ${styles.containerFirst} ${styles.containerFriendsPage}`}
             >
@@ -303,7 +301,8 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user, isFriend = false, isTabs 
               </p>
               <div
                 className={cn([styles.usersContainer], {
-                  [styles.userContainerFacebook]: accessToken && firestoreUser?.userFromFacebook,
+                  [styles.userContainerFacebook]:
+                    facebookFriends.length > 0 && firestoreUser?.userFromFacebook,
                 })}
                 style={{ columnGap: '10%' }}
               >
