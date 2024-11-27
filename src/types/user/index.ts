@@ -37,4 +37,5 @@ export interface IUser {
   itinerary: Itinerary[];
   accessToken?: string;
   userFromFacebook?: boolean;
+  loginType: 'FaceBook' | 'Google' | 'Email' | null;
 }

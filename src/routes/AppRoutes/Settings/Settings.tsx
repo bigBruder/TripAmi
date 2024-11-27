@@ -18,6 +18,7 @@ import { LoadingScreen } from '~/components/LoadingScreen';
 import { PageTitle } from '~/components/PageTitle';
 import Header from '~/components/profile/Header';
 import { firebaseErrors } from '~/constants/firebaseErrors';
+import { UserLoginType } from '~/emuns/userLoginType';
 import { db, storage } from '~/firebase';
 import { AuthContext } from '~/providers/authContext';
 import { Country } from '~/types/countries';
@@ -60,6 +61,8 @@ const Settings = () => {
   const [screenWidth, setScreenWidth] = useState('Large');
   const [isModalDeleteOpen, setIsModalDeleteOpen] = useState(false);
   const navigate = useNavigate();
+
+  console.log(firestoreUser?.loginType);
 
   useEffect(() => {
     const handleResize = () => {
@@ -390,26 +393,28 @@ const Settings = () => {
                   </div>
                 </div>
               </div>
-              <div className={styles.inputsContainer}>
-                <h2 className={styles.personalInfo}>Change password</h2>
-                <CustomInput
-                  label={'Old password'}
-                  type={'password'}
-                  onChange={setOldPassword}
-                  value={oldPassword}
-                />
-                <CustomInput
-                  label={'New  password'}
-                  type={'password'}
-                  onChange={setNewPassword}
-                  value={newPassword}
-                  error={
-                    passwordError
-                      ? 'Password must contain at least one uppercase latin letter and one lowercase'
-                      : undefined
-                  }
-                />
-              </div>
+              {firestoreUser?.loginType === UserLoginType.email && (
+                <div className={styles.inputsContainer}>
+                  <h2 className={styles.personalInfo}>Change password</h2>
+                  <CustomInput
+                    label={'Old password'}
+                    type={'password'}
+                    onChange={setOldPassword}
+                    value={oldPassword}
+                  />
+                  <CustomInput
+                    label={'New  password'}
+                    type={'password'}
+                    onChange={setNewPassword}
+                    value={newPassword}
+                    error={
+                      passwordError
+                        ? 'Password must contain at least one uppercase latin letter and one lowercase'
+                        : undefined
+                    }
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>
