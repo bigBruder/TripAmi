@@ -7,7 +7,9 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from 'firebase/auth';
+import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import { firebaseErrors } from '~/constants/firebaseErrors';
+import { UserLoginType } from '~/emuns/userLoginType';
 import { auth, db, facebookProvider, googleProvider } from '~/firebase';
 import { usersCollection } from '~/types/firestoreCollections';
 import { IUser } from '~/types/user';
@@ -27,6 +29,7 @@ import {
   addDoc,
   collection,
   doc,
+  getDoc,
   getDocs,
   onSnapshot,
   query,
@@ -131,6 +134,20 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const uploadProfileImageToFirebase = async (url: string | null, userId: string) => {
+    try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const storage = getStorage();
+      const storageRef = ref(storage, `profileImages/${userId}`);
+      await uploadBytes(storageRef, blob);
+      const downloadURL = await getDownloadURL(storageRef);
+      return downloadURL;
+    } catch (error) {
+      console.error('error loading image into firestore', error);
+    }
+  };
+
   const signInWithFacebook = async () => {
     setLoading(true);
     try {
@@ -159,7 +176,13 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setAccessToken(accessToken);
       localStorage.setItem('facebook_token', accessToken);
 
+      console.log('user data', user);
+
+      const avatarUrl = (await uploadProfileImageToFirebase(user.photoURL, user.uid)) || null;
+
       if (querySnapshot.docs.length === 0) {
+        console.log(1);
+
         await addDoc(usersCollection, {
           email: user.email,
           username: user.displayName,
@@ -170,13 +193,15 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           postsCount: 0,
           tripCount: 0,
           friends_request_limit: 10,
-          avatarUrl: null,
+          avatarUrl: avatarUrl,
+          loginType: UserLoginType.facebook,
           whereToNext: '',
           itinerary: [],
           userFromFacebook: true,
           facebookId: user.providerData[0].uid,
         });
       } else {
+        console.log(2);
         const facebookId = user.providerData.find(
           (provider) => provider.providerId === 'facebook.com'
         )?.uid;
@@ -185,6 +210,9 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         await updateDoc(doc(db, 'users', querySnapshot.docs[0].id), {
           userFromFacebook: true,
           facebookId: facebookId,
+          username: user.displayName,
+          avatarUrl: avatarUrl,
+          loginType: UserLoginType.facebook,
         });
         console.log('UPDATE USER');
       }
@@ -210,11 +238,13 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             const facebookId = error.customData._tokenResponse.federatedId.split('/').pop();
 
             if (querySnapshot.docs.length > 0) {
+              console.log(3);
               setAccessToken(pendingCredential.accessToken);
               localStorage.setItem('facebook_token', pendingCredential.accessToken);
               await updateDoc(doc(db, 'users', querySnapshot.docs[0].id), {
                 userFromFacebook: true,
                 facebookId: facebookId,
+                loginType: UserLoginType.facebook,
               });
             }
             console.info('Facebook account linked to Google account');
@@ -227,10 +257,12 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
               if (querySnapshot.docs.length > 0) {
                 setAccessToken(pendingCredential.accessToken);
+                console.log(4);
                 localStorage.setItem('facebook_token', pendingCredential.accessToken);
                 await updateDoc(doc(db, 'users', querySnapshot.docs[0].id), {
                   userFromFacebook: true,
                   facebookId: facebookId,
+                  loginType: UserLoginType.facebook,
                 });
               }
               console.log('Accounts already linked, fields updated');
@@ -274,12 +306,14 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           avatarUrl: null,
           whereToNext: '',
           itinerary: [],
+          loginType: UserLoginType.google,
         });
       } else {
         await updateDoc(doc(db, 'users', querySnapshot.docs[0].id), {
           accessToken: null,
           userFromFacebook: false,
           facebookId: null,
+          loginType: UserLoginType.google,
         });
       }
 
@@ -315,6 +349,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         friends_request_limit: 10,
         whereToNext: '',
         itinerary: [],
+        loginType: UserLoginType.email,
       });
 
       return true;
@@ -334,10 +369,23 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setLoading(true);
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      const usersCollection = collection(db, 'users');
+      const q = query(usersCollection, where('email', '==', user.email));
+      const querySnapshot = await getDocs(q);
+
+      // for old users, to set the field with the login type
+      // to access the password change field in the settings
+      const userDocRef = doc(db, 'users', querySnapshot.docs[0].id);
+      await updateDoc(userDocRef, {
+        loginType: UserLoginType.email,
+      });
+
       return true;
     } catch (error) {
       console.error('Sign In Error:', error);
+      console.log(firebaseErrors);
 
       // @ts-ignore
       alert(firebaseErrors[error.code]);

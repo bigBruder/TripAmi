@@ -44,11 +44,11 @@ import background_profile from '@assets/images/background_profile.jpg';
 import { getDocs, limit, onSnapshot, orderBy, query, where } from '@firebase/firestore';
 import { ref } from '@firebase/storage';
 
+import Header from '../Header';
 import styles from './myaccount.module.css';
 import './styles.css';
 
 import 'swiper/css';
-import Header from '../Header';
 
 const TABS = ['Friends', 'Trips', 'Itinerary', 'Saved'];
 
@@ -68,8 +68,7 @@ const MyAccount = () => {
 
   const { firestoreUser, loading, signOutUser } = useContext(AuthContext);
 
-  console.log('firestoreUser', firestoreUser);
-  
+  console.log('firestoreUser', firestoreUser?.loginType);
 
   const navigate = useNavigate();
   const userRef = window.localStorage.getItem('ref');
