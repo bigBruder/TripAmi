@@ -176,13 +176,9 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setAccessToken(accessToken);
       localStorage.setItem('facebook_token', accessToken);
 
-      console.log('user data', user);
-
       const avatarUrl = (await uploadProfileImageToFirebase(user.photoURL, user.uid)) || null;
 
       if (querySnapshot.docs.length === 0) {
-        console.log(1);
-
         await addDoc(usersCollection, {
           email: user.email,
           username: user.displayName,
@@ -201,7 +197,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           facebookId: user.providerData[0].uid,
         });
       } else {
-        console.log(2);
         const facebookId = user.providerData.find(
           (provider) => provider.providerId === 'facebook.com'
         )?.uid;
@@ -238,7 +233,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             const facebookId = error.customData._tokenResponse.federatedId.split('/').pop();
 
             if (querySnapshot.docs.length > 0) {
-              console.log(3);
               setAccessToken(pendingCredential.accessToken);
               localStorage.setItem('facebook_token', pendingCredential.accessToken);
               await updateDoc(doc(db, 'users', querySnapshot.docs[0].id), {
@@ -257,7 +251,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
               if (querySnapshot.docs.length > 0) {
                 setAccessToken(pendingCredential.accessToken);
-                console.log(4);
                 localStorage.setItem('facebook_token', pendingCredential.accessToken);
                 await updateDoc(doc(db, 'users', querySnapshot.docs[0].id), {
                   userFromFacebook: true,
@@ -385,7 +378,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       return true;
     } catch (error) {
       console.error('Sign In Error:', error);
-      console.log(firebaseErrors);
 
       // @ts-ignore
       alert(firebaseErrors[error.code]);

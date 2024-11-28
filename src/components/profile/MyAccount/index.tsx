@@ -68,8 +68,6 @@ const MyAccount = () => {
 
   const { firestoreUser, loading, signOutUser } = useContext(AuthContext);
 
-  console.log('firestoreUser', firestoreUser?.loginType);
-
   const navigate = useNavigate();
   const userRef = window.localStorage.getItem('ref');
 
@@ -243,7 +241,6 @@ const MyAccount = () => {
         }));
         setPosts(fetchedPosts as IPost[]);
       });
-
       return () => {
         unsubscribe();
       };

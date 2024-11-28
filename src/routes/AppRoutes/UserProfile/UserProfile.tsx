@@ -29,6 +29,7 @@ import {
 } from '~/types/firestoreCollections';
 import { FriendsRequestStatus } from '~/types/friends';
 import { IInvitation } from '~/types/invitations';
+import { NotificationType } from '~/types/notifications/notifications';
 import { ITravel } from '~/types/travel';
 import { IUser } from '~/types/user';
 
@@ -39,7 +40,6 @@ import { ref } from '@firebase/storage';
 
 import AddNewFriends, { UserCard } from '../AddNewFriends/AddNewFriends';
 import styles from './userProfile.module.css';
-import { NotificationType } from '~/types/notifications/notifications';
 
 type SortBy = 'endDate' | 'rate' | 'alphabetically';
 const TABS = ['Friends', 'Trips'];
@@ -174,7 +174,10 @@ const UserProfile = () => {
       const q = query(usersCollection, where(documentId(), '==', id));
       const querySnapshot = await getDocs(q);
 
-      setUserData(querySnapshot.docs[0].data());
+      const userDoc = querySnapshot.docs[0];
+      const userDataWithId = { ...userDoc.data(), id: userDoc.id };
+
+      setUserData(userDataWithId);
     })();
   }, [id]);
 
@@ -464,7 +467,7 @@ const UserProfile = () => {
                 ) : (
                   <>
                     <Sort
-                      onSelect={setSortBy}
+                      onSelect={setSortBy as any}
                       isReverse={isReverse}
                       setReverse={() => setIsReverse((prevState) => !prevState)}
                     />

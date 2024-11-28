@@ -41,7 +41,7 @@ const Header: React.FC<HeaderProps> = ({ avatar, isFirestoreUser }) => {
   const { firestoreUser } = useContext(AuthContext);
 
   useEffect(() => {
-    if (!firestoreUser) return;
+    if (!firestoreUser || !firestoreUser?.id) return;
     const q = query(
       notificationsCollection,
       where('targetUserId', '==', firestoreUser?.id),
@@ -142,7 +142,7 @@ const Header: React.FC<HeaderProps> = ({ avatar, isFirestoreUser }) => {
                       }
                       content={
                         <Notifications
-                          onClose={() => { }}
+                          onClose={() => {}}
                           notifications={notifications}
                           deleteMessages={handleDeleteMessages}
                           deleteMessage={handleDeleteMessage}
@@ -187,7 +187,7 @@ const Header: React.FC<HeaderProps> = ({ avatar, isFirestoreUser }) => {
                       }
                       content={
                         <Notifications
-                          onClose={() => { }}
+                          onClose={() => {}}
                           notifications={notifications}
                           deleteMessages={handleDeleteMessages}
                           deleteMessage={handleDeleteMessage}
