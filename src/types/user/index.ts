@@ -34,8 +34,8 @@ export interface IUser {
   tripCount?: number;
   friends_request_limit?: number;
   markers?: ICustomMarker[];
-  itinerary: Itinerary[];
+  itinerary?: Itinerary[];
   accessToken?: string;
   userFromFacebook?: boolean;
-  loginType: 'FaceBook' | 'Google' | 'Email' | null;
+  loginType?: 'FaceBook' | 'Google' | 'Email' | null;
 }

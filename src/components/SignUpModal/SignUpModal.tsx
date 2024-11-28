@@ -28,6 +28,11 @@ export const SignUpModal: FC<Props> = ({ onClose, isOpen, isLogin = false }) => 
   const navigate = useNavigate();
 
   const handelRegister = useCallback(async () => {
+    if (!email || !password || !userName) {
+      alert('Please fill in all required fields!');
+      return;
+    }
+
     const result = await signUp(email, password, userName);
 
     if (result) {
