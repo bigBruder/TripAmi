@@ -7,8 +7,10 @@ import { getDownloadURL } from 'firebase/storage';
 import Footer from '~/components/Footer';
 import HeaderNew from '~/components/HeaderNew';
 import { firebaseErrors } from '~/constants/firebaseErrors';
+import { FacebookTokenStatus } from '~/emuns/faceBookTokenStatus';
 import { db, storage } from '~/firebase';
 import { AuthContext } from '~/providers/authContext';
+import { useFacebookStore } from '~/stores/useFacebook.store';
 import {
   friendsRequestsCollection,
   notificationsCollection,
@@ -35,6 +37,7 @@ import {
 } from '@firebase/firestore';
 import { ref } from '@firebase/storage';
 
+import facebookLogo from '../../../assets/icons/facebook_white.svg';
 import styles from './addNewFriends.module.css';
 
 interface AddNewFriendsProps {
@@ -53,13 +56,22 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user, isFriend = false, isTabs 
   const [invitedUsers, setInvitedUsers] = useState<string[]>([]);
   const [invitationsFromUsers, setInvitationsFromUsers] = useState<string[]>([]);
   const [invitations, setInvitations] = useState<IInvitation[]>([]);
-  const { firestoreUser, accessToken } = useContext(AuthContext);
+  const { firestoreUser, accessToken, signOutUser } = useContext(AuthContext);
   const [avatar, setAvatar] = useState<string | null>(null);
   const [copyLink, setCopyLink] = useState(false);
   const [facebookFriendsId, setFacebookFriendsId] = useState([]);
   const [facebookFriends, setFacebookFriends] = useState([]);
   const [closeFacebook, setCloseFacebook] = useState(false);
   const [facebookContainerQuery, setFacebookContainerQuery] = useState(false);
+  const {
+    validateFBAccessToken,
+    error: fbValidationError,
+    facebookTokenStatus,
+    fbTokenExpiresSoon,
+    refreshFBLongLiveToken,
+  } = useFacebookStore();
+
+  const facebookToken = localStorage.getItem('facebook_token');
 
   useEffect(() => {
     if (!accessToken && !firestoreUser?.userFromFacebook) {
@@ -74,13 +86,17 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user, isFriend = false, isTabs 
   useEffect(() => {
     const accessTokenFb = accessToken || localStorage.getItem('facebook_token');
 
-    if (firestoreUser?.id && firestoreUser?.userFromFacebook) {
-      fetch('https://graph.facebook.com/v12.0/me/friends?access_token=' + accessTokenFb)
-        .then((response) => response.json())
-        .then((data) => {
-          setFacebookFriendsId(data.data.map((friend: any) => friend.id));
-        });
-    }
+    const getFBFiends = async () => {
+      await validateFBAccessToken(accessTokenFb);
+      if (firestoreUser?.id && firestoreUser?.userFromFacebook && !fbValidationError) {
+        await fetch('https://graph.facebook.com/v12.0/me/friends?access_token=' + accessTokenFb)
+          .then((response) => response.json())
+          .then((data) => {
+            setFacebookFriendsId(data.data.map((friend: any) => friend.id));
+          });
+      }
+    };
+    getFBFiends();
   }, [firestoreUser?.id, firestoreUser?.userFromFacebook]);
 
   useEffect(() => {
@@ -95,7 +111,7 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user, isFriend = false, isTabs 
           id: doc.id,
         }));
 
-        setFacebookFriends(fetchedUsers);
+        setFacebookFriends(fetchedUsers as any);
       }
     };
     fetchFriendsFromFacebook();
@@ -286,6 +302,21 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user, isFriend = false, isTabs 
               ))}
             </div>
           </div>
+          {facebookTokenStatus === FacebookTokenStatus.expired &&
+            firestoreUser?.userFromFacebook && (
+              <div
+                className={`${styles.container} ${styles.containerFirst} ${styles.containerFriendsPage}`}
+              >
+                <h3 className={styles.lastTripTitle}>
+                  The time to access your Facebook friends list has expired. To show your Facebook
+                  friends list, the Facebook platform requires you to relogin in with your Facebook
+                  account on the site
+                </h3>
+                <button className={styles.logOutBtn} onClick={signOutUser}>
+                  Try logout
+                </button>
+              </div>
+            )}
           {facebookFriends.length > 0 && firestoreUser?.userFromFacebook && !closeFacebook ? (
             <div
               className={`${styles.container} ${styles.containerFirst} ${styles.containerFriendsPage}`}
@@ -306,7 +337,33 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user, isFriend = false, isTabs 
                 })}
                 style={{ columnGap: '10%' }}
               >
-                {facebookFriends.map((user) => (
+                {fbTokenExpiresSoon && (
+                  <div className={styles.tokenInfo}>
+                    <p className={styles.infoText}>
+                      Your Facebook token is expiring soon. To continue using all Facebook features,
+                      you can:
+                    </p>
+                    <ul className={styles.optionsList}>
+                      <li>Refresh the token manually now to extend access for 60 days.</li>
+                      <li>
+                        Let us refresh it automatically on the last day (only if you visit this
+                        page).
+                      </li>
+                    </ul>
+                    <p className={styles.warningText}>
+                      If neither option is used, you'll need to log in again in our app to regain
+                      access for the next 60 days.
+                    </p>
+                    <button
+                      className={styles.refreshButton}
+                      onClick={() => refreshFBLongLiveToken(facebookToken)}
+                    >
+                      <img src={facebookLogo} alt='facebook_logo' />
+                      Refresh Now
+                    </button>
+                  </div>
+                )}
+                {facebookFriends.map((user: IUser) => (
                   <UserCard
                     user={user}
                     key={user.firebaseUid}
@@ -354,7 +411,10 @@ export const UserCard: FC<Props> = ({
   const { firestoreUser } = useContext(AuthContext);
   const [userAvatar, setUserAvatar] = useState(defaultUserIcon);
   const [isImageLoading, setIsImageLoading] = useState(true);
-  const [lastTrip, setLastTrip] = useState({});
+  const [lastTrip, setLastTrip] = useState<{ tripName: string; stage: string }>({
+    tripName: '',
+    stage: '',
+  });
 
   const [windowScreen, setWindowScreen] = useState<windowSize>(windowSize.DESKTOP);
 
@@ -377,20 +437,22 @@ export const UserCard: FC<Props> = ({
       if (firestoreUser?.id) {
         const qu = query(tripsCollection, where('userId', '==', user?.id), limit(10));
 
-        const unsubscribe = onSnapshot(qu, (querySnapshot) => {
-          const fetchedTrips = querySnapshot.docs.map((doc) => ({
-            ...doc.data(),
-            id: doc.id,
-          }));
+        const unsubscribe = await onSnapshot(qu, (querySnapshot) => {
+          const fetchedTrips: { id: string; createdAt?: number }[] = querySnapshot.docs.map(
+            (doc) => ({
+              ...doc.data(),
+              id: doc.id,
+            })
+          );
 
           const sortedTrips = fetchedTrips.sort((a, b) => {
-            const dateA = a.createdAt.seconds;
-            const dateB = b.createdAt.seconds;
+            const dateA = a.createdAt!;
+            const dateB = b.createdAt!;
 
             return dateB - dateA;
           });
 
-          setLastTrip(sortedTrips[0]);
+          setLastTrip(sortedTrips[0] as any);
         });
 
         return () => unsubscribe();
