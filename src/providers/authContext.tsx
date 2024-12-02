@@ -8,6 +8,7 @@ import {
   signOut,
 } from 'firebase/auth';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
+import { ENV } from '~/app_config/app.config';
 import { firebaseErrors } from '~/constants/firebaseErrors';
 import { UserLoginType } from '~/emuns/userLoginType';
 import { auth, db, facebookProvider, googleProvider } from '~/firebase';
@@ -167,6 +168,17 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const accessToken = response.authResponse.accessToken;
       const credential = FacebookAuthProvider.credential(accessToken);
 
+      // for getting long live facebook token
+      const appId = ENV.FACEBOOK_APP_ID;
+      const appSecret = ENV.FACEBOOK_APP_SECRET;
+
+      const longLivedTokenResponse = await fetch(
+        `https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=${appId}&client_secret=${appSecret}&fb_exchange_token=${accessToken}`
+      );
+      const longLivedTokenData = await longLivedTokenResponse.json();
+
+      const longLiveAccessToken = longLivedTokenData.access_token;
+
       // Використовуємо await замість then для signInWithCredential
       const userCredential = await signInWithCredential(auth, credential);
       const user = userCredential.user;
@@ -174,7 +186,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const q = query(usersCollection, where('email', '==', user.email));
       const querySnapshot = await getDocs(q);
       setAccessToken(accessToken);
-      localStorage.setItem('facebook_token', accessToken);
+      localStorage.setItem('facebook_token', longLiveAccessToken);
 
       const avatarUrl = (await uploadProfileImageToFirebase(user.photoURL, user.uid)) || null;
 
@@ -200,8 +212,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const facebookId = user.providerData.find(
           (provider) => provider.providerId === 'facebook.com'
         )?.uid;
-        setAccessToken(accessToken);
-        localStorage.setItem('facebook_token', accessToken);
+        setAccessToken(longLiveAccessToken);
+        localStorage.setItem('facebook_token', longLiveAccessToken);
         await updateDoc(doc(db, 'users', querySnapshot.docs[0].id), {
           userFromFacebook: true,
           facebookId: facebookId,
@@ -213,7 +225,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
 
       return true;
-    } catch (error) {
+    } catch (error: any) {
       if (error.code === 'auth/account-exists-with-different-credential') {
         const email = error.customData.email;
         const pendingCredential = FacebookAuthProvider.credential(
@@ -233,8 +245,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             const facebookId = error.customData._tokenResponse.federatedId.split('/').pop();
 
             if (querySnapshot.docs.length > 0) {
-              setAccessToken(pendingCredential.accessToken);
-              localStorage.setItem('facebook_token', pendingCredential.accessToken);
+              setAccessToken(pendingCredential.accessToken!);
+              localStorage.setItem('facebook_token', pendingCredential.accessToken!);
               await updateDoc(doc(db, 'users', querySnapshot.docs[0].id), {
                 userFromFacebook: true,
                 facebookId: facebookId,
@@ -243,15 +255,15 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             }
             console.info('Facebook account linked to Google account');
             return true;
-          } catch (linkError) {
+          } catch (linkError: any) {
             if (linkError.code === 'auth/provider-already-linked') {
               const q = query(usersCollection, where('email', '==', error.customData.email));
               const querySnapshot = await getDocs(q);
               const facebookId = error.customData._tokenResponse.federatedId.split('/').pop();
 
               if (querySnapshot.docs.length > 0) {
-                setAccessToken(pendingCredential.accessToken);
-                localStorage.setItem('facebook_token', pendingCredential.accessToken);
+                setAccessToken(pendingCredential.accessToken!);
+                localStorage.setItem('facebook_token', pendingCredential.accessToken!);
                 await updateDoc(doc(db, 'users', querySnapshot.docs[0].id), {
                   userFromFacebook: true,
                   facebookId: facebookId,

@@ -62,8 +62,6 @@ const Settings = () => {
   const [isModalDeleteOpen, setIsModalDeleteOpen] = useState(false);
   const navigate = useNavigate();
 
-  console.log(firestoreUser?.loginType);
-
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 946) {
@@ -199,6 +197,7 @@ const Settings = () => {
     (async () => {
       try {
         setCityIsLoading(true);
+        if (selectedCountry === null) return;
         const { data } = await axios.post('https://countriesnow.space/api/v0.1/countries/cities', {
           country: selectedCountry,
         });
