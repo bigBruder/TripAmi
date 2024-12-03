@@ -14,6 +14,7 @@ import { UserLoginType } from '~/emuns/userLoginType';
 import { auth, db, facebookProvider, googleProvider } from '~/firebase';
 import { usersCollection } from '~/types/firestoreCollections';
 import { IUser } from '~/types/user';
+import { uploadProfileImageToFirebase } from '~/utils/firebaseStorageUtils';
 
 import {
   FacebookAuthProvider,
@@ -71,6 +72,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
   const [firestoreUser, setFirestoreUser] = useState<null | IUser>(null);
   const [accessToken, setAccessToken] = useState<string>('');
+  const appId = ENV.FACEBOOK_APP_ID;
+  const appSecret = ENV.FACEBOOK_APP_SECRET;
 
   useEffect(() => {
     window.fbAsyncInit = function () {
@@ -135,20 +138,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const uploadProfileImageToFirebase = async (url: string | null, userId: string) => {
-    try {
-      const response = await fetch(url);
-      const blob = await response.blob();
-      const storage = getStorage();
-      const storageRef = ref(storage, `profileImages/${userId}`);
-      await uploadBytes(storageRef, blob);
-      const downloadURL = await getDownloadURL(storageRef);
-      return downloadURL;
-    } catch (error) {
-      console.error('error loading image into firestore', error);
-    }
-  };
-
   const signInWithFacebook = async () => {
     setLoading(true);
     try {
@@ -169,9 +158,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const credential = FacebookAuthProvider.credential(accessToken);
 
       // for getting long live facebook token
-      const appId = ENV.FACEBOOK_APP_ID;
-      const appSecret = ENV.FACEBOOK_APP_SECRET;
-
       const longLivedTokenResponse = await fetch(
         `https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=${appId}&client_secret=${appSecret}&fb_exchange_token=${accessToken}`
       );
