@@ -525,11 +525,13 @@
 }
 
 @media (max-width: 400px) {
-  .userCard {
-    width: 68% !important;
-  }
-
   .userInfo {
     width: 80px;
+  }
+}
+
+@media (max-width: 340px) {
+  .userInfo {
+    width: 65px;
   }
 }
