@@ -494,3 +494,28 @@
   outline: none;
   box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.5);
 }
+
+.userInfo {
+  word-wrap: break-word;
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
+@media (max-width: 500px) {
+  .cardMain {
+    justify-content: flex-start;
+  }
+  .userCard {
+    width: 70% !important;
+  }
+
+  .userInfo {
+    width: 80px;
+  }
+}
+
+@media (max-width: 440px) {
+  .userCard {
+    width: 68% !important;
+  }
+}
