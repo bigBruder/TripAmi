@@ -111,7 +111,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const q = query(usersCollection, where('email', '==', currentUser.email));
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
         setFirestoreUser({
-          ...querySnapshot.docs[0].data(),
+          ...querySnapshot.docs[0]?.data(),
           id: querySnapshot.docs[0].id,
         } as IUser);
       });

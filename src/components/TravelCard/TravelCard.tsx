@@ -173,7 +173,7 @@ const TravelCard: FC<Props> = ({
         try {
           const q = query(usersCollection, where(documentId(), '==', userId));
           const querySnapshot = await getDocs(q);
-          const fetchedUser = querySnapshot.docs[0].data() as IUser;
+          const fetchedUser = querySnapshot.docs[0]?.data() as IUser;
           setUserData(fetchedUser as IUser);
         } catch (error) {
           console.log('[ERROR getting user from firestore] => ', error);

@@ -8,6 +8,7 @@ export interface ITravel {
   geoTags: {
     placeID: string;
     address: string;
+    photo: string;
   }[];
   cities?: {
     placeID: string;

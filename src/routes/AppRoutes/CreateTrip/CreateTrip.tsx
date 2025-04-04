@@ -674,9 +674,9 @@ const CreateTrip: React.FC<Props> = () => {
       prevState.map((day) =>
         day.date === formatedDate(selectedDate)
           ? {
-            ...day,
-            photos: day.photos.filter((_, photoIndex) => photoIndex !== index),
-          }
+              ...day,
+              photos: day.photos.filter((_, photoIndex) => photoIndex !== index),
+            }
           : day
       )
     );
@@ -1173,11 +1173,11 @@ const CreateTrip: React.FC<Props> = () => {
                             prevState.map((day) =>
                               day.date === formatedDate(selectedDate)
                                 ? {
-                                  ...day,
-                                  place: day.place.filter(
-                                    (item) => item.placeID !== place.placeID
-                                  ),
-                                }
+                                    ...day,
+                                    place: day.place.filter(
+                                      (item) => item.placeID !== place.placeID
+                                    ),
+                                  }
                                 : day
                             )
                           )

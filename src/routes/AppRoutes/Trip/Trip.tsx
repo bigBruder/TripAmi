@@ -2,8 +2,9 @@ import React, { useCallback, useContext, useEffect, useRef, useState } from 'rea
 // import ReactQuill from 'react-quill';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
+import axios from 'axios';
 import cn from 'classnames';
-import { format, isValid } from 'date-fns';
+import { format, isValid, set } from 'date-fns';
 import { enUS } from 'date-fns/locale';
 import {
   collection,
@@ -220,8 +221,34 @@ export const Trip = () => {
           const docSnapshot = await getDoc(docRef);
 
           if (docSnapshot.exists()) {
-            setTrip(docSnapshot.data());
-            console.log('trip', docSnapshot.data());
+            const tripData = docSnapshot.data() as ITravel;
+            setTrip(tripData);
+
+            const geoTags = tripData.geoTags;
+            console.log('trip (with updated placeIDs)', tripData);
+
+            for (let geoTag of geoTags) {
+              const placeID = geoTag.placeID;
+              if (placeID) {
+                const photoRes = await axios.get(
+                  `https://us-central1-tripami-3e954.cloudfunctions.net/getPhoto?id=${placeID}`
+                );
+                const newPhotoUrl = photoRes.data.photoUrl;
+
+                if (geoTag.photo !== newPhotoUrl) {
+                  geoTag.photo = newPhotoUrl;
+
+                  await updateDoc(docRef, {
+                    geoTags: [...geoTags],
+                  });
+
+                  setTrip((prev) => ({
+                    ...prev!,
+                    geoTags: [...geoTags],
+                  }));
+                }
+              }
+            }
           } else {
             console.error('document not found');
             setTrip(null);
