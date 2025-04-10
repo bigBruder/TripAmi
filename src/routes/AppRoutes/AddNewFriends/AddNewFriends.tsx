@@ -59,8 +59,8 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user, isFriend = false, isTabs 
   const { firestoreUser, accessToken, signOutUser } = useContext(AuthContext);
   const [avatar, setAvatar] = useState<string | null>(null);
   const [copyLink, setCopyLink] = useState(false);
-  const [facebookFriendsId, setFacebookFriendsId] = useState([]);
-  const [facebookFriends, setFacebookFriends] = useState([]);
+  const [facebookFriendsId, setFacebookFriendsId] = useState<string[]>([]);
+  const [facebookFriends, setFacebookFriends] = useState<IUser[]>([]);
   const [closeFacebook, setCloseFacebook] = useState(false);
   const [facebookContainerQuery, setFacebookContainerQuery] = useState(false);
   const {
@@ -81,7 +81,13 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user, isFriend = false, isTabs 
     } else if (accessToken && closeFacebook) {
       setFacebookContainerQuery(true);
     }
-  }, [accessToken, firestoreUser?.userFromFacebook, closeFacebook]);
+
+    if (facebookFriends.length === 0) {
+      setFacebookContainerQuery(true);
+    } else if (facebookFriends.length > 0) {
+      setFacebookContainerQuery(false);
+    }
+  }, [accessToken, firestoreUser?.userFromFacebook, closeFacebook, facebookFriends]);
 
   useEffect(() => {
     const accessTokenFb = accessToken || localStorage.getItem('facebook_token');
@@ -162,7 +168,13 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user, isFriend = false, isTabs 
             id: doc.id,
           }));
 
-          setUsers(fetchedUsers as IUser[]);
+          const facebookFriendsIds = facebookFriends.map((friend) => friend.id);
+
+          const filteredUsers = fetchedUsers.filter(
+            (user) => !facebookFriendsIds.includes(user.id)
+          );
+
+          setUsers(filteredUsers as IUser[]);
         } catch (err) {
           // @ts-ignore
           console.error(firebaseErrors[err.code]);
@@ -205,7 +217,7 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user, isFriend = false, isTabs 
         unsub();
       };
     }
-  }, [firestoreUser?.firebaseUid, firestoreUser?.id, user?.id]);
+  }, [firestoreUser?.firebaseUid, facebookFriends, firestoreUser?.id, user?.id]);
 
   if (user) {
     return users.length ? (
@@ -284,7 +296,7 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user, isFriend = false, isTabs 
                 [styles.userContainerFacebook]:
                   accessToken && firestoreUser?.userFromFacebook && !closeFacebook,
               })}
-              style={{ columnGap: '10%' }}
+              style={{ columnGap: '10%', display: 'block' }}
             >
               {users.map((user) => (
                 <UserCard

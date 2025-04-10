@@ -16,7 +16,7 @@ interface Props {
 
 const getTitle = (type: NotificationType, notification: Notification) => {
   console.log(notification, 'friend');
-  
+
   switch (type.toLowerCase()) {
     case NotificationType.NewPost:
       return 'Your friend has created a new post!';
@@ -131,7 +131,10 @@ export const Notifications: FC<Props> = ({
                   )}
                 </div>
                 <div className={styles.control_container}>
-                  <button className={styles.button} onClick={() => handleNavigate(notification)}>
+                  <button
+                    className={`${styles.button} ${styles.checkButton}`}
+                    onClick={() => handleNavigate(notification)}
+                  >
                     Check
                   </button>
                   <button

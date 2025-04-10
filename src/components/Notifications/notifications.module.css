@@ -1,92 +1,102 @@
 .container {
-    width: clamp(300px, 10vw, 400px);
-    padding: 20px;
-    background-color: white;
-    border-radius: 24px;
-    font-size: 14px;
-    gap: 10px;
-    max-height: 300px;
-    
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    background-color: #fff;
-    border: 1px solid #e5e5e5;
-    outline: none;
+  width: clamp(300px, 10vw, 400px);
+  padding: 20px;
+  background-color: white;
+  border-radius: 24px;
+  font-size: 14px;
+  gap: 10px;
+  max-height: 300px;
+
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  border: 1px solid #e5e5e5;
+  outline: none;
 }
 
 .notifications_container {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    max-height: 300px;
-    overflow-y: auto;
-    padding-right: 10px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 10px;
 }
 
 .notification {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 5px;
-    padding: 10px 5px;
-    border-radius: 12px;
-    border: 1px solid #e5e5e5;
-    box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 5px;
+  padding: 10px 5px;
+  border-radius: 12px;
+  border: 1px solid #e5e5e5;
+  box-sizing: border-box;
 }
 
 .notification_readed {
-    opacity: 0.6;
+  opacity: 0.6;
 }
 
 .title {
-    font-weight: bold;
-    font-family: 'Gilroy-Regular', sans-serif;;
+  font-weight: bold;
+  font-family: 'Gilroy-Regular', sans-serif;
 }
 
 .text {
-    font-family: 'Gilroy-Regular', sans-serif;
-    font-weight: bold;
+  font-family: 'Gilroy-Regular', sans-serif;
+  font-weight: bold;
+}
+
+.checkButton {
+  background-color: #118c05;
 }
 
 .button {
-    background-color: #D51104;
-    font-size: 12px;
-    color: #262626;
-    padding: 5px 10px;
-    border-radius: 12px;
-    transition: all 0.3s;
+  background-color: #d51104;
+  font-size: 12px;
+  color: #262626;
+  padding: 5px 10px;
+  border-radius: 12px;
+  transition: all 0.3s;
 }
 
 .button:hover {
-    background-color: #D51104;
+  background-color: #d51104;
+  color: #fff;
+}
+
+.checkButton:hover {
+  background-color: #118c05;
+  color: #fff;
 }
 
 .button_delete {
-    position: sticky;
-    bottom: 0;
-    left: 0;
+  position: sticky;
+  bottom: 0;
+  left: 0;
 }
 
 .button_remove {
-    background-color: unset;
+  background-color: unset;
 }
 
 .button_remove:hover {
-    background-color: #D51104;
+  background-color: #d51104;
 }
 
 .base_text {
-    color: #262626;
+  color: #262626;
 }
 .control_container {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
 }
 .container_top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
