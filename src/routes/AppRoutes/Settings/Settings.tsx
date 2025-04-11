@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import axios from 'axios';
+import { el } from 'date-fns/locale';
 import { getDownloadURL } from 'firebase/storage';
 import { CustomInput } from '~/components/CustomInput';
 import CustomModal from '~/components/CustomModal';
@@ -23,6 +24,7 @@ import { db, storage } from '~/firebase';
 import { AuthContext } from '~/providers/authContext';
 import { Country } from '~/types/countries';
 import { usersCollection } from '~/types/firestoreCollections';
+import { IUser } from '~/types/user';
 
 import CameraIcon from '@assets/icons/CameraIcon.svg';
 import FatPencil from '@assets/icons/FatPencil.svg';
@@ -44,7 +46,8 @@ import styles from './settings.module.css';
 import './styles.css';
 
 const Settings = () => {
-  const { firestoreUser, currentUser, signIn } = useContext(AuthContext);
+  const { firestoreUser, currentUser, signIn, setFirestoreUser, setCurrentUser } =
+    useContext(AuthContext);
   const [userName, setUserName] = useState('');
   const [isChecked, setIsChecked] = useState(false);
   const [oldPassword, setOldPassword] = useState('');
@@ -256,9 +259,20 @@ const Settings = () => {
 
   const handleDeleteAccoount = async () => {
     const auth = await getAuth();
-    const user = auth.currentUser;
+    const localUser = localStorage.getItem('firestore_user');
 
-    const q = query(usersCollection, where('email', '==', user?.email));
+    let q;
+    if (localUser) {
+      const parsedUser: IUser = JSON.parse(localUser);
+      q = query(usersCollection, where('email', '==', parsedUser.email));
+      localStorage.removeItem('firestore_user');
+      setFirestoreUser(null);
+      setCurrentUser(null);
+    } else {
+      const user = auth.currentUser;
+
+      q = query(usersCollection, where('email', '==', user?.email));
+    }
 
     try {
       await signOut(auth);
