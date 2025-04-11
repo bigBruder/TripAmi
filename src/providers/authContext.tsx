@@ -75,6 +75,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const appId = ENV.FACEBOOK_APP_ID;
   const appSecret = ENV.FACEBOOK_APP_SECRET;
 
+  // console.log('firestoreUser', firestoreUser);
   useEffect(() => {
     window.fbAsyncInit = function () {
       window.FB.init({
@@ -91,6 +92,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (user?.uid) {
         const q = query(usersCollection, where('email', '==', user.email));
         const querySnapshot = await getDocs(q);
+
+        console.log('currentUser', currentUser);
 
         setFirestoreUser({
           ...querySnapshot.docs[0]?.data(),
@@ -140,13 +143,17 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signInWithFacebook = async () => {
     setLoading(true);
+    console.info('[Facebook Login] Починаємо вхід через Facebook');
+
     try {
-      const response = await new Promise((resolve, reject) => {
+      const fbResponse = await new Promise((resolve, reject) => {
         window.FB.login(
           (response) => {
             if (response.authResponse) {
+              console.info('[Facebook Login] Отримано authResponse');
               resolve(response);
             } else {
+              console.warn('[Facebook Login] Користувач скасував або не авторизувався');
               reject(new Error('User cancelled login or did not fully authorize.'));
             }
           },
@@ -154,29 +161,34 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         );
       });
 
-      const accessToken = response.authResponse.accessToken;
+      const accessToken = fbResponse.authResponse.accessToken;
+      console.log('[Facebook Login] Facebook accessToken:', accessToken);
+
       const credential = FacebookAuthProvider.credential(accessToken);
 
-      // for getting long live facebook token
+      // Optional: отримання long-lived токена
       const longLivedTokenResponse = await fetch(
         `https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=${appId}&client_secret=${appSecret}&fb_exchange_token=${accessToken}`
       );
       const longLivedTokenData = await longLivedTokenResponse.json();
-
       const longLiveAccessToken = longLivedTokenData.access_token;
+      console.log('[Facebook Login] Long-lived access token:', longLiveAccessToken);
 
-      // Використовуємо await замість then для signInWithCredential
       const userCredential = await signInWithCredential(auth, credential);
       const user = userCredential.user;
+      console.log('[Facebook Login] Firebase user:', user);
+
       const usersCollection = collection(db, 'users');
       const q = query(usersCollection, where('email', '==', user.email));
       const querySnapshot = await getDocs(q);
+
       setAccessToken(accessToken);
       localStorage.setItem('facebook_token', longLiveAccessToken);
 
       const avatarUrl = (await uploadProfileImageToFirebase(user.photoURL, user.uid)) || null;
 
       if (querySnapshot.docs.length === 0) {
+        console.info('[Facebook Login] Створюємо нового користувача в Firestore');
         await addDoc(usersCollection, {
           email: user.email,
           username: user.displayName,
@@ -195,11 +207,11 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           facebookId: user.providerData[0].uid,
         });
       } else {
+        console.info('[Facebook Login] Оновлюємо існуючого користувача');
         const facebookId = user.providerData.find(
           (provider) => provider.providerId === 'facebook.com'
         )?.uid;
-        setAccessToken(longLiveAccessToken);
-        localStorage.setItem('facebook_token', longLiveAccessToken);
+
         await updateDoc(doc(db, 'users', querySnapshot.docs[0].id), {
           userFromFacebook: true,
           facebookId: facebookId,
@@ -207,30 +219,34 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           avatarUrl: avatarUrl,
           loginType: UserLoginType.facebook,
         });
-        console.log('UPDATE USER');
       }
 
       return true;
     } catch (error: any) {
+      console.error('[Facebook Login] Помилка авторизації:', error);
+
       if (error.code === 'auth/account-exists-with-different-credential') {
+        console.warn('[Facebook Login] Акаунт вже існує з іншим провайдером');
         const email = error.customData.email;
         const pendingCredential = FacebookAuthProvider.credential(
           error.customData._tokenResponse.oauthAccessToken
         );
-
         const existingSignInMethods = await fetchSignInMethodsForEmail(auth, email);
 
         if (existingSignInMethods.includes('google.com')) {
-          const googleProvider = new GoogleAuthProvider();
+          console.info('[Facebook Login] Email привʼязаний до Google — намагаємось зʼєднати');
           try {
+            const googleProvider = new GoogleAuthProvider();
             const googleResult = await signInWithPopup(auth, googleProvider);
             await linkWithCredential(googleResult.user, pendingCredential);
+            await signInWithCredential(auth, pendingCredential);
 
             const q = query(usersCollection, where('email', '==', googleResult.user.email));
             const querySnapshot = await getDocs(q);
             const facebookId = error.customData._tokenResponse.federatedId.split('/').pop();
 
             if (querySnapshot.docs.length > 0) {
+              console.info('[Facebook Login] Зʼєднані акаунти, оновлюємо дані');
               setAccessToken(pendingCredential.accessToken!);
               localStorage.setItem('facebook_token', pendingCredential.accessToken!);
               await updateDoc(doc(db, 'users', querySnapshot.docs[0].id), {
@@ -239,38 +255,57 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 loginType: UserLoginType.facebook,
               });
             }
-            console.info('Facebook account linked to Google account');
+
             return true;
           } catch (linkError: any) {
-            if (linkError.code === 'auth/provider-already-linked') {
+            console.warn('[Facebook Login] Помилка при зʼєднанні акаунтів:', linkError.code);
+            if (
+              linkError.code === 'auth/provider-already-linked' ||
+              linkError.code === 'auth/popup-blocked'
+            ) {
+              const pendingCredential = FacebookAuthProvider.credential(
+                error.customData._tokenResponse.oauthAccessToken
+              );
               const q = query(usersCollection, where('email', '==', error.customData.email));
               const querySnapshot = await getDocs(q);
               const facebookId = error.customData._tokenResponse.federatedId.split('/').pop();
 
+              const linkedUserCredential = await signInWithCredential(auth, pendingCredential);
+              const linkedUser = linkedUserCredential.user;
+
+              console.log('[Facebook Login] Акаунти вже зʼєднані. Користувач:', linkedUser);
+              setAccessToken(pendingCredential.accessToken!);
+              localStorage.setItem('facebook_token', pendingCredential.accessToken!);
+
               if (querySnapshot.docs.length > 0) {
-                setAccessToken(pendingCredential.accessToken!);
-                localStorage.setItem('facebook_token', pendingCredential.accessToken!);
                 await updateDoc(doc(db, 'users', querySnapshot.docs[0].id), {
                   userFromFacebook: true,
                   facebookId: facebookId,
                   loginType: UserLoginType.facebook,
                 });
+                setCurrentUser({
+                  ...querySnapshot.docs[0]?.data(),
+                } as User);
+                setFirestoreUser({
+                  ...querySnapshot.docs[0]?.data(),
+                  id: querySnapshot.docs[0].id,
+                } as IUser);
               }
-              console.log('Accounts already linked, fields updated');
+
               return true;
             } else {
-              console.error('Error linking Facebook to Google account:', linkError);
+              console.error('[Facebook Login] Неочікувана помилка при лінкуванні:', linkError);
             }
           }
         } else {
-          console.error('The email is linked with a provider other than Google.');
+          console.error('[Facebook Login] Email привʼязаний не до Google:', existingSignInMethods);
         }
-      } else {
-        console.error('Error during Facebook sign-in:', error);
       }
+
       return false;
     } finally {
       setLoading(false);
+      console.info('[Facebook Login] Завершення процесу');
     }
   };
 
