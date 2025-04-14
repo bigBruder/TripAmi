@@ -280,6 +280,12 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
               const fbData = error.customData._tokenResponse;
 
               if (querySnapshot.docs.length > 0) {
+                await updateDoc(doc(db, 'users', querySnapshot.docs[0].id), {
+                  userFromFacebook: true,
+                  facebookId: facebookId,
+                  loginType: UserLoginType.facebook,
+                });
+
                 setAccessToken(pendingCredential.accessToken!);
                 localStorage.setItem('facebook_token', pendingCredential.accessToken!);
 
@@ -288,14 +294,11 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                   JSON.stringify({
                     ...querySnapshot.docs[0]?.data(),
                     id: querySnapshot.docs[0].id,
+                    userFromFacebook: true,
+                    facebookId: facebookId,
+                    loginType: UserLoginType.facebook,
                   })
                 );
-
-                await updateDoc(doc(db, 'users', querySnapshot.docs[0].id), {
-                  userFromFacebook: true,
-                  facebookId: facebookId,
-                  loginType: UserLoginType.facebook,
-                });
 
                 setCurrentUser({
                   ...querySnapshot.docs[0]?.data(),
@@ -339,6 +342,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                   loginType: UserLoginType.facebook,
                   whereToNext: '',
                   itinerary: [],
+                  avatarUrl: avatarUrl,
                   userFromFacebook: true,
                   facebookId: facebookId,
                   id: newUserRef.id,
