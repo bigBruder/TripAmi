@@ -306,6 +306,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                   id: querySnapshot.docs[0].id,
                 } as IUser);
               } else {
+                const avatarUrl =
+                  (await uploadProfileImageToFirebase(fbData.photoURL, fbData.localId)) || null;
                 const newUserRef = await addDoc(usersCollection, {
                   email: fbData.email,
                   username: fbData.displayName,
@@ -316,6 +318,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                   postsCount: 0,
                   tripCount: 0,
                   friends_request_limit: 10,
+                  avatarUrl: avatarUrl,
                   loginType: UserLoginType.facebook,
                   whereToNext: '',
                   itinerary: [],
@@ -342,6 +345,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 };
 
                 localStorage.setItem('firestore_user', JSON.stringify(newUserInState));
+                setAccessToken(pendingCredential.accessToken!);
+                localStorage.setItem('facebook_token', pendingCredential.accessToken!);
 
                 setCurrentUser(newUserInState as any);
                 setFirestoreUser(newUserInState as IUser);
