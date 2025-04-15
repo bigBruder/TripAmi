@@ -313,7 +313,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 } as IUser);
               } else {
                 const avatarUrl =
-                  (await uploadProfileImageToFirebase(fbData.photoURL, fbData.localId)) || null;
+                  (await uploadProfileImageToFirebase(fbData.photoUrl, fbData.localId)) || null;
+
                 const newUserRef = await addDoc(usersCollection, {
                   email: fbData.email,
                   username: fbData.displayName,
