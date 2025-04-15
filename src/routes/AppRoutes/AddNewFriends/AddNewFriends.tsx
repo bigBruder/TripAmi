@@ -219,6 +219,12 @@ const AddNewFriends: FC<AddNewFriendsProps> = ({ user, isFriend = false, isTabs 
     }
   }, [firestoreUser?.firebaseUid, facebookFriends, firestoreUser?.id, user?.id]);
 
+  console.log('facebook friends', facebookFriends.length);
+
+  console.log('firestore user', firestoreUser?.userFromFacebook);
+
+  console.log('close facebook', closeFacebook);
+
   if (user) {
     return users.length ? (
       <div className={styles.container}>
