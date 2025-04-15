@@ -307,6 +307,9 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 setFirestoreUser({
                   ...querySnapshot.docs[0]?.data(),
                   id: querySnapshot.docs[0].id,
+                  userFromFacebook: true,
+                  facebookId: facebookId,
+                  loginType: UserLoginType.facebook,
                 } as IUser);
               } else {
                 const avatarUrl =
